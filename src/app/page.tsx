@@ -10,10 +10,10 @@ export default function HomePage() {
   return (
     <main className="center min-h-screen flex-col">
       <Navbar />
-      <section className="center h-[80vh] flex-col gap-4">
+      <section className="flex h-[80vh] flex-col justify-center gap-4 px-4 sm:items-center">
         <h1>Your shares. Now private.</h1>
         <h2>Scale your cap table with confidence.</h2>
-        <p className="mt-8 text-lg">
+        <p className="mt-4 text-lg sm:mt-8">
           For the builders and funders. We&apos;ll never use your data to sell
           secondaries.
         </p>
@@ -28,7 +28,7 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-      <section className="flex h-[50vh] w-screen flex-col justify-start p-8 sm:p-16">
+      <section className="flex h-[50vh] w-screen flex-col justify-start px-8 sm:p-16">
         <div className="center h-full w-full flex-col gap-4 rounded-md bg-gradient-to-t from-white to-blue-100 p-16">
           <h3>Build equity. Build trust. Build your company.</h3>
           <p className="max-w-xl text-center text-lg">
@@ -42,9 +42,9 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-      <section className="center h-screen w-screen flex-col">
-        <div className="grid h-full w-full grid-cols-2 p-8 sm:p-16">
-          <div className="relative m-8 h-full">
+      <section className="center min-h-screen w-screen flex-col px-4">
+        <div className="grid h-full w-full grid-rows-2 gap-8 p-4 sm:p-16 md:grid-cols-2 md:grid-rows-1 md:gap-16">
+          <div className="relative h-full">
             <div className="absolute flex h-full flex-col space-y-2 p-8 sm:p-16">
               <h4>Manage your cap table with ease.</h4>
               <div className="grow" />
@@ -59,7 +59,7 @@ export default function HomePage() {
               alt="Happy startup founder who just raised money"
             />
           </div>
-          <div className="m-8 flex h-full flex-col space-y-4 rounded-md bg-green-100 p-8 sm:p-16">
+          <div className="flex h-full flex-col space-y-4 rounded-md bg-gradient-to-r from-white to-green-100 p-8 sm:p-16">
             <h2>Your data, secured.</h2>
             <h3>
               OpenCap never has access to your most sensitive company data.
@@ -100,7 +100,7 @@ export default function HomePage() {
       </section>
       <section className="center h-screen w-screen flex-col">
         <div className="grid h-full w-full p-8 sm:p-16">
-          <div className="center flex-col gap-4 rounded-md bg-blue-100">
+          <div className="center flex-col gap-4 rounded-md bg-gradient-to-t from-blue-100 to-white">
             <h4>Scale your equity.</h4>
             <Button size="lg">Get started today</Button>
           </div>

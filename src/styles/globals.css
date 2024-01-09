@@ -77,7 +77,7 @@
     font-family: "Cal Sans";
   }
   h1 {
-    @apply font-cal text-7xl;
+    @apply font-cal text-6xl sm:text-7xl;
   }
   h2 {
     @apply font-cal text-4xl;

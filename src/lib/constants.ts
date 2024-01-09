@@ -3,6 +3,9 @@ export const constants = {
   url: "https://opencap.co",
   description:
     "OpenCap is a decentralized, open-source, and censorship-resistant alternative to traditional domain name systems.",
+  twitter: {
+    url: "https://twitter.com/opencapco",
+  },
   github: {
     url: "https://github.com/opencapco/opencap.co",
   },

@@ -29,7 +29,7 @@ export default function HomePage() {
         </div>
       </section>
       <section className="flex h-[50vh] w-screen flex-col justify-start p-8 sm:p-16">
-        <div className="center h-full w-full flex-col gap-4 rounded-md bg-blue-100 p-16">
+        <div className="center h-full w-full flex-col gap-4 rounded-md bg-gradient-to-t from-white to-blue-100 p-16">
           <h3>Build equity. Build trust. Build your company.</h3>
           <p className="max-w-xl text-center text-lg">
             OpenCap will follow the{" "}
@@ -44,7 +44,7 @@ export default function HomePage() {
       </section>
       <section className="center h-screen w-screen flex-col">
         <div className="grid h-full w-full grid-cols-2 p-8 sm:p-16">
-          <div className="relative m-8">
+          <div className="relative m-8 h-full">
             <div className="absolute flex h-full flex-col space-y-2 p-8 sm:p-16">
               <h4>Manage your cap table with ease.</h4>
               <div className="grow" />
@@ -69,27 +69,27 @@ export default function HomePage() {
               With end-to-end encryption and self-hosting options, what is yours
               remains yours.
             </p>
-            <div className="grow"></div>
-            <div className="flex flex-col divide-y-2 divide-stone-700">
+            <div className="grow" />
+            <div className="flex flex-col divide-y-2 divide-green-700 text-green-700 blur-sm transition-all duration-700 hover:blur-0">
               <div className="grid grid-cols-4 font-bold">
                 <div>Investor</div>
                 <div>Round</div>
                 <div>Shares</div>
                 <div>Signatures</div>
               </div>
-              <div className="grid grid-cols-4 divide-x-2 divide-stone-700">
+              <div className="grid grid-cols-4 divide-x-2 divide-green-700">
                 <div className="px-1">Dave Ephraim</div>
                 <div className="px-1">B</div>
                 <div className="px-1">5500</div>
                 <div className="px-1">✓</div>
               </div>
-              <div className="grid grid-cols-4 divide-x-2 divide-stone-700">
+              <div className="grid grid-cols-4 divide-x-2 divide-green-700">
                 <div className="px-1">Kara Withers</div>
                 <div className="px-1">Seed</div>
                 <div className="px-1">111 500</div>
                 <div className="px-1">✓</div>
               </div>
-              <div className="grid grid-cols-4 divide-x-2 divide-stone-700">
+              <div className="grid grid-cols-4 divide-x-2 divide-green-700">
                 <div className="px-1">Sarah Sunanka</div>
                 <div className="px-1">A</div>
                 <div className="px-1">45 400</div>

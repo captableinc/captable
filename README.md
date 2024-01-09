@@ -1,5 +1,5 @@
 # OpenCap
-OpenCap is an open source alternative to [Carta](https://carta.com)
+OpenCap is an open source alternative to [Carta](https://carta.com).
 
 ## Built with
 

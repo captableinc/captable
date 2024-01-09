@@ -53,9 +53,8 @@ export default function HomePage() {
               <h2>Compliant.</h2>
             </div>
             <Image
-              className="rounded-md opacity-40"
+              className="rounded-md object-cover opacity-40"
               fill
-              objectFit="cover"
               src={founder1}
               alt="Happy startup founder who just raised money"
             />

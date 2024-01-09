@@ -19,7 +19,9 @@ export default function HomePage() {
         </p>
         <div className="flex items-center gap-2">
           <Button size="lg" variant="default">
-            Join the waitlist
+            <Link href={constants.twitter.url} className="hover:no-underline">
+              Join the waitlist
+            </Link>
           </Button>
           <Button size="lg" variant="outline">
             <Link href={constants.github.url} className="hover:no-underline">
@@ -102,7 +104,11 @@ export default function HomePage() {
         <div className="grid h-full w-full p-8 sm:p-16">
           <div className="center flex-col gap-4 rounded-md bg-gradient-to-t from-blue-100 to-white">
             <h4>Scale your equity.</h4>
-            <Button size="lg">Get started today</Button>
+            <Button size="lg">
+              <Link href={constants.twitter.url} className="hover:no-underline">
+                Get started today
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

@@ -1,19 +1,16 @@
 import "@/styles/globals.css";
-
-import { Inter } from "next/font/google";
+import "cal-sans";
 import { cookies } from "next/headers";
-
 import { TRPCReactProvider } from "@/trpc/react";
+import { type Metadata } from "next";
+import { constants } from "@/lib/constants";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-export const metadata = {
+export const metadata: Metadata = {
   title: "OpenCap",
-  description: "OpenCap is an open source cap table management tool that does not sell your data.",
+  description:
+    "OpenCap is an open source cap table management tool that does not sell your data.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  metadataBase: new URL(constants.url),
 };
 
 export default function RootLayout({
@@ -23,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body>
         <TRPCReactProvider cookies={cookies().toString()}>
           {children}
         </TRPCReactProvider>

@@ -20,7 +20,7 @@ import Image from "next/image";
 import founder1 from "@/assets/founder.png";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
@@ -35,7 +35,8 @@ export default function HomePage() {
       setModalOpen(false);
       toast({
         title: "Signup successful",
-        description: "You have successfully joined the waitlist, you will be contacted shortly.",
+        description:
+          "You have successfully joined the waitlist, you will be contacted shortly.",
       });
     } else {
       toast({
@@ -103,7 +104,7 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-      <section className="flex h-[50vh] w-screen flex-col justify-start px-8 sm:p-16">
+      <section className="flex h-[50vh] w-full flex-col justify-start px-8 sm:p-16">
         <div className="center h-full w-full flex-col gap-4 rounded-md bg-gradient-to-t from-white to-blue-100 p-16">
           <h3>Build equity. Build trust. Build your company.</h3>
           <p className="max-w-xl text-center text-lg">
@@ -117,7 +118,7 @@ export default function HomePage() {
           </Button>
         </div>
       </section>
-      <section className="center min-h-screen w-screen flex-col px-4">
+      <section className="center min-h-screen w-full flex-col px-4">
         <div className="grid h-full w-full grid-rows-2 gap-8 p-4 sm:p-16 md:grid-cols-2 md:grid-rows-1 md:gap-16">
           <div className="relative h-full">
             <div className="absolute flex h-full flex-col space-y-2 p-8 sm:p-16">
@@ -173,7 +174,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="center h-screen w-screen flex-col">
+      <section className="center h-screen w-full flex-col">
         <div className="grid h-full w-full p-8 sm:p-16">
           <div className="center flex-col gap-4 rounded-md bg-gradient-to-t from-blue-100 to-white">
             <h4>Scale your equity.</h4>

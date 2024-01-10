@@ -7,7 +7,6 @@ import {
 
 import EmailProvider from "next-auth/providers/email";
 
-import { env } from "@/env";
 import { db } from "@/server/db";
 
 /**

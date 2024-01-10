@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
 import { constants } from "@/lib/constants";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "OpenCap",
@@ -22,7 +23,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
+          <main>{children}</main>
+          <Toaster />
         </TRPCReactProvider>
       </body>
     </html>

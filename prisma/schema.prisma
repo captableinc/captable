@@ -56,6 +56,12 @@ model User {
   orgs          Member[]
 }
 
+model WaitlistUser {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  createdAt     DateTime  @default(now())
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique

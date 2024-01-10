@@ -20,11 +20,30 @@ import Image from "next/image";
 import founder1 from "@/assets/founder.png";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useForm } from 'react-hook-form';
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const { toast } = useToast();
+  const { handleSubmit } = useForm();
+
+  const joinWaitlist = async () => {
+    const response = await fetch(`/api/waitlist?email=${email}`);
+
+    if (response.ok) {
+      setModalOpen(false);
+      toast({
+        title: "Signup successful",
+        description: "You have successfully joined the waitlist, you will be contacted shortly.",
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to join the waitlist. Please try again later.",
+      });
+    }
+  };
 
   return (
     <main className="center min-h-screen flex-col">
@@ -47,21 +66,7 @@ export default function HomePage() {
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-              <form
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  const response = await fetch(`/api/waitlist?email=${email}`);
-
-                  if (response.ok) {
-                    setModalOpen(false);
-                    toast({
-                      title: "Signup successful",
-                      description:
-                        "You have successfully joined the waitlist, you will be contacted shortly.",
-                    });
-                  }
-                }}
-              >
+              <form onSubmit={handleSubmit(joinWaitlist)}>
                 <DialogHeader>
                   <DialogTitle>Waitlist</DialogTitle>
                   <DialogDescription>

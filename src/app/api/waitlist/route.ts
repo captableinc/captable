@@ -3,7 +3,7 @@ import { db } from "@/server/db";
 
 export async function GET(req: NextRequest) { 
   const { searchParams } = new URL(req.url)
-  const email = searchParams.get('email') as string
+  const email = searchParams.get('email')! 
 
   try {
     const newWaitlistUser = await db.waitlistUser.create({
@@ -16,5 +16,4 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     return NextResponse.json({ message: e }, { status: 400 })
   }
-
 }

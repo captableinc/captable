@@ -53,7 +53,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  orgs          Role[]
+  orgs          Member[]
 }
 
 model VerificationToken {
@@ -69,7 +69,7 @@ model Org {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  users     Role[]
+  users     Member[]
 }
 
 enum AccessEnum {
@@ -78,7 +78,7 @@ enum AccessEnum {
   ADMIN
 }
 
-model Role {
+model Member {
   id        String   @id @default(cuid())
   title     String?
   access    AccessEnum @default(READ)

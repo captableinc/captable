@@ -14,7 +14,7 @@ export const Navbar = () => (
     </Link>
     <div className="grow" />
     <div className="flex items-center gap-4 text-sm">
-      <Link href={constants.github.url}>Twitter</Link>
+      <Link href={constants.twitter.url}>Twitter</Link>
       <Link href={constants.github.url}>GitHub</Link>
       <Link href={constants.discord.url}>Discord</Link>
     </div>

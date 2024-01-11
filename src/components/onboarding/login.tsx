@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form"
 
 const loginSchema = z.object({
-  email: z.string().min(2).max(50),
+  email: z.string().email()
 })
 
 const LoginForm = () => {

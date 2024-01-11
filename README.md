@@ -1,5 +1,9 @@
+<img width="1195" alt="cap" src="https://github.com/opencapco/opencap.co/assets/36117635/c4ad3507-44dd-47b2-a5ac-6dd8bea6b406">
+
 # OpenCap
-OpenCap is an open source alternative to [Carta](https://carta.com).
+**An open source alternative to [Carta](https://carta.com) and [Pulley](https://pulley.com).**
+
+OpenCap will follow the [Open Cap Table Format](https://www.opencaptablecoalition.com/format), an open source standard to prevent lock-in and keep lawyer fees low. No promises.
 
 ## Built with
 
@@ -12,8 +16,49 @@ OpenCap is an open source alternative to [Carta](https://carta.com).
 - [@shadcn/ui](https://ui.shadcn.com/)
 - [MailHog](https://github.com/mailhog/MailHog)
 
-## One-click deploy
-- [Vercel](https://vercel.com/new/git/external?repository-url=)
-- [Render](https://render.com/deploy?repo=)
+## Developers
+
+Follow the steps below to stand the app up locally.
+
+**1. Install dependencies.**
+
+```sh
+npm i
+```
+
+**2. Spin up a local database.**
+
+First, ensure Docker is running.
+
+```sh
+npm run db:start
+```
+
+Generate tables and the Prisma client.
+
+```sh
+npx prisma migrate dev
+```
+
+To see what's in your database, run Prisma Studio:
+
+```sh
+npm run db:studio
+```
+
+**3. Run the web app**
+
+```sh
+npm run dev
+```
+
+Open your browser to the URLs given by the web app and studio processes. You're up and running, good job! 🎉
+
+### One-click deploy
+
+_Coming soon to a PaaS near you:_
+
+- [Vercel](https://vercel.com/new/git/external?repository-url=https://github.com/opencapco/opencap.co)
+- [Render](https://render.com/deploy?repo=https://github.com/opencapco/opencap.co)
 - [Railway](https://railway.app/new?template=)
-- [Netlify](https://app.netlify.com/start/deploy?repository=)
+- [Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/opencapco/opencap.co)

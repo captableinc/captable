@@ -1,4 +1,5 @@
 "use client";
+
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -215,7 +216,6 @@ const OnboardingCompany = () => {
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -232,7 +232,6 @@ const OnboardingCompany = () => {
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -247,7 +246,6 @@ const OnboardingCompany = () => {
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}

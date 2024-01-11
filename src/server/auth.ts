@@ -8,7 +8,6 @@ import {
 import EmailProvider from "next-auth/providers/email";
 
 import { db } from "@/server/db";
-import { env } from "@/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -17,20 +16,20 @@ import { env } from "@/env";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
-  interface Session {
+  interface Session extends DefaultSession {
     user: {
       id: string;
-      isOnboarded: boolean;
+      // ...other properties
+      // role: UserRole;
     } & DefaultSession["user"];
   }
+
+  // interface User {
+  //   // ...other properties
+  //   // role: UserRole;
+  // }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string;
-    isOnboarded: boolean;
-  }
-}
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -38,36 +37,15 @@ declare module "next-auth/jwt" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    async jwt({ trigger, user: adapterUser, token }) {
-      if (trigger) {
-        const user = await db.user.findFirstOrThrow({
-          where: { id: adapterUser.id },
-          select: {
-            completedOnboarding: true,
-          },
-        });
-
-        token.isOnboarded = user.completedOnboarding;
-      }
-
-      return token;
-    },
-    session({ session, token }) {
-      session.user.isOnboarded = token.isOnboarded;
-
-      if (token.sub) {
-        session.user.id = token.sub;
-      }
-
-      return session;
-    },
+    session: ({ session, user }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: user.id,
+      },
+    }),
   },
   adapter: PrismaAdapter(db),
-  secret: env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
-
   providers: [
     EmailProvider({
       server: process.env.EMAIL_SERVER,

@@ -1,13 +1,9 @@
-import OnboardingProvider from "@/components/onboarding/provider";
+import OnboardingCompany from "@/components/onboarding/company";
 
-export default function Onboarding() {
+const OnboardingPage = () => {
   return (
-    <OnboardingProvider
-      title="Get started with OpenCap"
-      subtitle="Enter your email below to create an account"
-      disclaimer={true}
-    >
-      Auth form
-    </OnboardingProvider>
-  )
+    <OnboardingCompany />
+  );
 };
+
+export default OnboardingPage;

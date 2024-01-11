@@ -17,41 +17,45 @@ import {
 } from "@/components/ui/form"
 
 const onboardingSchema = z.object({
-  firstName: z.string().min(1, {
-    message: "First name is required",
+  user: z.object({
+    firstName: z.string().min(1, {
+      message: "First name is required",
+    }),
+    lastName: z.string().min(1, {
+      message: "Last name is required",
+    }),
+    companyName: z.string().min(1, {
+      message: "Company name is required",
+    }),
+    title: z.string().min(1, {
+      message: "Title is required",
+    }).optional(),
   }),
-  lastName: z.string().min(1, {
-    message: "Last name is required",
-  }),
-  companyName: z.string().min(1, {
-    message: "Company name is required",
-  }),
-  title: z.string().min(1, {
-    message: "Title is required",
-  }).optional(),
-  incorporationType: z.string().min(1, {
-    message: "Incorporation type is required",
-  }),
-  incorporationDate: z.string().min(1, {
-    message: "Incorporation date is required",
-  }),
-  incorporationCountry: z.string().min(1, {
-    message: "Incorporation country is required",
-  }),
-  incorporationState: z.string().min(1, {
-    message: "Incorporation state is required",
-  }),
-  streetAddress: z.string().min(1, {
-    message: "Street address is required",
-  }),
-  city: z.string().min(1, {
-    message: "City is required",
-  }),
-  state: z.string().min(1, {
-    message: "State is required",
-  }),
-  zipcode: z.string().min(1, {
-    message: "Zipcode is required",
+  company: z.object({
+    incorporationType: z.string().min(1, {
+      message: "Incorporation type is required",
+    }),
+    incorporationDate: z.string().min(1, {
+      message: "Incorporation date is required",
+    }),
+    incorporationCountry: z.string().min(1, {
+      message: "Incorporation country is required",
+    }),
+    incorporationState: z.string().min(1, {
+      message: "Incorporation state is required",
+    }),
+    streetAddress: z.string().min(1, {
+      message: "Street address is required",
+    }),
+    city: z.string().min(1, {
+      message: "City is required",
+    }),
+    state: z.string().min(1, {
+      message: "State is required",
+    }),
+    zipcode: z.string().min(1, {
+      message: "Zipcode is required",
+    }),
   }),
 });
 
@@ -59,18 +63,22 @@ const OnboardingCompany = () => {
   const form = useForm<z.infer<typeof onboardingSchema>>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      companyName: "",
-      title: "",
-      incorporationType: "",
-      incorporationDate: "",
-      incorporationCountry: "",
-      incorporationState: "",
-      streetAddress: "",
-      city: "",
-      state: "",
-      zipcode: "",
+      user: {
+        firstName: "",
+        lastName: "",
+        companyName: "",
+        title: "",
+      },
+      company: {
+        incorporationType: "",
+        incorporationDate: "",
+        incorporationCountry: "",
+        incorporationState: "",
+        streetAddress: "",
+        city: "",
+        state: "",
+        zipcode: "",
+      }
     },
   });
 
@@ -98,7 +106,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="user.firstName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>First Name</FormLabel>
@@ -112,7 +120,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="lastName"
+                    name="user.lastName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Last Name</FormLabel>
@@ -128,7 +136,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="companyName"
+                    name="user.companyName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Company Name</FormLabel>
@@ -142,7 +150,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="title"
+                    name="user.title"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Title</FormLabel>
@@ -167,7 +175,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="incorporationType"
+                    name="company.incorporationType"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Incorporation Type</FormLabel>
@@ -181,7 +189,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="incorporationDate"
+                    name="company.incorporationDate"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Incorporation Date</FormLabel>
@@ -197,7 +205,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="incorporationCountry"
+                    name="company.incorporationCountry"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Incorporation Country</FormLabel>
@@ -211,7 +219,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="incorporationState"
+                    name="company.incorporationState"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Incorporation State</FormLabel>
@@ -235,7 +243,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="streetAddress"
+                    name="company.streetAddress"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Street Address</FormLabel>
@@ -249,7 +257,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="city"
+                    name="company.city"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>City</FormLabel>
@@ -265,7 +273,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="state"
+                    name="company.state"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>State</FormLabel>
@@ -279,7 +287,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="zipcode"
+                    name="company.zipcode"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Zipcode</FormLabel>

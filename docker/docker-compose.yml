@@ -1,0 +1,19 @@
+name: opencap
+services:
+  database:
+    image: postgres:15
+    container_name: opencap-database
+    environment:
+      - POSTGRES_USER=opencap
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=opencap
+    ports:
+      - 54321:5432
+
+  inbucket:
+    image: inbucket/inbucket
+    container_name: opencap-mailserver
+    ports:
+      - 9000:9000
+      - 2500:2500
+      - 1100:1100

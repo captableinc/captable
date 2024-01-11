@@ -59,7 +59,7 @@ export default function HomePage() {
         <h1>Your shares. Now private.</h1>
         <h2>Scale your cap table with confidence.</h2>
         <p className="mt-4 text-lg sm:mt-8">
-          For the builders and founders. We&apos;ll never use your data to sell to
+          For the builders and funders. We&apos;ll never use your data to sell
           secondaries.
         </p>
         <div className="flex items-center gap-2">

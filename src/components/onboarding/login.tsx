@@ -1,15 +1,49 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react"
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RiGoogleFill } from "@remixicon/react";
+import * as z from "zod"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
+const loginSchema = z.object({
+  email: z.string().email()
+})
 
 const LoginForm = () => {
-  const [loading, setLoading] = useState<boolean>(false)
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    setLoading(true);
+    const email = values.email;
+
+    await signIn("email", { email, callbackUrl: "/onboarding" });
+  };
+
+  async function signInWithGoogle() {
+    setLoading(true)
+    await signIn("google", { callbackUrl: "/onboarding" })
+    setLoading(false)
+  };
 
   return (
     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -23,37 +57,42 @@ const LoginForm = () => {
             Enter your email to login with a magic link
           </p>
         </div>
-          
 
-        <form onSubmit={
-          async (e) => {
-            e.preventDefault();
-            setLoading(true)
-            const email = (e.currentTarget.elements as any).email.value as string; // eslint-disable-line
-            await signIn("email", { email, callbackUrl: "/onboarding" })
-          }
-        } >
-          <div className="grid gap-2">
-            <div className="grid gap-1">
-              <Label className="sr-only" htmlFor="email">
-                Email
-              </Label>
-              <Input
-                id="email"
-                placeholder="name@example.com"
-                type="email"
-                autoCapitalize="none"
-                autoComplete="email"
-                autoCorrect="off"
-                required
-                disabled={loading}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid gap-2">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="grid gap-1">
+                      <FormLabel className="sr-only" htmlFor="email">Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="email"
+                          placeholder="name@example.com"
+                          type="email"
+                          autoCapitalize="none"
+                          autoComplete="email"
+                          autoCorrect="off"
+                          required
+                          disabled={loading}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
               />
+              <Button type="submit">
+                Login with Email
+              </Button>
             </div>
-            <Button >
-              Login with Email
-            </Button>
-          </div>
-        </form>
+          </form>
+        </Form>
+
         <div className="relative">
           <div className="absolute inset-0 flex items-center"><span className="w-full border-t"></span></div>
           <div className="relative flex justify-center text-xs uppercase">
@@ -63,13 +102,7 @@ const LoginForm = () => {
           </div>
         </div>
 
-        <Button variant="outline" type="button" onClick={
-          async () => {
-            setLoading(true)
-            await signIn("google", { callbackUrl: "/onboarding" })
-            setLoading(false)
-          }
-        }>
+        <Button variant="outline" type="button" onClick={signInWithGoogle}>
           <RiGoogleFill className="mr-2 h-4 w-4" />
           Google
         </Button>

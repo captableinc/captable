@@ -57,7 +57,7 @@ export default function HomePage() {
           secondaries.
         </p>
         <div className="flex items-center gap-2">
-          <Dialog open={modalOpen}>
+          <Dialog open={modalOpen} onOpenChange={setModalOpen}>
             <DialogTrigger asChild>
               <Button
                 onClick={() => setModalOpen(true)}

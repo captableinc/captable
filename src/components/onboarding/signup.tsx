@@ -29,7 +29,7 @@ const SignupForm = () => {
             async (e) => {
               e.preventDefault();
               setLoading(true)
-              let email = (e.currentTarget.elements as any).email.value as string;
+              const email = (e.currentTarget.elements as any).email.value as string; // eslint-disable-line
               await signIn("email", { email, callbackUrl: "/onboarding" })
             }
           } >

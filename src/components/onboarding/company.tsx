@@ -85,7 +85,7 @@ const OnboardingCompany = () => {
                 Company Incorporation details
               </h2>
               <p className="text-sm text-muted-foreground -mt-5">
-                Please provide your company's incorporation details. Your certificate of incorporation will come in handy here.
+                Please provide your company{`'`}s incorporation details. Your certificate of incorporation will come in handy here.
               </p>
 
               <div className="grid grid-cols-2 gap-4">
@@ -145,7 +145,7 @@ const OnboardingCompany = () => {
                 Company address
               </h2>
               <p className="text-sm text-muted-foreground -mt-5">
-                Please provide your company's address.
+                Please provide your company{`'`}s address.
               </p>
 
               <div className="grid grid-cols-2 gap-4">

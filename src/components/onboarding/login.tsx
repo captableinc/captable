@@ -29,7 +29,7 @@ const LoginForm = () => {
           async (e) => {
             e.preventDefault();
             setLoading(true)
-            let email = (e.currentTarget.elements as any).email.value as string;
+            const email = (e.currentTarget.elements as any).email.value as string; // eslint-disable-line
             await signIn("email", { email, callbackUrl: "/onboarding" })
           }
         } >
@@ -75,7 +75,7 @@ const LoginForm = () => {
         </Button>
 
         <span className="text-gray-500 text-center text-sm">
-          Don't have an account? {" "}
+          Don{`'`}t have an account? {" "}
           <Link
             href="/signup"
             className="underline underline-offset-4 hover:text-primary "

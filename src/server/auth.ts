@@ -19,6 +19,7 @@ import { env } from "@/env";
 declare module "next-auth" {
   interface Session {
     user: {
+      id: string;
       isOnboarded: boolean;
     } & DefaultSession["user"];
   }
@@ -26,6 +27,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
+    id: string;
     isOnboarded: boolean;
   }
 }
@@ -36,13 +38,32 @@ declare module "next-auth/jwt" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
+    async jwt({ trigger, user: adapterUser, token }) {
+      if (trigger) {
+        const user = await db.user.findFirstOrThrow({
+          where: { id: adapterUser.id },
+          select: {
+            completedOnboarding: true,
+          },
+        });
+
+        token.isOnboarded = user.completedOnboarding;
+      }
+
+      return token;
+    },
     session({ session, token }) {
       session.user.isOnboarded = token.isOnboarded;
+
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+
       return session;
     },
   },
   adapter: PrismaAdapter(db),
-  secret: env.NEXTAUTH_SECRET ?? "secret",
+  secret: env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },

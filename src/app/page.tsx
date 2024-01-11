@@ -21,18 +21,20 @@ import founder1 from "@/assets/founder.png";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
+import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
   const [email, setEmail] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { handleSubmit } = useForm();
 
   const joinWaitlist = async () => {
+    setLoading(true);
     const response = await fetch(`/api/waitlist?email=${email}`);
 
     if (response.ok) {
-      setModalOpen(false);
       toast({
         title: "Signup successful",
         description:
@@ -44,6 +46,10 @@ export default function HomePage() {
         description: "Failed to join the waitlist. Please try again later.",
       });
     }
+
+    setLoading(false);
+    setModalOpen(false);
+    setEmail("");
   };
 
   return (
@@ -91,7 +97,16 @@ export default function HomePage() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Join the waitlist</Button>
+                  <Button type="submit">
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="ml-2">Joining...</span>
+                      </>
+                    ) : (
+                      "Join the waitlist"
+                    )}
+                  </Button>
                 </DialogFooter>
               </form>
             </DialogContent>

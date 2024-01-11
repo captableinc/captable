@@ -24,6 +24,28 @@ const formSchema = ZOnboardMutationSchema;
 const OnboardingCompany = () => {
   const form = useForm<TOnboardMutationSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      company: {
+        address: {
+          city: "",
+          state: "",
+          streetAddress: "",
+          zipCode: "",
+        },
+        incorporation: {
+          country: "",
+          date: "",
+          state: "",
+          type: "",
+        },
+      },
+      user: {
+        companyName: "",
+        firstName: "",
+        lastName: "",
+        title: "",
+      },
+    },
   });
 
   const mutation = api.onboarding.onboard.useMutation();

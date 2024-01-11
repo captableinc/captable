@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,19 +18,43 @@ import {
 } from "@/components/ui/form"
 
 const onboardingSchema = z.object({
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
-  companyName: z.string().min(2),
-  title: z.string().min(2),
-  incorporationType: z.string().min(2),
-  incorporationDate: z.string().min(2),
-  incorporationCountry: z.string().min(2),
-  incorporationState: z.string().min(2),
-  streetAddress: z.string().min(2),
-  city: z.string().min(2),
-  state: z.string().min(2),
-  zipcode: z.string().min(2),
-})
+  firstName: z.string().min(1, {
+    message: "First name is required",
+  }),
+  lastName: z.string().min(1, {
+    message: "Last name is required",
+  }),
+  companyName: z.string().min(1, {
+    message: "Company name is required",
+  }),
+  title: z.string().min(1, {
+    message: "Title is required",
+  }).optional(),
+  incorporationType: z.string().min(1, {
+    message: "Incorporation type is required",
+  }),
+  incorporationDate: z.string().min(1, {
+    message: "Incorporation date is required",
+  }),
+  incorporationCountry: z.string().min(1, {
+    message: "Incorporation country is required",
+  }),
+  incorporationState: z.string().min(1, {
+    message: "Incorporation state is required",
+  }),
+  streetAddress: z.string().min(1, {
+    message: "Street address is required",
+  }),
+  city: z.string().min(1, {
+    message: "City is required",
+  }),
+  state: z.string().min(1, {
+    message: "State is required",
+  }),
+  zipcode: z.string().min(1, {
+    message: "Zipcode is required",
+  }),
+});
 
 const OnboardingCompany = () => {
   const form = useForm<z.infer<typeof onboardingSchema>>({
@@ -50,11 +73,11 @@ const OnboardingCompany = () => {
       state: "",
       zipcode: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof onboardingSchema>) {
-    console.log(values)
-  }
+    alert(JSON.stringify(values, null, 2))
+  };
 
   return (
     <div className="min-h-screen flex  justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100 pt-20 pb-5 px-5">
@@ -270,7 +293,7 @@ const OnboardingCompany = () => {
                   />
                 </div>
               </div>
-              <Button type="submit">Complete Setup</Button>
+              <Button type="submit" className="mt-5">Complete Setup</Button>
             </div>
           </form>
         </Form>

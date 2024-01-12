@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  TrpcOnboardMutationSchema,
-  type TOnboardMutationSchema,
+  ZodOnboardingMutationSchema,
+  type TypeZodOnboardingMutationSchema,
 } from "@/server/onboarding-router/schema";
 import { useForm } from "react-hook-form";
 import {
@@ -19,10 +19,10 @@ import {
 } from "../ui/form";
 import { api } from "@/trpc/react";
 
-const formSchema = TrpcOnboardMutationSchema;
+const formSchema = ZodOnboardingMutationSchema;
 
 const OnboardingCompany = () => {
-  const form = useForm<TOnboardMutationSchema>({
+  const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       user: {
@@ -47,7 +47,7 @@ const OnboardingCompany = () => {
   const mutation = api.onboarding.onboard.useMutation();
 
   // 2. Define a submit handler.
-  function onSubmit(values: TOnboardMutationSchema) {
+  function onSubmit(values: TypeZodOnboardingMutationSchema) {
     mutation.mutate(values);
   }
   return (

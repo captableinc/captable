@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const TrpcOnboardMutationSchema = z.object({
+export const ZodOnboardingMutationSchema = z.object({
   user: z.object({
     firstName: z.string().min(1, {
       message: "First name is required",
@@ -46,4 +46,6 @@ export const TrpcOnboardMutationSchema = z.object({
   }),
 });
 
-export type TOnboardMutationSchema = z.infer<typeof TrpcOnboardMutationSchema>;
+export type TypeZodOnboardingMutationSchema = z.infer<
+  typeof ZodOnboardingMutationSchema
+>;

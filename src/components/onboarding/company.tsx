@@ -4,8 +4,8 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import {
   Form,
@@ -14,7 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 
 const onboardingSchema = z.object({
   user: z.object({
@@ -27,9 +27,12 @@ const onboardingSchema = z.object({
     companyName: z.string().min(1, {
       message: "Company name is required",
     }),
-    title: z.string().min(1, {
-      message: "Title is required",
-    }).optional(),
+    title: z
+      .string()
+      .min(1, {
+        message: "Title is required",
+      })
+      .optional(),
   }),
   company: z.object({
     incorporationType: z.string().min(1, {
@@ -78,18 +81,18 @@ const OnboardingCompany = () => {
         city: "",
         state: "",
         zipcode: "",
-      }
+      },
     },
   });
 
   function onSubmit(values: z.infer<typeof onboardingSchema>) {
-    alert(JSON.stringify(values, null, 2))
-  };
+    alert(JSON.stringify(values, null, 2));
+  }
 
   return (
-    <div className="min-h-screen flex  justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100 pt-20 pb-5 px-5">
+    <div className="flex min-h-screen  justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100 px-5 pb-5 pt-20">
       <Navbar />
-      <div className="max-w-2xl w-full p-10 border border-rounded bg-white shadow">
+      <div className="border-rounded w-full max-w-2xl border bg-white p-10 shadow">
         <div className="mb-5">
           <h1 className="text-2xl font-semibold tracking-tight">
             Welcome to OpenCap!
@@ -165,11 +168,10 @@ const OnboardingCompany = () => {
 
                 <hr />
 
-                <h2 className="text-xl">
-                  Company Incorporation details
-                </h2>
-                <p className="text-sm text-muted-foreground -mt-5">
-                  Please provide your company{`'`}s incorporation details. Your certificate of incorporation will come in handy here.
+                <h2 className="text-xl">Company Incorporation details</h2>
+                <p className="-mt-5 text-sm text-muted-foreground">
+                  Please provide your company{`'`}s incorporation details. Your
+                  certificate of incorporation will come in handy here.
                 </p>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -233,10 +235,8 @@ const OnboardingCompany = () => {
                 </div>
 
                 {/*  */}
-                <h2 className="text-xl">
-                  Company Address
-                </h2>
-                <p className="text-sm text-muted-foreground -mt-5">
+                <h2 className="text-xl">Company Address</h2>
+                <p className="-mt-5 text-sm text-muted-foreground">
                   Please provide your company{`'`}s address.
                 </p>
 
@@ -300,13 +300,15 @@ const OnboardingCompany = () => {
                   />
                 </div>
               </div>
-              <Button type="submit" className="mt-5">Complete Setup</Button>
+              <Button type="submit" className="mt-5">
+                Complete Setup
+              </Button>
             </div>
           </form>
         </Form>
       </div>
     </div>
-  )
+  );
 };
 
 export default OnboardingCompany;

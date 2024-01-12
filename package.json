@@ -12,14 +12,17 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@headlessui/react": "^1.7.18",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@prisma/client": "^5.6.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
     "@remixicon/react": "^4.0.1",

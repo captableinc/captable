@@ -1,8 +1,8 @@
 "use client";
-import Link from 'next/link'
-import { Fragment, useState } from 'react'
-import { usePathname } from 'next/navigation'
-import { Dialog, Menu, Transition } from '@headlessui/react'
+import Link from "next/link";
+import { Fragment, useState } from "react";
+import { usePathname } from "next/navigation";
+import { Dialog, Menu, Transition } from "@headlessui/react";
 
 import {
   RiHome4Line,
@@ -20,7 +20,7 @@ import {
   RiArrowDownSLine,
   RiListOrdered2,
   RiFolderShield2Line,
-} from '@remixicon/react';
+} from "@remixicon/react";
 
 import {
   Select,
@@ -28,32 +28,45 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 const navigation = [
-  { name: 'Home', href: '/dashboard', icon: RiHome4Line },
-  { name: 'Team', href: '/dashboard/team', icon: RiUserHeartLine },
-  { name: 'SAFEs', href: '/dashboard/safe', icon: RiSafeLine },
-  { name: 'Cap table', href: '/dashboard/captable', icon: RiPieChartLine },
-  { name: 'Securities', href: '/dashboard/securities', icon: RiFolderShield2Line },
-  { name: 'Stakeholders', href: '/dashboard/stakeholders', icon: RiUserSettingsLine },
-  { name: 'Documents', href: '/dashboard/documents', icon: RiFolder5Line },
-  { name: 'Reports', href: '/dashboard/reports', icon: RiFolderChartLine },
-  { name: 'Audits', href: '/dashboard/audits', icon: RiListOrdered2 },
-]
+  { name: "Home", href: "/dashboard", icon: RiHome4Line },
+  { name: "Team", href: "/dashboard/team", icon: RiUserHeartLine },
+  { name: "SAFEs", href: "/dashboard/safe", icon: RiSafeLine },
+  { name: "Cap table", href: "/dashboard/captable", icon: RiPieChartLine },
+  {
+    name: "Securities",
+    href: "/dashboard/securities",
+    icon: RiFolderShield2Line,
+  },
+  {
+    name: "Stakeholders",
+    href: "/dashboard/stakeholders",
+    icon: RiUserSettingsLine,
+  },
+  { name: "Documents", href: "/dashboard/documents", icon: RiFolder5Line },
+  { name: "Reports", href: "/dashboard/reports", icon: RiFolderChartLine },
+  { name: "Audits", href: "/dashboard/audits", icon: RiListOrdered2 },
+];
 
 const forms = [
-  { id: 1, name: '409A Valuation', href: '/dashboard/409a', icon: RiFileList2Line },
-  { id: 2, name: 'Form 3921', href: '/dashboard/3921', icon: RiFileList2Line },
-]
+  {
+    id: 1,
+    name: "409A Valuation",
+    href: "/dashboard/409a",
+    icon: RiFileList2Line,
+  },
+  { id: 2, name: "Form 3921", href: "/dashboard/3921", icon: RiFileList2Line },
+];
 const userNavigation = [
-  { name: 'Your profile', href: '#' },
+  { name: "Your profile", href: "#" },
 
-  { name: 'Sign out', href: '#' },
-]
+  { name: "Sign out", href: "#" },
+];
 
-import { cn } from "@/lib/utils"
-import { OpenCapLogo } from '@/components/logo';
+import { cn } from "@/lib/utils";
+import { OpenCapLogo } from "@/components/logo";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
@@ -61,13 +74,17 @@ type DashboardLayoutProps = {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const currentPath = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     // <div className="bg-[#fafafa]">
     <div className="bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
       <Transition.Root show={sidebarOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
+        <Dialog
+          as="div"
+          className="relative z-50 lg:hidden"
+          onClose={setSidebarOpen}
+        >
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -101,9 +118,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                   leaveTo="opacity-0"
                 >
                   <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
-                    <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
+                    <button
+                      type="button"
+                      className="-m-2.5 p-2.5"
+                      onClick={() => setSidebarOpen(false)}
+                    >
                       <span className="sr-only">Close sidebar</span>
-                      <RiCloseLine className="h-6 w-6 text-white" aria-hidden="true" />
+                      <RiCloseLine
+                        className="h-6 w-6 text-white"
+                        aria-hidden="true"
+                      />
                     </button>
                   </div>
                 </Transition.Child>
@@ -122,15 +146,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                 href={item.href}
                                 className={cn(
                                   currentPath === item.href
-                                    ? 'bg-gray-50 text-primary font-semibold'
-                                    : 'text-gray-700 hover:text-primary hover:bg-gray-50',
-                                  'group flex gap-x-3 rounded-md p-2 text-sm leading-6'
+                                    ? "bg-gray-50 font-semibold text-primary"
+                                    : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6",
                                 )}
                               >
                                 <item.icon
                                   className={cn(
-                                    currentPath === item.href ? 'text-primary' : 'text-gray-400 group-hover:text-primary',
-                                    'h-6 w-6 shrink-0'
+                                    currentPath === item.href
+                                      ? "text-primary"
+                                      : "text-gray-400 group-hover:text-primary",
+                                    "h-6 w-6 shrink-0",
                                   )}
                                   aria-hidden="true"
                                 />
@@ -142,7 +168,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                       </li>
 
                       <li>
-                        <div className="text-xs font-semibold leading-6 text-gray-400">Legal</div>
+                        <div className="text-xs font-semibold leading-6 text-gray-400">
+                          Legal
+                        </div>
                         <ul role="list" className="-mx-2 mt-2 space-y-1">
                           {forms.map((form) => (
                             <li key={form.name}>
@@ -150,15 +178,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                                 href={form.href}
                                 className={cn(
                                   currentPath === form.href
-                                    ? 'bg-gray-50 text-primary'
-                                    : 'text-gray-700 hover:text-primary hover:bg-gray-50 font-semibold',
-                                  'group flex gap-x-3 rounded-md p-2 text-sm leading-6'
+                                    ? "bg-gray-50 text-primary"
+                                    : "font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6",
                                 )}
                               >
                                 <form.icon
                                   className={cn(
-                                    currentPath === form.href ? 'text-primary' : 'text-gray-400 group-hover:text-primary',
-                                    'h-6 w-6 shrink-0'
+                                    currentPath === form.href
+                                      ? "text-primary"
+                                      : "text-gray-400 group-hover:text-primary",
+                                    "h-6 w-6 shrink-0",
                                   )}
                                   aria-hidden="true"
                                 />
@@ -197,7 +227,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <OpenCapLogo className="h-7 w-auto" />
 
             <Select>
-              <SelectTrigger className="w-[180px] h-8 rounded ml-3 border-none text-md font-semibold">
+              <SelectTrigger className="text-md ml-3 h-8 w-[180px] rounded border-none font-semibold">
                 <SelectValue placeholder="Acme Inc." />
               </SelectTrigger>
               <SelectContent>
@@ -218,15 +248,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                         href={item.href}
                         className={cn(
                           currentPath === item.href
-                            ? 'bg-gray-50 text-primary font-semibold'
-                            : 'text-gray-700 hover:text-primary hover:bg-gray-50',
-                          'group flex gap-x-3 rounded-md p-2 text-sm leading-6'
+                            ? "bg-gray-50 font-semibold text-primary"
+                            : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6",
                         )}
                       >
                         <item.icon
                           className={cn(
-                            currentPath === item.href ? 'text-primary' : 'text-gray-400 group-hover:text-primary',
-                            'h-6 w-6 shrink-0'
+                            currentPath === item.href
+                              ? "text-primary"
+                              : "text-gray-400 group-hover:text-primary",
+                            "h-6 w-6 shrink-0",
                           )}
                           aria-hidden="true"
                         />
@@ -237,7 +269,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </ul>
               </li>
               <li>
-                <div className="text-xs font-semibold leading-6 text-gray-400">Legal</div>
+                <div className="text-xs font-semibold leading-6 text-gray-400">
+                  Legal
+                </div>
                 <ul role="list" className="-mx-2 mt-2 space-y-1">
                   {forms.map((form) => (
                     <li key={form.name}>
@@ -245,15 +279,17 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                         href={form.href}
                         className={cn(
                           currentPath === form.href
-                            ? 'bg-gray-50 text-primary font-semibold'
-                            : 'text-gray-700 hover:text-primary hover:bg-gray-50',
-                          'group flex gap-x-3 rounded-md p-2 text-sm leading-6'
+                            ? "bg-gray-50 font-semibold text-primary"
+                            : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6",
                         )}
                       >
                         <form.icon
                           className={cn(
-                            currentPath === form.href ? 'text-primary' : 'text-gray-400 group-hover:text-primary',
-                            'h-6 w-6 shrink-0'
+                            currentPath === form.href
+                              ? "text-primary"
+                              : "text-gray-400 group-hover:text-primary",
+                            "h-6 w-6 shrink-0",
                           )}
                           aria-hidden="true"
                         />
@@ -281,8 +317,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </div>
 
       <div className="lg:pl-72 ">
-        <div className="sticky top-0 z-40 w-full border-gray-200 bg-white border-b shadow-sm lg:shadow-none">
-          <div className="lg:px-4 flex h-16 lg:mx-auto lg:max-w-7xl items-center gap-x-4 px-4 sm:gap-x-6">
+        <div className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white shadow-sm lg:shadow-none">
+          <div className="flex h-16 items-center gap-x-4 px-4 sm:gap-x-6 lg:mx-auto lg:max-w-7xl lg:px-4">
             <button
               type="button"
               className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
@@ -293,18 +329,27 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </button>
 
             {/* Separator */}
-            <div className="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
+            <div
+              className="h-6 w-px bg-gray-200 lg:hidden"
+              aria-hidden="true"
+            />
 
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <div className="relative flex flex-1"></div>
               <div className="flex items-center gap-x-4 lg:gap-x-6">
-                <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                <button
+                  type="button"
+                  className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
+                >
                   <span className="sr-only">View notifications</span>
                   <RiNotification3Line className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Separator */}
-                <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
+                <div
+                  className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200"
+                  aria-hidden="true"
+                />
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
@@ -316,10 +361,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                       alt=""
                     />
                     <span className="hidden lg:flex lg:items-center">
-                      <span className="ml-4 text-sm leading-6 text-primary" aria-hidden="true">
+                      <span
+                        className="ml-4 text-sm leading-6 text-primary"
+                        aria-hidden="true"
+                      >
                         Mary Lopez
                       </span>
-                      <RiArrowDownSLine className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+                      <RiArrowDownSLine
+                        className="ml-2 h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
                     </span>
                   </Menu.Button>
                   <Transition
@@ -338,8 +389,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                             <Link
                               href={item.href}
                               className={cn(
-                                active ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-primary'
+                                active ? "bg-gray-50" : "",
+                                "block px-3 py-1 text-sm leading-6 text-primary",
                               )}
                             >
                               {item.name}
@@ -355,8 +406,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           </div>
         </div>
 
-        <main className="min-h-screen m-5">
-          <div className="mx-auto max-w-7xl p-2 sm:p-4 lg:p-5 m-5 bg-white border rounded shadow-sm">
+        <main className="m-5 min-h-screen">
+          <div className="m-5 mx-auto max-w-7xl rounded border bg-white p-2 shadow-sm sm:p-4 lg:p-5">
             {children}
           </div>
         </main>

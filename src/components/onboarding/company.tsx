@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ZOnboardMutationSchema,
+  TrpcOnboardMutationSchema,
   type TOnboardMutationSchema,
 } from "@/server/onboarding-router/schema";
 import { useForm } from "react-hook-form";
@@ -19,31 +19,27 @@ import {
 } from "../ui/form";
 import { api } from "@/trpc/react";
 
-const formSchema = ZOnboardMutationSchema;
+const formSchema = TrpcOnboardMutationSchema;
 
 const OnboardingCompany = () => {
   const form = useForm<TOnboardMutationSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: {
-        address: {
-          city: "",
-          state: "",
-          streetAddress: "",
-          zipCode: "",
-        },
-        incorporation: {
-          country: "",
-          date: "",
-          state: "",
-          type: "",
-        },
-      },
       user: {
-        companyName: "",
         firstName: "",
         lastName: "",
         title: "",
+      },
+      company: {
+        name: "",
+        incorporationType: "",
+        incorporationDate: "",
+        incorporationCountry: "",
+        incorporationState: "",
+        streetAddress: "",
+        city: "",
+        state: "",
+        zipcode: "",
       },
     },
   });
@@ -68,7 +64,7 @@ const OnboardingCompany = () => {
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid gap-2">
               <div className="grid gap-5">
                 <div className="grid grid-cols-2 gap-4">
@@ -77,11 +73,10 @@ const OnboardingCompany = () => {
                     name="user.firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First name</FormLabel>
+                        <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -92,11 +87,10 @@ const OnboardingCompany = () => {
                     name="user.lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last name</FormLabel>
+                        <FormLabel>Last Name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -106,14 +100,13 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="user.companyName"
+                    name="company.name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Company name</FormLabel>
+                        <FormLabel>Company Name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -124,11 +117,10 @@ const OnboardingCompany = () => {
                     name="user.title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Your title</FormLabel>
+                        <FormLabel>Title</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -146,14 +138,13 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="company.incorporation.type"
+                    name="company.incorporationType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation type</FormLabel>
+                        <FormLabel>Incorporation Type</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -161,14 +152,13 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="company.incorporation.date"
+                    name="company.incorporationDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation date</FormLabel>
+                        <FormLabel>Incorporation Date</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -178,14 +168,13 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="company.incorporation.country"
+                    name="company.incorporationCountry"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation country</FormLabel>
+                        <FormLabel>Incorporation Country</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -193,14 +182,13 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="company.incorporation.state"
+                    name="company.incorporationState"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation state</FormLabel>
+                        <FormLabel>Incorporation State</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -208,7 +196,7 @@ const OnboardingCompany = () => {
                 </div>
 
                 {/*  */}
-                <h2 className="text-xl">Company address</h2>
+                <h2 className="text-xl">Company Address</h2>
                 <p className="-mt-5 text-sm text-muted-foreground">
                   Please provide your company{`'`}s address.
                 </p>
@@ -216,14 +204,13 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="company.address.streetAddress"
+                    name="company.streetAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Street address</FormLabel>
+                        <FormLabel>Street Address</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-
                         <FormMessage />
                       </FormItem>
                     )}
@@ -231,7 +218,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="company.address.city"
+                    name="company.city"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>City</FormLabel>
@@ -247,7 +234,7 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="company.address.state"
+                    name="company.state"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>State</FormLabel>
@@ -261,7 +248,7 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="company.address.zipCode"
+                    name="company.zipcode"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Zipcode</FormLabel>
@@ -274,8 +261,9 @@ const OnboardingCompany = () => {
                   />
                 </div>
               </div>
-
-              <Button type="submit">Complete setup</Button>
+              <Button type="submit" className="mt-5">
+                Complete Setup
+              </Button>
             </div>
           </form>
         </Form>

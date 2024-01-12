@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ZodOnboardingMutationSchema,
   type TypeZodOnboardingMutationSchema,
-} from "@/server/onboarding-router/schema";
+} from "@/trpc/routers/onboarding-router/schema";
 import { useForm } from "react-hook-form";
 import {
   Form,

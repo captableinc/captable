@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "../api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "./schema";
 
 export const onboardingRouter = createTRPCRouter({

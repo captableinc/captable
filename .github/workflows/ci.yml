@@ -19,3 +19,5 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          SKIP_ENV_VALIDATION: "1"

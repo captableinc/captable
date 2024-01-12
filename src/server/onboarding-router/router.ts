@@ -1,9 +1,9 @@
 import { createTRPCRouter, protectedProcedure } from "../api/trpc";
-import { ZOnboardMutationSchema } from "./schema";
+import { ZodOnboardingMutationSchema } from "./schema";
 
 export const onboardingRouter = createTRPCRouter({
   onboard: protectedProcedure
-    .input(ZOnboardMutationSchema)
+    .input(ZodOnboardingMutationSchema)
     .mutation(({ ctx, input }) => {
       return;
     }),

@@ -3,7 +3,7 @@
 const path = require("path");
 
 const buildEslintCommand = (filenames) =>
-  `SKIP_ENV_VALIDATION=true next lint --fix --file ${filenames
+  `next lint --fix --file ${filenames
     .map((f) => path.relative(process.cwd(), f))
     .join(" --file ")}`;
 

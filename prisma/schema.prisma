@@ -104,7 +104,7 @@ model Member {
   org   Org?    @relation(fields: [orgId], references: [id])
 
   roleId Int
-  role   Role? @relation(fields: [roleId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
 
   @@unique([userId, orgId, invitedEmail])
   @@index([orgId])

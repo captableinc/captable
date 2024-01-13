@@ -13,7 +13,7 @@ import {
   Tailwind,
 } from "jsx-email";
 
-interface MemberInviteUserEmailProps {
+interface MemberInviteEmailProps {
   username: string;
   invitedByUsername: string;
   invitedByEmail: string;
@@ -21,13 +21,13 @@ interface MemberInviteUserEmailProps {
   inviteLink: string;
 }
 
-export const MemberInviteUserEmail = ({
+export const MemberInviteEmail = ({
   username,
   invitedByUsername,
   invitedByEmail,
   teamName,
   inviteLink,
-}: MemberInviteUserEmailProps) => {
+}: MemberInviteEmailProps) => {
   const previewText = `Join ${invitedByUsername} on OpenCap`;
 
   return (
@@ -78,12 +78,12 @@ export const MemberInviteUserEmail = ({
   );
 };
 
-MemberInviteUserEmail.PreviewProps = {
+MemberInviteEmail.PreviewProps = {
   username: "batman",
   invitedByUsername: "joker",
   invitedByEmail: "joker@arkham.com",
   teamName: "Batmobile",
   inviteLink: "https://opencap.co/teams/invite/foo",
-} as MemberInviteUserEmailProps;
+} as MemberInviteEmailProps;
 
-export default MemberInviteUserEmail;
+export default MemberInviteEmail;

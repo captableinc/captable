@@ -5,6 +5,8 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
 import { constants } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
+import { NextAuthProvider } from "@/providers/next-auth";
+import { getServerAuthSession } from "@/server/auth";
 
 export const metadata: Metadata = {
   title: "OpenCap",
@@ -14,18 +16,22 @@ export const metadata: Metadata = {
   metadataBase: new URL(constants.url),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerAuthSession();
+
   return (
     <html lang="en">
       <body>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          <main>{children}</main>
-          <Toaster />
-        </TRPCReactProvider>
+        <NextAuthProvider session={session}>
+          <TRPCReactProvider cookies={cookies().toString()}>
+            <main>{children}</main>
+            <Toaster />
+          </TRPCReactProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );

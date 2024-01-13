@@ -2,9 +2,10 @@
 import React, { useCallback } from "react";
 import { useDropzone, type FileWithPath } from "react-dropzone";
 import { Button } from "./button";
+import { getFileSizeSuffix } from "@/lib/utils";
 
 type uploadProps = {
-  uploadType: "avatar" | "companyLogo" | "incorporationDocument";
+  uploadType?: "avatar" | "companyLogo" | "incorporationDocument";
 };
 
 function Uploader({ uploadType }: uploadProps) {
@@ -23,7 +24,7 @@ function Uploader({ uploadType }: uploadProps) {
   //Shows a list of files that have been accepted
   const files = acceptedFiles.map((file: FileWithPath) => (
     <li key={file.path}>
-      {file.path} - {file.size} bytes
+      {`${file.path} - ${file.size} ${getFileSizeSuffix(file.size)}`}
     </li>
   ));
 
@@ -34,8 +35,8 @@ function Uploader({ uploadType }: uploadProps) {
         className="flex w-full flex-col items-center justify-center  rounded-md border border-dashed border-border px-5 py-10"
       >
         <input {...getInputProps()} />
-        <p className="text-center text-[#777777]">
-          Drag and drop some files here, or click the button to select files
+        <p className="text-center text-neutral-500">
+          Drop files here or click to select
         </p>
         <Button onClick={open} variant={"default"} className="mt-5">
           Select file

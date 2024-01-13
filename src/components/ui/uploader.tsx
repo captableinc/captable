@@ -1,13 +1,23 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import { useDropzone, type FileWithPath } from "react-dropzone";
 import { Button } from "./button";
 
-function Uploader() {
+type uploadProps = {
+  uploadType: "avatar" | "companyLogo" | "incorporationDocument";
+};
+
+function Uploader({ uploadType }: uploadProps) {
+  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+    // Do something with the files
+    console.log(acceptedFiles, uploadType);
+  }, []);
+
   const { acceptedFiles, getRootProps, getInputProps, open } = useDropzone({
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
+    onDrop,
   });
 
   //Shows a list of files that have been accepted

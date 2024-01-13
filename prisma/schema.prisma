@@ -1,17 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -22,17 +15,17 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -46,20 +39,20 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  orgs          Member[]
+  companys      Membership[]
 }
 
 model WaitlistUser {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  createdAt     DateTime  @default(now())
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
 }
 
 model VerificationToken {
@@ -70,34 +63,53 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Org {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  users     Member[]
+model Company {
+  id   String @id @default(cuid())
+  name String
+
+  incorporationType    String
+  incorporationDate    DateTime
+  incorporationCountry String
+  incorporationState   String
+
+  streetAddress String
+  city          String
+  state         String
+  zipcode       String
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  users     Membership[]
 }
 
-enum AccessEnum {
+enum MEMBERHIP_STATUS {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum MEMBERSHIP_ACCESS {
   READ
   WRITE
   ADMIN
 }
 
-model Member {
-  id        String   @id @default(cuid())
-  title     String?
-  access    AccessEnum @default(READ)
-  active    Boolean  @default(true)
+model Membership {
+  id     String            @id @default(cuid())
+  title  String?
+  active Boolean           @default(true)
+  status MEMBERHIP_STATUS  @default(PENDING)
+  access MEMBERSHIP_ACCESS @default(READ)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
 
-  orgId     String?
-  org       Org?     @relation(fields: [orgId], references: [id])
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
-  @@index([orgId])
-  @@unique([userId, orgId])
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+
+  @@unique([userId, companyId])
+  @@index([companyId])
 }

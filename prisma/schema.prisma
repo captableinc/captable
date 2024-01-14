@@ -95,20 +95,22 @@ enum MEMBERSHIP_ACCESS {
 }
 
 model Membership {
-  id     String            @id @default(cuid())
-  title  String?
-  active Boolean           @default(true)
-  status MEMBERHIP_STATUS  @default(PENDING)
-  access MEMBERSHIP_ACCESS @default(READ)
+  id          String            @id @default(cuid())
+  title       String?
+  active      Boolean           @default(true)
+  status      MEMBERHIP_STATUS  @default(PENDING)
+  access      MEMBERSHIP_ACCESS @default(READ)
+  isOnboarded Boolean           @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  lastAccessed DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
-  companyId String?
-  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
 
   @@unique([userId, companyId])
   @@index([companyId])

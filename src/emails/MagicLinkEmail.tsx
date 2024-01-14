@@ -32,7 +32,7 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
           <Section>
             <Section className="mb-[5px] mt-[10px] ">
               <Button
-                className="rounded bg-indigo-500 px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+                className="rounded bg-black px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={magicLink}
               >
                 Login

@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { render } from "jsx-email";
 import {
   getServerSession,
   type DefaultSession,
@@ -8,6 +9,9 @@ import {
 import EmailProvider from "next-auth/providers/email";
 
 import { db } from "@/server/db";
+import { env } from "@/env";
+import { sendMail } from "./mailer";
+import MagicLinkEmail from "@/emails/MagicLinkEmail";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -48,8 +52,23 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   providers: [
     EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+      sendVerificationRequest: async ({ identifier, url }) => {
+        if (env.NODE_ENV === "development") {
+          console.log(`🔑 Login link: ${url}`);
+        }
+
+        const html = await render(
+          MagicLinkEmail({
+            magicLink: url,
+          }),
+        );
+
+        await sendMail({
+          to: identifier,
+          subject: "Your OpenCap Login Link",
+          html,
+        });
+      },
     }),
     /**
      * ...add more providers here.

@@ -1,6 +1,19 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+// https://env.t3.gg/docs/recipes#booleans
+const COERCED_BOOLEAN = z
+  .string()
+  // transform to boolean using preferred coercion logic
+  .transform((s) => s !== "false" && s !== "0");
+
+const ONLY_BOOLEAN = z
+  .string()
+  // only allow "true" or "false"
+  .refine((s) => s === "true" || s === "false")
+  // transform to boolean
+  .transform((s) => s === "true");
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
@@ -28,8 +41,16 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url(),
     ),
-    EMAIL_SERVER: z.string(),
+    EMAIL_SERVER: z.string().optional(),
     EMAIL_FROM: z.string(),
+
+    /// smtp
+
+    EMAIL_SERVER_HOST: z.string(),
+    EMAIL_SERVER_PORT: z.coerce.number(),
+    EMAIL_SERVER_SECURE: COERCED_BOOLEAN,
+    EMAIL_SERVER_USERNAME: z.string().optional(),
+    EMAIL_SERVER_PASSWORD: z.string().optional(),
   },
 
   /**
@@ -52,6 +73,12 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
     EMAIL_FROM: process.env.EMAIL_FROM,
+
+    EMAIL_SERVER_HOST: process.env.EMAIL_SERVER_HOST,
+    EMAIL_SERVER_PORT: process.env.EMAIL_SERVER_PORT,
+    EMAIL_SERVER_SECURE: process.env.EMAIL_SERVER_SECURE,
+    EMAIL_SERVER_USERNAME: process.env.EMAIL_SERVER_USERNAME,
+    EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

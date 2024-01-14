@@ -38,7 +38,6 @@ export const MemberInviteEmail = ({
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] w-[465px] border-separate rounded border border-solid border-[#eaeaea] p-[20px]">
-            <Section className="mt-[32px]"></Section>
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
               Join <strong>{teamName}</strong> on{" "}
               <strong>{constants.title}</strong>
@@ -60,7 +59,7 @@ export const MemberInviteEmail = ({
 
             <Section className="mb-[32px] mt-[32px] text-center">
               <Button
-                className="rounded bg-[#000000] px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+                className="rounded bg-indigo-500 px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={inviteLink}
               >
                 Join the team
@@ -72,7 +71,14 @@ export const MemberInviteEmail = ({
                 {inviteLink}
               </Link>
             </Text>
+
             <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
+            <Link
+              href={constants.url}
+              className="text-sm !text-gray-400 no-underline"
+            >
+              {constants.title}
+            </Link>
           </Container>
         </Body>
       </Tailwind>

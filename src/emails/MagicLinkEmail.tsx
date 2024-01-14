@@ -10,6 +10,7 @@ import {
   Link,
   Preview,
   Section,
+  Tailwind,
   Text,
 } from "jsx-email";
 import * as React from "react";
@@ -22,26 +23,38 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
   <Html>
     <Head />
     <Preview>Your magic link for {constants.title}</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={heading}>Your magic link for {constants.title}</Heading>
-        <Section style={buttonContainer}>
-          <Button style={button} href={magicLink}>
-            Login
-          </Button>
-        </Section>
-        <Text style={paragraph}>
-          or copy and paste this URL into your browser:{" "}
-          <Link href={magicLink} style={reportLink}>
-            {magicLink}
+    <Tailwind>
+      <Body className="mx-auto my-auto bg-white font-sans">
+        <Container className="mx-auto my-[40px] w-[465px] border-separate rounded border border-solid border-[#eaeaea] p-[20px]">
+          <Heading className="mx-0 my-[30px] p-0  text-[24px] font-normal text-black">
+            Your magic link for {constants.title}
+          </Heading>
+          <Section>
+            <Section className="mb-[5px] mt-[10px] ">
+              <Button
+                className="rounded bg-indigo-500 px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
+                href={magicLink}
+              >
+                Login
+              </Button>
+            </Section>
+          </Section>
+          <Text className="!text-[14px] leading-[24px] text-black">
+            or copy and paste this URL into your browser:{" "}
+            <Link href={magicLink} className="text-blue-600 no-underline">
+              {magicLink}
+            </Link>
+          </Text>
+          <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
+          <Link
+            href={constants.url}
+            className="text-sm !text-gray-400 no-underline"
+          >
+            {constants.title}
           </Link>
-        </Text>
-        <Hr style={hr} />
-        <Link href={constants.url} style={reportLink}>
-          {constants.title}
-        </Link>
-      </Container>
-    </Body>
+        </Container>
+      </Body>
+    </Tailwind>
   </Html>
 );
 
@@ -50,57 +63,3 @@ MagicLinkEmail.PreviewProps = {
 } as MagicLinkEmailProps;
 
 export default MagicLinkEmail;
-
-const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-};
-
-const container = {
-  margin: "0 auto",
-  padding: "20px 0 48px",
-  width: "560px",
-};
-
-const heading = {
-  fontSize: "24px",
-  letterSpacing: "-0.5px",
-  lineHeight: "1.3",
-  fontWeight: "400",
-  color: "#484848",
-  padding: "17px 0 0",
-};
-
-const paragraph = {
-  margin: "0 0 15px",
-  fontSize: "15px",
-  lineHeight: "1.4",
-  color: "#3c4149",
-};
-
-const buttonContainer = {
-  padding: "27px 0 27px",
-};
-
-const button = {
-  backgroundColor: "#5e6ad2",
-  borderRadius: "3px",
-  fontWeight: "600",
-  color: "#fff",
-  fontSize: "15px",
-  textDecoration: "none",
-  textAlign: "center" as const,
-  display: "block",
-  padding: "11px 23px",
-};
-
-const reportLink = {
-  fontSize: "14px",
-  color: "#b4becc",
-};
-
-const hr = {
-  borderColor: "#dfe1e4",
-  margin: "42px 0 26px",
-};

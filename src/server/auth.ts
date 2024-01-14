@@ -23,15 +23,20 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      isOnboarded: boolean;
+      companyId: string;
+      membershipId: string;
     } & DefaultSession["user"];
   }
+}
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    isOnboarded: boolean;
+    companyId: string;
+    membershipId: string;
+  }
 }
 
 /**
@@ -41,15 +46,77 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session({ session, token }) {
+      session.user.isOnboarded = token.isOnboarded;
+      session.user.companyId = token.companyId;
+      session.user.membershipId = token.membershipId;
+
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+
+      return session;
+    },
+
+    async jwt({ token, trigger, user }) {
+      if (trigger && trigger !== "update") {
+        const membership = await db.membership.findFirst({
+          where: {
+            userId: user.id,
+            isOnboarded: true,
+          },
+          orderBy: {
+            lastAccessed: "desc",
+          },
+          select: {
+            id: true,
+            companyId: true,
+            isOnboarded: true,
+          },
+        });
+
+        if (membership) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          token.isOnboarded = membership.isOnboarded;
+          token.companyId = membership.companyId;
+          token.membershipId = membership.id;
+        } else {
+          token.isOnboarded = false;
+          token.companyId = "";
+          token.membershipId = "";
+        }
+      }
+
+      if (trigger === "update") {
+        const updatedSession = await db.membership.findFirstOrThrow({
+          where: {
+            userId: token.sub,
+            isOnboarded: true,
+          },
+          orderBy: {
+            lastAccessed: "desc",
+          },
+          select: {
+            id: true,
+            companyId: true,
+            isOnboarded: true,
+          },
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        token.isOnboarded = updatedSession.isOnboarded;
+        token.companyId = updatedSession.companyId;
+        token.membershipId = updatedSession.id;
+      }
+
+      return token;
+    },
   },
   adapter: PrismaAdapter(db),
+  secret: env.NEXTAUTH_SECRET ?? "secret",
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     EmailProvider({
       sendVerificationRequest: async ({ identifier, url }) => {

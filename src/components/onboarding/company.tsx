@@ -18,10 +18,15 @@ import {
   FormMessage,
 } from "../ui/form";
 import { api } from "@/trpc/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const formSchema = ZodOnboardingMutationSchema;
 
 const OnboardingCompany = () => {
+  const { update } = useSession();
+  const router = useRouter();
+
   const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,7 +49,13 @@ const OnboardingCompany = () => {
     },
   });
 
-  const mutation = api.onboarding.onboard.useMutation();
+  const mutation = api.onboarding.onboard.useMutation({
+    onSuccess: async () => {
+      await update();
+
+      router.push("/dashboard");
+    },
+  });
 
   // 2. Define a submit handler.
   function onSubmit(values: TypeZodOnboardingMutationSchema) {
@@ -157,7 +168,7 @@ const OnboardingCompany = () => {
                       <FormItem>
                         <FormLabel>Incorporation Date</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input type="date" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

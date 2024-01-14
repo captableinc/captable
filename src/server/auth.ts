@@ -58,37 +58,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, trigger, user }) {
-      if (trigger && trigger !== "update") {
+    async jwt({ token, trigger }) {
+      if (trigger) {
         const membership = await db.membership.findFirst({
-          where: {
-            userId: user.id,
-            isOnboarded: true,
-          },
-          orderBy: {
-            lastAccessed: "desc",
-          },
-          select: {
-            id: true,
-            companyId: true,
-            isOnboarded: true,
-          },
-        });
-
-        if (membership) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          token.isOnboarded = membership.isOnboarded;
-          token.companyId = membership.companyId;
-          token.membershipId = membership.id;
-        } else {
-          token.isOnboarded = false;
-          token.companyId = "";
-          token.membershipId = "";
-        }
-      }
-
-      if (trigger === "update") {
-        const updatedSession = await db.membership.findFirstOrThrow({
           where: {
             userId: token.sub,
             isOnboarded: true,
@@ -100,13 +72,25 @@ export const authOptions: NextAuthOptions = {
             id: true,
             companyId: true,
             isOnboarded: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        token.isOnboarded = updatedSession.isOnboarded;
-        token.companyId = updatedSession.companyId;
-        token.membershipId = updatedSession.id;
+        if (membership) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          token.isOnboarded = membership.isOnboarded;
+          token.companyId = membership.companyId;
+          token.membershipId = membership.id;
+          token.name = membership.user?.name;
+        } else {
+          token.isOnboarded = false;
+          token.companyId = "";
+          token.membershipId = "";
+        }
       }
 
       return token;

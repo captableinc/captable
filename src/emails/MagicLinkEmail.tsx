@@ -1,3 +1,4 @@
+import { constants } from "../lib/constants";
 import {
   Body,
   Button,
@@ -20,10 +21,10 @@ interface MagicLinkEmailProps {
 export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
   <Html>
     <Head />
-    <Preview>Your magic link for OpenCap</Preview>
+    <Preview>Your magic link for {constants.title}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={heading}>Your magic link for OpenCap</Heading>
+        <Heading style={heading}>Your magic link for {constants.title}</Heading>
         <Section style={buttonContainer}>
           <Button style={button} href={magicLink}>
             Login
@@ -36,8 +37,8 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
           </Link>
         </Text>
         <Hr style={hr} />
-        <Link href="https://opencap.co/" style={reportLink}>
-          OpenCap
+        <Link href={constants.url} style={reportLink}>
+          {constants.title}
         </Link>
       </Container>
     </Body>
@@ -45,7 +46,7 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
 );
 
 MagicLinkEmail.PreviewProps = {
-  magicLink: "https://opencap.co/",
+  magicLink: constants.url,
 } as MagicLinkEmailProps;
 
 export default MagicLinkEmail;

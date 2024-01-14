@@ -1,3 +1,4 @@
+import { constants } from "../lib/constants";
 import {
   Body,
   Button,
@@ -28,7 +29,7 @@ export const MemberInviteEmail = ({
   teamName,
   inviteLink,
 }: MemberInviteEmailProps) => {
-  const previewText = `Join ${invitedByUsername} on OpenCap`;
+  const previewText = `Join ${invitedByUsername} on ${constants.title}`;
 
   return (
     <Html>
@@ -39,7 +40,8 @@ export const MemberInviteEmail = ({
           <Container className="mx-auto my-[40px] w-[465px] border-separate rounded border border-solid border-[#eaeaea] p-[20px]">
             <Section className="mt-[32px]"></Section>
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Join <strong>{teamName}</strong> on <strong>OpenCap</strong>
+              Join <strong>{teamName}</strong> on{" "}
+              <strong>{constants.title}</strong>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
               Hello {username},

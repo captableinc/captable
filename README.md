@@ -31,7 +31,7 @@ npm i
 First, ensure Docker is running.
 
 ```sh
-npm run db:start
+npm run docker:start
 ```
 
 Generate tables and the Prisma client.

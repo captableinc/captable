@@ -7,7 +7,6 @@ import {
 } from "next-auth";
 
 import EmailProvider from "next-auth/providers/email";
-import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "@/server/db";
 import { env } from "@/env";
@@ -39,9 +38,6 @@ declare module "next-auth/jwt" {
     membershipId: string;
   }
 }
-
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -99,25 +95,6 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async signIn({ account, profile }) {
-      // Check to see if the user email was provided:
-      if (!profile?.email) {
-        throw new Error("No Profile Found");
-      }
-
-      await db.user.upsert({
-        where: {
-          email: profile.email,
-        },
-        create: {
-          email: profile.email,
-          name: profile.name,
-        },
-        update: { name: profile.name },
-      });
-
-      return true;
-    },
   },
   adapter: PrismaAdapter(db),
   secret: env.NEXTAUTH_SECRET ?? "secret",
@@ -153,10 +130,6 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
-    GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-    }),
   ],
 
   pages: {

@@ -6,6 +6,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { customId } from "@/common/id";
@@ -18,6 +19,7 @@ const endpoint = env.UPLOAD_ENDPOINT;
 const accessKeyId = env.UPLOAD_ACCESS_KEY_ID;
 const secretAccessKey = env.UPLOAD_SECRET_ACCESS_KEY;
 const hasCredentials = accessKeyId && secretAccessKey;
+const Bucket = env.UPLOAD_BUCKET;
 
 const S3 = new S3Client({
   region,
@@ -30,7 +32,7 @@ const S3 = new S3Client({
     : undefined,
 });
 
-interface getPresignedUrlOptions {
+export interface getPresignedUrlOptions {
   contentType: string;
   expiresIn?: number;
   fileName: string;
@@ -39,7 +41,7 @@ interface getPresignedUrlOptions {
 
 const TEN_MINUTES_IN_SECONDS = 10 * 60;
 
-export const getPresignedUrl = async ({
+export const getPresignedPutUrl = async ({
   contentType,
   expiresIn,
   fileName,
@@ -52,7 +54,7 @@ export const getPresignedUrl = async ({
   )}${ext}`;
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket: "bucket",
+    Bucket,
     Key,
     ContentType: contentType,
   });
@@ -61,7 +63,20 @@ export const getPresignedUrl = async ({
     expiresIn: expiresIn ?? TEN_MINUTES_IN_SECONDS,
   });
 
-  return url;
+  return { url, key: Key };
+};
+
+export const getPresignedGetUrl = async (key: string) => {
+  const getObjectCommand = new GetObjectCommand({
+    Bucket,
+    Key: key,
+  });
+
+  const url = await getSignedUrl(S3, getObjectCommand, {
+    expiresIn: TEN_MINUTES_IN_SECONDS,
+  });
+
+  return { key, url };
 };
 
 export const deleteBucketFile = (key: string) => {

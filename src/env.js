@@ -82,6 +82,8 @@ export const env = createEnv({
     EMAIL_SERVER_SECURE: process.env.EMAIL_SERVER_SECURE,
     EMAIL_SERVER_USERNAME: process.env.EMAIL_SERVER_USERNAME,
     EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
+
+    WAITLIST_MODE: process.env.WAITLIST_MODE,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -1,57 +1,13 @@
-"use client";
-
 import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { constants } from "@/lib/constants";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import Image from "next/image";
 import founder1 from "@/assets/founder.png";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { useForm } from "react-hook-form";
-import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
-  const [email, setEmail] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
-  const { handleSubmit } = useForm();
-
-  const joinWaitlist = async () => {
-    setLoading(true);
-    const response = await fetch(`/api/waitlist?email=${email}`);
-
-    if (response.ok) {
-      toast({
-        title: "Signup successful",
-        description:
-          "You have successfully joined the waitlist, you will be contacted shortly.",
-      });
-    } else {
-      toast({
-        title: "Error",
-        description: "Failed to join the waitlist. Please try again later.",
-      });
-    }
-
-    setLoading(false);
-    setModalOpen(false);
-    setEmail("");
-  };
-
   return (
     <main className="center min-h-screen flex-col">
       <Navbar />
@@ -63,54 +19,12 @@ export default function HomePage() {
           secondaries.
         </p>
         <div className="flex items-center gap-2">
-          <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => setModalOpen(true)}
-                className="hover:no-underline"
-              >
-                Join the waitlist
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <form onSubmit={handleSubmit(joinWaitlist)}>
-                <DialogHeader>
-                  <DialogTitle>Waitlist</DialogTitle>
-                  <DialogDescription>
-                    Add your email to the waitlist. Click save when you&apos;re
-                    done.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="email" className="text-right">
-                      Email
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email" // Specify the input type as "email" for better validation
-                      placeholder="abc@example.com"
-                      className="col-span-3"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit">
-                    {loading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="ml-2">Joining...</span>
-                      </>
-                    ) : (
-                      "Join the waitlist"
-                    )}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <Link
+            href="/signup"
+            className={buttonVariants({ className: "hover:no-underline" })}
+          >
+            Join the waitlist
+          </Link>
 
           <Button size="lg" variant="outline">
             <Link href={constants.github.url} className="hover:no-underline">

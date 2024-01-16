@@ -51,6 +51,14 @@ export const env = createEnv({
     EMAIL_SERVER_SECURE: COERCED_BOOLEAN,
     EMAIL_SERVER_USERNAME: z.string().optional(),
     EMAIL_SERVER_PASSWORD: z.string().optional(),
+
+    // upload
+
+    UPLOAD_ENDPOINT: z.string(),
+    UPLOAD_REGION: z.string(),
+    UPLOAD_BUCKET: z.string(),
+    UPLOAD_ACCESS_KEY_ID: z.string().optional(),
+    UPLOAD_SECRET_ACCESS_KEY: z.string().optional(),
   },
 
   /**
@@ -79,6 +87,12 @@ export const env = createEnv({
     EMAIL_SERVER_SECURE: process.env.EMAIL_SERVER_SECURE,
     EMAIL_SERVER_USERNAME: process.env.EMAIL_SERVER_USERNAME,
     EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
+
+    UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT,
+    UPLOAD_REGION: process.env.UPLOAD_REGION,
+    UPLOAD_BUCKET: process.env.UPLOAD_BUCKET,
+    UPLOAD_ACCESS_KEY_ID: process.env.UPLOAD_ACCESS_KEY_ID,
+    UPLOAD_SECRET_ACCESS_KEY: process.env.UPLOAD_SECRET_ACCESS_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -51,6 +51,9 @@ export const env = createEnv({
     EMAIL_SERVER_SECURE: COERCED_BOOLEAN,
     EMAIL_SERVER_USERNAME: z.string().optional(),
     EMAIL_SERVER_PASSWORD: z.string().optional(),
+
+    //flags
+    WAITLIST_MODE: z.enum(["on", "off"]).default("off"),
   },
 
   /**

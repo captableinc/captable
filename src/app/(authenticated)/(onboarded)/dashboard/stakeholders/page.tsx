@@ -1,6 +1,5 @@
+import { InviteMemberModal } from "@/components/stakeholder/invite-member-modal";
 import { MemberCard } from "@/components/stakeholder/member-card";
-
-import { Button } from "@/components/ui/button";
 
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -17,7 +16,7 @@ const StakeholdersPage = () => {
         </div>
 
         <div className="w-full md:w-auto">
-          <Button className="w-full md:w-auto">Invite</Button>
+          <InviteMemberModal />
         </div>
       </div>
       <Separator />

@@ -52,6 +52,9 @@ export const env = createEnv({
     EMAIL_SERVER_USERNAME: z.string().optional(),
     EMAIL_SERVER_PASSWORD: z.string().optional(),
 
+    //flags
+    WAITLIST_MODE: z.enum(["on", "off"]).default("off"),
+
     // upload
 
     UPLOAD_ENDPOINT: z.string(),
@@ -88,6 +91,8 @@ export const env = createEnv({
     EMAIL_SERVER_SECURE: process.env.EMAIL_SERVER_SECURE,
     EMAIL_SERVER_USERNAME: process.env.EMAIL_SERVER_USERNAME,
     EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
+
+    WAITLIST_MODE: process.env.WAITLIST_MODE,
 
     UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT,
     UPLOAD_REGION: process.env.UPLOAD_REGION,

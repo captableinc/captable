@@ -29,6 +29,10 @@ export const stakeholderRouter = createTRPCRouter({
         where: {
           id: ctx.session.user.companyId,
         },
+        select: {
+          name: true,
+          id: true,
+        },
       });
 
       await ctx.db.verificationToken.create({
@@ -39,9 +43,32 @@ export const stakeholderRouter = createTRPCRouter({
         },
       });
 
+      const membership = await ctx.db.membership.upsert({
+        where: {
+          companyId_invitedEmail: {
+            companyId: company.id,
+            invitedEmail: email,
+          },
+        },
+        update: {},
+        create: {
+          companyId: company.id,
+          invitedEmail: email,
+          access: "READ",
+          active: false,
+          isOnboarded: false,
+          lastAccessed: new Date(),
+          status: "PENDING",
+          title: "",
+        },
+        select: {
+          id: true,
+        },
+      });
+
       const { token: memberToken } = await ctx.db.verificationToken.create({
         data: {
-          identifier: `${company.id}:${email}`,
+          identifier: `${email}:${membership.id}`,
           token: await createHash(`member-${nanoid(16)}`),
           expires,
         },
@@ -86,23 +113,16 @@ export const stakeholderRouter = createTRPCRouter({
         },
       });
 
-      await ctx.db.membership.upsert({
+      await ctx.db.membership.update({
         where: {
-          userId_companyId: {
-            companyId: input.companyId,
-            userId: ctx.session.user.id,
-          },
+          id: input.membershipId,
         },
-        update: {},
-        create: {
-          companyId: input.companyId,
-          userId: ctx.session.user.id,
-          access: "READ",
+        data: {
           active: true,
-          isOnboarded: true,
-          lastAccessed: new Date(),
           status: "ACCEPTED",
-          title: "",
+          lastAccessed: new Date(),
+          isOnboarded: true,
+          userId: ctx.session.user.id,
         },
       });
 

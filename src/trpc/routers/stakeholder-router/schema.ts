@@ -9,7 +9,7 @@ export type TypeZodInviteMemberMutationSchema = z.infer<
 >;
 
 export const ZodAcceptMemberMutationSchema = z.object({
-  companyId: z.string().min(1),
+  membershipId: z.string().min(1),
   name: z.string().min(1),
 });
 

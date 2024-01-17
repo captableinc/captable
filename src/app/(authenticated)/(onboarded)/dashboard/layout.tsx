@@ -67,7 +67,7 @@ const userNavigation = [
 ];
 
 import { cn } from "@/lib/utils";
-import { OpenCapLogo } from "@/components/logo";
+import { OpenCapLogo } from "@/components/shared/logo";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;

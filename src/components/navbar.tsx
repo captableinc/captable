@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { constants } from "@/lib/constants";
-import { OpenCapLogo } from "./logo";
+import { OpenCapLogo } from "./shared/logo";
 
 export const Navbar = () => (
   <div className="absolute left-0 top-0 flex h-16 w-full items-center border-b px-4 sm:px-8">

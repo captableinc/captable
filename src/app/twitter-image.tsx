@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { OpenCapLogo } from "@/components/logo";
+import { OpenCapLogo } from "@/components/shared/logo";
 
 // Route segment config
 export const runtime = "edge";

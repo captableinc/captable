@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { Fragment, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Dialog, Menu, Transition } from "@headlessui/react";
@@ -227,7 +228,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <OpenCapLogo className="h-7 w-auto" />
 
             <Select>
-              <SelectTrigger className="text-md ml-3 h-8 w-[180px] rounded border-none font-semibold">
+              <SelectTrigger className="text-md focus:ring-none ml-3 h-8 w-[180px] rounded border-none font-semibold hover:bg-gray-100 focus:ring-0">
                 <SelectValue placeholder="Acme Inc." />
               </SelectTrigger>
               <SelectContent>
@@ -355,7 +356,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <Menu as="div" className="relative">
                   <Menu.Button className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
-                    <img
+                    <Image
+                      width="50"
+                      height="50"
                       className="h-8 w-8 rounded-full bg-gray-50"
                       src="https://randomuser.me/api/portraits/women/0.jpg"
                       alt=""

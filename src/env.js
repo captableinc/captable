@@ -55,6 +55,18 @@ export const env = createEnv({
     EMAIL_SERVER_SECURE: COERCED_BOOLEAN,
     EMAIL_SERVER_USERNAME: z.string().optional(),
     EMAIL_SERVER_PASSWORD: z.string().optional(),
+
+    //flags
+    WAITLIST_MODE: z.enum(["on", "off"]).default("off"),
+
+    // upload
+
+    UPLOAD_ENDPOINT: z.string(),
+    UPLOAD_REGION: z.string(),
+    UPLOAD_BUCKET: z.string(),
+    UPLOAD_ACCESS_KEY_ID: z.string().optional(),
+    UPLOAD_SECRET_ACCESS_KEY: z.string().optional(),
+    UPLOAD_PROVIDER: z.enum(["s3", "r2"]),
   },
 
   /**
@@ -86,6 +98,15 @@ export const env = createEnv({
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+
+    WAITLIST_MODE: process.env.WAITLIST_MODE,
+
+    UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT,
+    UPLOAD_REGION: process.env.UPLOAD_REGION,
+    UPLOAD_BUCKET: process.env.UPLOAD_BUCKET,
+    UPLOAD_ACCESS_KEY_ID: process.env.UPLOAD_ACCESS_KEY_ID,
+    UPLOAD_SECRET_ACCESS_KEY: process.env.UPLOAD_SECRET_ACCESS_KEY,
+    UPLOAD_PROVIDER: process.env.UPLOAD_PROVIDER,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

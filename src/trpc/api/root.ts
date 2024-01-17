@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
 import { onboardingRouter } from "../routers/onboarding-router/router";
+import { waitListRouter } from "../routers/waitlist-router/router";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { onboardingRouter } from "../routers/onboarding-router/router";
  */
 export const appRouter = createTRPCRouter({
   onboarding: onboardingRouter,
+  waitList: waitListRouter,
 });
 
 // export type definition of API

@@ -99,6 +99,7 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
+
     async signIn({ account, profile }) {
       // Check to see if the user email was provided:
       if (!profile?.email) {
@@ -116,8 +117,9 @@ export const authOptions: NextAuthOptions = {
         update: { name: profile.name },
       });
 
-      return true;
-    },
+      const allowLogin: boolean = env.WAITLIST_MODE === "off";
+
+      return allowLogin || "/signup";
   },
   adapter: PrismaAdapter(db),
   secret: env.NEXTAUTH_SECRET ?? "secret",

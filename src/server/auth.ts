@@ -64,6 +64,7 @@ export const authOptions: NextAuthOptions = {
           where: {
             userId: token.sub,
             isOnboarded: true,
+            status: "ACCEPTED",
           },
           orderBy: {
             lastAccessed: "desc",

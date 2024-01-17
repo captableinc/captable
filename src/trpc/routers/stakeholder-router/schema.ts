@@ -1,0 +1,18 @@
+import { z } from "zod";
+
+export const ZodInviteMemberMutationSchema = z.object({
+  email: z.string().email().min(1),
+});
+
+export type TypeZodInviteMemberMutationSchema = z.infer<
+  typeof ZodInviteMemberMutationSchema
+>;
+
+export const ZodAcceptMemberMutationSchema = z.object({
+  companyId: z.string().min(1),
+  name: z.string().min(1),
+});
+
+export type TypeZodAcceptMemberMutationSchema = z.infer<
+  typeof ZodAcceptMemberMutationSchema
+>;

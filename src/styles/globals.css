@@ -88,9 +88,6 @@
   h4 {
     @apply font-cal text-lg uppercase tracking-widest;
   }
-  a {
-    @apply hover:underline;
-  }
 }
 
 @layer components {

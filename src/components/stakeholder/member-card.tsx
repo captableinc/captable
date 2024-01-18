@@ -8,8 +8,8 @@ import {
 } from "../ui/select";
 
 interface MemberCardProps {
-  name?: string | undefined;
-  email: string;
+  name?: string | undefined | null;
+  email?: string | undefined | null;
 }
 
 export function MemberCard({ email, name }: MemberCardProps) {

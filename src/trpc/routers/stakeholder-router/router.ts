@@ -2,6 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
 import {
   ZodAcceptMemberMutationSchema,
   ZodInviteMemberMutationSchema,
+  ZodRemoveMemberMutationSchema,
   ZodRevokeInviteMutationSchema,
 } from "./schema";
 import { nanoid } from "nanoid";
@@ -194,6 +195,21 @@ export const stakeholderRouter = createTRPCRouter({
       await ctx.db.membership.delete({
         where: {
           id: membership.id,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  removeMember: protectedProcedure
+    .input(ZodRemoveMemberMutationSchema)
+    .mutation(async ({ ctx: { session, db }, input }) => {
+      const { membershipId } = input;
+
+      await db.membership.delete({
+        where: {
+          id: membershipId,
+          companyId: session.user.companyId,
         },
       });
 

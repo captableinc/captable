@@ -27,3 +27,11 @@ export const ZodRevokeInviteMutationSchema = z.object({
 export type TypeZodRevokeInviteMutationSchema = z.infer<
   typeof ZodAcceptMemberMutationSchema
 >;
+
+export const ZodRemoveMemberMutationSchema = z.object({
+  membershipId: z.string().min(1),
+});
+
+export type TypeZodRemoveMemberMutationSchema = z.infer<
+  typeof ZodAcceptMemberMutationSchema
+>;

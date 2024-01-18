@@ -57,15 +57,17 @@ const StakeholdersPage = async () => {
             </div>
           </TabsContent>
           <TabsContent value="invitation">
-            {invitedMembers.length
-              ? invitedMembers.map((item) => (
-                  <MemberCard
-                    key={item.id}
-                    name={item.user?.name}
-                    email={item.invitedEmail}
-                  />
-                ))
-              : null}
+            <div className="flex flex-col gap-y-6">
+              {invitedMembers.length
+                ? invitedMembers.map((item) => (
+                    <MemberCard
+                      key={item.id}
+                      name={item.user?.name}
+                      email={item.invitedEmail}
+                    />
+                  ))
+                : null}
+            </div>
           </TabsContent>
         </Tabs>
       </div>

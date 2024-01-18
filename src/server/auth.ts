@@ -7,11 +7,15 @@ import {
 } from "next-auth";
 
 import EmailProvider from "next-auth/providers/email";
+import GoogleProvider from "next-auth/providers/google";
 
 import { db } from "@/server/db";
 import { env } from "@/env";
 import { sendMail } from "./mailer";
 import MagicLinkEmail from "@/emails/MagicLinkEmail";
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -96,7 +100,23 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    async signIn() {
+    async signIn({ profile }) {
+      // Check to see if the user email was provided:
+      if (!profile?.email) {
+        throw new Error("No Profile Found");
+      }
+
+      await db.user.upsert({
+        where: {
+          email: profile.email,
+        },
+        create: {
+          email: profile.email,
+          name: profile.name,
+        },
+        update: { name: profile.name },
+      });
+
       const allowLogin: boolean = env.WAITLIST_MODE === "off";
 
       return allowLogin || "/signup";
@@ -136,6 +156,10 @@ export const authOptions: NextAuthOptions = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    GoogleProvider({
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+    }),
   ],
 
   pages: {

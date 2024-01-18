@@ -52,3 +52,15 @@ export const checkVerificationToken = async (
 
   return { membershipId, email };
 };
+
+interface generateMembershipIdentifierOptions {
+  email: string;
+  membershipId: string;
+}
+
+export const generateMembershipIdentifier = ({
+  email,
+  membershipId,
+}: generateMembershipIdentifierOptions) => {
+  return `${email}:${membershipId}`;
+};

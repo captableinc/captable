@@ -2,6 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
 import {
   ZodAcceptMemberMutationSchema,
   ZodInviteMemberMutationSchema,
+  ZodRevokeInviteMutationSchema,
 } from "./schema";
 import { nanoid } from "nanoid";
 import { createHash } from "@/lib/crypto";
@@ -12,6 +13,7 @@ import { sendMail } from "@/server/mailer";
 import { constants } from "@/lib/constants";
 import { render } from "jsx-email";
 import { TRPCError } from "@trpc/server";
+import { generateMembershipIdentifier } from "@/server/stakeholder";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
@@ -79,7 +81,10 @@ export const stakeholderRouter = createTRPCRouter({
         // custom verification token for member invitation
         const { token: memberToken } = await tx.verificationToken.create({
           data: {
-            identifier: `${email}:${membership.id}`,
+            identifier: generateMembershipIdentifier({
+              email,
+              membershipId: membership.id,
+            }),
             token: await createHash(`member-${nanoid(16)}`),
             expires,
           },
@@ -154,6 +159,43 @@ export const stakeholderRouter = createTRPCRouter({
           },
         }),
       ]);
+
+      return { success: true };
+    }),
+
+  revokeInvite: protectedProcedure
+    .input(ZodRevokeInviteMutationSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { email, companyId } = input;
+      const membership = await ctx.db.membership.findFirstOrThrow({
+        where: {
+          companyId,
+          invitedEmail: email,
+        },
+      });
+      const identifier = generateMembershipIdentifier({
+        email,
+        membershipId: membership.id,
+      });
+
+      const verificationToken = await ctx.db.verificationToken.findFirstOrThrow(
+        {
+          where: {
+            identifier,
+          },
+        },
+      );
+      await ctx.db.verificationToken.delete({
+        where: {
+          identifier,
+          token: verificationToken.token,
+        },
+      });
+      await ctx.db.membership.delete({
+        where: {
+          id: membership.id,
+        },
+      });
 
       return { success: true };
     }),

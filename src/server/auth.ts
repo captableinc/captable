@@ -100,23 +100,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    async signIn({ profile }) {
-      // Check to see if the user email was provided:
-      if (!profile?.email) {
-        throw new Error("No Profile Found");
-      }
-
-      await db.user.upsert({
-        where: {
-          email: profile.email,
-        },
-        create: {
-          email: profile.email,
-          name: profile.name,
-        },
-        update: { name: profile.name },
-      });
-
+    async signIn() {
       const allowLogin: boolean = env.WAITLIST_MODE === "off";
 
       return allowLogin || "/signup";

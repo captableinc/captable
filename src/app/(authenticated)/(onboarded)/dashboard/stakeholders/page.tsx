@@ -31,7 +31,7 @@ const StakeholdersPage = async () => {
         </div>
 
         <div className="w-full md:w-auto">
-          <InviteMemberModal />
+          <InviteMemberModal inviteeName={session.user.name} />
         </div>
       </div>
       <Separator />

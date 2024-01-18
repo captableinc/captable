@@ -16,8 +16,9 @@ export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
     .input(ZodInviteMemberMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { email } = input;
+      const { email, inviteeName } = input;
 
+      //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
       const token = nanoid(32);
 
       const secret = env.NEXTAUTH_SECRET;
@@ -25,53 +26,59 @@ export const stakeholderRouter = createTRPCRouter({
       const ONE_DAY_IN_SECONDS = 86400;
       const expires = new Date(Date.now() + ONE_DAY_IN_SECONDS * 1000);
 
-      const company = await ctx.db.company.findFirstOrThrow({
-        where: {
-          id: ctx.session.user.companyId,
-        },
-        select: {
-          name: true,
-          id: true,
-        },
-      });
+      const { company, memberToken } = await ctx.db.$transaction(async (tx) => {
+        const company = await tx.company.findFirstOrThrow({
+          where: {
+            id: ctx.session.user.companyId,
+          },
+          select: {
+            name: true,
+            id: true,
+          },
+        });
 
-      await ctx.db.verificationToken.create({
-        data: {
-          identifier: email,
-          token: await createHash(`${token}${secret}`),
-          expires,
-        },
-      });
-
-      const membership = await ctx.db.membership.upsert({
-        where: {
-          companyId_invitedEmail: {
+        const membership = await tx.membership.upsert({
+          where: {
+            companyId_invitedEmail: {
+              companyId: company.id,
+              invitedEmail: email,
+            },
+          },
+          update: {},
+          create: {
             companyId: company.id,
             invitedEmail: email,
+            access: "READ",
+            active: false,
+            isOnboarded: false,
+            lastAccessed: new Date(),
+            status: "PENDING",
+            title: "",
           },
-        },
-        update: {},
-        create: {
-          companyId: company.id,
-          invitedEmail: email,
-          access: "READ",
-          active: false,
-          isOnboarded: false,
-          lastAccessed: new Date(),
-          status: "PENDING",
-          title: "",
-        },
-        select: {
-          id: true,
-        },
-      });
+          select: {
+            id: true,
+          },
+        });
 
-      const { token: memberToken } = await ctx.db.verificationToken.create({
-        data: {
-          identifier: `${email}:${membership.id}`,
-          token: await createHash(`member-${nanoid(16)}`),
-          expires,
-        },
+        // custom verification token for member invitation
+        const { token: memberToken } = await tx.verificationToken.create({
+          data: {
+            identifier: `${email}:${membership.id}`,
+            token: await createHash(`member-${nanoid(16)}`),
+            expires,
+          },
+        });
+
+        // next-auth verification token
+        await tx.verificationToken.create({
+          data: {
+            identifier: email,
+            token: await createHash(`${token}${secret}`),
+            expires,
+          },
+        });
+
+        return { memberToken, company };
       });
 
       const baseUrl = process.env.NEXTAUTH_URL;
@@ -93,7 +100,7 @@ export const stakeholderRouter = createTRPCRouter({
             teamName: company.name,
             inviteLink,
             invitedByEmail: email,
-            invitedByUsername: "",
+            invitedByUsername: inviteeName,
           }),
         ),
       });

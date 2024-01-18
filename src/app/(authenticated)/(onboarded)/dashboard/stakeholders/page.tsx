@@ -3,8 +3,23 @@ import { MemberCard } from "@/components/stakeholder/member-card";
 
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { withServerSession } from "@/server/auth";
+import { getMembers, type TypeGetMembers } from "@/server/stakeholder";
 
-const StakeholdersPage = () => {
+const StakeholdersPage = async () => {
+  const session = await withServerSession();
+  const members = await getMembers(session.user.companyId);
+  const currentMembers: TypeGetMembers = [];
+  const invitedMembers: TypeGetMembers = [];
+
+  for (const member of members) {
+    if (member.isOnboarded && member.status === "ACCEPTED") {
+      currentMembers.push(member);
+    } else {
+      invitedMembers.push(member);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex flex-col items-center justify-between gap-y-3 md:flex-row">
@@ -30,11 +45,27 @@ const StakeholdersPage = () => {
           </div>
           <TabsContent value="members">
             <div className="flex flex-col gap-y-6">
-              <MemberCard name="micah" email="123@gmail.com" />
+              {currentMembers.length
+                ? currentMembers.map((item) => (
+                    <MemberCard
+                      key={item.id}
+                      name={item.user?.name}
+                      email={item.user?.email}
+                    />
+                  ))
+                : null}
             </div>
           </TabsContent>
           <TabsContent value="invitation">
-            <MemberCard name="micah" email="123@gmail.com" />
+            {invitedMembers.length
+              ? invitedMembers.map((item) => (
+                  <MemberCard
+                    key={item.id}
+                    name={item.user?.name}
+                    email={item.invitedEmail}
+                  />
+                ))
+              : null}
           </TabsContent>
         </Tabs>
       </div>

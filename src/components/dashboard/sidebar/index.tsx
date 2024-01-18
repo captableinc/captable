@@ -69,7 +69,7 @@ export function SideBar({ className }: SideBarProps) {
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
         <div className="gap-y-4 py-4">
-          <div className="flex items-center px-2 py-2 md:justify-center">
+          <div className="flex items-center px-2 py-2 ">
             <OpenCapLogo className="h-7 w-auto" />
 
             <Select>

@@ -13,7 +13,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </aside>
       <div className="flex flex-grow flex-col lg:border-l">
         <NavBar />
-        <div className="px-4 py-6 lg:px-8">{children}</div>
+        <div className="px-4 py-6 lg:px-8 2xl:mx-auto 2xl:max-w-screen-2xl">
+          {children}
+        </div>
       </div>
     </div>
   );

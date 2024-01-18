@@ -21,7 +21,7 @@ export type TypeZodAcceptMemberMutationSchema = z.infer<
 
 export const ZodRevokeInviteMutationSchema = z.object({
   email: z.string().email().min(1),
-  companyId: z.string().min(1),
+  membershipId: z.string().min(1),
 });
 
 export type TypeZodRevokeInviteMutationSchema = z.infer<

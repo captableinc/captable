@@ -166,35 +166,23 @@ export const stakeholderRouter = createTRPCRouter({
 
   revokeInvite: protectedProcedure
     .input(ZodRevokeInviteMutationSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { email, companyId } = input;
-      const membership = await ctx.db.membership.findFirstOrThrow({
-        where: {
-          companyId,
-          invitedEmail: email,
-        },
-      });
+    .mutation(async ({ ctx: { db }, input }) => {
+      const { membershipId, email } = input;
+
       const identifier = generateMembershipIdentifier({
         email,
-        membershipId: membership.id,
+        membershipId,
       });
 
-      const verificationToken = await ctx.db.verificationToken.findFirstOrThrow(
-        {
-          where: {
-            identifier,
-          },
+      const verificationToken = await db.verificationToken.findFirstOrThrow({
+        where: {
+          identifier,
         },
-      );
-      await ctx.db.verificationToken.delete({
+      });
+      await db.verificationToken.delete({
         where: {
           identifier,
           token: verificationToken.token,
-        },
-      });
-      await ctx.db.membership.delete({
-        where: {
-          id: membership.id,
         },
       });
 

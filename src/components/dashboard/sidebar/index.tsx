@@ -15,7 +15,7 @@ import {
 } from "@remixicon/react";
 
 import { usePathname } from "next/navigation";
-import { OpenCapLogo } from "@/components/logo";
+import { OpenCapLogo } from "@/components/shared/logo";
 
 import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";

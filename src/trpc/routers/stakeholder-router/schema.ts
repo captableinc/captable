@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),
+  inviteeName: z.string(),
 });
 
 export type TypeZodInviteMemberMutationSchema = z.infer<

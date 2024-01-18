@@ -22,7 +22,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-export function InviteMemberModal() {
+interface InviteMemberModalProps {
+  inviteeName: string | null | undefined;
+}
+
+export function InviteMemberModal({ inviteeName }: InviteMemberModalProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const inviteMember = api.stakeholder.inviteMember.useMutation({
@@ -35,6 +39,7 @@ export function InviteMemberModal() {
     resolver: zodResolver(ZodInviteMemberMutationSchema),
     defaultValues: {
       email: "",
+      inviteeName: inviteeName ?? "",
     },
   });
 

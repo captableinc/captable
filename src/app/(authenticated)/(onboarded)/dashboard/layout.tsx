@@ -8,7 +8,7 @@ type DashboardLayoutProps = {
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="flex">
-      <aside className="sticky top-0 hidden h-screen w-[20vw] flex-shrink-0 flex-col lg:flex ">
+      <aside className="sticky top-0 hidden h-screen w-64 flex-shrink-0 flex-col lg:flex ">
         <SideBar />
       </aside>
       <div className="flex flex-grow flex-col lg:border-l">

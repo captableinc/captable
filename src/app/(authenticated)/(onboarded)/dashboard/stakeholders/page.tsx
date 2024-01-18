@@ -51,6 +51,9 @@ const StakeholdersPage = async () => {
                       key={item.id}
                       name={item.user?.name}
                       email={item.user?.email}
+                      status={item.status}
+                      userEmail={session.user.email}
+                      membershipId={item.id}
                     />
                   ))
                 : null}
@@ -64,6 +67,9 @@ const StakeholdersPage = async () => {
                       key={item.id}
                       name={item.user?.name}
                       email={item.invitedEmail}
+                      status={item.status}
+                      userEmail={session.user.email}
+                      membershipId={item.id}
                     />
                   ))
                 : null}

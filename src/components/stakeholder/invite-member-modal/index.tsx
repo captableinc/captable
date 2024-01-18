@@ -18,14 +18,17 @@ import {
   type TypeZodInviteMemberMutationSchema,
 } from "@/trpc/routers/stakeholder-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export function InviteMemberModal() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const inviteMember = api.stakeholder.inviteMember.useMutation({
     onSuccess: () => {
       setOpen(false);
+      router.refresh();
     },
   });
   const form = useForm<TypeZodInviteMemberMutationSchema>({

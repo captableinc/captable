@@ -11,6 +11,7 @@ import { MemberInviteEmail } from "@/emails/MemberInviteEmail";
 import { sendMail } from "@/server/mailer";
 import { constants } from "@/lib/constants";
 import { render } from "jsx-email";
+import { TRPCError } from "@trpc/server";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
@@ -36,6 +37,21 @@ export const stakeholderRouter = createTRPCRouter({
             id: true,
           },
         });
+
+        const prevMembership = await tx.membership.findFirst({
+          where: {
+            companyId: company.id,
+            invitedEmail: email,
+            status: "ACCEPTED",
+          },
+        });
+
+        if (prevMembership) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "user already a member",
+          });
+        }
 
         const membership = await tx.membership.upsert({
           where: {
@@ -111,27 +127,33 @@ export const stakeholderRouter = createTRPCRouter({
   acceptMember: protectedProcedure
     .input(ZodAcceptMemberMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.user.update({
-        where: {
-          id: ctx.session.user.id,
-        },
-        data: {
-          name: input.name,
-        },
-      });
-
-      await ctx.db.membership.update({
-        where: {
-          id: input.membershipId,
-        },
-        data: {
-          active: true,
-          status: "ACCEPTED",
-          lastAccessed: new Date(),
-          isOnboarded: true,
-          userId: ctx.session.user.id,
-        },
-      });
+      await ctx.db.$transaction([
+        ctx.db.verificationToken.delete({
+          where: {
+            token: input.token,
+          },
+        }),
+        ctx.db.user.update({
+          where: {
+            id: ctx.session.user.id,
+          },
+          data: {
+            name: input.name,
+          },
+        }),
+        ctx.db.membership.update({
+          where: {
+            id: input.membershipId,
+          },
+          data: {
+            active: true,
+            status: "ACCEPTED",
+            lastAccessed: new Date(),
+            isOnboarded: true,
+            userId: ctx.session.user.id,
+          },
+        }),
+      ]);
 
       return { success: true };
     }),

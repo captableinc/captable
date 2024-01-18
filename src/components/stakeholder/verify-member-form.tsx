@@ -22,9 +22,13 @@ import { useRouter } from "next/navigation";
 
 interface VerifyMemberFormProps {
   membershipId: string;
+  token: string;
 }
 
-export function VerifyMemberForm({ membershipId }: VerifyMemberFormProps) {
+export function VerifyMemberForm({
+  membershipId,
+  token,
+}: VerifyMemberFormProps) {
   const { update } = useSession();
   const router = useRouter();
   const acceptMember = api.stakeholder.acceptMember.useMutation({
@@ -38,6 +42,7 @@ export function VerifyMemberForm({ membershipId }: VerifyMemberFormProps) {
     defaultValues: {
       name: "",
       membershipId,
+      token,
     },
   });
 

@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 
 import {
@@ -29,10 +30,23 @@ interface InviteMemberModalProps {
 export function InviteMemberModal({ inviteeName }: InviteMemberModalProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
   const inviteMember = api.stakeholder.inviteMember.useMutation({
     onSuccess: () => {
       setOpen(false);
+      toast({
+        variant: "default",
+        title: "successfully invited user",
+        description: "",
+      });
       router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: error.message,
+        description: "",
+      });
     },
   });
   const form = useForm<TypeZodInviteMemberMutationSchema>({

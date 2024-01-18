@@ -1,6 +1,6 @@
 import { VerifyMemberForm } from "@/components/stakeholder/verify-member-form";
 import { withServerSession } from "@/server/auth";
-import { handleVerificationToken } from "@/server/stakeholder";
+import { checkVerificationToken } from "@/server/stakeholder";
 
 export default async function VerifyMember({
   params: { token },
@@ -9,10 +9,10 @@ export default async function VerifyMember({
 }) {
   const session = await withServerSession();
 
-  const { membershipId } = await handleVerificationToken(
+  const { membershipId } = await checkVerificationToken(
     token,
     session.user.email,
   );
 
-  return <VerifyMemberForm membershipId={membershipId} />;
+  return <VerifyMemberForm membershipId={membershipId} token={token} />;
 }

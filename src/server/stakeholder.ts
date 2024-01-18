@@ -1,4 +1,3 @@
-import { type Prisma } from "@prisma/client";
 import { db } from "./db";
 
 export const getMembers = (companyId: string) => {
@@ -19,32 +18,16 @@ export const getMembers = (companyId: string) => {
 
 export type TypeGetMembers = Awaited<ReturnType<typeof getMembers>>;
 
-// credits https://github.com/nextauthjs/next-auth/blob/46264fb42af4c3ef7137a5694875eaa1309462ea/packages/adapter-prisma/src/index.ts
-
-export const deleteVerificationToken = async (token: string) => {
-  try {
-    const verificationToken = await db.verificationToken.delete({
-      where: {
-        token,
-      },
-    });
-
-    return verificationToken;
-  } catch (error) {
-    // If token already used/deleted, just return null
-    // https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-    if ((error as Prisma.PrismaClientKnownRequestError).code === "P2025")
-      return null;
-    throw error;
-  }
-};
-
-export const handleVerificationToken = async (
+export const checkVerificationToken = async (
   token: string,
   userEmail: string | null | undefined,
 ) => {
   // based on https://github.com/nextauthjs/next-auth/blob/46264fb42af4c3ef7137a5694875eaa1309462ea/packages/core/src/lib/actions/callback/index.ts#L200
-  const invite = await deleteVerificationToken(token);
+  const invite = await db.verificationToken.findFirst({
+    where: {
+      token,
+    },
+  });
   const hasInvite = !!invite;
   const expired = invite ? invite.expires.valueOf() < Date.now() : undefined;
   const invalidInvite = !hasInvite || expired;

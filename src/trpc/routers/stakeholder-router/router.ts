@@ -119,9 +119,8 @@ export const stakeholderRouter = createTRPCRouter({
         subject: `Join ${company.name} on ${constants.title}`,
         html: await render(
           MemberInviteEmail({
-            teamName: company.name,
+            companyName: company.name,
             inviteLink,
-            invitedByEmail: email,
             invitedByUsername: inviteeName,
           }),
         ),

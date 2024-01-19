@@ -109,9 +109,12 @@ model Membership {
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
+  invitedEmail String?
+
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
 
-  @@unique([userId, companyId])
+  @@unique([companyId, invitedEmail])
+  @@unique([userId])
   @@index([companyId])
 }

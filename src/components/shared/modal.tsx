@@ -22,17 +22,25 @@ import {
 } from "@/components/ui/dialog";
 
 import { OpenCapLogo } from "@/components/shared/logo";
+import { type DialogProps } from "@radix-ui/react-dialog";
 
 type ModalProps = {
   title: string;
   subtitle: string;
   trigger: React.ReactNode;
   children: React.ReactNode;
+  dialogProps?: DialogProps;
 };
 
-const Modal = ({ title, subtitle, trigger, children }: ModalProps) => {
+const Modal = ({
+  title,
+  subtitle,
+  trigger,
+  children,
+  dialogProps,
+}: ModalProps) => {
   return (
-    <Dialog>
+    <Dialog {...dialogProps}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="gap-0 bg-white p-0 sm:max-w-[425px]">
         <header className="border-b border-gray-200 p-5">

@@ -15,7 +15,6 @@ import {
 } from "jsx-email";
 
 interface MemberInviteEmailProps {
-  username: string;
   invitedByUsername: string;
   invitedByEmail: string;
   teamName: string;
@@ -23,7 +22,6 @@ interface MemberInviteEmailProps {
 }
 
 export const MemberInviteEmail = ({
-  username,
   invitedByUsername,
   invitedByEmail,
   teamName,
@@ -43,7 +41,7 @@ export const MemberInviteEmail = ({
               <strong>{constants.title}</strong>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
-              Hello {username},
+              Hello ,
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
               <strong>{invitedByUsername}</strong> (
@@ -87,7 +85,6 @@ export const MemberInviteEmail = ({
 };
 
 MemberInviteEmail.PreviewProps = {
-  username: "batman",
   invitedByUsername: "joker",
   invitedByEmail: "joker@arkham.com",
   teamName: "Batmobile",

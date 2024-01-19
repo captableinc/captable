@@ -16,15 +16,13 @@ import {
 
 interface MemberInviteEmailProps {
   invitedByUsername: string;
-  invitedByEmail: string;
-  teamName: string;
+  companyName: string;
   inviteLink: string;
 }
 
 export const MemberInviteEmail = ({
   invitedByUsername,
-  invitedByEmail,
-  teamName,
+  companyName,
   inviteLink,
 }: MemberInviteEmailProps) => {
   const previewText = `Join ${invitedByUsername} on ${constants.title}`;
@@ -35,24 +33,17 @@ export const MemberInviteEmail = ({
       <Preview>{previewText}</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
-          <Container className="mx-auto my-[40px] w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
+          <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Join <strong>{teamName}</strong> on{" "}
+              Join <strong>{companyName}</strong> on{" "}
               <strong>{constants.title}</strong>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
               Hello ,
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{invitedByUsername}</strong> (
-              <Link
-                href={`mailto:${invitedByEmail}`}
-                className="text-blue-600 no-underline"
-              >
-                {invitedByEmail}
-              </Link>
-              ) has invited you to the <strong>{teamName}</strong> team on{" "}
-              <strong>OpenCap</strong>.
+              <strong>{invitedByUsername}</strong> has invited you to join{" "}
+              <strong>{companyName}</strong> on <strong>OpenCap</strong>.
             </Text>
 
             <Section className="mb-[32px] mt-[32px] text-center">
@@ -86,8 +77,7 @@ export const MemberInviteEmail = ({
 
 MemberInviteEmail.PreviewProps = {
   invitedByUsername: "joker",
-  invitedByEmail: "joker@arkham.com",
-  teamName: "Batmobile",
+  companyName: "Batmobile",
   inviteLink: "https://opencap.co/teams/invite/foo",
 } as MemberInviteEmailProps;
 

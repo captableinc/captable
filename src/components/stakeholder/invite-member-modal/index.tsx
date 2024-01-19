@@ -36,7 +36,7 @@ export function InviteMemberModal({ inviteeName }: InviteMemberModalProps) {
       setOpen(false);
       toast({
         variant: "default",
-        title: "successfully invited user",
+        title: "🎉 Invitation successfully sent!",
         description: "",
       });
       router.refresh();

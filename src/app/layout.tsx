@@ -25,7 +25,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body className="min-h-screen ">
         <NextAuthProvider session={session}>
           <TRPCReactProvider cookies={cookies().toString()}>
             <main>{children}</main>

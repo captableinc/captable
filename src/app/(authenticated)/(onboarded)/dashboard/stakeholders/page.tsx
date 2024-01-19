@@ -22,7 +22,7 @@ const StakeholdersPage = async () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <div className="flex flex-col items-center justify-between gap-y-3 md:flex-row">
+      <div className="flex  items-center justify-between gap-y-3 ">
         <div className="gap-y-3">
           <h2 className="text-xl font-medium">Stakeholders</h2>
           <p className="text-sm text-muted-foreground">
@@ -30,7 +30,7 @@ const StakeholdersPage = async () => {
           </p>
         </div>
 
-        <div className="w-full md:w-auto">
+        <div>
           <InviteMemberModal inviteeName={session.user.name} />
         </div>
       </div>

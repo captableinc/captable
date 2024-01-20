@@ -92,7 +92,9 @@ export function InviteMemberModal({ inviteeName }: InviteMemberModalProps) {
             )}
           />
 
-          <Button disabled={isSubmitting}>Send Invite</Button>
+          <Button loading={isSubmitting} loadingText="Sending invite...">
+            Send Invite
+          </Button>
         </form>
       </Form>
     </Modal>

@@ -78,7 +78,12 @@ export function VerifyMemberForm({
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button
+              loading={isSubmitting}
+              loadingText="Onboarding..."
+              className="w-full"
+              type="submit"
+            >
               Onboard
             </Button>
           </form>

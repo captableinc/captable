@@ -89,7 +89,11 @@ const LoginForm = () => {
                       </FormItem>
                     )}
                   />
-                  <Button loading={isSubmitting} type="submit">
+                  <Button
+                    loading={isSubmitting}
+                    loadingText="Signing in..."
+                    type="submit"
+                  >
                     Login with Email
                   </Button>
                 </div>

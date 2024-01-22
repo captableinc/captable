@@ -1,4 +1,4 @@
-import prisma from "../prisma";
+import { db } from "@/server/db";
 
 interface AuditInterface {
   action: string;
@@ -26,7 +26,7 @@ const create = async ({
   target,
   context,
 }: AuditInterface) => {
-  const audit = await prisma.audit.create({
+  const audit = await db.audit.create({
     data: {
       action,
       occurredAt: occurred_at,

@@ -8,6 +8,10 @@ datasource db {
   relationMode = "prisma"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -120,10 +124,18 @@ model Membership {
 }
 
 model Audit {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
+
+  /// [AuditAction]
   action     String
   occurredAt DateTime @default(now())
-  actor      Json
-  target     Json[]
-  context    Json
+
+  /// [AuditActor]
+  actor Json
+
+  /// [AuditTarget]
+  target Json[]
+
+  /// [AuditContext]
+  context Json
 }

@@ -118,3 +118,12 @@ model Membership {
   @@unique([userId])
   @@index([companyId])
 }
+
+model Audit {
+  id         String   @id @default(cuid())
+  action     String
+  occurredAt DateTime @default(now())
+  actor      Json
+  target     Json[]
+  context    Json
+}

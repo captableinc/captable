@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { render } from "jsx-email";
 import {
@@ -30,6 +32,7 @@ declare module "next-auth" {
       isOnboarded: boolean;
       companyId: string;
       membershipId: string;
+      companyPublicId: string;
     } & DefaultSession["user"];
   }
 }
@@ -40,6 +43,7 @@ declare module "next-auth/jwt" {
     isOnboarded: boolean;
     companyId: string;
     membershipId: string;
+    companyPublicId: string;
   }
 }
 
@@ -54,6 +58,7 @@ export const authOptions: NextAuthOptions = {
       session.user.isOnboarded = token.isOnboarded;
       session.user.companyId = token.companyId;
       session.user.membershipId = token.membershipId;
+      session.user.companyPublicId = token.companyPublicId;
 
       if (token.sub) {
         session.user.id = token.sub;
@@ -82,19 +87,25 @@ export const authOptions: NextAuthOptions = {
                 name: true,
               },
             },
+            company: {
+              select: {
+                publicId: true,
+              },
+            },
           },
         });
 
         if (membership) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           token.isOnboarded = membership.isOnboarded;
           token.companyId = membership.companyId;
           token.membershipId = membership.id;
           token.name = membership.user?.name;
+          token.companyPublicId = membership.company.publicId;
         } else {
           token.isOnboarded = false;
           token.companyId = "";
           token.membershipId = "";
+          token.companyPublicId = "";
         }
       }
 

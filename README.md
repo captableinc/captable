@@ -17,7 +17,7 @@
   <a href="https://github.com/opencapco/opencap.co/stargazers">
     <img src="https://img.shields.io/github/stars/opencapco/opencap.co??style=flat&label=opencap.co&logo=github&color=2dd4bf&logoColor=fff" alt="Github" />
   </a>
-  <a href="https://twitter.com/envless">
+  <a href="https://twitter.com/opencapco">
     <img src="https://img.shields.io/twitter/follow/opencapco?style=flat&label=%40opencapco&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
   </a>
   <a href="https://github.com/opencapco/opencap.co/actions/workflows/production.yml">

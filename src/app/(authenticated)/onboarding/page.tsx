@@ -4,11 +4,12 @@ import { redirect } from "next/navigation";
 
 const OnboardingPage = async () => {
   const session = await withServerSession();
-  if (session.user.isOnboarded) {
+  const user = session.user;
+  if (user.isOnboarded) {
     redirect("/dashboard");
   }
 
-  return <OnboardingCompany />;
+  return <OnboardingCompany currentUser={user} />;
 };
 
 export default OnboardingPage;

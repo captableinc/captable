@@ -4,6 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RiArrowRightLine } from "@remixicon/react";
 import {
   ZodOnboardingMutationSchema,
   type TypeZodOnboardingMutationSchema,
@@ -23,7 +24,13 @@ import { useRouter } from "next/navigation";
 
 const formSchema = ZodOnboardingMutationSchema;
 
-const OnboardingCompany = () => {
+import type { User } from "next-auth";
+
+type OnboardingCompanyProps = {
+  currentUser: User;
+};
+
+const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
   const { update } = useSession();
   const router = useRouter();
 
@@ -31,8 +38,8 @@ const OnboardingCompany = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       user: {
-        firstName: "",
-        lastName: "",
+        name: currentUser.name ?? "",
+        email: currentUser.email ?? "",
         title: "",
       },
       company: {
@@ -61,6 +68,9 @@ const OnboardingCompany = () => {
   function onSubmit(values: TypeZodOnboardingMutationSchema) {
     mutation.mutate(values);
   }
+
+  const isSubmitting = form.formState.isSubmitting;
+
   return (
     <div className="flex min-h-screen  justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100 px-5 pb-5 pt-20">
       <Navbar />
@@ -81,10 +91,10 @@ const OnboardingCompany = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="user.firstName"
+                    name="user.name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -95,12 +105,12 @@ const OnboardingCompany = () => {
 
                   <FormField
                     control={form.control}
-                    name="user.lastName"
+                    name="user.email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input type="email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -114,7 +124,7 @@ const OnboardingCompany = () => {
                     name="company.name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Company Name</FormLabel>
+                        <FormLabel>Company name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -140,7 +150,7 @@ const OnboardingCompany = () => {
 
                 <hr />
 
-                <h2 className="text-xl">Company Incorporation details</h2>
+                <h2 className="text-xl">Company incorporation details</h2>
                 <p className="-mt-5 text-sm text-muted-foreground">
                   Please provide your company{`'`}s incorporation details. Your
                   certificate of incorporation will come in handy here.
@@ -152,7 +162,7 @@ const OnboardingCompany = () => {
                     name="company.incorporationType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation Type</FormLabel>
+                        <FormLabel>Incorporation type</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -166,7 +176,7 @@ const OnboardingCompany = () => {
                     name="company.incorporationDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation Date</FormLabel>
+                        <FormLabel>Incorporation date</FormLabel>
                         <FormControl>
                           <Input type="date" {...field} />
                         </FormControl>
@@ -182,7 +192,7 @@ const OnboardingCompany = () => {
                     name="company.incorporationCountry"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation Country</FormLabel>
+                        <FormLabel>Incorporation country</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -196,7 +206,7 @@ const OnboardingCompany = () => {
                     name="company.incorporationState"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Incorporation State</FormLabel>
+                        <FormLabel>Incorporation state</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -207,7 +217,7 @@ const OnboardingCompany = () => {
                 </div>
 
                 {/*  */}
-                <h2 className="text-xl">Company Address</h2>
+                <h2 className="text-xl">Company address</h2>
                 <p className="-mt-5 text-sm text-muted-foreground">
                   Please provide your company{`'`}s address.
                 </p>
@@ -218,7 +228,7 @@ const OnboardingCompany = () => {
                     name="company.streetAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Street Address</FormLabel>
+                        <FormLabel>Street address</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -272,8 +282,15 @@ const OnboardingCompany = () => {
                   />
                 </div>
               </div>
-              <Button type="submit" className="mt-5">
-                Complete Setup
+
+              <Button
+                loading={isSubmitting}
+                loadingText="Submitting..."
+                className="w-full"
+                type="submit"
+              >
+                Complete setup
+                <RiArrowRightLine className="ml-2 inline-block h-5 w-5" />
               </Button>
             </div>
           </form>

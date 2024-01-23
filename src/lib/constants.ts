@@ -1,8 +1,7 @@
 export const constants = {
   title: "OpenCap",
   url: "https://opencap.co",
-  description:
-    "OpenCap is a decentralized, open-source, and censorship-resistant alternative to traditional domain name systems.",
+  description: "OpenCap is the Open Source alternative to Carta and Pulley.",
   twitter: {
     url: "https://twitter.com/opencapco",
   },
@@ -10,7 +9,7 @@ export const constants = {
     url: "https://github.com/opencapco/opencap.co",
   },
   discord: {
-    url: "https://discord.gg/tVfBqUGN",
+    url: "https://discord.gg/xs8Qu4yrTT",
   },
   ocf: {
     url: "https://www.opencaptablecoalition.com/format",

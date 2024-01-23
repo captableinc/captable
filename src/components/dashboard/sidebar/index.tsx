@@ -30,23 +30,23 @@ import {
 } from "@/components/ui/select";
 
 const navigation = [
-  { name: "Home", href: "/dashboard", icon: RiHome4Line },
-  { name: "Team", href: "/dashboard/team", icon: RiUserHeartLine },
-  { name: "SAFEs", href: "/dashboard/safe", icon: RiSafeLine },
-  { name: "Cap table", href: "/dashboard/captable", icon: RiPieChartLine },
+  { name: "Home", href: "", icon: RiHome4Line },
+  { name: "Team", href: "/team", icon: RiUserHeartLine },
+  { name: "SAFEs", href: "/safe", icon: RiSafeLine },
+  { name: "Cap table", href: "/captable", icon: RiPieChartLine },
   {
     name: "Securities",
-    href: "/dashboard/securities",
+    href: "/securities",
     icon: RiFolderShield2Line,
   },
   {
     name: "Stakeholders",
-    href: "/dashboard/stakeholders",
+    href: "/stakeholders",
     icon: RiUserSettingsLine,
   },
-  { name: "Documents", href: "/dashboard/documents", icon: RiFolder5Line },
-  { name: "Reports", href: "/dashboard/reports", icon: RiFolderChartLine },
-  { name: "Audits", href: "/dashboard/audits", icon: RiListOrdered2 },
+  { name: "Documents", href: "/documents", icon: RiFolder5Line },
+  { name: "Reports", href: "/reports", icon: RiFolderChartLine },
+  { name: "Audits", href: "/audits", icon: RiListOrdered2 },
 ];
 
 const forms = [
@@ -61,10 +61,14 @@ const forms = [
 
 interface SideBarProps {
   className?: string;
+  publicId: string;
 }
 
-export function SideBar({ className }: SideBarProps) {
+export function SideBar({ className, publicId }: SideBarProps) {
   const currentPath = usePathname();
+
+  const basePath = `/${publicId}`;
+
   return (
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
@@ -86,16 +90,20 @@ export function SideBar({ className }: SideBarProps) {
 
           <div className="overflow-auto py-2">
             <ul role="list" className=" space-y-1">
-              {navigation.map((item) => (
-                <li key={item.name}>
-                  <NavLink
-                    active={currentPath === item.href}
-                    name={item.name}
-                    href={item.href}
-                    icon={item.icon}
-                  />
-                </li>
-              ))}
+              {navigation.map((item) => {
+                const href = basePath + item.href;
+                const isActive = currentPath === href;
+                return (
+                  <li key={item.name}>
+                    <NavLink
+                      active={isActive}
+                      name={item.name}
+                      href={href}
+                      icon={item.icon}
+                    />
+                  </li>
+                );
+              })}
             </ul>
 
             <div className="py-2">

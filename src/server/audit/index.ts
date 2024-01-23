@@ -7,6 +7,7 @@ import { type AuditActions } from "./types";
 import { type AuditActor, type AuditContext, type AuditTarget } from "./types";
 
 interface AuditInterface {
+  companyId: string;
   action: AuditActions;
   occurredAt?: Date | string;
   actor: AuditActor;

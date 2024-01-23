@@ -84,6 +84,7 @@ model Company {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   users     Membership[]
+  audits    Audit[]
 }
 
 enum MEMBERHIP_STATUS {
@@ -126,6 +127,9 @@ model Membership {
 model Audit {
   id String @id @default(cuid())
 
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
   /// [AuditAction]
   action     String
   occurredAt DateTime @default(now())
@@ -138,4 +142,6 @@ model Audit {
 
   /// [AuditContext]
   context Json
+
+  @@index([companyId])
 }

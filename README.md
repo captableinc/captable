@@ -1,4 +1,5 @@
-<img width="1195" alt="cap" src="https://github.com/opencapco/opencap.co/assets/36117635/c4ad3507-44dd-47b2-a5ac-6dd8bea6b406">
+![Opencap cover image](.github/images/cover-dark.png#gh-dark-mode-only)
+![Opencap cover image](.github/images/cover-light.png#gh-light-mode-only)
 
 # OpenCap
 **An open source alternative to [Carta](https://carta.com) and [Pulley](https://pulley.com).**

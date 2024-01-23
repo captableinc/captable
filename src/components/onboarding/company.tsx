@@ -18,9 +18,19 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import countries from "@/lib/countries";
 
 const formSchema = ZodOnboardingMutationSchema;
 
@@ -163,9 +173,27 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Incorporation type</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="llc">
+                              Limited Liability Company
+                            </SelectItem>
+                            <SelectItem value="c-corp">
+                              C Corporation
+                            </SelectItem>
+                            <SelectItem value="s-corp">
+                              S Corporation
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -193,9 +221,28 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Incorporation country</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select country" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {countries.map(
+                              (country: { code: string; name: string }) => (
+                                <SelectItem
+                                  key={country.code}
+                                  value={country.code}
+                                >
+                                  {country.name}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}

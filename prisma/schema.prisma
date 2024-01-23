@@ -8,6 +8,10 @@ datasource db {
   relationMode = "prisma"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -80,6 +84,7 @@ model Company {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   users     Membership[]
+  audits    Audit[]
 }
 
 enum MEMBERHIP_STATUS {
@@ -120,10 +125,23 @@ model Membership {
 }
 
 model Audit {
-  id         String   @id @default(cuid())
+  id String @id @default(cuid())
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  /// [AuditAction]
   action     String
   occurredAt DateTime @default(now())
-  actor      Json
-  target     Json[]
-  context    Json
+
+  /// [AuditActor]
+  actor Json
+
+  /// [AuditTarget]
+  target Json[]
+
+  /// [AuditContext]
+  context Json
+
+  @@index([companyId])
 }

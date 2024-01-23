@@ -122,8 +122,8 @@ model Membership {
   company   Company @relation(fields: [companyId], references: [id])
 
   @@unique([companyId, invitedEmail])
-  @@unique([userId])
   @@index([companyId])
+  @@index([userId])
 }
 
 model Audit {

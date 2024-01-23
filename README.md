@@ -7,7 +7,10 @@
 
 <h1 align="center">OpenCap</h1>
 <p align="center">
-  An open source alternative to *Carta* and *Pulley*
+  An open source alternative to <strong>Carta</strong> and <strong>Pulley</strong>
+</p>
+<p align="center">
+  <a href="https://opencap.co"><strong>Learn more »</strong></a>
 </p>
 
 <p align="center">

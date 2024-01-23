@@ -1,5 +1,8 @@
-<a href="https://opencap.co">![Opencap cover image](.github/images/cover-dark.png#gh-dark-mode-only)</a>
-<a href="https://opencap.co">![Opencap cover image](.github/images/cover-light.png#gh-light-mode-only)</a>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/images/cover-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset=".github/images/cover-light.png">
+  <img alt="OpenCap cover image" src=".github/images/cover-light.png">
+</picture>
 
 
 # OpenCap

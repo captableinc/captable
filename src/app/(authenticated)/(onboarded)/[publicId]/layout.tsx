@@ -2,6 +2,7 @@ import { NavBar } from "@/components/dashboard/navbar";
 import { SideBar } from "@/components/dashboard/sidebar";
 import { withServerSession } from "@/server/auth";
 import { getCompanyList } from "@/server/company";
+import { redirect } from "next/navigation";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ const DashboardLayout = async ({
   const { user } = await withServerSession();
 
   if (user.companyPublicId !== publicId) {
-    throw new Error("user does not have access to the company");
+    redirect(`/${user.companyPublicId}`);
   }
 
   const companies = await getCompanyList(user.id);

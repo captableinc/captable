@@ -21,13 +21,8 @@ import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { type TGetCompanyList } from "@/server/company";
+import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
   { name: "Home", href: "", icon: RiHome4Line },
@@ -62,9 +57,10 @@ const forms = [
 interface SideBarProps {
   className?: string;
   publicId: string;
+  companies: TGetCompanyList;
 }
 
-export function SideBar({ className, publicId }: SideBarProps) {
+export function SideBar({ className, publicId, companies }: SideBarProps) {
   const currentPath = usePathname();
 
   const basePath = `/${publicId}`;
@@ -76,16 +72,7 @@ export function SideBar({ className, publicId }: SideBarProps) {
           <div className="flex items-center px-2 py-2 ">
             <OpenCapLogo className="h-7 w-auto" />
 
-            <Select>
-              <SelectTrigger className="text-md ml-3 h-8 w-[180px] rounded border-none font-semibold">
-                <SelectValue placeholder="Acme Inc." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="acme">Acme Inc.</SelectItem>
-                <SelectItem value="piedPiper">Pied Pieper</SelectItem>
-                <SelectItem value="hooli">Hooli</SelectItem>
-              </SelectContent>
-            </Select>
+            <CompanySwitcher companies={companies} publicId={publicId} />
           </div>
 
           <div className="overflow-auto py-2">

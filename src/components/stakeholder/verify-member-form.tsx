@@ -32,9 +32,9 @@ export function VerifyMemberForm({
   const { update } = useSession();
   const router = useRouter();
   const acceptMember = api.stakeholder.acceptMember.useMutation({
-    onSuccess: async () => {
+    onSuccess: async ({ publicId }) => {
       await update();
-      router.push("/dashboard");
+      router.push(`/${publicId}`);
     },
   });
   const form = useForm<TypeZodAcceptMemberMutationSchema>({

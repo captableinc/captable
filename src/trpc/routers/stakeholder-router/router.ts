@@ -132,7 +132,7 @@ export const stakeholderRouter = createTRPCRouter({
   acceptMember: protectedProcedure
     .input(ZodAcceptMemberMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.$transaction([
+      const data = await ctx.db.$transaction([
         ctx.db.verificationToken.delete({
           where: {
             token: input.token,
@@ -157,10 +157,17 @@ export const stakeholderRouter = createTRPCRouter({
             isOnboarded: true,
             userId: ctx.session.user.id,
           },
+          select: {
+            company: {
+              select: {
+                publicId: true,
+              },
+            },
+          },
         }),
       ]);
 
-      return { success: true };
+      return { success: true, publicId: data[2].company.publicId };
     }),
 
   revokeInvite: protectedProcedure

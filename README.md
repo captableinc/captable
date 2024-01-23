@@ -1,5 +1,6 @@
-![Opencap cover image](.github/images/cover-dark.png#gh-dark-mode-only)
-![Opencap cover image](.github/images/cover-light.png#gh-light-mode-only)
+<a href="https://opencap.co">![Opencap cover image](.github/images/cover-dark.png#gh-dark-mode-only)</a>
+<a href="https://opencap.co">![Opencap cover image](.github/images/cover-light.png#gh-light-mode-only)</a>
+
 
 # OpenCap
 **An open source alternative to [Carta](https://carta.com) and [Pulley](https://pulley.com).**

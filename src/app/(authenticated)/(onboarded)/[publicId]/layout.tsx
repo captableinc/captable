@@ -1,15 +1,26 @@
 import { NavBar } from "@/components/dashboard/navbar";
 import { SideBar } from "@/components/dashboard/sidebar";
+import { withServerSession } from "@/server/auth";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
+  params: { publicId: string };
 };
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = async ({
+  children,
+  params: { publicId },
+}: DashboardLayoutProps) => {
+  const session = await withServerSession();
+
+  if (session.user.companyPublicId !== publicId) {
+    throw new Error("user does not have access to the company");
+  }
+
   return (
     <div className="flex">
       <aside className="sticky top-0 hidden h-screen w-64 flex-shrink-0 flex-col lg:flex ">
-        <SideBar />
+        <SideBar publicId={publicId} />
       </aside>
       <div className="flex flex-grow flex-col lg:border-l">
         <NavBar />

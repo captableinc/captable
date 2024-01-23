@@ -10,7 +10,7 @@ import {
 import { type TGetCompanyList } from "@/server/company";
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { useState } from "react";
 
 interface CompanySwitcherProps {
@@ -24,6 +24,7 @@ export function CompanySwitcher({ companies, publicId }: CompanySwitcherProps) {
   const router = useRouter();
 
   const switchCompany = api.company.switchCompany.useMutation();
+  const segment = useSelectedLayoutSegment();
 
   return (
     <Select
@@ -37,7 +38,7 @@ export function CompanySwitcher({ companies, publicId }: CompanySwitcherProps) {
           if (membership) {
             await switchCompany.mutateAsync({ id: membership.id });
             await update();
-            router.push(`/${newValue}`);
+            router.push(`/${newValue}${segment ? "/" + segment : ""}`);
           }
         }
       }}

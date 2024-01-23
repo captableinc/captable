@@ -18,7 +18,8 @@ export const onboardingRouter = createTRPCRouter({
             id: ctx.session.user.id,
           },
           data: {
-            name: `${input.user.firstName} ${input.user.lastName}`,
+            name: `${input.user.name}`,
+            email: `${input.user.email}`,
           },
           select: {
             id: true,
@@ -36,6 +37,8 @@ export const onboardingRouter = createTRPCRouter({
             companyId: company.id,
             lastAccessed: new Date(),
           },
+
+          // TODO: create an Audit Log
         });
       } catch (error) {
         return { success: false, message: "failed to onboard" };

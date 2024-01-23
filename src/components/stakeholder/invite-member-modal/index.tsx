@@ -65,8 +65,8 @@ export function InviteMemberModal({ inviteeName }: InviteMemberModalProps) {
 
   return (
     <Modal
-      title="Invite members"
-      subtitle="invite a member to join your stakeholders."
+      title="Add a stakeholder"
+      subtitle="Invite a stakeholder to your company."
       trigger={<Button className="w-full md:w-auto">Invite</Button>}
       dialogProps={{
         open,
@@ -93,8 +93,13 @@ export function InviteMemberModal({ inviteeName }: InviteMemberModalProps) {
           />
 
           <Button loading={isSubmitting} loadingText="Sending invite...">
-            Send Invite
+            Send an invite
           </Button>
+
+          <p className="text-xs text-gray-500">
+            We{`'`}ll send an email to your stakeholder with a link to create an
+            account.
+          </p>
         </form>
       </Form>
     </Modal>

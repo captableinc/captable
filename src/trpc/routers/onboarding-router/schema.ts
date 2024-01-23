@@ -2,11 +2,11 @@ import { z } from "zod";
 
 export const ZodOnboardingMutationSchema = z.object({
   user: z.object({
-    firstName: z.string().min(1, {
-      message: "First name is required",
+    name: z.string().min(1, {
+      message: "Name is required",
     }),
-    lastName: z.string().min(1, {
-      message: "Last name is required",
+    email: z.string().min(1, {
+      message: "Email is required",
     }),
     title: z
       .string()

@@ -5,19 +5,52 @@
 </picture>
 
 
-# OpenCap
-**An open source alternative to [Carta](https://carta.com) and [Pulley](https://pulley.com).**
+<h1 align="center">OpenCap</h1>
+<p align="center">
+  An open source alternative to *Carta* and *Pulley*
+</p>
 
-OpenCap will follow the [Open Cap Table Format](https://www.opencaptablecoalition.com/format), an open source standard to prevent lock-in and keep lawyer fees low. No promises.
+<p align="center">
+  <a href="https://github.com/opencapco/opencap.co/stargazers">
+    <img src="https://img.shields.io/github/stars/opencapco/opencap.co??style=flat&label=opencap.co&logo=github&color=2dd4bf&logoColor=fff" alt="Github" />
+  </a>
+  <a href="https://twitter.com/envless">
+    <img src="https://img.shields.io/twitter/follow/opencapco?style=flat&label=%40opencapco&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
+  </a>
+  <a href="https://github.com/opencapco/opencap.co/actions/workflows/production.yml">
+    <img src="https://github.com/opencapco/opencap.co/actions/workflows/production.yml/badge.svg?branch=main&title=CI" alt="CI" />
+  </a>
+  <a href="https://github.com/opencapco/opencap.co/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/opencapco/opencap.co?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
+  </a>
+  <a href="https://discord.gg/rCpqnD6G6p">
+    <img src="https://img.shields.io/badge/Discord-Join%20us%20on%20Discord-blue" alt="Join us on Discord" />
+  </a>
+</p>
 
-## Built with
 
-- [create-t3-stack](https://create.t3.gg/)
-  - [Next.js](https://nextjs.org)
-  - [NextAuth.js](https://next-auth.js.org)
-  - [Prisma](https://prisma.io)
-  - [Tailwind CSS](https://tailwindcss.com)
-  - [tRPC](https://trpc.io)
+OpenCap will follow the [Open Cap Table Coalition](https://www.opencaptablecoalition.com/format) format, an open source standard to prevent lock-in and keep lawyer fees low. No promises.
+
+<h2 id="contributors">✨ Contributors</h2>
+
+- Don't forget to leave a star ⭐️
+- We ❤️ contributors! Feel free to contribute to this project!.
+- Any contributions you make are truly appreciated.
+- Let's continue contributing to keep the community active and growing.
+- Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
+
+<a href="https://github.com/opencapco/opencap.co/graphs/contributors">
+  <p>
+    <img src="https://contrib.rocks/image?repo=opencapco/opencap.co" alt="A table of avatars from the project's contributors" />
+  </p>
+</a>
+
+## Stack
+- [Next.js](https://nextjs.org)
+- [NextAuth.js](https://next-auth.js.org)
+- [Prisma](https://prisma.io)
+- [Tailwind CSS](https://tailwindcss.com)
+- [tRPC](https://trpc.io)
 - [@shadcn/ui](https://ui.shadcn.com/)
 - [MailHog](https://github.com/mailhog/MailHog)
 

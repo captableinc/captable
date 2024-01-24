@@ -64,7 +64,7 @@ Follow the steps below to stand the app up locally.
 **1. Install dependencies.**
 
 ```sh
-pnpm i
+npm i
 ```
 
 **2. Spin up a local database.**
@@ -72,7 +72,7 @@ pnpm i
 First, ensure Docker is running.
 
 ```sh
-pnpm docker:start
+npm run docker:start
 ```
 
 Generate tables and the Prisma client.
@@ -84,13 +84,13 @@ npx prisma migrate dev
 To see what's in your database, run Prisma Studio:
 
 ```sh
-pnpm db:studio
+npm run db:studio
 ```
 
 **3. Run the web app**
 
 ```sh
-pnpm dev
+npm run dev
 ```
 
 Open your browser to the URLs given by the web app and studio processes. You're up and running, good job! 🎉

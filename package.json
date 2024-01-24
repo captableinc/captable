@@ -11,7 +11,6 @@
     "db:studio": "npx prisma studio",
     "db:migrate": "npx prisma migrate dev",
     "dev": "next dev",
-    "preinstall": "npx only-allow pnpm",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",

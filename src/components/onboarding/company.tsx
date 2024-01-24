@@ -104,7 +104,7 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
                     name="user.name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Your full name</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -118,7 +118,7 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
                     name="user.email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Your work email</FormLabel>
                         <FormControl>
                           <Input type="email" {...field} />
                         </FormControl>
@@ -148,7 +148,7 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
                     name="user.title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Title</FormLabel>
+                        <FormLabel>Your Job title</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>

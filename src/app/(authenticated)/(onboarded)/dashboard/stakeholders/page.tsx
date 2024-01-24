@@ -36,7 +36,7 @@ const StakeholdersPage = async () => {
             title="Add a stakeholder"
             subtitle="Invite a stakeholder to your company."
             member={{
-              name: "TEST",
+              name: "",
               email: "",
               title: "",
               access: "stakeholder",
@@ -52,7 +52,7 @@ const StakeholdersPage = async () => {
           <div className="pb-4">
             <TabsList>
               <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="invited">Invited</TabsTrigger>
+              <TabsTrigger value="invited">Pending</TabsTrigger>
               <TabsTrigger value="inactive">Inactive</TabsTrigger>
             </TabsList>
           </div>

@@ -5,6 +5,7 @@ import {
 } from "@/trpc/routers/stakeholder-router/schema";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { RiArrowRightLine } from "@remixicon/react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -55,7 +56,7 @@ export function VerifyMemberForm({
     <div className="flex min-h-screen w-full items-center justify-center">
       <div className="flex flex-col gap-y-4">
         <div className="flex flex-col gap-y-2 text-center">
-          <h1 className="text-3xl font-bold">Welcome to our platform</h1>
+          <h1 className="text-3xl font-bold">Welcome to our OpenCap! 👋</h1>
           <p className="text-muted-foreground">
             Enter your information to complete onboarding
           </p>
@@ -70,7 +71,7 @@ export function VerifyMemberForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Your full name</FormLabel>
                   <FormControl>
                     <Input disabled={isSubmitting} {...field} />
                   </FormControl>
@@ -84,7 +85,8 @@ export function VerifyMemberForm({
               className="w-full"
               type="submit"
             >
-              Onboard
+              Complete onboarding
+              <RiArrowRightLine className="ml-2 inline-block h-5 w-5" />
             </Button>
           </form>
         </Form>

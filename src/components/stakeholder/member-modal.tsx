@@ -174,7 +174,7 @@ const MemberModal = ({
             Send an invite
           </Button>
 
-          <p className="text-xs text-gray-500">
+          <p className="text-center text-xs text-gray-500">
             We{`'`}ll send an email to your stakeholder with a link to create an
             account.
           </p>

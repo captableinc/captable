@@ -1,4 +1,5 @@
 import MemberModal from "@/components/stakeholder/member-modal";
+import MemberTable from "@/components/stakeholder/member-table";
 import { MemberCard } from "@/components/stakeholder/member-card";
 import { Button } from "@/components/ui/button";
 
@@ -6,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { withServerSession } from "@/server/auth";
 import { getMembers, type TypeGetMembers } from "@/server/stakeholder";
+import { RiUserAddFill } from "@remixicon/react";
 
 const StakeholdersPage = async () => {
   const session = await withServerSession();
@@ -34,7 +36,7 @@ const StakeholdersPage = async () => {
         <div>
           <MemberModal
             title="Add a stakeholder"
-            subtitle="Invite a stakeholder to your company."
+            subtitle="Add a stakeholder to your company."
             member={{
               name: "",
               email: "",
@@ -42,53 +44,16 @@ const StakeholdersPage = async () => {
               access: "stakeholder",
             }}
           >
-            <Button className="w-full md:w-auto">Invite a stakeholder</Button>
+            <Button className="w-full md:w-auto">
+              <RiUserAddFill className="mr-2 inline-block h-4 w-4" />
+              Stakeholder
+            </Button>
           </MemberModal>
         </div>
       </div>
       <Separator />
       <div>
-        <Tabs defaultValue="active">
-          <div className="pb-4">
-            <TabsList>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="invited">Pending</TabsTrigger>
-              <TabsTrigger value="inactive">Inactive</TabsTrigger>
-            </TabsList>
-          </div>
-          <TabsContent value="active">
-            <div className="flex flex-col gap-y-6">
-              {currentMembers.length
-                ? currentMembers.map((item) => (
-                    <MemberCard
-                      key={item.id}
-                      name={item.user?.name}
-                      email={item.user?.email}
-                      status={item.status}
-                      userEmail={session.user.email}
-                      membershipId={item.id}
-                    />
-                  ))
-                : null}
-            </div>
-          </TabsContent>
-          <TabsContent value="invited">
-            <div className="flex flex-col gap-y-6">
-              {invitedMembers.length
-                ? invitedMembers.map((item) => (
-                    <MemberCard
-                      key={item.id}
-                      name={item.user?.name}
-                      email={item.invitedEmail}
-                      status={item.status}
-                      userEmail={session.user.email}
-                      membershipId={item.id}
-                    />
-                  ))
-                : null}
-            </div>
-          </TabsContent>
-        </Tabs>
+        <MemberTable />
       </div>
     </div>
   );

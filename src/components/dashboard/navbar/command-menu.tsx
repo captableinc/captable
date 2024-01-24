@@ -64,17 +64,17 @@ export function CommandMenu() {
     <div className={cn("ml-8 hidden flex-1 gap-x-6 md:flex md:justify-center")}>
       <Button
         variant="outline"
-        className="flex w-96 items-center justify-between rounded-lg text-muted-foreground"
+        className="flex w-80 items-center justify-between rounded text-muted-foreground"
         onClick={() => setOpen((s) => !s)}
       >
         <div className="flex items-center">
           <Search className="mr-2 h-5 w-5" />
-          Search
+          <span>Type a command or search</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          Press{" "}
-          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-            <span className="text-xs">⌘</span>K
+          {" "}
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-3 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+            <span className="text-sm">⌘</span>K
           </kbd>
         </p>
       </Button>

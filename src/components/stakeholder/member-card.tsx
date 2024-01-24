@@ -49,7 +49,7 @@ export function MemberCard({
   const handleRemoveMember = async () => {
     try {
       await removeMember.mutateAsync({ membershipId });
-      if (status === "PENDING" && email) {
+      if (status === "pending" && email) {
         await revokeInvite.mutateAsync({ email, membershipId });
       }
       if (isCurrentUser) {
@@ -64,7 +64,9 @@ export function MemberCard({
       <div className="flex items-center space-x-4">
         <Avatar>
           <AvatarImage
-            src={`https://api.dicebear.com/7.x/micah/svg?seed=${email}`}
+            src={`https://api.dicebear.com/7.x/initials/svg?seed=${
+              name ?? email
+            }`}
           />
           <AvatarFallback>{name ?? email}</AvatarFallback>
         </Avatar>
@@ -95,7 +97,7 @@ export function MemberCard({
               <DropdownMenuItem onSelect={handleRemoveMember}>
                 {isCurrentUser
                   ? "Leave project"
-                  : status === "ACCEPTED"
+                  : status === "accepted"
                     ? "Remove Member"
                     : "Revoke invite"}
               </DropdownMenuItem>

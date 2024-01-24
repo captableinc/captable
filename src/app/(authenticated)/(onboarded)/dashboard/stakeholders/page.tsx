@@ -1,5 +1,6 @@
-import { InviteMemberModal } from "@/components/stakeholder/invite-member-modal";
+import MemberModal from "@/components/stakeholder/member-modal";
 import { MemberCard } from "@/components/stakeholder/member-card";
+import { Button } from "@/components/ui/button";
 
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -13,7 +14,7 @@ const StakeholdersPage = async () => {
   const invitedMembers: TypeGetMembers = [];
 
   for (const member of members) {
-    if (member.isOnboarded && member.status === "ACCEPTED") {
+    if (member.isOnboarded && member.status === "accepted") {
       currentMembers.push(member);
     } else {
       invitedMembers.push(member);
@@ -26,24 +27,36 @@ const StakeholdersPage = async () => {
         <div className="gap-y-3">
           <h2 className="text-xl font-medium">Stakeholders</h2>
           <p className="text-sm text-muted-foreground">
-            Teammates that have access to this project.
+            Manage your company{`'`}s stakeholders
           </p>
         </div>
 
         <div>
-          <InviteMemberModal inviteeName={session.user.name} />
+          <MemberModal
+            title="Add a stakeholder"
+            subtitle="Invite a stakeholder to your company."
+            member={{
+              name: "TEST",
+              email: "",
+              title: "",
+              access: "stakeholder",
+            }}
+          >
+            <Button className="w-full md:w-auto">Invite a stakeholder</Button>
+          </MemberModal>
         </div>
       </div>
       <Separator />
       <div>
-        <Tabs defaultValue="members">
+        <Tabs defaultValue="active">
           <div className="pb-4">
             <TabsList>
-              <TabsTrigger value="members">Members</TabsTrigger>
-              <TabsTrigger value="invitation">Invitation</TabsTrigger>
+              <TabsTrigger value="active">Active</TabsTrigger>
+              <TabsTrigger value="invited">Invited</TabsTrigger>
+              <TabsTrigger value="inactive">Inactive</TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value="members">
+          <TabsContent value="active">
             <div className="flex flex-col gap-y-6">
               {currentMembers.length
                 ? currentMembers.map((item) => (
@@ -59,7 +72,7 @@ const StakeholdersPage = async () => {
                 : null}
             </div>
           </TabsContent>
-          <TabsContent value="invitation">
+          <TabsContent value="invited">
             <div className="flex flex-col gap-y-6">
               {invitedMembers.length
                 ? invitedMembers.map((item) => (

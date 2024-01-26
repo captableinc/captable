@@ -10,8 +10,13 @@ export const getMembers = (companyId: string) => {
         select: {
           name: true,
           email: true,
+          image: true,
         },
       },
+    },
+
+    orderBy: {
+      createdAt: "asc",
     },
   });
 };

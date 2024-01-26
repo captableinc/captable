@@ -40,47 +40,40 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const data: Payment[] = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
-];
+import { type TypeGetMembers } from "@/server/stakeholder";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
+type MembersType = {
+  members: TypeGetMembers;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+const humanizeStatus = (status: string, active: boolean) => {
+  debugger;
+  if (status === "pending") {
+    return (
+      <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+        Pending
+      </span>
+    );
+  }
+  if (status === "accepted" && active) {
+    return (
+      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+        Active
+      </span>
+    );
+  }
+  if (status === "accepted" && !active) {
+    return (
+      <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+        Inactive
+      </span>
+    );
+  }
+  return "Unknown";
+};
+
+export const columns: ColumnDef<TypeGetMembers[0]>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -104,41 +97,89 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    id: "name",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
+    accessorFn: (row) => row.user?.name,
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="flex">
+        <Avatar className="">
+          <AvatarImage
+            src={
+              row.original?.user?.image ??
+              `https://api.dicebear.com/7.x/initials/svg?seed=${
+                row.original?.user?.name ?? row.original?.user?.email
+              }`
+            }
+          />
+        </Avatar>
+
+        <div className=" ml-2">
+          <p>{row.original?.user?.name}</p>
+          <p>{row.original?.user?.email ?? row.original.invitedEmail}</p>
+        </div>
+      </div>
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "title",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
+        <div
+          className="flex cursor-pointer"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Title
           <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
+        </div>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="text-left capitalize">{row.getValue("title")}</div>
+    ),
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </div>
+      );
     },
+    cell: ({ row }) => (
+      <div>{humanizeStatus(row.original.status, row.original.active)}</div>
+    ),
+  },
+  {
+    accessorKey: "access",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Access
+          <CaretSortIcon className="ml-2 h-4 w-4" />
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("access")}</div>
+    ),
   },
   {
     id: "actions",
@@ -148,12 +189,14 @@ export const columns: ColumnDef<Payment>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <div className="items-end justify-end text-right">
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <DotsHorizontalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+          </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
@@ -171,7 +214,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-const MemberTable = () => {
+const MemberTable = ({ members }: MembersType) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -181,8 +224,8 @@ const MemberTable = () => {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
-    columns,
+    data: members,
+    columns: columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -203,17 +246,17 @@ const MemberTable = () => {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Search by name..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-64"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDownIcon className="ml-2 h-4 w-4" />
+              Select columns <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

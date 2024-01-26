@@ -121,6 +121,7 @@ model Membership {
   @@unique([companyId, invitedEmail])
   @@unique([userId])
   @@index([companyId])
+  @@index([status])
 }
 
 model Audit {

@@ -1,27 +1,15 @@
 import MemberModal from "@/components/stakeholder/member-modal";
 import MemberTable from "@/components/stakeholder/member-table";
-import { MemberCard } from "@/components/stakeholder/member-card";
 import { Button } from "@/components/ui/button";
 
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { withServerSession } from "@/server/auth";
 import { getMembers, type TypeGetMembers } from "@/server/stakeholder";
-import { RiUserAddFill } from "@remixicon/react";
+import { RiAddLine } from "@remixicon/react";
 
 const StakeholdersPage = async () => {
   const session = await withServerSession();
   const members = await getMembers(session.user.companyId);
-  const currentMembers: TypeGetMembers = [];
-  const invitedMembers: TypeGetMembers = [];
-
-  for (const member of members) {
-    if (member.isOnboarded && member.status === "accepted") {
-      currentMembers.push(member);
-    } else {
-      invitedMembers.push(member);
-    }
-  }
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -45,7 +33,7 @@ const StakeholdersPage = async () => {
             }}
           >
             <Button className="w-full md:w-auto">
-              <RiUserAddFill className="mr-2 inline-block h-4 w-4" />
+              <RiAddLine className="inline-block h-5 w-5" />
               Stakeholder
             </Button>
           </MemberModal>
@@ -53,7 +41,7 @@ const StakeholdersPage = async () => {
       </div>
       <Separator />
       <div>
-        <MemberTable />
+        <MemberTable members={members} />
       </div>
     </div>
   );

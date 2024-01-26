@@ -68,9 +68,9 @@ model VerificationToken {
 }
 
 model Company {
-  id   String @id @default(cuid())
-  name String
-
+  id                   String   @id @default(cuid())
+  name                 String
+  publicId             String
   incorporationType    String
   incorporationDate    DateTime
   incorporationCountry String
@@ -85,6 +85,8 @@ model Company {
   updatedAt DateTime     @updatedAt
   users     Membership[]
   audits    Audit[]
+
+  @@unique([publicId])
 }
 
 enum MEMBERHIP_STATUS {
@@ -119,9 +121,9 @@ model Membership {
   company   Company @relation(fields: [companyId], references: [id])
 
   @@unique([companyId, invitedEmail])
-  @@unique([userId])
   @@index([companyId])
   @@index([status])
+  @@index([userId])
 }
 
 model Audit {

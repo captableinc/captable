@@ -67,10 +67,10 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
   });
 
   const mutation = api.onboarding.onboard.useMutation({
-    onSuccess: async () => {
+    onSuccess: async ({ publicId }) => {
       await update();
 
-      router.push("/dashboard");
+      router.push(`/${publicId}`);
     },
   });
 

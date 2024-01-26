@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { Separator } from "@/components/ui/separator";
 import { withServerSession } from "@/server/auth";
-import { getMembers, type TypeGetMembers } from "@/server/stakeholder";
+import { getMembers } from "@/server/stakeholder";
 import { RiAddLine } from "@remixicon/react";
 
 const StakeholdersPage = async () => {

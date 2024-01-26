@@ -16,7 +16,7 @@ import {
   DropdownMenuContent,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { RiMore2Line } from "@remixicon/react";
+import { RiMore2Line, RiUserSettingsLine } from "@remixicon/react";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -46,10 +46,10 @@ export function MemberCard({
     typeof email === "string" &&
     userEmail === email;
 
-  const handleRemoveMember = async () => {
+  const handleDeactivateStakeholder = async () => {
     try {
       await removeMember.mutateAsync({ membershipId });
-      if (status === "PENDING" && email) {
+      if (status === "pending" && email) {
         await revokeInvite.mutateAsync({ email, membershipId });
       }
       if (isCurrentUser) {
@@ -64,7 +64,9 @@ export function MemberCard({
       <div className="flex items-center space-x-4">
         <Avatar>
           <AvatarImage
-            src={`https://api.dicebear.com/7.x/micah/svg?seed=${email}`}
+            src={`https://api.dicebear.com/7.x/initials/svg?seed=${
+              name ?? email
+            }`}
           />
           <AvatarFallback>{name ?? email}</AvatarFallback>
         </Avatar>
@@ -73,30 +75,26 @@ export function MemberCard({
           <p className="text-sm text-muted-foreground">{email}</p>
         </div>
       </div>
-      <div className="flex items-center gap-x-2">
-        <Select defaultValue="edit">
-          <SelectTrigger className="ml-auto w-[110px]">
-            <SelectValue placeholder="Select" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="edit">Can edit</SelectItem>
-            <SelectItem value="view">Can view</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex items-center gap-x-4">
+        <div>CEO</div>
+        <div>2 days ago</div>
 
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="more">
-                <RiMore2Line className="h-4 w-4" aria-hidden />
+                <RiUserSettingsLine className="h-5 w-5" aria-hidden />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={handleRemoveMember}>
+              <DropdownMenuItem
+                onSelect={handleDeactivateStakeholder}
+                className="cursor-pointer"
+              >
                 {isCurrentUser
-                  ? "Leave project"
-                  : status === "ACCEPTED"
-                    ? "Remove Member"
+                  ? "Leave company"
+                  : status === "accepted"
+                    ? "Deactivate stakeholder"
                     : "Revoke invite"}
               </DropdownMenuItem>
             </DropdownMenuContent>

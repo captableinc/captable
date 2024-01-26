@@ -88,23 +88,22 @@ model Company {
 }
 
 enum MEMBERHIP_STATUS {
-  PENDING
-  ACCEPTED
-  DECLINED
+  pending
+  accepted
+  declined
 }
 
 enum MEMBERSHIP_ACCESS {
-  READ
-  WRITE
-  ADMIN
+  admin
+  stakeholder
 }
 
 model Membership {
   id          String            @id @default(cuid())
   title       String?
   active      Boolean           @default(true)
-  status      MEMBERHIP_STATUS  @default(PENDING)
-  access      MEMBERSHIP_ACCESS @default(READ)
+  status      MEMBERHIP_STATUS  @default(pending)
+  access      MEMBERSHIP_ACCESS @default(stakeholder)
   isOnboarded Boolean           @default(false)
 
   lastAccessed DateTime @default(now())
@@ -122,6 +121,7 @@ model Membership {
   @@unique([companyId, invitedEmail])
   @@unique([userId])
   @@index([companyId])
+  @@index([status])
 }
 
 model Audit {

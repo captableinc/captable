@@ -20,7 +20,8 @@ export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
     .input(ZodInviteMemberMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { email, inviteeName } = input;
+      const user = ctx.session.user;
+      const { name, email, title, access } = input;
 
       //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
       const token = nanoid(32);
@@ -33,7 +34,7 @@ export const stakeholderRouter = createTRPCRouter({
       const { company, memberToken } = await ctx.db.$transaction(async (tx) => {
         const company = await tx.company.findFirstOrThrow({
           where: {
-            id: ctx.session.user.companyId,
+            id: user.companyId,
           },
           select: {
             name: true,
@@ -45,7 +46,7 @@ export const stakeholderRouter = createTRPCRouter({
           where: {
             companyId: company.id,
             invitedEmail: email,
-            status: "ACCEPTED",
+            status: "accepted",
           },
         });
 
@@ -65,14 +66,14 @@ export const stakeholderRouter = createTRPCRouter({
           },
           update: {},
           create: {
+            title,
+            access: access ?? "stakeholder",
             companyId: company.id,
             invitedEmail: email,
-            access: "READ",
             active: false,
             isOnboarded: false,
             lastAccessed: new Date(),
-            status: "PENDING",
-            title: "",
+            status: "pending",
           },
           select: {
             id: true,
@@ -119,9 +120,9 @@ export const stakeholderRouter = createTRPCRouter({
         subject: `Join ${company.name} on ${constants.title}`,
         html: await render(
           MemberInviteEmail({
-            companyName: company.name,
             inviteLink,
-            invitedByUsername: inviteeName,
+            companyName: company.name,
+            invitedBy: (user.name ?? user.email)!,
           }),
         ),
       });
@@ -132,6 +133,8 @@ export const stakeholderRouter = createTRPCRouter({
   acceptMember: protectedProcedure
     .input(ZodAcceptMemberMutationSchema)
     .mutation(async ({ ctx, input }) => {
+      const user = ctx.session.user;
+
       await ctx.db.$transaction([
         ctx.db.verificationToken.delete({
           where: {
@@ -140,7 +143,7 @@ export const stakeholderRouter = createTRPCRouter({
         }),
         ctx.db.user.update({
           where: {
-            id: ctx.session.user.id,
+            id: user.id,
           },
           data: {
             name: input.name,
@@ -152,10 +155,10 @@ export const stakeholderRouter = createTRPCRouter({
           },
           data: {
             active: true,
-            status: "ACCEPTED",
+            status: "accepted",
             lastAccessed: new Date(),
             isOnboarded: true,
-            userId: ctx.session.user.id,
+            userId: user.id,
           },
         }),
       ]);

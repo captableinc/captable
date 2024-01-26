@@ -5,7 +5,6 @@ import {
   RiPieChartLine,
   RiSafeLine,
   RiUserHeartLine,
-  RiUserSettingsLine,
   RiFolder5Line,
   RiFolderChartLine,
   RiFileList2Line,
@@ -31,7 +30,6 @@ import {
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: RiHome4Line },
-  { name: "Team", href: "/dashboard/team", icon: RiUserHeartLine },
   { name: "SAFEs", href: "/dashboard/safe", icon: RiSafeLine },
   { name: "Cap table", href: "/dashboard/captable", icon: RiPieChartLine },
   {
@@ -42,7 +40,7 @@ const navigation = [
   {
     name: "Stakeholders",
     href: "/dashboard/stakeholders",
-    icon: RiUserSettingsLine,
+    icon: RiUserHeartLine,
   },
   { name: "Documents", href: "/dashboard/documents", icon: RiFolder5Line },
   { name: "Reports", href: "/dashboard/reports", icon: RiFolderChartLine },

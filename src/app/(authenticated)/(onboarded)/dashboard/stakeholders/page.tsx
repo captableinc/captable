@@ -1,24 +1,15 @@
-import { InviteMemberModal } from "@/components/stakeholder/invite-member-modal";
-import { MemberCard } from "@/components/stakeholder/member-card";
+import MemberModal from "@/components/stakeholder/member-modal";
+import MemberTable from "@/components/stakeholder/member-table";
+import { Button } from "@/components/ui/button";
 
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { withServerSession } from "@/server/auth";
 import { getMembers, type TypeGetMembers } from "@/server/stakeholder";
+import { RiAddLine } from "@remixicon/react";
 
 const StakeholdersPage = async () => {
   const session = await withServerSession();
   const members = await getMembers(session.user.companyId);
-  const currentMembers: TypeGetMembers = [];
-  const invitedMembers: TypeGetMembers = [];
-
-  for (const member of members) {
-    if (member.isOnboarded && member.status === "ACCEPTED") {
-      currentMembers.push(member);
-    } else {
-      invitedMembers.push(member);
-    }
-  }
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -26,56 +17,31 @@ const StakeholdersPage = async () => {
         <div className="gap-y-3">
           <h2 className="text-xl font-medium">Stakeholders</h2>
           <p className="text-sm text-muted-foreground">
-            Teammates that have access to this project.
+            Manage your company{`'`}s stakeholders
           </p>
         </div>
 
         <div>
-          <InviteMemberModal inviteeName={session.user.name} />
+          <MemberModal
+            title="Add a stakeholder"
+            subtitle="Add a stakeholder to your company."
+            member={{
+              name: "",
+              email: "",
+              title: "",
+              access: "stakeholder",
+            }}
+          >
+            <Button className="w-full md:w-auto">
+              <RiAddLine className="inline-block h-5 w-5" />
+              Stakeholder
+            </Button>
+          </MemberModal>
         </div>
       </div>
       <Separator />
       <div>
-        <Tabs defaultValue="members">
-          <div className="pb-4">
-            <TabsList>
-              <TabsTrigger value="members">Members</TabsTrigger>
-              <TabsTrigger value="invitation">Invitation</TabsTrigger>
-            </TabsList>
-          </div>
-          <TabsContent value="members">
-            <div className="flex flex-col gap-y-6">
-              {currentMembers.length
-                ? currentMembers.map((item) => (
-                    <MemberCard
-                      key={item.id}
-                      name={item.user?.name}
-                      email={item.user?.email}
-                      status={item.status}
-                      userEmail={session.user.email}
-                      membershipId={item.id}
-                    />
-                  ))
-                : null}
-            </div>
-          </TabsContent>
-          <TabsContent value="invitation">
-            <div className="flex flex-col gap-y-6">
-              {invitedMembers.length
-                ? invitedMembers.map((item) => (
-                    <MemberCard
-                      key={item.id}
-                      name={item.user?.name}
-                      email={item.invitedEmail}
-                      status={item.status}
-                      userEmail={session.user.email}
-                      membershipId={item.id}
-                    />
-                  ))
-                : null}
-            </div>
-          </TabsContent>
-        </Tabs>
+        <MemberTable members={members} />
       </div>
     </div>
   );

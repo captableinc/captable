@@ -5,7 +5,7 @@ export const ZodOnboardingMutationSchema = z.object({
     name: z.string().min(1, {
       message: "Name is required",
     }),
-    email: z.string().min(1, {
+    email: z.string().email().min(1, {
       message: "Email is required",
     }),
     title: z

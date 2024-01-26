@@ -15,17 +15,17 @@ import {
 } from "jsx-email";
 
 interface MemberInviteEmailProps {
-  invitedByUsername: string;
+  invitedBy: string;
   companyName: string;
   inviteLink: string;
 }
 
 export const MemberInviteEmail = ({
-  invitedByUsername,
+  invitedBy,
   companyName,
   inviteLink,
 }: MemberInviteEmailProps) => {
-  const previewText = `Join ${invitedByUsername} on ${constants.title}`;
+  const previewText = `Join ${invitedBy} on ${constants.title}`;
 
   return (
     <Html>
@@ -42,7 +42,7 @@ export const MemberInviteEmail = ({
               Hello ,
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{invitedByUsername}</strong> has invited you to join{" "}
+              <strong>{invitedBy}</strong> has invited you to join{" "}
               <strong>{companyName}</strong> on <strong>OpenCap</strong>.
             </Text>
 
@@ -76,7 +76,7 @@ export const MemberInviteEmail = ({
 };
 
 MemberInviteEmail.PreviewProps = {
-  invitedByUsername: "joker",
+  invitedBy: "joker",
   companyName: "Batmobile",
   inviteLink: "https://opencap.co/teams/invite/foo",
 } as MemberInviteEmailProps;

@@ -40,15 +40,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { api } from "@/trpc/react";
 import { type TypeGetMembers } from "@/server/stakeholder";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import MemberModal from "@/components/stakeholder/member-modal";
 
 type MembersType = {
   members: TypeGetMembers;
 };
 
 const humanizeStatus = (status: string, active: boolean) => {
-  debugger;
   if (status === "pending") {
     return (
       <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
@@ -185,7 +186,9 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const member = row.original;
+      const removeMember = api.stakeholder.removeMember.useMutation();
+      const revokeInvite = api.stakeholder.revokeInvite.useMutation();
 
       return (
         <DropdownMenu>
@@ -199,14 +202,28 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+
+            <MemberModal
+              title="Update stakeholder"
+              subtitle="Update stakeholder's account information."
+              member={{
+                name: member.user?.name ?? "",
+                email: member.user?.email ?? "",
+                title: member.title ?? "",
+                access: member.access ?? "stakesholder",
+              }}
             >
-              Copy payment ID
-            </DropdownMenuItem>
+              <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                Update
+              </span>
+            </MemberModal>
+
+            <DropdownMenuItem>Reinvite</DropdownMenuItem>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500">
+              Deactivate
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

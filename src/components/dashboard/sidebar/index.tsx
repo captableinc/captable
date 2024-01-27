@@ -19,6 +19,13 @@ import {
   RiAccountCircleFill,
 } from "@remixicon/react";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
 
@@ -44,13 +51,13 @@ const navigation = [
   },
   {
     name: "Share classes",
-    href: "/shares",
+    href: "/share-classes",
     icon: RiFolderChart2Line,
     activeIcon: RiFolderChart2Fill,
   },
   {
     name: "Equity plans",
-    href: "/equities",
+    href: "/equity-plans",
     icon: RiFolderChart2Line,
     activeIcon: RiFolderChart2Fill,
   },
@@ -59,6 +66,52 @@ const navigation = [
     href: "/securities",
     icon: RiSafeLine,
     activeIcon: RiSafeFill,
+    subNav: [
+      {
+        name: "Equity",
+        href: "/equity",
+      },
+      {
+        name: "Options",
+        href: "/options",
+      },
+      {
+        name: "SAFEs",
+        href: "/safes",
+      },
+      {
+        name: "Convertible notes",
+        href: "/convertible-notes",
+      },
+      // {
+      //   name: "RSUs",
+      //   href: "/rsus",
+      // },
+      // {
+      //   name: "Phantom",
+      //   href: "/phantom",
+      // },
+      // {
+      //   name: "ESPP",
+      //   href: "/espp",
+      // },
+      // {
+      //   name: "Warrants",
+      //   href: "/warrants",
+      // },
+      // {
+      //   name: "KISS",
+      //   href: "/kiss",
+      // },
+      // {
+      //   name: "SARs",
+      //   href: "/sars",
+      // },
+      // {
+      //   name: "Other",
+      //   href: "/other",
+      // },
+    ],
   },
   {
     name: "Documents",
@@ -119,21 +172,74 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
           </div>
 
           <div className="overflow-auto py-2">
-            <ul role="list" className=" space-y-1">
+            <ul role="list" className="space-y-1">
               {navigation.map((item) => {
                 const href = basePath + item.href;
                 const isActive =
                   currentPath === href ||
-                  (currentPath === basePath && item.href === "/");
-                // debugger;
+                  (currentPath === basePath && item.href === "/") ||
+                  (currentPath.includes(`${item.href}/`) && item.href !== "/");
+
                 return (
                   <li key={item.name}>
-                    <NavLink
-                      active={isActive}
-                      name={item.name}
-                      href={href}
-                      icon={isActive ? item.activeIcon : item.icon}
-                    />
+                    {item.subNav ? (
+                      <Accordion type="single" collapsible>
+                        <AccordionItem value="item-1" className="border-none">
+                          <div className="flex">
+                            <item.icon
+                              className={cn(
+                                "ml-1 mr-1 mt-2 inline-block",
+                                isActive
+                                  ? "text-primary"
+                                  : "text-gray-400 group-hover:text-primary",
+                                "h-6 w-6 shrink-0",
+                              )}
+                              aria-hidden="true"
+                            />
+                            <AccordionTrigger
+                              className={cn(
+                                isActive
+                                  ? "bg-gray-50 font-semibold text-primary"
+                                  : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                                "group flex gap-x-3 rounded-md p-2 text-sm leading-6 hover:no-underline",
+                              )}
+                            >
+                              {item.name}
+                            </AccordionTrigger>
+                          </div>
+
+                          <AccordionContent>
+                            <ul role="list" className="space-y-1">
+                              {item.subNav.map((subItem) => {
+                                const href =
+                                  basePath + item.href + subItem.href;
+                                const isActive = currentPath.includes(
+                                  item.href + subItem.href,
+                                );
+
+                                return (
+                                  <li key={subItem.name}>
+                                    <NavLink
+                                      active={isActive}
+                                      name={subItem.name}
+                                      href={href}
+                                      className="ml-9"
+                                    />
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    ) : (
+                      <NavLink
+                        active={isActive}
+                        name={item.name}
+                        href={href}
+                        icon={isActive ? item.activeIcon : item.icon}
+                      />
+                    )}
                   </li>
                 );
               })}

@@ -29,7 +29,7 @@ const DashboardLayout = async ({
       <div className="flex flex-grow flex-col lg:border-l">
         <NavBar companies={companies} publicId={publicId} />
         <div className="mx-auto min-h-full w-full px-5 py-10 lg:px-8 2xl:max-w-screen-xl">
-          <div className="rounded border bg-white p-10 shadow">{children}</div>
+          {children}
         </div>
       </div>
     </div>

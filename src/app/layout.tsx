@@ -1,5 +1,7 @@
+import { inter, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import "cal-sans";
+import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
@@ -24,8 +26,8 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
 
   return (
-    <html lang="en">
-      <body className="min-h-screen ">
+    <html lang="en" className={cn(satoshi.variable, inter.variable)}>
+      <body className="min-h-screen">
         <NextAuthProvider session={session}>
           <TRPCReactProvider cookies={cookies().toString()}>
             <main>{children}</main>

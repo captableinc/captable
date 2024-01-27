@@ -22,14 +22,14 @@ const DashboardLayout = async ({
   const companies = await getCompanyList(user.id);
 
   return (
-    <div className="flex">
-      <aside className="sticky top-0 hidden h-screen w-64 flex-shrink-0 flex-col lg:flex ">
+    <div className="flex bg-gray-50">
+      <aside className="sticky top-0 hidden h-screen w-64 flex-shrink-0 flex-col lg:flex">
         <SideBar companies={companies} publicId={publicId} />
       </aside>
       <div className="flex flex-grow flex-col lg:border-l">
         <NavBar companies={companies} publicId={publicId} />
-        <div className="w-full px-4 py-6 lg:px-8 2xl:mx-auto 2xl:max-w-screen-2xl">
-          {children}
+        <div className="mx-auto min-h-full w-full px-5 py-10 lg:px-8 2xl:max-w-screen-xl">
+          <div className="rounded border bg-white p-10 shadow">{children}</div>
         </div>
       </div>
     </div>

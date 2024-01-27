@@ -10,6 +10,10 @@ const config = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      display: ["var(--font-satoshi)", "system-ui", "sans-serif"],
+      default: ["var(--font-inter)", "system-ui", "sans-serif"],
+    },
     container: {
       center: true,
       padding: "2rem",

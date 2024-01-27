@@ -77,16 +77,16 @@
     font-family: "Cal Sans";
   }
   h1 {
-    @apply font-cal text-6xl sm:text-7xl;
+    @apply text-6xl sm:text-7xl;
   }
   h2 {
-    @apply font-cal text-4xl;
+    @apply text-4xl;
   }
   h3 {
-    @apply font-cal text-2xl font-medium;
+    @apply text-2xl font-medium;
   }
   h4 {
-    @apply font-cal text-lg uppercase tracking-widest;
+    @apply text-lg uppercase tracking-widest;
   }
 }
 

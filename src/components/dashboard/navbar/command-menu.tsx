@@ -18,24 +18,24 @@ import { useRouter } from "next/navigation";
 
 const Pages = [
   {
-    title: "Createa a SAFE",
-    path: "/dashboard/safe",
-  },
-  {
     title: "Add Stakeholder",
-    path: "/dashboard/stakeholders",
+    path: "/stakeholders",
   },
   {
     title: "Upload document",
-    path: "/dashboard/documents",
+    path: "/documents",
   },
   {
     title: "Create an equity plan",
-    path: "/dashboard/captable",
+    path: "/captable",
   },
   {
     title: "Create a share class",
-    path: "/dashboard/securities",
+    path: "/securities",
+  },
+  {
+    title: "Create a SAFE",
+    path: "/safe",
   },
 ];
 

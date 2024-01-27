@@ -50,7 +50,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  companys      Membership[]
+  companies     Membership[]
 }
 
 model WaitlistUser {

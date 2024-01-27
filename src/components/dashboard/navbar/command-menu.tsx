@@ -74,7 +74,7 @@ export function CommandMenu() {
         <p className="text-sm text-muted-foreground">
           {" "}
           <kbd className="font-mono pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-3">
-            <span className="text-sm">⌘</span>K
+            ⌘ <span className="text-xs">K</span>
           </kbd>
         </p>
       </Button>

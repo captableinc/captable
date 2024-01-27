@@ -1,19 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { RiArrowRightLine } from "@remixicon/react";
 
 const CaptablePage = () => {
   const params = useParams<{ publicId: string }>();
+  const { data } = useSession();
+  const firstName = data?.user.name?.split(" ")[0];
 
   return (
     <div className="flex flex-wrap">
       <div className="mb-10 w-full md:w-1/2">
         <div className="md:max-w-lg">
           <header className="mb-10">
-            <h3 className="font-medium">Welcome to OpenCap, Puru 👋</h3>
+            <h3 className="font-medium">
+              Welcome to OpenCap{firstName && `, ${firstName}`} 👋
+            </h3>
             <p className="text-md text-muted-foreground">
               Let{`'`}s start managing your company{`'`}s cap table.
             </p>

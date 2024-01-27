@@ -15,6 +15,7 @@ import { db } from "@/server/db";
 import { env } from "@/env";
 import { sendMail } from "./mailer";
 import MagicLinkEmail from "@/emails/MagicLinkEmail";
+import { type MEMBERSHIP_ACCESS } from "@prisma/client";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -33,6 +34,7 @@ declare module "next-auth" {
       companyId: string;
       membershipId: string;
       companyPublicId: string;
+      access: MEMBERSHIP_ACCESS;
     } & DefaultSession["user"];
   }
 }
@@ -44,6 +46,7 @@ declare module "next-auth/jwt" {
     companyId: string;
     membershipId: string;
     companyPublicId: string;
+    access: MEMBERSHIP_ACCESS;
   }
 }
 
@@ -59,6 +62,7 @@ export const authOptions: NextAuthOptions = {
       session.user.companyId = token.companyId;
       session.user.membershipId = token.membershipId;
       session.user.companyPublicId = token.companyPublicId;
+      session.user.access = token.access;
 
       if (token.sub) {
         session.user.id = token.sub;
@@ -82,6 +86,7 @@ export const authOptions: NextAuthOptions = {
             id: true,
             companyId: true,
             isOnboarded: true,
+            access: true,
             user: {
               select: {
                 name: true,
@@ -101,11 +106,13 @@ export const authOptions: NextAuthOptions = {
           token.membershipId = membership.id;
           token.name = membership.user?.name;
           token.companyPublicId = membership.company.publicId;
+          token.access = membership.access;
         } else {
           token.isOnboarded = false;
           token.companyId = "";
           token.membershipId = "";
           token.companyPublicId = "";
+          token.access = "stakeholder";
         }
       }
 

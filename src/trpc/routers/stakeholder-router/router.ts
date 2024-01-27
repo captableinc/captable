@@ -9,6 +9,7 @@ import {
   ZodInviteMemberMutationSchema,
   ZodRemoveMemberMutationSchema,
   ZodRevokeInviteMutationSchema,
+  ZodUpdateMemberMutationSchema,
 } from "./schema";
 import { nanoid } from "nanoid";
 import { createHash } from "@/lib/crypto";
@@ -230,6 +231,31 @@ export const stakeholderRouter = createTRPCRouter({
         },
         data: {
           active: status,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  updateMember: adminOnlyProcedure
+    .input(ZodUpdateMemberMutationSchema)
+    .mutation(async ({ ctx: { session, db }, input }) => {
+      const { membershipId, name, email, ...rest } = input;
+
+      await db.membership.update({
+        where: {
+          status: "accepted",
+          id: membershipId,
+          companyId: session.user.companyId,
+        },
+        data: {
+          ...rest,
+          user: {
+            update: {
+              name,
+              email,
+            },
+          },
         },
       });
 

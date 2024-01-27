@@ -1,6 +1,11 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
+import {
+  adminOnlyProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/trpc/api/trpc";
 import {
   ZodAcceptMemberMutationSchema,
+  ZodDeactivateUserMutationSchema,
   ZodInviteMemberMutationSchema,
   ZodRemoveMemberMutationSchema,
   ZodRevokeInviteMutationSchema,
@@ -173,7 +178,7 @@ export const stakeholderRouter = createTRPCRouter({
       return { success: true, publicId: data[2].company.publicId };
     }),
 
-  revokeInvite: protectedProcedure
+  revokeInvite: adminOnlyProcedure
     .input(ZodRevokeInviteMutationSchema)
     .mutation(async ({ ctx: { db }, input }) => {
       const { membershipId, email } = input;
@@ -198,7 +203,7 @@ export const stakeholderRouter = createTRPCRouter({
       return { success: true };
     }),
 
-  removeMember: protectedProcedure
+  removeMember: adminOnlyProcedure
     .input(ZodRemoveMemberMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
       const { membershipId } = input;
@@ -207,6 +212,24 @@ export const stakeholderRouter = createTRPCRouter({
         where: {
           id: membershipId,
           companyId: session.user.companyId,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  deactivateUser: adminOnlyProcedure
+    .input(ZodDeactivateUserMutationSchema)
+    .mutation(async ({ ctx: { session, db }, input }) => {
+      const { membershipId, status } = input;
+
+      await db.membership.update({
+        where: {
+          id: membershipId,
+          companyId: session.user.companyId,
+        },
+        data: {
+          active: status,
         },
       });
 

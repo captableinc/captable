@@ -44,3 +44,12 @@ export const ZodRemoveMemberMutationSchema = z.object({
 export type TypeZodRemoveMemberMutationSchema = z.infer<
   typeof ZodAcceptMemberMutationSchema
 >;
+
+export const ZodDeactivateUserMutationSchema = z.object({
+  membershipId: z.string().min(1),
+  status: z.boolean(),
+});
+
+export type TypeZodDeactivateUserMutationSchema = z.infer<
+  typeof ZodAcceptMemberMutationSchema
+>;

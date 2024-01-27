@@ -2,10 +2,8 @@ name: Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-on:
-  pull_request:
-    branches-ignore:
-      - main
+on: [pull_request]
+
 jobs:
   Deploy-Preview:
     runs-on: ubuntu-latest

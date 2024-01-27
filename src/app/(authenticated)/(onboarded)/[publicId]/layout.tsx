@@ -27,7 +27,7 @@ const DashboardLayout = async ({
         <SideBar companies={companies} publicId={publicId} />
       </aside>
       <div className="flex flex-grow flex-col lg:border-l">
-        <NavBar />
+        <NavBar companies={companies} publicId={publicId} />
         <div className="w-full px-4 py-6 lg:px-8 2xl:mx-auto 2xl:max-w-screen-2xl">
           {children}
         </div>

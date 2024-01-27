@@ -1,16 +1,22 @@
 "use client";
 
 import {
-  RiHome4Line,
   RiPieChartLine,
+  RiPieChartFill,
   RiSafeLine,
-  RiUserHeartLine,
+  RiSafeFill,
   RiFolder5Line,
+  RiFolder5Fill,
   RiFolderChartLine,
+  RiFolderChartFill,
   RiFileList2Line,
+  RiFileList2Fill,
   RiEqualizer2Line,
-  RiListOrdered2,
-  RiFolderShield2Line,
+  RiListCheck3,
+  RiFolderChart2Line,
+  RiFolderChart2Fill,
+  RiAccountCircleLine,
+  RiAccountCircleFill,
 } from "@remixicon/react";
 
 import { usePathname } from "next/navigation";
@@ -24,32 +30,71 @@ import { type TGetCompanyList } from "@/server/company";
 import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
-  { name: "Home", href: "/dashboard", icon: RiHome4Line },
-  { name: "SAFEs", href: "/dashboard/safe", icon: RiSafeLine },
-  { name: "Cap table", href: "/dashboard/captable", icon: RiPieChartLine },
   {
-    name: "Securities",
-    href: "/securities",
-    icon: RiFolderShield2Line,
+    name: "Cap table",
+    href: "/",
+    icon: RiPieChartLine,
+    activeIcon: RiPieChartFill,
   },
   {
     name: "Stakeholders",
-    href: "/dashboard/stakeholders",
-    icon: RiUserHeartLine,
+    href: "/stakeholders",
+    icon: RiAccountCircleLine,
+    activeIcon: RiAccountCircleFill,
   },
-  { name: "Documents", href: "/documents", icon: RiFolder5Line },
-  { name: "Reports", href: "/reports", icon: RiFolderChartLine },
-  { name: "Audits", href: "/audits", icon: RiListOrdered2 },
+  {
+    name: "Share classes",
+    href: "/shares",
+    icon: RiFolderChart2Line,
+    activeIcon: RiFolderChart2Fill,
+  },
+  {
+    name: "Equity plans",
+    href: "/equities",
+    icon: RiFolderChart2Line,
+    activeIcon: RiFolderChart2Fill,
+  },
+  {
+    name: "Securities",
+    href: "/securities",
+    icon: RiSafeLine,
+    activeIcon: RiSafeFill,
+  },
+  {
+    name: "Documents",
+    href: "/documents",
+    icon: RiFolder5Line,
+    activeIcon: RiFolder5Fill,
+  },
+  {
+    name: "Reports",
+    href: "/reports",
+    icon: RiFolderChartLine,
+    activeIcon: RiFolderChartFill,
+  },
+  {
+    name: "Audits",
+    href: "/audits",
+    icon: RiListCheck3,
+    activeIcon: RiListCheck3,
+  },
 ];
 
 const forms = [
   {
     id: 1,
     name: "409A Valuation",
-    href: "/dashboard/409a",
+    href: "/409a",
     icon: RiFileList2Line,
+    activeIcon: RiFileList2Fill,
   },
-  { id: 2, name: "Form 3921", href: "/dashboard/3921", icon: RiFileList2Line },
+  {
+    id: 2,
+    name: "Form 3921",
+    href: "/3921",
+    icon: RiFileList2Line,
+    activeIcon: RiFileList2Fill,
+  },
 ];
 
 interface SideBarProps {
@@ -77,14 +122,17 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
             <ul role="list" className=" space-y-1">
               {navigation.map((item) => {
                 const href = basePath + item.href;
-                const isActive = currentPath === href;
+                const isActive =
+                  currentPath === href ||
+                  (currentPath === basePath && item.href === "/");
+                // debugger;
                 return (
                   <li key={item.name}>
                     <NavLink
                       active={isActive}
                       name={item.name}
                       href={href}
-                      icon={item.icon}
+                      icon={isActive ? item.activeIcon : item.icon}
                     />
                   </li>
                 );
@@ -101,7 +149,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                     <NavLink
                       active={currentPath === item.href}
                       name={item.name}
-                      href={item.href}
+                      href={`${basePath}${item.href}`}
                       icon={item.icon}
                     />
                   </li>
@@ -109,9 +157,9 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
               </ul>
             </div>
             <NavLink
-              active={currentPath === "/dashboard/settings"}
+              active={currentPath === "/settings"}
               name="Settings"
-              href="/dashboard/settings"
+              href={`${basePath}/settings`}
               icon={RiEqualizer2Line}
             />
           </div>

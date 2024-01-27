@@ -184,7 +184,10 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                   <li key={item.name}>
                     {item.subNav ? (
                       <Accordion type="single" collapsible>
-                        <AccordionItem value="item-1" className="border-none">
+                        <AccordionItem
+                          value="item-1"
+                          className="-my-1 border-none"
+                        >
                           <div className="flex">
                             <item.icon
                               className={cn(

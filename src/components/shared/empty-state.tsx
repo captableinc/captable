@@ -35,8 +35,8 @@ const EmptyState = ({
           className={cn(bordered && "rounded-xl border", "bg-white px-6 pt-5")}
         >
           <div className="mx-auto w-full max-w-lg py-16 text-center">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border">
-              {icon}
+            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
+              <span className="text-orange-500">{icon}</span>
             </div>
 
             {title && <h3 className="mb-5 text-3xl font-semibold">{title}</h3>}

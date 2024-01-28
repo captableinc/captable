@@ -148,7 +148,11 @@ const MemberModal = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input disabled={isSubmitting} type="email" {...field} />
+                  <Input
+                    disabled={isSubmitting || rest.isEditMode === true}
+                    type="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

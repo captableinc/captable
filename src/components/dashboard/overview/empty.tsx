@@ -1,16 +1,13 @@
-"use client";
-
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { RiArrowRightLine } from "@remixicon/react";
 
-const CaptablePage = () => {
-  const params = useParams<{ publicId: string }>();
-  const { data } = useSession();
-  const firstName = data?.user.name?.split(" ")[0];
+type EmptyOverviewProps = {
+  firstName?: string;
+  companyPublicId: string;
+};
 
+const EmptyOverview = ({ firstName, companyPublicId }: EmptyOverviewProps) => {
   return (
     <div className="flex flex-wrap">
       <div className="mb-10 w-full md:w-1/2">
@@ -28,8 +25,8 @@ const CaptablePage = () => {
               <div className="-m-4 flex flex-wrap">
                 <div className="w-auto p-4">
                   <div className="relative mb-3 h-16 w-16 text-lg font-semibold text-primary">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
-                      <span className="text-orange-500">1</span>
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
+                      <span className="text-teal-500">1</span>
                     </div>
                   </div>
                 </div>
@@ -47,8 +44,8 @@ const CaptablePage = () => {
               <div className="-m-4 flex flex-wrap">
                 <div className="w-auto p-4">
                   <div className="relative mb-3 h-16 w-16 text-lg font-semibold text-primary">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
-                      <span className="text-orange-500">2</span>
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
+                      <span className="text-teal-500">2</span>
                     </div>
                   </div>
                 </div>
@@ -68,8 +65,8 @@ const CaptablePage = () => {
               <div className="-m-4 flex flex-wrap">
                 <div className="w-auto p-4">
                   <div className="relative mb-3 h-16 w-16 text-lg font-semibold text-primary">
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-orange-100">
-                      <span className="text-orange-500">3</span>
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
+                      <span className="text-teal-500">3</span>
                     </div>
                   </div>
                 </div>
@@ -87,7 +84,7 @@ const CaptablePage = () => {
           </div>
           <div className="md:inline-block">
             <Button size="lg">
-              <Link href={`/${params.publicId}/stakeholders`}>
+              <Link href={`/${companyPublicId}/stakeholders`}>
                 Let{`'`}s get started
                 <RiArrowRightLine className="ml-5 inline-block h-5 w-5" />
               </Link>
@@ -106,4 +103,4 @@ const CaptablePage = () => {
   );
 };
 
-export default CaptablePage;
+export default EmptyOverview;

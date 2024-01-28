@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  RiHome2Line,
+  RiHome2Fill,
   RiPieChartLine,
   RiPieChartFill,
   RiSafeLine,
@@ -38,8 +40,14 @@ import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
   {
-    name: "Cap table",
+    name: "Overview",
     href: "/",
+    icon: RiHome2Line,
+    activeIcon: RiHome2Fill,
+  },
+  {
+    name: "Cap table",
+    href: "/captable",
     icon: RiPieChartLine,
     activeIcon: RiPieChartFill,
   },

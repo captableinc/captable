@@ -1,20 +1,25 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
+import {
+  adminOnlyProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/trpc/api/trpc";
 import {
   ZodAcceptMemberMutationSchema,
+  ZodDeactivateUserMutationSchema,
   ZodInviteMemberMutationSchema,
+  ZodReInviteMutationSchema,
   ZodRemoveMemberMutationSchema,
   ZodRevokeInviteMutationSchema,
+  ZodUpdateMemberMutationSchema,
 } from "./schema";
-import { nanoid } from "nanoid";
-import { createHash } from "@/lib/crypto";
-import { env } from "@/env";
 
-import { MemberInviteEmail } from "@/emails/MemberInviteEmail";
-import { sendMail } from "@/server/mailer";
-import { constants } from "@/lib/constants";
-import { render } from "jsx-email";
 import { TRPCError } from "@trpc/server";
-import { generateMembershipIdentifier } from "@/server/stakeholder";
+import {
+  generateInviteToken,
+  generateMembershipIdentifier,
+  revokeExistingInviteTokens,
+  sendMembershipInviteEmail,
+} from "@/server/stakeholder";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
@@ -24,107 +29,94 @@ export const stakeholderRouter = createTRPCRouter({
       const { name, email, title, access } = input;
 
       //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
-      const token = nanoid(32);
+      const { authTokenHash, expires, memberInviteTokenHash, token } =
+        await generateInviteToken();
 
-      const secret = env.NEXTAUTH_SECRET;
-
-      const ONE_DAY_IN_SECONDS = 86400;
-      const expires = new Date(Date.now() + ONE_DAY_IN_SECONDS * 1000);
-
-      const { company, memberToken } = await ctx.db.$transaction(async (tx) => {
-        const company = await tx.company.findFirstOrThrow({
-          where: {
-            id: user.companyId,
-          },
-          select: {
-            name: true,
-            id: true,
-          },
-        });
-
-        const prevMembership = await tx.membership.findFirst({
-          where: {
-            companyId: company.id,
-            invitedEmail: email,
-            status: "accepted",
-          },
-        });
-
-        if (prevMembership) {
-          throw new TRPCError({
-            code: "FORBIDDEN",
-            message: "user already a member",
+      const { company, verificationToken } = await ctx.db.$transaction(
+        async (tx) => {
+          const company = await tx.company.findFirstOrThrow({
+            where: {
+              id: user.companyId,
+            },
+            select: {
+              name: true,
+              id: true,
+            },
           });
-        }
 
-        const membership = await tx.membership.upsert({
-          where: {
-            companyId_invitedEmail: {
+          const prevMembership = await tx.membership.findFirst({
+            where: {
               companyId: company.id,
               invitedEmail: email,
+              status: "accepted",
             },
-          },
-          update: {},
-          create: {
-            title,
-            access: access ?? "stakeholder",
-            companyId: company.id,
-            invitedEmail: email,
-            active: false,
-            isOnboarded: false,
-            lastAccessed: new Date(),
-            status: "pending",
-          },
-          select: {
-            id: true,
-          },
-        });
+          });
 
-        // custom verification token for member invitation
-        const { token: memberToken } = await tx.verificationToken.create({
-          data: {
-            identifier: generateMembershipIdentifier({
-              email,
-              membershipId: membership.id,
-            }),
-            token: await createHash(`member-${nanoid(16)}`),
-            expires,
-          },
-        });
+          if (prevMembership) {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "user already a member",
+            });
+          }
 
-        // next-auth verification token
-        await tx.verificationToken.create({
-          data: {
-            identifier: email,
-            token: await createHash(`${token}${secret}`),
-            expires,
-          },
-        });
+          const membership = await tx.membership.upsert({
+            where: {
+              companyId_invitedEmail: {
+                companyId: company.id,
+                invitedEmail: email,
+              },
+            },
+            update: {},
+            create: {
+              title,
+              access: access ?? "stakeholder",
+              companyId: company.id,
+              invitedEmail: email,
+              active: false,
+              isOnboarded: false,
+              lastAccessed: new Date(),
+              status: "pending",
+            },
+            select: {
+              id: true,
+            },
+          });
 
-        return { memberToken, company };
-      });
+          // custom verification token for member invitation
+          const { token: verificationToken } =
+            await tx.verificationToken.create({
+              data: {
+                identifier: generateMembershipIdentifier({
+                  email,
+                  membershipId: membership.id,
+                }),
+                token: memberInviteTokenHash,
+                expires,
+              },
+            });
 
-      const baseUrl = process.env.NEXTAUTH_URL;
-      const callbackUrl = `${baseUrl}/verify-member/${memberToken}`;
+          // next-auth verification token
+          await tx.verificationToken.create({
+            data: {
+              identifier: email,
+              token: authTokenHash,
+              expires,
+            },
+          });
 
-      const params = new URLSearchParams({
-        callbackUrl,
+          return { verificationToken, company };
+        },
+      );
+
+      await sendMembershipInviteEmail({
+        verificationToken,
         token,
         email,
-      });
-
-      const inviteLink = `${baseUrl}/api/auth/callback/email?${params.toString()}`;
-
-      await sendMail({
-        to: email,
-        subject: `Join ${company.name} on ${constants.title}`,
-        html: await render(
-          MemberInviteEmail({
-            inviteLink,
-            companyName: company.name,
-            invitedBy: (user.name ?? user.email)!,
-          }),
-        ),
+        company,
+        user: {
+          email: user.email,
+          name: user.name,
+        },
       });
 
       return { success: true };
@@ -173,32 +165,17 @@ export const stakeholderRouter = createTRPCRouter({
       return { success: true, publicId: data[2].company.publicId };
     }),
 
-  revokeInvite: protectedProcedure
+  revokeInvite: adminOnlyProcedure
     .input(ZodRevokeInviteMutationSchema)
     .mutation(async ({ ctx: { db }, input }) => {
       const { membershipId, email } = input;
 
-      const identifier = generateMembershipIdentifier({
-        email,
-        membershipId,
-      });
-
-      const verificationToken = await db.verificationToken.findFirstOrThrow({
-        where: {
-          identifier,
-        },
-      });
-      await db.verificationToken.delete({
-        where: {
-          identifier,
-          token: verificationToken.token,
-        },
-      });
+      await revokeExistingInviteTokens({ membershipId, email, tx: db });
 
       return { success: true };
     }),
 
-  removeMember: protectedProcedure
+  removeMember: adminOnlyProcedure
     .input(ZodRemoveMemberMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
       const { membershipId } = input;
@@ -207,6 +184,132 @@ export const stakeholderRouter = createTRPCRouter({
         where: {
           id: membershipId,
           companyId: session.user.companyId,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  deactivateUser: adminOnlyProcedure
+    .input(ZodDeactivateUserMutationSchema)
+    .mutation(async ({ ctx: { session, db }, input }) => {
+      const { membershipId, status } = input;
+
+      await db.membership.update({
+        where: {
+          id: membershipId,
+          companyId: session.user.companyId,
+        },
+        data: {
+          active: status,
+        },
+      });
+
+      return { success: true };
+    }),
+
+  updateMember: adminOnlyProcedure
+    .input(ZodUpdateMemberMutationSchema)
+    .mutation(async ({ ctx: { session, db }, input }) => {
+      const { membershipId, name, email, ...rest } = input;
+
+      await db.membership.update({
+        where: {
+          status: "accepted",
+          id: membershipId,
+          companyId: session.user.companyId,
+        },
+        data: {
+          ...rest,
+          user: {
+            update: {
+              name,
+            },
+          },
+        },
+      });
+
+      return { success: true };
+    }),
+  reInvite: adminOnlyProcedure
+    .input(ZodReInviteMutationSchema)
+    .mutation(async ({ ctx: { session, db }, input }) => {
+      const user = session.user;
+      const companyId = user.companyId;
+
+      const { authTokenHash, expires, memberInviteTokenHash, token } =
+        await generateInviteToken();
+
+      const { company, verificationToken, email } = await db.$transaction(
+        async (tx) => {
+          const company = await tx.company.findFirstOrThrow({
+            where: {
+              id: companyId,
+            },
+            select: {
+              name: true,
+              id: true,
+            },
+          });
+
+          const membership = await db.membership.findFirstOrThrow({
+            where: {
+              id: input.membershipId,
+              status: "pending",
+              companyId,
+            },
+            select: {
+              invitedEmail: true,
+              id: true,
+            },
+          });
+
+          const email = membership.invitedEmail;
+
+          if (!email) {
+            throw new Error("invited email not found");
+          }
+
+          await revokeExistingInviteTokens({
+            membershipId: membership.id,
+            email,
+            tx,
+          });
+
+          // custom verification token for member invitation
+          const { token: verificationToken } =
+            await tx.verificationToken.create({
+              data: {
+                identifier: generateMembershipIdentifier({
+                  email,
+                  membershipId: membership.id,
+                }),
+                token: memberInviteTokenHash,
+                expires,
+              },
+            });
+
+          // next-auth verification token
+          await tx.verificationToken.create({
+            data: {
+              identifier: email,
+              token: authTokenHash,
+              expires,
+            },
+          });
+
+          return { verificationToken, company, email };
+        },
+      );
+
+      await sendMembershipInviteEmail({
+        verificationToken,
+        token,
+        email,
+        company,
+        user: {
+          email: user.email,
+          name: user.name,
         },
       });
 

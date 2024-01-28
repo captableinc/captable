@@ -1,11 +1,4 @@
-import { z } from "zod";
-
-export type MemberInviteType = {
-  email: string;
-  name: string;
-  title: string;
-  access: "admin" | "stakeholder";
-};
+import { string, z } from "zod";
 
 export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),
@@ -34,7 +27,7 @@ export const ZodRevokeInviteMutationSchema = z.object({
 });
 
 export type TypeZodRevokeInviteMutationSchema = z.infer<
-  typeof ZodAcceptMemberMutationSchema
+  typeof ZodRevokeInviteMutationSchema
 >;
 
 export const ZodRemoveMemberMutationSchema = z.object({
@@ -42,5 +35,41 @@ export const ZodRemoveMemberMutationSchema = z.object({
 });
 
 export type TypeZodRemoveMemberMutationSchema = z.infer<
-  typeof ZodAcceptMemberMutationSchema
+  typeof ZodRemoveMemberMutationSchema
+>;
+
+export const ZodDeactivateUserMutationSchema = z.object({
+  membershipId: z.string().min(1),
+  status: z.boolean(),
+});
+
+export type TypeZodDeactivateUserMutationSchema = z.infer<
+  typeof ZodDeactivateUserMutationSchema
+>;
+
+export const ZodUpdateMemberMutationSchema = z
+  .object({
+    membershipId: string(),
+  })
+  .merge(
+    z
+      .object({
+        email: z.string().email(),
+        name: z.string(),
+        title: z.string(),
+        access: z.enum(["admin", "stakeholder"]),
+      })
+      .partial(),
+  );
+
+export type TypeZodUpdateMemberMutationSchema = z.infer<
+  typeof ZodUpdateMemberMutationSchema
+>;
+
+export const ZodReInviteMutationSchema = z.object({
+  membershipId: z.string().min(1),
+});
+
+export type TypeZodReInviteMutationSchema = z.infer<
+  typeof ZodReInviteMutationSchema
 >;

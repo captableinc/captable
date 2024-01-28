@@ -44,6 +44,8 @@ import { api } from "@/trpc/react";
 import { type TypeGetMembers } from "@/server/stakeholder";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import MemberModal from "@/components/stakeholder/member-modal";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type MembersType = {
   members: TypeGetMembers;
@@ -186,9 +188,54 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const router = useRouter();
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { data } = useSession();
       const member = row.original;
       const removeMember = api.stakeholder.removeMember.useMutation();
       const revokeInvite = api.stakeholder.revokeInvite.useMutation();
+      const revInvite = api.stakeholder.reInvite.useMutation();
+      const deactivateUser = api.stakeholder.deactivateUser.useMutation({
+        onSuccess: () => {
+          router.refresh();
+        },
+      });
+
+      const isAdmin = data?.user?.access === "admin";
+      const status = member.status;
+      const membershipId = member.id;
+      const email = member.user?.email ?? member.invitedEmail;
+      const deleteAction =
+        status === "pending" ? "Revoke invite" : "Remove member";
+
+      const isAdminActionable = isAdmin && member.userId !== data?.user.id;
+
+      const userStatus = member.active;
+
+      const handleDeactivateStakeholder = async () => {
+        try {
+          await removeMember.mutateAsync({ membershipId });
+          if (status === "pending" && email) {
+            await revokeInvite.mutateAsync({ email, membershipId });
+          }
+
+          router.refresh();
+        } catch (error) {}
+      };
+
+      const handleDeactivate = async () => {
+        try {
+          await deactivateUser.mutateAsync({
+            membershipId,
+            status: !userStatus,
+          });
+        } catch (error) {}
+      };
+
+      const handleReinvite = () => {
+        revInvite.mutate({ membershipId: member.id });
+      };
 
       return (
         <DropdownMenu>
@@ -202,27 +249,45 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            {isAdminActionable && status === "pending" && (
+              <DropdownMenuItem onSelect={handleReinvite}>
+                ReInvite
+              </DropdownMenuItem>
+            )}
 
-            <MemberModal
-              title="Update stakeholder"
-              subtitle="Update stakeholder's account information."
-              member={{
-                name: member.user?.name ?? "",
-                email: member.user?.email ?? "",
-                title: member.title ?? "",
-                access: member.access ?? "stakesholder",
-              }}
-            >
-              <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                Update
-              </span>
-            </MemberModal>
-
-            <DropdownMenuItem>Reinvite</DropdownMenuItem>
+            {isAdmin && status === "accepted" && (
+              <MemberModal
+                isEditMode
+                membershipId={member.id}
+                title="Update stakeholder"
+                subtitle="Update stakeholder's account information."
+                member={{
+                  name: member.user?.name ?? "",
+                  email: email ?? "",
+                  title: member.title ?? "",
+                  access: member.access ?? "stakeholder",
+                }}
+              >
+                <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                  Update
+                </span>
+              </MemberModal>
+            )}
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500">
-              Deactivate
+            <DropdownMenuItem
+              onSelect={handleDeactivate}
+              disabled={!isAdminActionable}
+              className="text-red-500"
+            >
+              {userStatus ? "Deactivate" : "Activate User"}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={handleDeactivateStakeholder}
+              disabled={!isAdminActionable}
+              className="text-red-500"
+            >
+              {deleteAction}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

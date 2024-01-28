@@ -99,3 +99,11 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+export const adminOnlyProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.session.user.access !== "admin") {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next();
+});

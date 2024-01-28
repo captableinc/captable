@@ -28,24 +28,28 @@ import {
   type TypeZodInviteMemberMutationSchema,
 } from "@/trpc/routers/stakeholder-router/schema";
 
-import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-type InviteMemberMutationSchema = z.infer<typeof ZodInviteMemberMutationSchema>;
+
 type MemberModalType = {
   title: string;
   subtitle: string;
-  member: InviteMemberMutationSchema;
+  member: TypeZodInviteMemberMutationSchema;
   children: React.ReactNode;
-};
+} & editModeType;
+
+type editModeType =
+  | { isEditMode: true; membershipId: string }
+  | { isEditMode?: false; membershipId?: never };
 
 const MemberModal = ({
   title,
   subtitle,
   member,
   children,
+  ...rest
 }: MemberModalType) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -55,8 +59,8 @@ const MemberModal = ({
       setOpen(false);
       toast({
         variant: "default",
-        title: "🎉 Invitation successfully sent!",
-        description: "",
+        title: "🎉 Invited!",
+        description: "You have successfully invited the stakeholder.",
       });
       router.refresh();
     },
@@ -68,6 +72,26 @@ const MemberModal = ({
       });
     },
   });
+
+  const updateMember = api.stakeholder.updateMember.useMutation({
+    onSuccess: () => {
+      setOpen(false);
+      toast({
+        variant: "default",
+        title: "🎉 Updated!",
+        description: "You have successfully updated the stakeholder.",
+      });
+      router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: error.message,
+        description: "",
+      });
+    },
+  });
+
   const form = useForm<TypeZodInviteMemberMutationSchema>({
     resolver: zodResolver(ZodInviteMemberMutationSchema),
     defaultValues: {
@@ -81,7 +105,11 @@ const MemberModal = ({
   const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: TypeZodInviteMemberMutationSchema) {
-    inviteMember.mutate(values);
+    if (rest.isEditMode) {
+      updateMember.mutate({ ...values, membershipId: rest.membershipId });
+    } else {
+      inviteMember.mutate(values);
+    }
   }
 
   return (
@@ -120,7 +148,11 @@ const MemberModal = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input disabled={isSubmitting} type="email" {...field} />
+                  <Input
+                    disabled={isSubmitting || rest.isEditMode === true}
+                    type="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,7 +203,7 @@ const MemberModal = ({
           </div>
 
           <Button loading={isSubmitting} loadingText="Sending invite...">
-            Send an invite
+            {rest.isEditMode === true ? "Update stakeholder" : "Send an invite"}
           </Button>
 
           <p className="text-center text-xs text-gray-500">

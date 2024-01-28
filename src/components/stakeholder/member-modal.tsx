@@ -59,8 +59,8 @@ const MemberModal = ({
       setOpen(false);
       toast({
         variant: "default",
-        title: "🎉 Invitation successfully sent!",
-        description: "",
+        title: "🎉 Invited!",
+        description: "You have successfully invited the stakeholder.",
       });
       router.refresh();
     },
@@ -78,8 +78,8 @@ const MemberModal = ({
       setOpen(false);
       toast({
         variant: "default",
-        title: "🎉 member updated successfully",
-        description: "",
+        title: "🎉 Updated!",
+        description: "You have successfully updated the stakeholder.",
       });
       router.refresh();
     },
@@ -203,7 +203,7 @@ const MemberModal = ({
           </div>
 
           <Button loading={isSubmitting} loadingText="Sending invite...">
-            Send an invite
+            {rest.isEditMode === true ? "Update stakeholder" : "Send an invite"}
           </Button>
 
           <p className="text-center text-xs text-gray-500">

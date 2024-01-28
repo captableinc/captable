@@ -147,15 +147,16 @@ export async function revokeExistingInviteTokens({
     membershipId,
   });
 
-  const verificationToken = await tx.verificationToken.findFirstOrThrow({
+  const verificationToken = await tx.verificationToken.findMany({
     where: {
       identifier,
     },
   });
-  await tx.verificationToken.delete({
+  await tx.verificationToken.deleteMany({
     where: {
-      identifier,
-      token: verificationToken.token,
+      token: {
+        in: verificationToken.map((item) => item.token),
+      },
     },
   });
 }

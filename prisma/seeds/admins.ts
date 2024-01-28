@@ -3,7 +3,7 @@ import { db } from "@/server/db";
 import colors from "colors";
 colors.enable();
 
-export type UserType = {
+type UserType = {
   name: string;
   email: string;
   image?: string;

@@ -20,7 +20,7 @@ const OverviewPage = () => {
         title={`Welcome to OpenCap${firstName && `, ${firstName}`} 👋`}
         subtitle={
           <span className="text-muted-foreground">
-            We will get you setup in no time.
+            We will get you setup with your Captable in no time.
           </span>
         }
       >

@@ -80,13 +80,13 @@
     @apply text-6xl sm:text-7xl;
   }
   h2 {
-    @apply text-4xl;
+    @apply text-4xl sm:text-5xl;
   }
   h3 {
-    @apply text-2xl font-medium;
+    @apply text-2xl font-medium sm:text-3xl;
   }
   h4 {
-    @apply text-lg uppercase tracking-widest;
+    @apply text-lg font-medium sm:text-xl;
   }
 }
 

@@ -1,7 +1,7 @@
+import BorderWrapper from "@/components/shared/BorderWrapper";
 import MemberModal from "@/components/stakeholder/member-modal";
 import MemberTable from "@/components/stakeholder/member-table";
 import { Button } from "@/components/ui/button";
-
 import { Separator } from "@/components/ui/separator";
 import { withServerSession } from "@/server/auth";
 import { getMembers } from "@/server/stakeholder";
@@ -15,7 +15,7 @@ const StakeholdersPage = async () => {
     <div className="flex flex-col gap-y-3">
       <div className="flex  items-center justify-between gap-y-3 ">
         <div className="gap-y-3">
-          <h2 className="text-xl font-medium">Stakeholders</h2>
+          <h3 className="font-medium">Stakeholders</h3>
           <p className="text-sm text-muted-foreground">
             Manage your company{`'`}s stakeholders
           </p>
@@ -39,10 +39,10 @@ const StakeholdersPage = async () => {
           </MemberModal>
         </div>
       </div>
-      <Separator />
-      <div>
+
+      <BorderWrapper className="mt-3">
         <MemberTable members={members} />
-      </div>
+      </BorderWrapper>
     </div>
   );
 };

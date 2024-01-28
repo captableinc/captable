@@ -195,6 +195,7 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
       const member = row.original;
       const removeMember = api.stakeholder.removeMember.useMutation();
       const revokeInvite = api.stakeholder.revokeInvite.useMutation();
+      const revInvite = api.stakeholder.reInvite.useMutation();
       const deactivateUser = api.stakeholder.deactivateUser.useMutation({
         onSuccess: () => {
           router.refresh();
@@ -232,6 +233,10 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
         } catch (error) {}
       };
 
+      const handleReinvite = () => {
+        revInvite.mutate({ membershipId: member.id });
+      };
+
       return (
         <DropdownMenu>
           <div className="items-end justify-end text-right">
@@ -244,6 +249,11 @@ export const columns: ColumnDef<TypeGetMembers[0]>[] = [
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            {isAdminActionable && status === "pending" && (
+              <DropdownMenuItem onSelect={handleReinvite}>
+                ReInvite
+              </DropdownMenuItem>
+            )}
 
             {isAdmin && status === "accepted" && (
               <MemberModal

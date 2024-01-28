@@ -65,3 +65,11 @@ export const ZodUpdateMemberMutationSchema = z
 export type TypeZodUpdateMemberMutationSchema = z.infer<
   typeof ZodUpdateMemberMutationSchema
 >;
+
+export const ZodReInviteMutationSchema = z.object({
+  membershipId: z.string().min(1),
+});
+
+export type TypeZodReInviteMutationSchema = z.infer<
+  typeof ZodReInviteMutationSchema
+>;

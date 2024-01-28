@@ -6,6 +6,7 @@ import { constants } from "@/lib/constants";
 import { nanoid } from "nanoid";
 import { env } from "@/env";
 import { createHash } from "@/lib/crypto";
+import { type PrismaClient, type Prisma } from "@prisma/client";
 
 export const getMembers = (companyId: string) => {
   return db.membership.findMany({
@@ -128,4 +129,33 @@ export async function generateInviteToken() {
   const authTokenHash = await createHash(`${token}${secret}`);
 
   return { token, expires, memberInviteTokenHash, authTokenHash };
+}
+
+interface revokeExistingInviteTokensOptions {
+  membershipId: string;
+  email: string;
+  tx: Prisma.TransactionClient | PrismaClient;
+}
+
+export async function revokeExistingInviteTokens({
+  email,
+  membershipId,
+  tx,
+}: revokeExistingInviteTokensOptions) {
+  const identifier = generateMembershipIdentifier({
+    email,
+    membershipId,
+  });
+
+  const verificationToken = await tx.verificationToken.findFirstOrThrow({
+    where: {
+      identifier,
+    },
+  });
+  await tx.verificationToken.delete({
+    where: {
+      identifier,
+      token: verificationToken.token,
+    },
+  });
 }

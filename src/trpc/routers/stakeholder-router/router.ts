@@ -17,6 +17,7 @@ import { TRPCError } from "@trpc/server";
 import {
   generateInviteToken,
   generateMembershipIdentifier,
+  revokeExistingInviteTokens,
   sendMembershipInviteEmail,
 } from "@/server/stakeholder";
 
@@ -169,22 +170,7 @@ export const stakeholderRouter = createTRPCRouter({
     .mutation(async ({ ctx: { db }, input }) => {
       const { membershipId, email } = input;
 
-      const identifier = generateMembershipIdentifier({
-        email,
-        membershipId,
-      });
-
-      const verificationToken = await db.verificationToken.findFirstOrThrow({
-        where: {
-          identifier,
-        },
-      });
-      await db.verificationToken.delete({
-        where: {
-          identifier,
-          token: verificationToken.token,
-        },
-      });
+      await revokeExistingInviteTokens({ membershipId, email, tx: db });
 
       return { success: true };
     }),
@@ -283,6 +269,12 @@ export const stakeholderRouter = createTRPCRouter({
           if (!email) {
             throw new Error("invited email not found");
           }
+
+          await revokeExistingInviteTokens({
+            membershipId: membership.id,
+            email,
+            tx,
+          });
 
           // custom verification token for member invitation
           const { token: verificationToken } =

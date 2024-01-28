@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  RiHome2Line,
+  RiHome2Fill,
   RiPieChartLine,
   RiPieChartFill,
   RiSafeLine,
@@ -9,14 +11,15 @@ import {
   RiFolder5Fill,
   RiFolderChartLine,
   RiFolderChartFill,
-  RiFileList2Line,
-  RiFileList2Fill,
-  RiEqualizer2Line,
+  RiListIndefinite,
   RiListCheck3,
+  RiEqualizer2Line,
   RiFolderChart2Line,
   RiFolderChart2Fill,
   RiAccountCircleLine,
   RiAccountCircleFill,
+  RiFileTextLine,
+  RiFileTextFill,
 } from "@remixicon/react";
 
 import {
@@ -38,8 +41,14 @@ import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
   {
-    name: "Cap table",
+    name: "Overview",
     href: "/",
+    icon: RiHome2Line,
+    activeIcon: RiHome2Fill,
+  },
+  {
+    name: "Cap table",
+    href: "/captable",
     icon: RiPieChartLine,
     activeIcon: RiPieChartFill,
   },
@@ -128,7 +137,7 @@ const navigation = [
   {
     name: "Audits",
     href: "/audits",
-    icon: RiListCheck3,
+    icon: RiListIndefinite,
     activeIcon: RiListCheck3,
   },
 ];
@@ -138,15 +147,15 @@ const forms = [
     id: 1,
     name: "409A Valuation",
     href: "/409a",
-    icon: RiFileList2Line,
-    activeIcon: RiFileList2Fill,
+    icon: RiFileTextLine,
+    activeIcon: RiFileTextFill,
   },
   {
     id: 2,
     name: "Form 3921",
     href: "/3921",
-    icon: RiFileList2Line,
-    activeIcon: RiFileList2Fill,
+    icon: RiFileTextLine,
+    activeIcon: RiFileTextFill,
   },
 ];
 
@@ -189,16 +198,26 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                           className="-my-1 border-none"
                         >
                           <div className="flex">
-                            <item.icon
-                              className={cn(
-                                "ml-1 mr-1 mt-2 inline-block",
-                                isActive
-                                  ? "text-primary"
-                                  : "text-gray-400 group-hover:text-primary",
-                                "h-6 w-6 shrink-0",
-                              )}
-                              aria-hidden="true"
-                            />
+                            {isActive ? (
+                              <item.activeIcon
+                                className={cn(
+                                  "ml-1 mr-1 mt-2 inline-block",
+                                  "text-primary",
+                                  "h-6 w-6 shrink-0",
+                                )}
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <item.icon
+                                className={cn(
+                                  "ml-1 mr-1 mt-2 inline-block",
+                                  "text-gray-400 group-hover:text-primary",
+                                  "h-6 w-6 shrink-0",
+                                )}
+                                aria-hidden="true"
+                              />
+                            )}
+
                             <AccordionTrigger
                               className={cn(
                                 isActive
@@ -253,16 +272,25 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                 Legal
               </div>
               <ul role="list" className=" space-y-1">
-                {forms.map((item) => (
-                  <li key={item.name}>
-                    <NavLink
-                      active={currentPath === item.href}
-                      name={item.name}
-                      href={`${basePath}${item.href}`}
-                      icon={item.icon}
-                    />
-                  </li>
-                ))}
+                {forms.map((item) => {
+                  const href = basePath + item.href;
+                  const isActive =
+                    currentPath === href ||
+                    (currentPath === basePath && item.href === "/") ||
+                    (currentPath.includes(`${item.href}/`) &&
+                      item.href !== "/");
+
+                  return (
+                    <li key={item.name}>
+                      <NavLink
+                        active={isActive}
+                        name={item.name}
+                        href={`${basePath}${item.href}`}
+                        icon={isActive ? item.activeIcon : item.icon}
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <NavLink

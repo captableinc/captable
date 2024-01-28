@@ -55,7 +55,7 @@ const Modal = ({
           </div>
         </header>
 
-        <section className=" bg-gray-100 p-5">{children}</section>
+        <section className=" bg-gray-100 px-8 py-5">{children}</section>
       </DialogContent>
     </Dialog>
   );

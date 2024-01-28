@@ -4,8 +4,8 @@ import colors from "colors";
 colors.enable();
 
 import seedAdmins from "./admins";
+import seedCompanies from "./companies";
 import seedStakeholders from "./stakeholders";
-
 import type { QuestionCollection } from "inquirer";
 
 if (process.env.NODE_ENV === "production") {
@@ -29,6 +29,7 @@ const seed = async () => {
     console.log("Seeding database".underline.cyan);
     return db.$transaction(async () => {
       const admins = await seedAdmins();
+      const companies = await seedCompanies();
       const stakeholders = await seedStakeholders();
     });
   } else {

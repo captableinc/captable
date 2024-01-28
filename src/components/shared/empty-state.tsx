@@ -29,12 +29,12 @@ const EmptyState = ({
   children,
 }: EmptyStateProps) => {
   return (
-    <section className="overflow-hidden py-4">
+    <section className="overflow-hidden">
       <div className="container mx-auto px-4">
         <div
           className={cn(
             bordered && "rounded-xl border",
-            "border bg-white px-6 pt-5 shadow-sm",
+            "border bg-white px-6 shadow-sm",
           )}
         >
           <div className="mx-auto w-full max-w-lg py-16 text-center">

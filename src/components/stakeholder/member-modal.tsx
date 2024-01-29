@@ -105,8 +105,6 @@ const MemberModal = ({
   const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = async (values: TypeZodInviteMemberMutationSchema) => {
-    console.log({ isSubmitting });
-
     try {
       if (rest.isEditMode) {
         await updateMember.mutateAsync({

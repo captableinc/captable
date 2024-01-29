@@ -46,9 +46,20 @@ export const stakeholderRouter = createTRPCRouter({
 
           const prevMembership = await tx.membership.findFirst({
             where: {
-              companyId: company.id,
-              invitedEmail: email,
-              status: "accepted",
+              OR: [
+                {
+                  companyId: company.id,
+                  invitedEmail: email,
+                  status: "accepted",
+                },
+                {
+                  companyId: company.id,
+                  status: "accepted",
+                  user: {
+                    email: email,
+                  },
+                },
+              ],
             },
           });
 

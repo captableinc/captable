@@ -104,13 +104,20 @@ const MemberModal = ({
 
   const isSubmitting = form.formState.isSubmitting;
 
-  async function onSubmit(values: TypeZodInviteMemberMutationSchema) {
-    if (rest.isEditMode) {
-      updateMember.mutate({ ...values, membershipId: rest.membershipId });
-    } else {
-      inviteMember.mutate(values);
-    }
-  }
+  const onSubmit = async (values: TypeZodInviteMemberMutationSchema) => {
+    console.log({ isSubmitting });
+
+    try {
+      if (rest.isEditMode) {
+        await updateMember.mutateAsync({
+          ...values,
+          membershipId: rest.membershipId,
+        });
+      } else {
+        await inviteMember.mutateAsync(values);
+      }
+    } catch (error) {}
+  };
 
   return (
     <Modal
@@ -119,7 +126,10 @@ const MemberModal = ({
       trigger={children}
       dialogProps={{
         open,
-        onOpenChange: setOpen,
+        onOpenChange: (val) => {
+          setOpen(val);
+          form.reset();
+        },
       }}
     >
       <Form {...form}>

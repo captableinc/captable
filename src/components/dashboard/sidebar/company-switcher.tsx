@@ -38,7 +38,7 @@ export function CompanySwitcher({ companies, publicId }: CompanySwitcherProps) {
       value={value}
       onValueChange={async (newValue) => {
         if (newValue === createCompanyValue) {
-          router.push("/create-company");
+          router.push("/company/new");
         }
 
         if (newValue !== value) {

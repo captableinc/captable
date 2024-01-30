@@ -5,7 +5,7 @@ const OnboardingPage = async () => {
   const session = await withServerSession();
   const user = session.user;
 
-  return <OnboardingCompany currentUser={user} />;
+  return <OnboardingCompany formType="create-company" currentUser={user} />;
 };
 
 export default OnboardingPage;

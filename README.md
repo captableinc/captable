@@ -87,7 +87,13 @@ To see what's in your database, run Prisma Studio:
 npm run db:studio
 ```
 
-**3. Run the web app**
+**3. Seed some data (For dev environment)**
+
+```sh
+npm run db:seed
+```
+
+**4. Run the web app**
 
 ```sh
 npm run dev

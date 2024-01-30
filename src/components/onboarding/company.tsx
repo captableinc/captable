@@ -75,8 +75,10 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: TypeZodOnboardingMutationSchema) {
-    mutation.mutate(values);
+  async function onSubmit(values: TypeZodOnboardingMutationSchema) {
+    try {
+      await mutation.mutateAsync(values);
+    } catch (error) {}
   }
 
   const isSubmitting = form.formState.isSubmitting;

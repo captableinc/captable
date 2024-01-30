@@ -20,19 +20,19 @@ const OverviewPage = () => {
     },
 
     {
-      key: "Preferred (Seed) - 10%",
+      key: "Preferred - 10%",
       value: 10,
     },
 
-    {
-      key: "Preferred (Series A) - 23%",
-      value: 15,
-    },
+    // {
+    //   key: "Preferred (Series A) - 23%",
+    //   value: 15,
+    // },
 
-    {
-      key: "Preferred (Convertible note) - 7%",
-      value: 7,
-    },
+    // {
+    //   key: "Preferred (Convertible note) - 7%",
+    //   value: 7,
+    // },
 
     {
       key: "Stock Plan - 15%",
@@ -51,10 +51,10 @@ const OverviewPage = () => {
       value: 25,
     },
 
-    {
-      key: "Others",
-      value: 18,
-    },
+    // {
+    //   key: "Others",
+    //   value: 18,
+    // },
 
     {
       key: "Equity Plan",
@@ -83,7 +83,7 @@ const OverviewPage = () => {
         </p>
       </header>
 
-      <div className="grid gap-8 md:grid-cols-12">
+      <div className="grid max-h-[500px] gap-8 md:grid-cols-12">
         <div className="sm:col-span-12 md:col-span-6 lg:col-span-8">
           {/* Overview */}
           <section className="mt-6">
@@ -135,50 +135,6 @@ const OverviewPage = () => {
           <ActivitiesCard className="border-none bg-transparent shadow-none" />
         </div>
       </div>
-
-      {/* <section className="mt-6">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          <OverviewCard title="$ 54,000,000" subtitle="Company valuation" />
-          <OverviewCard title="$ 10,000,000" subtitle="Amount raised" />
-          <OverviewCard title="11,567,010" subtitle="Diluted shares" />
-          <OverviewCard title="28" subtitle="Stakeholders" />
-        </div>
-      </section> */}
-
-      {/* <section className="mt-6">
-        <div className="xs:grid-cols-1 grid max-h-72 gap-8 sm:grid-cols-2 lg:grid-cols-2">
-          <div className="col-span-2 grid grid-cols-2 gap-8">
-            <DonutCard
-              title={
-                <>
-                  <span className="text-xs text-muted-foreground">
-                    Ownerships by{" "}
-                  </span>
-                  <span className="text-md font-semibold text-primary">
-                    Stakeholders
-                  </span>
-                </>
-              }
-              data={byStakeholders}
-            />
-            <DonutCard
-              title={
-                <>
-                  <span className="text-xs text-muted-foreground">
-                    Ownerships by{" "}
-                  </span>
-                  <span className="text-md font-semibold text-primary">
-                    Share Class
-                  </span>
-                </>
-              }
-              data={byShareClasses}
-            />
-          </div>
-
-          <ActivitiesCard />
-        </div>
-      </section> */}
     </>
   );
 };

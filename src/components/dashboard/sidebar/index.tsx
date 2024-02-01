@@ -32,6 +32,7 @@ import {
 import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
 
+import Image from "next/image";
 import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -174,7 +175,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
         <div className="gap-y-4 py-4">
-          <div className="flex items-center px-2 py-2 ">
+          <div className="flex items-center px-2 py-2">
             <OpenCapLogo className="h-7 w-auto" />
 
             <CompanySwitcher companies={companies} publicId={publicId} />

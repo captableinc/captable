@@ -43,7 +43,7 @@ export function CompanySwitcher({ companies, publicId }: CompanySwitcherProps) {
         }
       }}
     >
-      <SelectTrigger className="text-md ml-3 h-8 w-[180px] rounded border-none font-semibold">
+      <SelectTrigger className="text-md ml-3 h-8 w-[180px] rounded border-none bg-transparent font-semibold">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

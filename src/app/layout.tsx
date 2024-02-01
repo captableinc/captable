@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "OpenCap",
   description:
     "OpenCap is an open source cap table management tool that does not sell your data.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/favicon.svg" }],
   metadataBase: new URL(constants.url),
 };
 

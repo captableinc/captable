@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 import { constants } from "@/lib/constants";
 import { OpenCapLogo } from "./shared/logo";
 import { RiTwitterFill, RiGithubFill, RiDiscordFill } from "@remixicon/react";
-
 import { useSession } from "next-auth/react";
 import { buttonVariants } from "./ui/button";
 

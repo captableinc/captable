@@ -2,10 +2,10 @@
 
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import EmptyOverview from "@/components/overview/empty";
-import DonutCard from "@/components/overview/donut-card";
-import OverviewCard from "@/components/overview/top-card";
-import ActivitiesCard from "@/components/overview/activities-card";
+import EmptyOverview from "@/components/dashboard/overview/empty";
+import OverviewCard from "@/components/dashboard/overview/top-card";
+import ActivitiesCard from "@/components/dashboard/overview/activities-card";
+import DonutChartExample from "@/components/dashboard/overview/donut-card";
 
 const OverviewPage = () => {
   const params = useParams<{ publicId: string }>();
@@ -98,36 +98,9 @@ const OverviewPage = () => {
             </div>
           </section>
 
-          {/* Donut charts */}
+          {/* Tremor chart */}
           <section className="mt-6">
-            <div className="grid h-fit gap-4 sm:grid-cols-2  xl:grid-cols-2 ">
-              <DonutCard
-                title={
-                  <>
-                    <span className="text-xs text-muted-foreground">
-                      Ownerships by{" "}
-                    </span>
-                    <span className="text-md font-semibold text-primary">
-                      Stakeholders
-                    </span>
-                  </>
-                }
-                data={byStakeholders}
-              />
-              <DonutCard
-                title={
-                  <>
-                    <span className="text-xs text-muted-foreground">
-                      Ownerships by{" "}
-                    </span>
-                    <span className="text-md font-semibold text-primary">
-                      Share Class
-                    </span>
-                  </>
-                }
-                data={byShareClasses}
-              />
-            </div>
+            <DonutChartExample />
           </section>
         </div>
 

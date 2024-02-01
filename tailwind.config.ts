@@ -86,6 +86,7 @@ const config = {
     },
   },
 
+  // Tremor.so specific
   safelist: [
     {
       pattern:

@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import * as SelectPrimitive from "@radix-ui/react-select";
-
 import { cn } from "@/lib/utils";
+import * as SelectPrimitive from "@radix-ui/react-select";
 import {
   RiArrowUpSLine,
   RiCheckLine,
@@ -11,9 +10,7 @@ import {
 } from "@remixicon/react";
 
 const Select = SelectPrimitive.Root;
-
 const SelectGroup = SelectPrimitive.Group;
-
 const SelectValue = SelectPrimitive.Value;
 
 const SelectTrigger = React.forwardRef<
@@ -34,6 +31,7 @@ const SelectTrigger = React.forwardRef<
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
+
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<
@@ -51,6 +49,7 @@ const SelectScrollUpButton = React.forwardRef<
     <RiArrowUpSLine aria-hidden className="h-4 w-4" />
   </SelectPrimitive.ScrollUpButton>
 ));
+
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
 
 const SelectScrollDownButton = React.forwardRef<
@@ -68,6 +67,7 @@ const SelectScrollDownButton = React.forwardRef<
     <RiArrowDownSLine className="h-4 w-4" />
   </SelectPrimitive.ScrollDownButton>
 ));
+
 SelectScrollDownButton.displayName =
   SelectPrimitive.ScrollDownButton.displayName;
 
@@ -101,6 +101,7 @@ const SelectContent = React.forwardRef<
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
 ));
+
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
 const SelectLabel = React.forwardRef<
@@ -113,6 +114,7 @@ const SelectLabel = React.forwardRef<
     {...props}
   />
 ));
+
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
 export const SelectItemStyle =
@@ -136,6 +138,7 @@ const SelectItem = React.forwardRef<
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
 ));
+
 SelectItem.displayName = SelectPrimitive.Item.displayName;
 
 const SelectSeparator = React.forwardRef<
@@ -148,6 +151,7 @@ const SelectSeparator = React.forwardRef<
     {...props}
   />
 ));
+
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
 export {

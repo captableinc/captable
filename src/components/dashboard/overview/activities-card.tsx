@@ -78,7 +78,7 @@ const DonutCard = ({ title, className }: Props) => {
   return (
     <Card className={className}>
       <CardHeader className="pt-0">
-        <CardDescription className="text-md font-bold text-primary">
+        <CardDescription className="text-md font-semibold text-primary">
           Activities
         </CardDescription>
       </CardHeader>

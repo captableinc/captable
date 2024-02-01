@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: var(--font-instrument-sans);
+}
+
+.font-mono {
+  font-family: var(--font-roboto-mono);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

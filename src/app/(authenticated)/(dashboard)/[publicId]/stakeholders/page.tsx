@@ -2,7 +2,6 @@ import BorderWrapper from "@/components/shared/BorderWrapper";
 import MemberModal from "@/components/stakeholder/member-modal";
 import MemberTable from "@/components/stakeholder/member-table";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { withServerSession } from "@/server/auth";
 import { getMembers } from "@/server/stakeholder";
 import { RiAddLine } from "@remixicon/react";

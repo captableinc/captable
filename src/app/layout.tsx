@@ -1,6 +1,5 @@
-import { inter, satoshi } from "@/styles/fonts";
+import { instrumentSans } from "@/styles/fonts";
 import "@/styles/globals.css";
-import "cal-sans";
 import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/react";
@@ -27,7 +26,7 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
 
   return (
-    <html lang="en" className={cn(satoshi.variable, inter.variable)}>
+    <html lang="en" className={cn(instrumentSans.variable)}>
       <body className="min-h-screen">
         <ProgressBarProvider>
           <NextAuthProvider session={session}>

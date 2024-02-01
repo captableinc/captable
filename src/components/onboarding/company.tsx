@@ -38,9 +38,13 @@ import type { User } from "next-auth";
 
 type OnboardingCompanyProps = {
   currentUser: User;
+  formType?: "onboarding" | "create-company";
 };
 
-const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
+const OnboardingCompany = ({
+  currentUser,
+  formType = "onboarding",
+}: OnboardingCompanyProps) => {
   const { update } = useSession();
   const router = useRouter();
 
@@ -100,35 +104,37 @@ const OnboardingCompany = ({ currentUser }: OnboardingCompanyProps) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="grid gap-2">
               <div className="grid gap-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="user.name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Your full name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {formType === "onboarding" && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="user.name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Your full name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="user.email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Your work email</FormLabel>
-                        <FormControl>
-                          <Input type="email" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                    <FormField
+                      control={form.control}
+                      name="user.email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Your work email</FormLabel>
+                          <FormControl>
+                            <Input type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <FormField

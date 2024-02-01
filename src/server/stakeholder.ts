@@ -8,29 +8,6 @@ import { env } from "@/env";
 import { createHash } from "@/lib/crypto";
 import { type PrismaClient, type Prisma } from "@prisma/client";
 
-export const getMembers = (companyId: string) => {
-  return db.membership.findMany({
-    where: {
-      companyId,
-    },
-    include: {
-      user: {
-        select: {
-          name: true,
-          email: true,
-          image: true,
-        },
-      },
-    },
-
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
-};
-
-export type TypeGetMembers = Awaited<ReturnType<typeof getMembers>>;
-
 export const checkVerificationToken = async (
   token: string,
   userEmail: string | null | undefined,

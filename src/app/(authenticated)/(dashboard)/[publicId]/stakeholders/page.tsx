@@ -2,13 +2,12 @@ import BorderWrapper from "@/components/shared/BorderWrapper";
 import MemberModal from "@/components/stakeholder/member-modal";
 import MemberTable from "@/components/stakeholder/member-table";
 import { Button } from "@/components/ui/button";
-import { withServerSession } from "@/server/auth";
-import { getMembers } from "@/server/stakeholder";
+
+import { api } from "@/trpc/server";
 import { RiAddLine } from "@remixicon/react";
 
 const StakeholdersPage = async () => {
-  const session = await withServerSession();
-  const members = await getMembers(session.user.companyId);
+  const members = await api.stakeholder.getMembers.query();
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -40,7 +39,7 @@ const StakeholdersPage = async () => {
       </div>
 
       <BorderWrapper className="mt-3">
-        <MemberTable members={members} />
+        <MemberTable members={members.data} />
       </BorderWrapper>
     </div>
   );

@@ -41,14 +41,17 @@ import {
 } from "@/components/ui/table";
 
 import { api } from "@/trpc/react";
-import { type TypeGetMembers } from "@/server/stakeholder";
+
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import MemberModal from "@/components/stakeholder/member-modal";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { type RouterOutputs } from "@/trpc/shared";
+
+type Member = RouterOutputs["stakeholder"]["getMembers"]["data"];
 
 type MembersType = {
-  members: TypeGetMembers;
+  members: Member;
 };
 
 const humanizeStatus = (status: string, active: boolean) => {
@@ -76,7 +79,7 @@ const humanizeStatus = (status: string, active: boolean) => {
   return "Unknown";
 };
 
-export const columns: ColumnDef<TypeGetMembers[0]>[] = [
+export const columns: ColumnDef<Member[number]>[] = [
   {
     id: "select",
     header: ({ table }) => (

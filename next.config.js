@@ -9,6 +9,16 @@ const config = {
   images: {
     domains: ["randomuser.me"],
   },
+
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/login",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default config;

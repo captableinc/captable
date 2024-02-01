@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
   darkMode: ["class"],
@@ -8,7 +9,6 @@ const config = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -19,8 +19,11 @@ const config = {
     },
     extend: {
       fontFamily: {
-        display: ["var(--font-satoshi)", "system-ui", "sans-serif"],
-        default: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: [
+          "Instrument Sans",
+          "Instrument",
+          ...defaultTheme.fontFamily.sans,
+        ],
       },
       colors: {
         border: "hsl(var(--border))",

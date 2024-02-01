@@ -15,10 +15,9 @@ export const Navbar = () => {
     <div className="absolute left-0 top-0 flex h-16 w-full items-center border-b px-4 sm:px-8">
       <Link
         href="/#"
-        className="font-cal flex items-center gap-2 text-2xl hover:no-underline"
+        className="flex items-center gap-2 text-2xl hover:no-underline"
       >
-        <OpenCapLogo className="h-7 w-7" />
-        <p>{constants.title}</p>
+        <OpenCapLogo className="h-9 w-9" />
       </Link>
       <div className="grow" />
       <div className="flex items-center gap-4 text-sm">
@@ -27,21 +26,21 @@ export const Navbar = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <RiTwitterFill className="text-[#1DA1F2]" />
+          <RiTwitterFill className="text-primary/80" />
         </Link>
         <Link
           href={constants.github.url}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <RiGithubFill />
+          <RiGithubFill className="text-primary/80" />
         </Link>
         <Link
           href={constants.discord.url}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <RiDiscordFill className="text-[#5865F2]" />
+          <RiDiscordFill className="text-primary/80" />
         </Link>
 
         {data && (

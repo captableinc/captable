@@ -46,7 +46,9 @@ const Modal = ({
         <header className="border-b border-gray-200 p-5">
           <div className="">
             <DialogHeader>
-              <OpenCapLogo className="mb-3 h-8 w-auto" />
+              <div className="flex justify-center">
+                <OpenCapLogo className="mb-3 h-10 w-10" />
+              </div>
               <DialogTitle className="mb-4 text-center">{title}</DialogTitle>
               <DialogDescription className="text-center">
                 {subtitle}

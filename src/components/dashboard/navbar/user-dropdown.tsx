@@ -13,17 +13,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 export function UserDropdown() {
+  const { data } = useSession();
+  const name = data?.user.name;
+  const email = data?.user.email;
+  const image = data?.user.image;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage
-              src="https://randomuser.me/api/portraits/women/0.jpg"
-              alt="avatar"
-            />
+            <AvatarImage src={image ?? ""} alt="avatar" />
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
         </Button>
@@ -31,9 +34,9 @@ export function UserDropdown() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">shadcn</p>
+            <p className="text-sm font-medium leading-none">{name}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
+              {email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -51,7 +54,6 @@ export function UserDropdown() {
             Settings
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem

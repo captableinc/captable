@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
-import ProgressBarProvider from "./ProgressBarProvider";
+import ProgressBarProvider from "./providers/progress-bar";
 import { constants } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
 import { NextAuthProvider } from "@/providers/next-auth";

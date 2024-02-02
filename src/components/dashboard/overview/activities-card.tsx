@@ -25,7 +25,7 @@ const DonutCard = ({ title, className }: Props) => {
         type: "user",
       },
 
-      summary: "Jane Doe created a safe '[Draft] - SAFE for Y Combinator'",
+      summary: "Camila Murphy created a safe '[Draft] - SAFE for Y Combinator'",
       date: "28 days ago",
     },
     {
@@ -40,7 +40,8 @@ const DonutCard = ({ title, className }: Props) => {
         type: "user",
       },
 
-      summary: "Jane Doe uploaded a document 'Certificate of Incorporation'",
+      summary:
+        "Dennis Shelton uploaded a document 'Certificate of Incorporation'",
       date: "28 days ago",
     },
     {
@@ -55,7 +56,7 @@ const DonutCard = ({ title, className }: Props) => {
         type: "user",
       },
 
-      summary: "Jane Doe accepted the invitation to join the company",
+      summary: "Camila Murphy accepted the invitation to join the company",
       date: "29 days ago",
     },
     {
@@ -70,7 +71,8 @@ const DonutCard = ({ title, className }: Props) => {
         type: "user",
       },
 
-      summary: "John Doe invited an admin Jane Doe to join the company",
+      summary:
+        "Dennis Shelton invited an admin Camila Murphy to join the company",
       date: "30 days ago",
     },
   ];

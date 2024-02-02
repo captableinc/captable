@@ -328,8 +328,8 @@ const MemberTable = ({ members }: MembersType) => {
   });
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
+    <div className="w-full p-6">
+      <div className="flex items-center">
         <Input
           placeholder="Search by name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -365,7 +365,8 @@ const MemberTable = ({ members }: MembersType) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+
+      <div className="mt-6 rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

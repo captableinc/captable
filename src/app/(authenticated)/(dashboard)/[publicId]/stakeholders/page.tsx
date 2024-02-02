@@ -1,7 +1,7 @@
-import BorderWrapper from "@/components/shared/BorderWrapper";
 import MemberModal from "@/components/stakeholder/member-modal";
 import MemberTable from "@/components/stakeholder/member-table";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 import { api } from "@/trpc/server";
 import { RiAddLine } from "@remixicon/react";
@@ -38,9 +38,9 @@ const StakeholdersPage = async () => {
         </div>
       </div>
 
-      <BorderWrapper className="mt-3">
+      <Card className="mt-3">
         <MemberTable members={members.data} />
-      </BorderWrapper>
+      </Card>
     </div>
   );
 };

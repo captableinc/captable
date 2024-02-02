@@ -91,7 +91,7 @@ const DonutCard = () => {
 
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
-              <ScrollArea className="h-60 w-full py-4">
+              <ScrollArea className="h-60 w-full py-4 pr-8">
                 <ul className="space-y-3 text-sm">
                   {selected === "stakeholder"
                     ? stakeholders.map((stakeholder) => (
@@ -99,7 +99,7 @@ const DonutCard = () => {
                           key={stakeholder.key}
                           className="flex justify-between"
                         >
-                          <span>{stakeholder.key}</span>
+                          <span className="font-medium">{stakeholder.key}</span>
                           <span>{stakeholder.value}%</span>
                         </li>
                       ))
@@ -108,7 +108,7 @@ const DonutCard = () => {
                           key={stakeholder.key}
                           className="flex justify-between"
                         >
-                          <span>{stakeholder.key}</span>
+                          <span className="font-medium">{stakeholder.key}</span>
                           <span>{stakeholder.value}%</span>
                         </li>
                       ))}

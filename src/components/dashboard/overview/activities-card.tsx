@@ -110,11 +110,11 @@ const DonutCard = ({ title, className }: Props) => {
                     </div>
                     <div className="min-w-0 flex-1 py-1.5">
                       <div className="text-sm text-gray-500">
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-primary/80">
                           {activityItem.summary}
                         </span>{" "}
                         <br />
-                        <span className="whitespace-nowrap">
+                        <span className="whitespace-nowrap text-xs">
                           {activityItem.date}
                         </span>
                       </div>
@@ -129,7 +129,7 @@ const DonutCard = ({ title, className }: Props) => {
         <div className="mt-6">
           <button
             type="button"
-            className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-1 text-sm text-gray-700 hover:bg-gray-50"
+            className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-1 text-sm text-primary/85 hover:bg-gray-50"
           >
             View all activity
           </button>

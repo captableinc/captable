@@ -1,10 +1,10 @@
-import { instrumentSans } from "@/styles/fonts";
+import { instrumentSans, robotoMono } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
-import ProgressBarProvider from "./ProgressBarProvider";
+import ProgressBarProvider from "./providers/progress-bar";
 import { constants } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
 import { NextAuthProvider } from "@/providers/next-auth";
@@ -26,7 +26,10 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
 
   return (
-    <html lang="en" className={cn(instrumentSans.variable)}>
+    <html
+      lang="en"
+      className={cn(instrumentSans.variable, robotoMono.variable)}
+    >
       <body className="min-h-screen">
         <ProgressBarProvider>
           <NextAuthProvider session={session}>

@@ -60,8 +60,8 @@ const navigation = [
     activeIcon: RiAccountCircleFill,
   },
   {
-    name: "Share classes",
-    href: "/share-classes",
+    name: "Share class",
+    href: "/share-class",
     icon: RiFolderChart2Line,
     activeIcon: RiFolderChart2Fill,
   },

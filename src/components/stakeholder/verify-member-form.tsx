@@ -56,7 +56,7 @@ export function VerifyMemberForm({
     <div className="flex min-h-screen w-full items-center justify-center">
       <div className="flex flex-col gap-y-4">
         <div className="flex flex-col gap-y-2 text-center">
-          <h1 className="text-3xl font-bold">Welcome to our OpenCap! 👋</h1>
+          <h1 className="text-3xl font-semibold">Welcome to our OpenCap! 👋</h1>
           <p className="text-muted-foreground">
             Enter your information to complete onboarding
           </p>

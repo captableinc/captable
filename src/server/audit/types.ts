@@ -11,7 +11,7 @@ type ActionType = "user" | "company";
 
 interface ActionTypeData {
   type: ActionType;
-  id?: string;
+  id?: string | null;
 }
 
 export type AuditActor = ActionTypeData;

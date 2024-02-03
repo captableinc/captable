@@ -132,6 +132,8 @@ model Audit {
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
 
+  summary String?
+
   /// [AuditAction]
   action     String
   occurredAt DateTime @default(now())

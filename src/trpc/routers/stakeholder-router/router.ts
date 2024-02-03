@@ -140,21 +140,23 @@ export const stakeholderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
 
-      const data = await ctx.db.$transaction([
-        ctx.db.verificationToken.delete({
+      const { publicId } = await ctx.db.$transaction(async (trx) => {
+        await trx.verificationToken.delete({
           where: {
             token: input.token,
           },
-        }),
-        ctx.db.user.update({
+        });
+
+        await trx.user.update({
           where: {
             id: user.id,
           },
           data: {
             name: input.name,
           },
-        }),
-        ctx.db.membership.update({
+        });
+
+        const membership = await trx.membership.update({
           where: {
             id: input.membershipId,
           },
@@ -171,11 +173,22 @@ export const stakeholderRouter = createTRPCRouter({
                 publicId: true,
               },
             },
+            userId: true,
           },
-        }),
-      ]);
+        });
 
-      return { success: true, publicId: data[2].company.publicId };
+        await Audit.create({
+          action: "stakeholder.accept",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {},
+          target: [{ type: "user", id: membership.userId }],
+        });
+
+        return { publicId: membership.company.publicId };
+      });
+
+      return { success: true, publicId };
     }),
 
   revokeInvite: adminOnlyProcedure

@@ -358,6 +358,7 @@ export const stakeholderRouter = createTRPCRouter({
             select: {
               invitedEmail: true,
               id: true,
+              userId: true,
             },
           });
 
@@ -394,6 +395,17 @@ export const stakeholderRouter = createTRPCRouter({
               expires,
             },
           });
+
+          await Audit.create(
+            {
+              action: "stakeholder.re-invite",
+              companyId: company.id,
+              actor: { type: "user", id: user.id },
+              context: {},
+              target: [{ type: "user", id: membership.userId }],
+            },
+            tx,
+          );
 
           return { verificationToken, company, email };
         },

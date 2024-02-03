@@ -2,6 +2,8 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "./schema";
 import { generatePublicId } from "@/common/id";
 
+import { Audit } from "@/server/audit";
+
 export const onboardingRouter = createTRPCRouter({
   onboard: protectedProcedure
     .input(ZodOnboardingMutationSchema)
@@ -41,8 +43,13 @@ export const onboardingRouter = createTRPCRouter({
             companyId: company.id,
             lastAccessed: new Date(),
           },
-
-          // TODO: create an Audit Log
+        });
+        await Audit.create({
+          action: "company.create",
+          companyId: company.id,
+          actor: { type: "user", id: user.id },
+          context: {},
+          target: [{ type: "company", id: company.id }],
         });
         return { success: true, message: "successfully onboarded", publicId };
       } catch (error) {

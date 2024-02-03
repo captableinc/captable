@@ -193,10 +193,30 @@ export const stakeholderRouter = createTRPCRouter({
 
   revokeInvite: adminOnlyProcedure
     .input(ZodRevokeInviteMutationSchema)
-    .mutation(async ({ ctx: { db }, input }) => {
+    .mutation(async ({ ctx: { db, session }, input }) => {
+      const user = session.user;
       const { membershipId, email } = input;
 
-      await revokeExistingInviteTokens({ membershipId, email, tx: db });
+      await db.$transaction(async (tx) => {
+        await revokeExistingInviteTokens({ membershipId, email, tx });
+
+        const membership = await db.membership.findFirstOrThrow({
+          where: {
+            id: membershipId,
+          },
+          select: {
+            userId: true,
+          },
+        });
+
+        await Audit.create({
+          action: "stakeholder.revoke-invite",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {},
+          target: [{ type: "user", id: membership.userId }],
+        });
+      });
 
       return { success: true };
     }),

@@ -256,16 +256,33 @@ export const stakeholderRouter = createTRPCRouter({
   deactivateUser: adminOnlyProcedure
     .input(ZodDeactivateUserMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
+      const user = session.user;
       const { membershipId, status } = input;
 
-      await db.membership.update({
-        where: {
-          id: membershipId,
-          companyId: session.user.companyId,
-        },
-        data: {
-          active: status,
-        },
+      await db.$transaction(async (tx) => {
+        const member = await tx.membership.update({
+          where: {
+            id: membershipId,
+            companyId: session.user.companyId,
+          },
+          data: {
+            active: status,
+          },
+          select: {
+            userId: true,
+          },
+        });
+
+        await Audit.create(
+          {
+            action: status ? "stakeholder.activate" : "stakeholder.deactivate",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {},
+            target: [{ type: "user", id: member.userId }],
+          },
+          tx,
+        );
       });
 
       return { success: true };

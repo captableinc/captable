@@ -224,13 +224,30 @@ export const stakeholderRouter = createTRPCRouter({
   removeMember: adminOnlyProcedure
     .input(ZodRemoveMemberMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
+      const user = session.user;
       const { membershipId } = input;
 
-      await db.membership.delete({
-        where: {
-          id: membershipId,
-          companyId: session.user.companyId,
-        },
+      await db.$transaction(async (tx) => {
+        const member = await tx.membership.delete({
+          where: {
+            id: membershipId,
+            companyId: session.user.companyId,
+          },
+          select: {
+            userId: true,
+          },
+        });
+
+        await Audit.create(
+          {
+            action: "stakeholder.remove",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {},
+            target: [{ type: "user", id: member.userId }],
+          },
+          tx,
+        );
       });
 
       return { success: true };

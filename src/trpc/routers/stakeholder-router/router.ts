@@ -20,6 +20,7 @@ import {
   revokeExistingInviteTokens,
   sendMembershipInviteEmail,
 } from "@/server/stakeholder";
+import { Audit } from "@/server/audit";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
@@ -79,6 +80,7 @@ export const stakeholderRouter = createTRPCRouter({
             },
             select: {
               id: true,
+              userId: true,
             },
           });
 
@@ -103,6 +105,17 @@ export const stakeholderRouter = createTRPCRouter({
               expires,
             },
           });
+
+          await Audit.create(
+            {
+              action: "stakeholder.invite",
+              companyId: company.id,
+              actor: { type: "user", id: user.id },
+              context: {},
+              target: [{ type: "user", id: membership.userId }],
+            },
+            tx,
+          );
 
           return { verificationToken, company };
         },

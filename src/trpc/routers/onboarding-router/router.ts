@@ -30,6 +30,7 @@ export const onboardingRouter = createTRPCRouter({
             },
             select: {
               id: true,
+              name: true,
             },
           });
 
@@ -53,6 +54,7 @@ export const onboardingRouter = createTRPCRouter({
               actor: { type: "user", id: user.id },
               context: {},
               target: [{ type: "company", id: company.id }],
+              summary: `${user.name} onboarded ${company.name}`,
             },
             tx,
           );
@@ -64,6 +66,7 @@ export const onboardingRouter = createTRPCRouter({
               actor: { type: "user", id: user.id },
               context: {},
               target: [{ type: "company", id: company.id }],
+              summary: `${user.name} created company ${company.name}`,
             },
             tx,
           );

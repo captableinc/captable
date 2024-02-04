@@ -81,6 +81,12 @@ export const stakeholderRouter = createTRPCRouter({
             select: {
               id: true,
               userId: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+              access: true,
             },
           });
 
@@ -113,6 +119,7 @@ export const stakeholderRouter = createTRPCRouter({
               actor: { type: "user", id: user.id },
               context: {},
               target: [{ type: "user", id: membership.userId }],
+              summary: `${user.name} invited ${membership.user?.name} to join ${company.name} as a ${membership.access}`,
             },
             tx,
           );
@@ -171,18 +178,27 @@ export const stakeholderRouter = createTRPCRouter({
             company: {
               select: {
                 publicId: true,
+                name: true,
+                id: true,
               },
             },
             userId: true,
+            access: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
         });
 
         await Audit.create({
           action: "stakeholder.accept",
-          companyId: user.companyId,
+          companyId: membership.company.id,
           actor: { type: "user", id: user.id },
           context: {},
           target: [{ type: "user", id: membership.userId }],
+          summary: `${membership?.user?.name} accepted to join ${membership.company.name} with ${membership.access} access`,
         });
 
         return { publicId: membership.company.publicId };
@@ -200,12 +216,23 @@ export const stakeholderRouter = createTRPCRouter({
       await db.$transaction(async (tx) => {
         await revokeExistingInviteTokens({ membershipId, email, tx });
 
-        const membership = await db.membership.findFirstOrThrow({
+        const membership = await tx.membership.findFirst({
           where: {
             id: membershipId,
           },
           select: {
             userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            access: true,
+            company: {
+              select: {
+                name: true,
+              },
+            },
           },
         });
 
@@ -214,7 +241,8 @@ export const stakeholderRouter = createTRPCRouter({
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
           context: {},
-          target: [{ type: "user", id: membership.userId }],
+          target: [{ type: "user", id: membership?.userId }],
+          summary: `${user.name} revoked ${membership?.user?.name} to join ${membership?.company?.name} with ${membership?.access} access`,
         });
       });
 
@@ -235,6 +263,16 @@ export const stakeholderRouter = createTRPCRouter({
           },
           select: {
             userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            company: {
+              select: {
+                name: true,
+              },
+            },
           },
         });
 
@@ -245,6 +283,7 @@ export const stakeholderRouter = createTRPCRouter({
             actor: { type: "user", id: user.id },
             context: {},
             target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
           },
           tx,
         );
@@ -270,6 +309,16 @@ export const stakeholderRouter = createTRPCRouter({
           },
           select: {
             userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            company: {
+              select: {
+                name: true,
+              },
+            },
           },
         });
 
@@ -280,6 +329,9 @@ export const stakeholderRouter = createTRPCRouter({
             actor: { type: "user", id: user.id },
             context: {},
             target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} ${
+              status ? "activated" : "deactivated"
+            } ${member.user?.name} from ${member?.company.name}`,
           },
           tx,
         );
@@ -311,6 +363,11 @@ export const stakeholderRouter = createTRPCRouter({
           },
           select: {
             userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
           },
         });
 
@@ -321,6 +378,7 @@ export const stakeholderRouter = createTRPCRouter({
             actor: { type: "user", id: user.id },
             context: {},
             target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} updated ${member.user?.name} details`,
           },
           tx,
         );
@@ -349,7 +407,7 @@ export const stakeholderRouter = createTRPCRouter({
             },
           });
 
-          const membership = await db.membership.findFirstOrThrow({
+          const membership = await tx.membership.findFirstOrThrow({
             where: {
               id: input.membershipId,
               status: "pending",
@@ -359,6 +417,12 @@ export const stakeholderRouter = createTRPCRouter({
               invitedEmail: true,
               id: true,
               userId: true,
+              access: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
             },
           });
 
@@ -403,6 +467,7 @@ export const stakeholderRouter = createTRPCRouter({
               actor: { type: "user", id: user.id },
               context: {},
               target: [{ type: "user", id: membership.userId }],
+              summary: `${user.name} reinvited ${membership.user?.name} to join ${company.name} with ${membership.access} access`,
             },
             tx,
           );

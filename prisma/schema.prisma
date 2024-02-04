@@ -114,15 +114,13 @@ model Membership {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
-
-  invitedEmail String?
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
 
-  @@unique([companyId, invitedEmail])
+  @@unique([companyId, userId])
   @@index([companyId])
   @@index([status])
   @@index([userId])

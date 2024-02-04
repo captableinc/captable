@@ -15,7 +15,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\"",
+    "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" && npx prisma format",
     "email:preview": "email preview ./src/emails"
   },
   "dependencies": {

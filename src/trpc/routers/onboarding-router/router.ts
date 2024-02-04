@@ -48,7 +48,7 @@ export const onboardingRouter = createTRPCRouter({
 
           await Audit.create(
             {
-              action: "user.signup",
+              action: "user.onboarded",
               companyId: company.id,
               actor: { type: "user", id: user.id },
               context: {},

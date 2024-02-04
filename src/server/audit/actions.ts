@@ -1,5 +1,5 @@
 export const AUDIT_ACTIONS = {
-  user: ["signup"],
+  user: ["signup", "onboarded"],
   company: ["create"],
   stakeholder: [
     "invite",

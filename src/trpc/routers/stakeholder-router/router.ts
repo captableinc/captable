@@ -114,7 +114,7 @@ export const stakeholderRouter = createTRPCRouter({
 
           await Audit.create(
             {
-              action: "stakeholder.invite",
+              action: "stakeholder.invited",
               companyId: company.id,
               actor: { type: "user", id: user.id },
               context: {},
@@ -193,7 +193,7 @@ export const stakeholderRouter = createTRPCRouter({
         });
 
         await Audit.create({
-          action: "stakeholder.accept",
+          action: "stakeholder.accepted",
           companyId: membership.company.id,
           actor: { type: "user", id: user.id },
           context: {},
@@ -237,7 +237,7 @@ export const stakeholderRouter = createTRPCRouter({
         });
 
         await Audit.create({
-          action: "stakeholder.revoke-invite",
+          action: "stakeholder.revoked-invite",
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
           context: {},
@@ -278,7 +278,7 @@ export const stakeholderRouter = createTRPCRouter({
 
         await Audit.create(
           {
-            action: "stakeholder.remove",
+            action: "stakeholder.removed",
             companyId: user.companyId,
             actor: { type: "user", id: user.id },
             context: {},
@@ -324,7 +324,9 @@ export const stakeholderRouter = createTRPCRouter({
 
         await Audit.create(
           {
-            action: status ? "stakeholder.activate" : "stakeholder.deactivate",
+            action: status
+              ? "stakeholder.activated"
+              : "stakeholder.deactivated",
             companyId: user.companyId,
             actor: { type: "user", id: user.id },
             context: {},
@@ -373,7 +375,7 @@ export const stakeholderRouter = createTRPCRouter({
 
         await Audit.create(
           {
-            action: "stakeholder.update",
+            action: "stakeholder.updated",
             companyId: user.companyId,
             actor: { type: "user", id: user.id },
             context: {},
@@ -462,7 +464,7 @@ export const stakeholderRouter = createTRPCRouter({
 
           await Audit.create(
             {
-              action: "stakeholder.re-invite",
+              action: "stakeholder.re-invited",
               companyId: company.id,
               actor: { type: "user", id: user.id },
               context: {},

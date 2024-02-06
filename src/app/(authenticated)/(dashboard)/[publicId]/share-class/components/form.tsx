@@ -129,7 +129,7 @@ const ShareClassForm = ({
             </div>
 
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-              <div className="sm:col-span-3">
+              <div className="sm:col-span-2">
                 <FormField
                   control={form.control}
                   name="name"
@@ -145,7 +145,7 @@ const ShareClassForm = ({
                 />
               </div>
 
-              <div className="sm:col-span-3">
+              <div className="sm:col-span-2">
                 <FormField
                   control={form.control}
                   name="classType"
@@ -174,7 +174,7 @@ const ShareClassForm = ({
                 />
               </div>
 
-              <div className="col-span-full">
+              <div className="sm:col-span-2">
                 <FormField
                   control={form.control}
                   name="initialSharesAuthorized"

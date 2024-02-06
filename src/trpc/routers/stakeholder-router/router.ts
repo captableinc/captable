@@ -20,6 +20,7 @@ import {
   revokeExistingInviteTokens,
   sendMembershipInviteEmail,
 } from "@/server/stakeholder";
+import { Audit } from "@/server/audit";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: protectedProcedure
@@ -105,6 +106,13 @@ export const stakeholderRouter = createTRPCRouter({
             },
             select: {
               id: true,
+              userId: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+              access: true,
             },
           });
 
@@ -130,6 +138,18 @@ export const stakeholderRouter = createTRPCRouter({
             },
           });
 
+          await Audit.create(
+            {
+              action: "stakeholder.invited",
+              companyId: company.id,
+              actor: { type: "user", id: user.id },
+              context: {},
+              target: [{ type: "user", id: membership.userId }],
+              summary: `${user.name} invited ${membership.user?.name} to join ${company.name} as a ${membership.access}`,
+            },
+            tx,
+          );
+
           return { verificationToken, company };
         },
       );
@@ -153,21 +173,23 @@ export const stakeholderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = ctx.session.user;
 
-      const data = await ctx.db.$transaction([
-        ctx.db.verificationToken.delete({
+      const { publicId } = await ctx.db.$transaction(async (trx) => {
+        await trx.verificationToken.delete({
           where: {
             token: input.token,
           },
-        }),
-        ctx.db.user.update({
+        });
+
+        await trx.user.update({
           where: {
             id: user.id,
           },
           data: {
             name: input.name,
           },
-        }),
-        ctx.db.membership.update({
+        });
+
+        const membership = await trx.membership.update({
           where: {
             id: input.membershipId,
           },
@@ -182,21 +204,73 @@ export const stakeholderRouter = createTRPCRouter({
             company: {
               select: {
                 publicId: true,
+                name: true,
+                id: true,
+              },
+            },
+            userId: true,
+            access: true,
+            user: {
+              select: {
+                name: true,
               },
             },
           },
-        }),
-      ]);
+        });
 
-      return { success: true, publicId: data[2].company.publicId };
+        await Audit.create({
+          action: "stakeholder.accepted",
+          companyId: membership.company.id,
+          actor: { type: "user", id: user.id },
+          context: {},
+          target: [{ type: "user", id: membership.userId }],
+          summary: `${membership?.user?.name} accepted to join ${membership.company.name} with ${membership.access} access`,
+        });
+
+        return { publicId: membership.company.publicId };
+      });
+
+      return { success: true, publicId };
     }),
 
   revokeInvite: adminOnlyProcedure
     .input(ZodRevokeInviteMutationSchema)
-    .mutation(async ({ ctx: { db }, input }) => {
+    .mutation(async ({ ctx: { db, session }, input }) => {
+      const user = session.user;
       const { membershipId, email } = input;
 
-      await revokeExistingInviteTokens({ membershipId, email, tx: db });
+      await db.$transaction(async (tx) => {
+        await revokeExistingInviteTokens({ membershipId, email, tx });
+
+        const membership = await tx.membership.findFirst({
+          where: {
+            id: membershipId,
+          },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            access: true,
+            company: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        });
+
+        await Audit.create({
+          action: "stakeholder.revoked-invite",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {},
+          target: [{ type: "user", id: membership?.userId }],
+          summary: `${user.name} revoked ${membership?.user?.name} to join ${membership?.company?.name} with ${membership?.access} access`,
+        });
+      });
 
       return { success: true };
     }),
@@ -204,13 +278,41 @@ export const stakeholderRouter = createTRPCRouter({
   removeMember: adminOnlyProcedure
     .input(ZodRemoveMemberMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
+      const user = session.user;
       const { membershipId } = input;
 
-      await db.membership.delete({
-        where: {
-          id: membershipId,
-          companyId: session.user.companyId,
-        },
+      await db.$transaction(async (tx) => {
+        const member = await tx.membership.delete({
+          where: {
+            id: membershipId,
+            companyId: session.user.companyId,
+          },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            company: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        });
+
+        await Audit.create(
+          {
+            action: "stakeholder.removed",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {},
+            target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
+          },
+          tx,
+        );
       });
 
       return { success: true };
@@ -219,16 +321,48 @@ export const stakeholderRouter = createTRPCRouter({
   deactivateUser: adminOnlyProcedure
     .input(ZodDeactivateUserMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
+      const user = session.user;
       const { membershipId, status } = input;
 
-      await db.membership.update({
-        where: {
-          id: membershipId,
-          companyId: session.user.companyId,
-        },
-        data: {
-          active: status,
-        },
+      await db.$transaction(async (tx) => {
+        const member = await tx.membership.update({
+          where: {
+            id: membershipId,
+            companyId: session.user.companyId,
+          },
+          data: {
+            active: status,
+          },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+            company: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        });
+
+        await Audit.create(
+          {
+            action: status
+              ? "stakeholder.activated"
+              : "stakeholder.deactivated",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {},
+            target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} ${
+              status ? "activated" : "deactivated"
+            } ${member.user?.name} from ${member?.company.name}`,
+          },
+          tx,
+        );
       });
 
       return { success: true };
@@ -238,21 +372,44 @@ export const stakeholderRouter = createTRPCRouter({
     .input(ZodUpdateMemberMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {
       const { membershipId, name, email, ...rest } = input;
+      const user = session.user;
 
-      await db.membership.update({
-        where: {
-          status: "accepted",
-          id: membershipId,
-          companyId: session.user.companyId,
-        },
-        data: {
-          ...rest,
-          user: {
-            update: {
-              name,
+      await db.$transaction(async (tx) => {
+        const member = await tx.membership.update({
+          where: {
+            status: "accepted",
+            id: membershipId,
+            companyId: session.user.companyId,
+          },
+          data: {
+            ...rest,
+            user: {
+              update: {
+                name,
+              },
             },
           },
-        },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        });
+
+        await Audit.create(
+          {
+            action: "stakeholder.updated",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {},
+            target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} updated ${member.user?.name} details`,
+          },
+          tx,
+        );
       });
 
       return { success: true };
@@ -278,12 +435,13 @@ export const stakeholderRouter = createTRPCRouter({
             },
           });
 
-          const membership = await db.membership.findFirstOrThrow({
+          const membership = await tx.membership.findFirstOrThrow({
             where: {
               id: input.membershipId,
               status: "pending",
               companyId,
             },
+
             include: {
               user: {
                 select: {
@@ -292,9 +450,6 @@ export const stakeholderRouter = createTRPCRouter({
                 },
               },
             },
-            // select: {
-            //   id: true,
-            // },
           });
 
           const email = membership.user.email;
@@ -330,6 +485,18 @@ export const stakeholderRouter = createTRPCRouter({
               expires,
             },
           });
+
+          await Audit.create(
+            {
+              action: "stakeholder.re-invited",
+              companyId: company.id,
+              actor: { type: "user", id: user.id },
+              context: {},
+              target: [{ type: "user", id: membership.userId }],
+              summary: `${user.name} reinvited ${membership.user?.name} to join ${company.name} with ${membership.access} access`,
+            },
+            tx,
+          );
 
           return { verificationToken, company, email };
         },

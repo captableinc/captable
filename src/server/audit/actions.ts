@@ -1,4 +1,14 @@
 export const AUDIT_ACTIONS = {
-  user: ["signed_in", "created"],
+  user: ["signed-up", "onboarded"],
   company: ["created"],
+  stakeholder: [
+    "invited",
+    "re-invited",
+    "accepted",
+    "updated",
+    "removed",
+    "revoked-invite",
+    "deactivated",
+    "activated",
+  ],
 } as const;

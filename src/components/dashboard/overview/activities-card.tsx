@@ -5,77 +5,16 @@ import {
   CardHeader,
   CardContent,
 } from "@/components/ui/card";
+import { api } from "@/trpc/server";
+import Link from "next/link";
 
 type Props = {
-  title?: string;
+  publicId: string;
   className: string;
 };
 
-const DonutCard = ({ title, className }: Props) => {
-  const activity = [
-    {
-      id: 1,
-      action: "safe.created",
-      actor: {
-        id: "xxxxx",
-        type: "user",
-      },
-      target: {
-        id: "xxxxx",
-        type: "user",
-      },
-
-      summary: "Camila Murphy created a safe '[Draft] - SAFE for Y Combinator'",
-      date: "28 days ago",
-    },
-    {
-      id: 2,
-      action: "document.uploaded",
-      actor: {
-        id: "xxxxx",
-        type: "user",
-      },
-      target: {
-        id: "xxxxx",
-        type: "user",
-      },
-
-      summary:
-        "Dennis Shelton uploaded a document 'Certificate of Incorporation'",
-      date: "28 days ago",
-    },
-    {
-      id: 3,
-      action: "user.invited",
-      actor: {
-        id: "xxxxx",
-        type: "user",
-      },
-      target: {
-        id: "xxxxx",
-        type: "user",
-      },
-
-      summary: "Camila Murphy accepted the invitation to join the company",
-      date: "29 days ago",
-    },
-    {
-      id: 4,
-      action: "user.invited",
-      actor: {
-        id: "xxxxx",
-        type: "user",
-      },
-      target: {
-        id: "xxxxx",
-        type: "user",
-      },
-
-      summary:
-        "Dennis Shelton invited an admin Camila Murphy to join the company",
-      date: "30 days ago",
-    },
-  ];
+const ActivityCard = async ({ className, publicId }: Props) => {
+  const activity = await api.audit.getAudits.query({ take: 4 });
 
   return (
     <Card className={className}>
@@ -87,10 +26,10 @@ const DonutCard = ({ title, className }: Props) => {
 
       <CardContent>
         <ul role="list" className="-mb-8">
-          {activity.map((activityItem, activityItemIdx) => (
+          {activity.data.map((activityItem, activityItemIdx) => (
             <li key={activityItem.id}>
               <div className="relative pb-8">
-                {activityItemIdx !== activity.length - 1 ? (
+                {activityItemIdx !== activity.data.length - 1 ? (
                   <span
                     className="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200"
                     aria-hidden="true"
@@ -115,7 +54,9 @@ const DonutCard = ({ title, className }: Props) => {
                         </span>{" "}
                         <br />
                         <span className="whitespace-nowrap text-xs">
-                          {activityItem.date}
+                          {new Intl.DateTimeFormat("en-US", {
+                            dateStyle: "medium",
+                          }).format(activityItem.occurredAt)}
                         </span>
                       </div>
                     </div>
@@ -127,16 +68,16 @@ const DonutCard = ({ title, className }: Props) => {
         </ul>
 
         <div className="mt-6">
-          <button
-            type="button"
+          <Link
+            href={`/${publicId}/audits`}
             className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white py-1 text-sm text-primary/85 hover:bg-gray-50"
           >
             View all activity
-          </button>
+          </Link>
         </div>
       </CardContent>
     </Card>
   );
 };
 
-export default DonutCard;
+export default ActivityCard;

@@ -131,7 +131,7 @@ export const columns: ColumnDef<Member[number]>[] = [
 
         <div className=" ml-2">
           <p>{row.original?.user?.name}</p>
-          <p>{row.original?.user?.email ?? row.original.invitedEmail}</p>
+          <p>{row.original?.user?.email}</p>
         </div>
       </div>
     ),
@@ -208,7 +208,7 @@ export const columns: ColumnDef<Member[number]>[] = [
       const isAdmin = data?.user?.access === "admin";
       const status = member.status;
       const membershipId = member.id;
-      const email = member.user?.email ?? member.invitedEmail;
+      const email = member.user?.email;
       const deleteAction =
         status === "pending" ? "Revoke invite" : "Remove member";
 

@@ -175,7 +175,11 @@ model ShareClass {
   parValue                      Float
   pricePerShare                 Float
   seniority                     Int
-  conversionRights              Json            @default("{\"convertsToFutureRound\": null,\"convertsToStockClassId\": null}")
+
+  // Conversion Rights
+  convertsToFutureRound         Boolean
+  convertsToShareClassId        String
+
   liquidationPreferenceMultiple Float
   participationCapMultiple      Float
 

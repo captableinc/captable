@@ -8,17 +8,17 @@ import {
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from "../dropdown-menu";
-import { type Table } from "@tanstack/react-table";
 
-interface DataTableViewOptionsProps<TData> {
-  table: Table<TData>;
+import { useDataTable } from "./data-table";
+
+interface DataTableViewOptionsProps {
   actionLabel: ReactNode;
 }
 
-export function DataTableViewOptions<TData>({
-  table,
+export function DataTableViewOptions({
   actionLabel,
-}: DataTableViewOptionsProps<TData>) {
+}: DataTableViewOptionsProps) {
+  const { table } = useDataTable();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

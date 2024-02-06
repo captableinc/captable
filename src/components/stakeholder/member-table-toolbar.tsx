@@ -1,18 +1,13 @@
-import { type Table } from "@tanstack/react-table";
 import { Input } from "../ui/input";
 import { DataTableFacetedFilter } from "../ui/data-table/data-table-faceted-filter";
 import { Button } from "../ui/button";
 import { DataTableViewOptions } from "../ui/data-table/data-table-view-options";
 import { accessValues, statusValues } from "./data";
 import { RiArrowDownSLine, RiCloseLine } from "@remixicon/react";
+import { useDataTable } from "../ui/data-table/data-table";
 
-interface DataTableToolbarProps<TData> {
-  table: Table<TData>;
-}
-
-export function MemberTableToolbar<TData>({
-  table,
-}: DataTableToolbarProps<TData>) {
+export function MemberTableToolbar() {
+  const { table } = useDataTable();
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -58,7 +53,6 @@ export function MemberTableToolbar<TData>({
             <RiArrowDownSLine aria-hidden className="ml-2 h-4 w-4" />
           </>
         }
-        table={table}
       />
     </div>
   );

@@ -1,4 +1,3 @@
-import { type ReactNode } from "react";
 import { Button } from "../button";
 import {
   DropdownMenu,
@@ -10,14 +9,9 @@ import {
 } from "../dropdown-menu";
 
 import { useDataTable } from "./data-table";
+import { RiArrowDownSLine } from "@remixicon/react";
 
-interface DataTableViewOptionsProps {
-  actionLabel: ReactNode;
-}
-
-export function DataTableViewOptions({
-  actionLabel,
-}: DataTableViewOptionsProps) {
+export function DataTableViewOptions() {
   const { table } = useDataTable();
   return (
     <DropdownMenu>
@@ -27,7 +21,8 @@ export function DataTableViewOptions({
           size="sm"
           className="ml-auto hidden h-8 lg:flex"
         >
-          {actionLabel}
+          Select columns{" "}
+          <RiArrowDownSLine aria-hidden className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">

@@ -3,7 +3,7 @@ import { DataTableFacetedFilter } from "../ui/data-table/data-table-faceted-filt
 import { Button } from "../ui/button";
 import { DataTableViewOptions } from "../ui/data-table/data-table-view-options";
 import { accessValues, statusValues } from "./data";
-import { RiArrowDownSLine, RiCloseLine } from "@remixicon/react";
+import { RiCloseLine } from "@remixicon/react";
 import { useDataTable } from "../ui/data-table/data-table";
 
 export function MemberTableToolbar() {
@@ -46,14 +46,7 @@ export function MemberTableToolbar() {
           </Button>
         )}
       </div>
-      <DataTableViewOptions
-        actionLabel={
-          <>
-            Select columns{" "}
-            <RiArrowDownSLine aria-hidden className="ml-2 h-4 w-4" />
-          </>
-        }
-      />
+      <DataTableViewOptions />
     </div>
   );
 }

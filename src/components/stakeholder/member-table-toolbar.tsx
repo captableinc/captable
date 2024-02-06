@@ -1,10 +1,9 @@
 import { Input } from "../ui/input";
 import { DataTableFacetedFilter } from "../ui/data-table/data-table-faceted-filter";
-import { Button } from "../ui/button";
 import { DataTableViewOptions } from "../ui/data-table/data-table-view-options";
 import { accessValues, statusValues } from "./data";
-import { RiCloseLine } from "@remixicon/react";
 import { useDataTable } from "../ui/data-table/data-table";
+import { ResetButton } from "../ui/data-table/data-table-buttons";
 
 export function MemberTableToolbar() {
   const { table } = useDataTable();
@@ -36,14 +35,7 @@ export function MemberTableToolbar() {
           />
         )}
         {isFiltered && (
-          <Button
-            variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
-          >
-            Reset
-            <RiCloseLine aria-hidden className="ml-2 h-4 w-4" />
-          </Button>
+          <ResetButton onClick={() => table.resetColumnFilters()} />
         )}
       </div>
       <DataTableViewOptions />

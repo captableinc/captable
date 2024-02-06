@@ -35,12 +35,13 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { type RouterOutputs } from "@/trpc/shared";
 import { MemberTableToolbar } from "./member-table-toolbar";
-import { RiExpandUpDownLine, RiMoreLine } from "@remixicon/react";
+import { RiMoreLine } from "@remixicon/react";
 import { DataTableHeader } from "../ui/data-table/data-table-header";
 import { DataTableBody } from "../ui/data-table/data-table-body";
 import { DataTableContent } from "../ui/data-table/data-table-content";
 import { DataTable } from "../ui/data-table/data-table";
 import { DataTablePagination } from "../ui/data-table/data-table-pagination";
+import { SortButton } from "../ui/data-table/data-table-buttons";
 
 type Member = RouterOutputs["stakeholder"]["getMembers"]["data"];
 
@@ -100,13 +101,10 @@ export const columns: ColumnDef<Member[number]>[] = [
     id: "name",
     header: ({ column }) => {
       return (
-        <div
-          className="flex cursor-pointer"
+        <SortButton
+          label="Name"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
-        </div>
+        />
       );
     },
     accessorFn: (row) => row.user?.name,
@@ -134,13 +132,10 @@ export const columns: ColumnDef<Member[number]>[] = [
     accessorKey: "title",
     header: ({ column }) => {
       return (
-        <div
-          className="flex cursor-pointer"
+        <SortButton
+          label="Title"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Title
-          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
-        </div>
+        />
       );
     },
     cell: ({ row }) => (
@@ -151,13 +146,10 @@ export const columns: ColumnDef<Member[number]>[] = [
     accessorKey: "status",
     header: ({ column }) => {
       return (
-        <div
-          className="flex cursor-pointer"
+        <SortButton
+          label="Status"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Status
-          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
-        </div>
+        />
       );
     },
     cell: ({ row }) => (
@@ -172,13 +164,10 @@ export const columns: ColumnDef<Member[number]>[] = [
     accessorKey: "access",
     header: ({ column }) => {
       return (
-        <div
-          className="flex cursor-pointer"
+        <SortButton
+          label="Access"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Access
-          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
-        </div>
+        />
       );
     },
     cell: ({ row }) => (

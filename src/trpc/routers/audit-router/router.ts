@@ -11,7 +11,7 @@ export const auditRouter = createTRPCRouter({
       const data = await db.audit.findMany({
         where: { companyId: user.companyId },
         orderBy: {
-          occurredAt: "asc",
+          occurredAt: "desc",
         },
         ...input,
       });

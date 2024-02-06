@@ -81,10 +81,12 @@ model Company {
   state         String
   zipcode       String
 
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  users     Membership[]
-  audits    Audit[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  users        Membership[]
+  audits       Audit[]
+  shareClasses ShareClass[]
+  equityPlans  EquityPlan[]
 
   @@unique([publicId])
 }
@@ -112,15 +114,13 @@ model Membership {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
-
-  invitedEmail String?
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
 
-  @@unique([companyId, invitedEmail])
+  @@unique([companyId, userId])
   @@index([companyId])
   @@index([status])
   @@index([userId])
@@ -147,5 +147,71 @@ model Audit {
   /// [AuditContext]
   context Json
 
+  @@index([companyId])
+}
+
+enum ShareTypeEnum {
+  common
+  preferred
+}
+
+enum SharePrefixEnum {
+  CS // Common Shares
+  PS // Preferred Shares
+}
+
+// Based on OCF format
+// https://open-cap-table-coalition.github.io/Open-Cap-Format-OCF/schema_markdown/schema/objects/StockClass/
+model ShareClass {
+  id                            String          @id @default(cuid())
+  idx                           String // auto-generated, auto-incremented based on company
+  name                          String
+  classType                     ShareTypeEnum   @default(common)
+  prefix                        SharePrefixEnum @default(CS)
+  initialSharesAuthorized       BigInt
+  boardApprovalDate             DateTime
+  stockholderApprovalDate       DateTime
+  votesPerShare                 Int
+  parValue                      Float
+  pricePerShare                 Float
+  seniority                     Int
+  conversionRights              Json            @default("{\"convertsToFutureRound\": null,\"convertsToStockClassId\": null}")
+  liquidationPreferenceMultiple Float
+  participationCapMultiple      Float
+
+  companyId   String
+  company     Company      @relation(fields: [companyId], references: [id])
+  equityPlans EquityPlan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+}
+
+enum CancellationBehaviorEnum {
+  RETIRE
+  RETURN_TO_POOL
+  HOLD_AS_CAPITAL_STOCK
+  DEFINED_PER_PLAN_SECURITY
+}
+
+model EquityPlan {
+  id                         String                   @id @default(cuid())
+  name                       String
+  boardApprovalDate          DateTime
+  initialSharesReserved      BigInt
+  defaultCancellatonBehavior CancellationBehaviorEnum
+  comments                   Json                     @default("[]")
+
+  companyId    String
+  company      Company    @relation(fields: [companyId], references: [id])
+  shareClassId String
+  shareClass   ShareClass @relation(fields: [shareClassId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shareClassId])
   @@index([companyId])
 }

@@ -45,38 +45,64 @@ export const stakeholderRouter = createTRPCRouter({
             },
           });
 
-          const prevMembership = await tx.membership.findFirst({
+          // create or find user
+          const invitedUser = await tx.user.upsert({
             where: {
-              companyId: company.id,
-              invitedEmail: email,
-              status: "accepted",
+              email,
+            },
+            update: {},
+            create: {
+              name,
+              email,
+            },
+            select: {
+              id: true,
             },
           });
 
-          if (prevMembership) {
+          // check if user is already a member
+          const prevMembership = await tx.membership.findUnique({
+            where: {
+              companyId_userId: {
+                companyId: user.companyId,
+                userId: invitedUser.id,
+              },
+            },
+          });
+
+          // if already a member, throw error
+          if (prevMembership && prevMembership.status === "accepted") {
             throw new TRPCError({
               code: "FORBIDDEN",
               message: "user already a member",
             });
           }
 
+          //  create membership
           const membership = await tx.membership.upsert({
-            where: {
-              companyId_invitedEmail: {
-                companyId: company.id,
-                invitedEmail: email,
-              },
-            },
-            update: {},
             create: {
               title,
-              access: access ?? "stakeholder",
-              companyId: company.id,
-              invitedEmail: email,
               active: false,
+              access: access || "stakeholder",
+              isOnboarded: false,
+              lastAccessed: new Date(),
+              companyId: user.companyId,
+              userId: invitedUser.id,
+              status: "pending",
+            },
+            update: {
+              title,
+              active: false,
+              access: access || "stakeholder",
               isOnboarded: false,
               lastAccessed: new Date(),
               status: "pending",
+            },
+            where: {
+              companyId_userId: {
+                companyId: user.companyId,
+                userId: invitedUser.id,
+              },
             },
             select: {
               id: true,
@@ -415,20 +441,18 @@ export const stakeholderRouter = createTRPCRouter({
               status: "pending",
               companyId,
             },
-            select: {
-              invitedEmail: true,
-              id: true,
-              userId: true,
-              access: true,
+
+            include: {
               user: {
                 select: {
                   name: true,
+                  email: true,
                 },
               },
             },
           });
 
-          const email = membership.invitedEmail;
+          const email = membership.user.email;
 
           if (!email) {
             throw new Error("invited email not found");

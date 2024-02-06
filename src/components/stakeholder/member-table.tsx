@@ -7,7 +7,6 @@ import {
   type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -28,15 +27,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
 import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -46,6 +36,11 @@ import { useRouter } from "next/navigation";
 import { type RouterOutputs } from "@/trpc/shared";
 import { MemberTableToolbar } from "./member-table-toolbar";
 import { RiExpandUpDownLine, RiMoreLine } from "@remixicon/react";
+import { DataTableHeader } from "../ui/data-table/data-table-header";
+import { DataTableBody } from "../ui/data-table/data-table-body";
+import { DataTableContent } from "../ui/data-table/data-table-content";
+import { DataTable } from "../ui/data-table/data-table";
+import { DataTablePagination } from "../ui/data-table/data-table-pagination";
 
 type Member = RouterOutputs["stakeholder"]["getMembers"]["data"];
 
@@ -339,81 +334,14 @@ const MemberTable = ({ members }: MembersType) => {
 
   return (
     <div className="w-full p-6">
-      <MemberTableToolbar table={table} />
-      <div className="mt-6 rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      <DataTable table={table}>
+        <MemberTableToolbar />
+        <DataTableContent>
+          <DataTableHeader />
+          <DataTableBody />
+        </DataTableContent>
+        <DataTablePagination />
+      </DataTable>
     </div>
   );
 };

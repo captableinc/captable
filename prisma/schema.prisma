@@ -160,22 +160,31 @@ enum SharePrefixEnum {
   PS // Preferred Shares
 }
 
+enum ConversionRightsEnum {
+  convertsToFutureRound
+  convertsToShareClassId
+}
+
 // Based on OCF format
 // https://open-cap-table-coalition.github.io/Open-Cap-Format-OCF/schema_markdown/schema/objects/StockClass/
 model ShareClass {
-  id                            String          @id @default(cuid())
-  idx                           String // auto-generated, auto-incremented based on company
-  name                          String
-  classType                     ShareTypeEnum   @default(common)
-  prefix                        SharePrefixEnum @default(CS)
-  initialSharesAuthorized       BigInt
-  boardApprovalDate             DateTime
-  stockholderApprovalDate       DateTime
-  votesPerShare                 Int
-  parValue                      Float
-  pricePerShare                 Float
-  seniority                     Int
-  conversionRights              Json            @default("{\"convertsToFutureRound\": null,\"convertsToStockClassId\": null}")
+  id                      String          @id @default(cuid())
+  idx                     String // auto-generated, auto-incremented based on company
+  name                    String
+  classType               ShareTypeEnum   @default(common)
+  prefix                  SharePrefixEnum @default(CS)
+  initialSharesAuthorized BigInt
+  boardApprovalDate       DateTime
+  stockholderApprovalDate DateTime
+  votesPerShare           Int
+  parValue                Float
+  pricePerShare           Float
+  seniority               Int
+
+  // Conversion Rights
+  conversionRights       ConversionRightsEnum @default(convertsToFutureRound)
+  convertsToShareClassId String
+
   liquidationPreferenceMultiple Float
   participationCapMultiple      Float
 

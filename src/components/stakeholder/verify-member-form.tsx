@@ -75,7 +75,7 @@ export function VerifyMemberForm({
                   <FormControl>
                     <Input disabled={isSubmitting} {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
             />

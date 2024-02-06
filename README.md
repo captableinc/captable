@@ -55,11 +55,18 @@ OpenCap will follow the [Open Cap Table Coalition](https://www.opencaptablecoali
 
 ## Developers
 
-Follow the steps below to stand the app up locally.
+Follow the steps below to stand the app up locally. You can use `yarn`, `pnpm`, or `npm` to run the commands.
 
 **1. Install dependencies.**
 
 ```sh
+# Using yarn
+yarn i
+
+# Using pnpm
+pnpm i
+
+# Using npm
 npm i
 ```
 
@@ -68,6 +75,13 @@ npm i
 First, ensure Docker is running.
 
 ```sh
+# Using yarn
+yarn docker:start
+
+# Using pnpm
+pnpm docker:start
+
+# Using npm
 npm run docker:start
 ```
 
@@ -80,18 +94,41 @@ npx prisma migrate dev
 To see what's in your database, run Prisma Studio:
 
 ```sh
+# Using yarn
+yarn db:studio
+
+# Using pnpm
+pnpm db:studio
+
+# Using npm
 npm run db:studio
+
+
 ```
 
 **3. Seed some data (For dev environment)**
 
 ```sh
+# Using yarn
+yarn db:seed
+
+# Using pnpm
+pnpm db:seed
+
+# Using npm
 npm run db:seed
 ```
 
 **4. Run the web app**
 
 ```sh
+# Using yarn
+yarn dev
+
+# Using pnpm
+pnpm dev
+
+# Using npm
 npm run dev
 ```
 

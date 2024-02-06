@@ -1,8 +1,4 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/images/cover-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset=".github/images/cover-light.png">
-  <img alt="OpenCap cover image" src=".github/images/cover-light.png">
-</picture>
+<img alt="OpenCap cover image" src=".github/images/cover.png">
 
 
 <h1 align="center">OpenCap</h1>

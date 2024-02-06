@@ -1,4 +1,4 @@
-import { RiUser4Fill } from "@remixicon/react";
+import { RiAccountCircleFill } from "@remixicon/react";
 import {
   Card,
   CardDescription,
@@ -101,7 +101,7 @@ const DonutCard = ({ title, className }: Props) => {
                     <div>
                       <div className="relative px-1">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-100 ring-8 ring-white">
-                          <RiUser4Fill
+                          <RiAccountCircleFill
                             className="h-5 w-5 text-teal-500"
                             aria-hidden="true"
                           />

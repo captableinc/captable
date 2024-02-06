@@ -1,6 +1,11 @@
+"use client";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { RiArrowRightLine } from "@remixicon/react";
 
 import {
   Select,
@@ -40,7 +45,6 @@ const ShareClassForm = ({
   className,
   shareClass = {
     name: "",
-    prefix: "CS",
     classType: "common",
     initialSharesAuthorized: 0,
     boardApprovalDate: "",
@@ -49,7 +53,7 @@ const ShareClassForm = ({
     parValue: 0,
     pricePerShare: 0,
     seniority: 0,
-    convertsToFutureRound: false,
+    conversionRights: "convertsToFutureRound",
     convertsToShareClassId: "",
     liquidationPreferenceMultiple: 0,
     participationCapMultiple: 0,
@@ -60,7 +64,6 @@ const ShareClassForm = ({
     idx,
     name,
     classType,
-    prefix,
     initialSharesAuthorized,
     boardApprovalDate,
     stockholderApprovalDate,
@@ -68,7 +71,7 @@ const ShareClassForm = ({
     parValue,
     pricePerShare,
     seniority,
-    convertsToFutureRound,
+    conversionRights,
     convertsToShareClassId,
     liquidationPreferenceMultiple,
     participationCapMultiple,
@@ -80,7 +83,6 @@ const ShareClassForm = ({
       idx,
       name,
       classType,
-      prefix,
       initialSharesAuthorized,
       boardApprovalDate,
       stockholderApprovalDate,
@@ -88,17 +90,34 @@ const ShareClassForm = ({
       parValue,
       pricePerShare,
       seniority,
-      convertsToFutureRound,
+      conversionRights,
       convertsToShareClassId,
       liquidationPreferenceMultiple,
       participationCapMultiple,
     },
   });
 
+  const { watch } = form;
+  const isSubmitting = form.formState.isSubmitting;
+  const watchConversionRights = watch("conversionRights") as string;
+  const [renderShareClassInput, setRenderShareClassInput] = useState(false);
+
+  useEffect(() => {
+    if (watchConversionRights === "convertsToStockClassId") {
+      setRenderShareClassInput(true);
+    } else {
+      setRenderShareClassInput(false);
+    }
+  }, [watchConversionRights]);
+
+  const onSubmit = async (values: ShareClassMutationType) => {
+    console.log({ values });
+  };
+
   return (
     <Card className={cn(className)}>
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 p-6 md:grid-cols-3">
             <div>
               <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -120,7 +139,7 @@ const ShareClassForm = ({
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -149,7 +168,7 @@ const ShareClassForm = ({
                           </SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -165,7 +184,7 @@ const ShareClassForm = ({
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -190,19 +209,13 @@ const ShareClassForm = ({
                   control={form.control}
                   name="boardApprovalDate"
                   render={({ field }) => (
-                    <FormField
-                      control={form.control}
-                      name="boardApprovalDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Board approval date</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormItem>
+                      <FormLabel>Board approval date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
                   )}
                 />
               </div>
@@ -210,21 +223,15 @@ const ShareClassForm = ({
               <div className="sm:col-span-3">
                 <FormField
                   control={form.control}
-                  name="boardApprovalDate"
+                  name="stockholderApprovalDate"
                   render={({ field }) => (
-                    <FormField
-                      control={form.control}
-                      name="stockholderApprovalDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stockholder approval date</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormItem>
+                      <FormLabel>Stockholder approval date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
                   )}
                 />
               </div>
@@ -239,7 +246,7 @@ const ShareClassForm = ({
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -255,7 +262,7 @@ const ShareClassForm = ({
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -271,7 +278,7 @@ const ShareClassForm = ({
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -287,7 +294,7 @@ const ShareClassForm = ({
                       <FormControl>
                         <Input {...field} type="number" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
@@ -307,70 +314,132 @@ const ShareClassForm = ({
               </p>
             </div>
 
-            <div className="max-w-2xl space-y-10 md:col-span-2">
+            <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+              <div className="col-span-full">
+                <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                  <div className="sm:col-span-3">
+                    <FormField
+                      control={form.control}
+                      name="conversionRights"
+                      render={({ field }) => (
+                        <FormItem className="space-y-3">
+                          <FormLabel>Conversion rights</FormLabel>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="flex flex-col space-y-1"
+                            >
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value="convertsToFutureRound" />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  Converts to future round
+                                </FormLabel>
+                              </FormItem>
+                              <FormItem className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value="convertsToStockClassId" />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  Converts to specific share class
+                                </FormLabel>
+                              </FormItem>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage className="text-xs font-light" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {
+                    // if conversionRights === "convertsToStockClassId"
+                    renderShareClassInput && (
+                      <div className="sm:col-span-3">
+                        <FormField
+                          control={form.control}
+                          name="convertsToShareClassId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Share class it{`'`}ll convert to
+                              </FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select existing share class" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {/* <SelectItem value="xxxxxx">xxxxxx</SelectItem>
+                              <SelectItem value="yyyyyy">yyyyyy</SelectItem> */}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage className="text-xs font-light" />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+
               <div className="sm:col-span-3">
-                {/*  */}
                 <FormField
                   control={form.control}
-                  name="type"
+                  name="liquidationPreferenceMultiple"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Notify me about...</FormLabel>
+                    <FormItem>
+                      <FormLabel>Liquidation preference multiple</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="all" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              All new messages
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="mentions" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Direct messages and mentions
-                            </FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="none" />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              Nothing
-                            </FormLabel>
-                          </FormItem>
-                        </RadioGroup>
+                        <Input {...field} type="number" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs font-light" />
                     </FormItem>
                   )}
                 />
+              </div>
 
-                {/*  */}
+              <div className="sm:col-span-3">
+                <FormField
+                  control={form.control}
+                  name="participationCapMultiple"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Participation cap multiple</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="number" />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
           </div>
 
           <div className="flex items-center justify-end gap-x-6 p-6">
-            <button
-              type="button"
+            <Link
+              href={`/${publicId}/share-class`}
               className="text-sm font-semibold leading-6 text-gray-900"
             >
               Cancel
-            </button>
-            <button
+            </Link>
+
+            <Button
+              loading={isSubmitting}
+              loadingText="Submitting..."
               type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Save
-            </button>
+              Save and continue
+              <RiArrowRightLine className="ml-2 inline-block h-5 w-5" />
+            </Button>
           </div>
         </form>
       </Form>

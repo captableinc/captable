@@ -84,7 +84,7 @@ const LoginForm = () => {
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-xs font-light" />
                         </div>
                       </FormItem>
                     )}

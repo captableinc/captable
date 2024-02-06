@@ -144,7 +144,7 @@ const MemberModal = ({
                 <FormControl>
                   <Input disabled={isSubmitting} {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-xs font-light" />
               </FormItem>
             )}
           />
@@ -162,7 +162,7 @@ const MemberModal = ({
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-xs font-light" />
               </FormItem>
             )}
           />
@@ -177,7 +177,7 @@ const MemberModal = ({
                   <FormControl>
                     <Input disabled={isSubmitting} {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
             />
@@ -204,7 +204,7 @@ const MemberModal = ({
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
             />

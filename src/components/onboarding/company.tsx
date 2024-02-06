@@ -115,7 +115,7 @@ const OnboardingCompany = ({
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-xs font-light" />
                         </FormItem>
                       )}
                     />
@@ -129,7 +129,7 @@ const OnboardingCompany = ({
                           <FormControl>
                             <Input type="email" {...field} />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-xs font-light" />
                         </FormItem>
                       )}
                     />
@@ -146,7 +146,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -160,7 +160,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -202,7 +202,7 @@ const OnboardingCompany = ({
                             </SelectItem>
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -216,7 +216,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input type="date" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -251,7 +251,7 @@ const OnboardingCompany = ({
                             )}
                           </SelectContent>
                         </Select>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -265,7 +265,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -287,7 +287,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -301,7 +301,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -317,7 +317,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />
@@ -331,7 +331,7 @@ const OnboardingCompany = ({
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs font-light" />
                       </FormItem>
                     )}
                   />

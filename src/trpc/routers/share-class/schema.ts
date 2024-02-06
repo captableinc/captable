@@ -7,7 +7,7 @@ export const ShareClassMutationSchema = z.object({
     message: "Name is required",
   }),
   classType: z.enum(["common", "preferred"]),
-  prefix: z.enum(["CS", "PS"]),
+  prefix: z.enum(["CS", "PS"]).optional(),
   initialSharesAuthorized: z.number().min(1, {
     message: "Initial shares authorized is required",
   }),
@@ -31,7 +31,7 @@ export const ShareClassMutationSchema = z.object({
   }),
 
   // Conversion rights
-  convertsToFutureRound: z.boolean().optional(),
+  conversionRights: z.enum(["convertsToFutureRound", "convertsToShareClassId"]),
   convertsToShareClassId: z.string().optional(),
 
   liquidationPreferenceMultiple: z.number().min(1, {

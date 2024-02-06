@@ -1,11 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -17,20 +13,21 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  getFacetedUniqueValues,
+  getFacetedRowModel,
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+
 import {
   Table,
   TableBody,
@@ -47,6 +44,8 @@ import MemberModal from "@/components/stakeholder/member-modal";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { type RouterOutputs } from "@/trpc/shared";
+import { MemberTableToolbar } from "./member-table-toolbar";
+import { RiExpandUpDownLine, RiMoreLine } from "@remixicon/react";
 
 type Member = RouterOutputs["stakeholder"]["getMembers"]["data"];
 
@@ -111,7 +110,7 @@ export const columns: ColumnDef<Member[number]>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Name
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
         </div>
       );
     },
@@ -145,7 +144,7 @@ export const columns: ColumnDef<Member[number]>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Title
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
         </div>
       );
     },
@@ -162,13 +161,17 @@ export const columns: ColumnDef<Member[number]>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Status
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
         </div>
       );
     },
     cell: ({ row }) => (
       <div>{humanizeStatus(row.original.status, row.original.active)}</div>
     ),
+    filterFn: (row, id, value: string[]) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "access",
@@ -179,13 +182,17 @@ export const columns: ColumnDef<Member[number]>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Access
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
         </div>
       );
     },
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("access")}</div>
     ),
+    filterFn: (row, id, value: string[]) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return value.includes(row.getValue(id));
+    },
   },
   {
     id: "actions",
@@ -246,7 +253,7 @@ export const columns: ColumnDef<Member[number]>[] = [
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <DotsHorizontalIcon className="h-4 w-4" />
+                <RiMoreLine aria-hidden className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
           </div>
@@ -311,14 +318,17 @@ const MemberTable = ({ members }: MembersType) => {
   const table = useReactTable({
     data: members,
     columns: columns,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     state: {
       sorting,
       columnFilters,
@@ -329,43 +339,7 @@ const MemberTable = ({ members }: MembersType) => {
 
   return (
     <div className="w-full p-6">
-      <div className="flex items-center">
-        <Input
-          placeholder="Search by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="w-64"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Select columns <ChevronDownIcon className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
+      <MemberTableToolbar table={table} />
       <div className="mt-6 rounded-md border">
         <Table>
           <TableHeader>
@@ -373,7 +347,7 @@ const MemberTable = ({ members }: MembersType) => {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

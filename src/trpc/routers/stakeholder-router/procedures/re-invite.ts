@@ -1,5 +1,5 @@
 import { adminOnlyProcedure } from "@/trpc/api/trpc";
-import { ZodReInviteMutationSchema } from "./schema";
+import { ZodReInviteMutationSchema } from "../schema";
 import {
   generateInviteToken,
   generateMembershipIdentifier,

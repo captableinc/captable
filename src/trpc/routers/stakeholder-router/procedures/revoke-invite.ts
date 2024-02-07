@@ -1,5 +1,5 @@
 import { adminOnlyProcedure } from "@/trpc/api/trpc";
-import { ZodRevokeInviteMutationSchema } from "./schema";
+import { ZodRevokeInviteMutationSchema } from "../schema";
 import { revokeExistingInviteTokens } from "@/server/stakeholder";
 import { Audit } from "@/server/audit";
 

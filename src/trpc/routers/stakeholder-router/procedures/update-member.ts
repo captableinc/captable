@@ -1,5 +1,5 @@
 import { adminOnlyProcedure } from "@/trpc/api/trpc";
-import { ZodUpdateMemberMutationSchema } from "./schema";
+import { ZodUpdateMemberMutationSchema } from "../schema";
 import { Audit } from "@/server/audit";
 
 export const updateMemberProcedure = adminOnlyProcedure

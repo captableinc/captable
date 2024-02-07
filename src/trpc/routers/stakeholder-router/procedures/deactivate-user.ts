@@ -1,18 +1,21 @@
 import { adminOnlyProcedure } from "@/trpc/api/trpc";
-import { ZodRemoveMemberMutationSchema } from "./schema";
+import { ZodDeactivateUserMutationSchema } from "../schema";
 import { Audit } from "@/server/audit";
 
-export const removeMemberProcedure = adminOnlyProcedure
-  .input(ZodRemoveMemberMutationSchema)
+export const deactivateUserProcedure = adminOnlyProcedure
+  .input(ZodDeactivateUserMutationSchema)
   .mutation(async ({ ctx: { session, db }, input }) => {
     const user = session.user;
-    const { membershipId } = input;
+    const { membershipId, status } = input;
 
     await db.$transaction(async (tx) => {
-      const member = await tx.membership.delete({
+      const member = await tx.membership.update({
         where: {
           id: membershipId,
           companyId: session.user.companyId,
+        },
+        data: {
+          active: status,
         },
         select: {
           userId: true,
@@ -31,12 +34,14 @@ export const removeMemberProcedure = adminOnlyProcedure
 
       await Audit.create(
         {
-          action: "stakeholder.removed",
+          action: status ? "stakeholder.activated" : "stakeholder.deactivated",
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
           context: {},
           target: [{ type: "user", id: member.userId }],
-          summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
+          summary: `${user.name} ${
+            status ? "activated" : "deactivated"
+          } ${member.user?.name} from ${member?.company.name}`,
         },
         tx,
       );

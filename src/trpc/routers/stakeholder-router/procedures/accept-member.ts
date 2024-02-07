@@ -1,5 +1,5 @@
 import { protectedProcedure } from "@/trpc/api/trpc";
-import { ZodAcceptMemberMutationSchema } from "./schema";
+import { ZodAcceptMemberMutationSchema } from "../schema";
 import { Audit } from "@/server/audit";
 
 export const acceptMemberProcedure = protectedProcedure

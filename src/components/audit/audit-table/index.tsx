@@ -28,6 +28,7 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { Badge } from "@/components/ui/badge";
 import { AuditTableToolbar } from "./audit-table-toolbar";
 import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { dayjsExt } from "@/common/dayjs";
 
 type Audit = RouterOutputs["audit"]["getAudits"]["data"];
 
@@ -88,10 +89,7 @@ export const columns: ColumnDef<Audit[number]>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue("occurredAt"));
-      const formattedDate = new Intl.DateTimeFormat("en-US", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      }).format(date);
+      const formattedDate = dayjsExt(date).format("lll");
       return <time dateTime={date.toISOString()}>{formattedDate}</time>;
     },
   },

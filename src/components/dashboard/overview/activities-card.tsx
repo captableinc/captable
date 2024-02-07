@@ -8,6 +8,7 @@ import {
 import { api } from "@/trpc/server";
 import Link from "next/link";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { dayjsExt } from "@/common/dayjs";
 
 type Props = {
   publicId: string;
@@ -56,9 +57,7 @@ const ActivityCard = async ({ className, publicId }: Props) => {
                             </span>{" "}
                             <br />
                             <span className="whitespace-nowrap text-xs">
-                              {new Intl.DateTimeFormat("en-US", {
-                                dateStyle: "medium",
-                              }).format(activityItem.occurredAt)}
+                              {dayjsExt().to(activityItem.occurredAt)}
                             </span>
                           </div>
                         </div>

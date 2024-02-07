@@ -11,4 +11,5 @@ export const AUDIT_ACTIONS = {
     "deactivated",
     "activated",
   ],
+  shareClass: ["created", "updated", "deleted"],
 } as const;

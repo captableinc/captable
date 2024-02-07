@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/react";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -76,6 +77,7 @@ const ShareClassForm = ({
     liquidationPreferenceMultiple,
     participationCapMultiple,
   } = shareClass;
+
   const form = useForm<ShareClassMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -110,12 +112,19 @@ const ShareClassForm = ({
     }
   }, [watchConversionRights]);
 
+  const mutation = api.shareClass.create.useMutation({
+    // onSuccess: async ({ shareClass }) => {
+    //   debugger;
+    //   console.log({ shareClass });
+    // },
+  });
+
   const onSubmit = async (values: ShareClassMutationType) => {
-    console.log({ values });
+    await mutation.mutateAsync(values);
   };
 
   return (
-    <Card className={cn(className)}>
+    <Card className={cn(className, "mt-6")}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 p-6 md:grid-cols-3">

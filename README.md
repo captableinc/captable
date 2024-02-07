@@ -51,7 +51,6 @@ OpenCap will follow the [Open Cap Table Coalition](https://www.opencaptablecoali
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 - [@shadcn/ui](https://ui.shadcn.com/)
-- [MailHog](https://github.com/mailhog/MailHog)
 
 ## Developers
 
@@ -130,6 +129,20 @@ pnpm dev
 
 # Using npm
 npm run dev
+```
+
+**5. Install and run SMTP server**
+> [Mailpit](https://github.com/axllent/mailpit) or something similar can be used intercept emails in development.
+
+```sh
+# Using yarn
+yarn smpt
+
+# Using pnpm
+pnpm smpt
+
+# Using npm
+npm run smpt
 ```
 
 Open your browser to the URLs given by the web app and studio processes. You're up and running, good job! 🎉

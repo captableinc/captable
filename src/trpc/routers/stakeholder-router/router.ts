@@ -6,7 +6,6 @@ import {
 import {
   ZodDeactivateUserMutationSchema,
   ZodReInviteMutationSchema,
-  ZodRemoveMemberMutationSchema,
   ZodUpdateMemberMutationSchema,
 } from "./schema";
 
@@ -20,6 +19,7 @@ import { Audit } from "@/server/audit";
 import { inviteMemberProcedure } from "./invite-member";
 import { acceptMemberProcedure } from "./accept-member";
 import { revokeInviteProcedure } from "./revoke-invite";
+import { removeMemberProcedure } from "./remove-member";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: inviteMemberProcedure,
@@ -28,48 +28,7 @@ export const stakeholderRouter = createTRPCRouter({
 
   revokeInvite: revokeInviteProcedure,
 
-  removeMember: adminOnlyProcedure
-    .input(ZodRemoveMemberMutationSchema)
-    .mutation(async ({ ctx: { session, db }, input }) => {
-      const user = session.user;
-      const { membershipId } = input;
-
-      await db.$transaction(async (tx) => {
-        const member = await tx.membership.delete({
-          where: {
-            id: membershipId,
-            companyId: session.user.companyId,
-          },
-          select: {
-            userId: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
-            company: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        });
-
-        await Audit.create(
-          {
-            action: "stakeholder.removed",
-            companyId: user.companyId,
-            actor: { type: "user", id: user.id },
-            context: {},
-            target: [{ type: "user", id: member.userId }],
-            summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
-          },
-          tx,
-        );
-      });
-
-      return { success: true };
-    }),
+  removeMember: removeMemberProcedure,
 
   deactivateUser: adminOnlyProcedure
     .input(ZodDeactivateUserMutationSchema)

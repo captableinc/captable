@@ -21,12 +21,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { cn } from "@/lib/utils";
 import { OpenCapLogo } from "@/components/shared/logo";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
 type ModalProps = {
   title: string;
   subtitle: string;
+  size?: "sm" | "md" | "lg" | "xl" | "2xl";
   trigger: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;
@@ -36,13 +38,23 @@ const Modal = ({
   title,
   subtitle,
   trigger,
+  size = "md",
   children,
   dialogProps,
 }: ModalProps) => {
   return (
     <Dialog {...dialogProps}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="gap-0 bg-white p-0 sm:max-w-[425px]">
+      <DialogContent
+        className={cn(
+          "gap-0 bg-white p-0",
+          size === "sm" && "sm:max-w-sm",
+          size === "md" && "sm:max-w-md",
+          size === "lg" && "sm:max-w-lg",
+          size === "xl" && "sm:max-w-xl",
+          size === "2xl" && "sm:max-w-2xl",
+        )}
+      >
         <header className="border-b border-gray-200 p-5">
           <div className="">
             <DialogHeader>

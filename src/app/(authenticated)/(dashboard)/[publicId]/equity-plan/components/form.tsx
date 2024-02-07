@@ -126,7 +126,7 @@ const ShareClassForm = ({
         description: message,
       });
 
-      router.push(`/${publicId}/share-class`);
+      router.push(`/${publicId}/share-classes`);
     },
   });
 
@@ -446,7 +446,7 @@ const ShareClassForm = ({
 
           <div className="flex items-center justify-end gap-x-6 p-6">
             <Link
-              href={`/${publicId}/share-class`}
+              href={`/${publicId}/share-classes`}
               className="text-sm font-semibold leading-6 text-gray-900"
             >
               Cancel

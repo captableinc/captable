@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import EquityPlanForm from "../components/form";
+import ShareClassForm from "../components/form";
 
 const NewShareClass = () => {
   const params = useParams<{ publicId: string }>();
@@ -16,7 +16,7 @@ const NewShareClass = () => {
         </p>
       </header>
 
-      <EquityPlanForm publicId={publicId} className="mt-6" />
+      <ShareClassForm publicId={publicId} />
     </>
   );
 };

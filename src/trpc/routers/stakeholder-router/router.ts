@@ -4,7 +4,6 @@ import {
   protectedProcedure,
 } from "@/trpc/api/trpc";
 import {
-  ZodDeactivateUserMutationSchema,
   ZodReInviteMutationSchema,
   ZodUpdateMemberMutationSchema,
 } from "./schema";
@@ -20,6 +19,7 @@ import { inviteMemberProcedure } from "./invite-member";
 import { acceptMemberProcedure } from "./accept-member";
 import { revokeInviteProcedure } from "./revoke-invite";
 import { removeMemberProcedure } from "./remove-member";
+import { deactivateUserProcedure } from "./deactivate-user";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: inviteMemberProcedure,
@@ -30,55 +30,7 @@ export const stakeholderRouter = createTRPCRouter({
 
   removeMember: removeMemberProcedure,
 
-  deactivateUser: adminOnlyProcedure
-    .input(ZodDeactivateUserMutationSchema)
-    .mutation(async ({ ctx: { session, db }, input }) => {
-      const user = session.user;
-      const { membershipId, status } = input;
-
-      await db.$transaction(async (tx) => {
-        const member = await tx.membership.update({
-          where: {
-            id: membershipId,
-            companyId: session.user.companyId,
-          },
-          data: {
-            active: status,
-          },
-          select: {
-            userId: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
-            company: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        });
-
-        await Audit.create(
-          {
-            action: status
-              ? "stakeholder.activated"
-              : "stakeholder.deactivated",
-            companyId: user.companyId,
-            actor: { type: "user", id: user.id },
-            context: {},
-            target: [{ type: "user", id: member.userId }],
-            summary: `${user.name} ${
-              status ? "activated" : "deactivated"
-            } ${member.user?.name} from ${member?.company.name}`,
-          },
-          tx,
-        );
-      });
-
-      return { success: true };
-    }),
+  deactivateUser: deactivateUserProcedure,
 
   updateMember: adminOnlyProcedure
     .input(ZodUpdateMemberMutationSchema)

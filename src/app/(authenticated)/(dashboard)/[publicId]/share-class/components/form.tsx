@@ -2,11 +2,13 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RiArrowRightLine } from "@remixicon/react";
+import { useToast } from "@/components/ui/use-toast";
 
 import {
   Select,
@@ -100,6 +102,8 @@ const ShareClassForm = ({
   });
 
   const { watch } = form;
+  const router = useRouter();
+  const { toast } = useToast();
   const isSubmitting = form.formState.isSubmitting;
   const watchConversionRights = watch("conversionRights") as string;
   const [renderShareClassInput, setRenderShareClassInput] = useState(false);
@@ -113,10 +117,17 @@ const ShareClassForm = ({
   }, [watchConversionRights]);
 
   const mutation = api.shareClass.create.useMutation({
-    // onSuccess: async ({ shareClass }) => {
-    //   debugger;
-    //   console.log({ shareClass });
-    // },
+    onSuccess: async ({ success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully created"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      router.push(`/${publicId}/share-class`);
+    },
   });
 
   const onSubmit = async (values: ShareClassMutationType) => {

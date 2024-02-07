@@ -8,7 +8,6 @@ export const shareClassRouter = createTRPCRouter({
     .input(ShareClassMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        console.log("Creating share class", input);
         const companyId = ctx.session.user.companyId;
         const prefix = (input.classType === "common" ? "CS" : "PS") as
           | "CS"
@@ -22,49 +21,45 @@ export const shareClassRouter = createTRPCRouter({
           });
 
           const idx = maxIdx + 1;
+          const data = {
+            idx,
+            prefix,
+            companyId,
+            name: input.name,
+            classType: input.classType,
+            initialSharesAuthorized: input.initialSharesAuthorized,
+            boardApprovalDate: new Date(input.boardApprovalDate),
+            stockholderApprovalDate: new Date(input.stockholderApprovalDate),
+            votesPerShare: input.votesPerShare,
+            parValue: input.parValue,
+            pricePerShare: input.pricePerShare,
+            seniority: input.seniority,
+            conversionRights: input.conversionRights,
+            convertsToShareClassId: input.convertsToShareClassId,
+            liquidationPreferenceMultiple: input.liquidationPreferenceMultiple,
+            participationCapMultiple: input.participationCapMultiple,
+          };
 
-          const sc = await tx.shareClass.create({
-            data: {
-              idx,
-              prefix,
+          const sc = await tx.shareClass.create({ data });
+          const audit = await Audit.create(
+            {
+              action: "shareClass.created",
               companyId,
-              name: input.name,
-              classType: input.classType,
-              initialSharesAuthorized: input.initialSharesAuthorized,
-              boardApprovalDate: input.boardApprovalDate,
-              stockholderApprovalDate: input.stockholderApprovalDate,
-              votesPerShare: input.votesPerShare,
-              parValue: input.parValue,
-              pricePerShare: input.pricePerShare,
-              seniority: input.seniority,
-              conversionRights: input.conversionRights,
-              convertsToShareClassId: input.convertsToShareClassId,
-              liquidationPreferenceMultiple:
-                input.liquidationPreferenceMultiple,
-              participationCapMultiple: input.participationCapMultiple,
+              actor: { type: "user", id: ctx.session.user.id },
+              context: {},
+              target: [{ type: "company", id: companyId }],
+              summary: `${ctx.session.user.name} created a share class - (${prefix}-${idx}) ${input.name}`,
             },
-          });
-
-          //   // await Audit.create(
-          //   //   {
-          //   //     action: "shareClass.created",
-          //   //     companyId: input.companyId,
-          //   //     actor: { type: "user", id: ctx.session.user.id },
-          //   //     context: {},
-          //   //     target: [{ type: "company", id: input.companyId }],
-          //   //     summary: `${ctx.session.user.name} created share class ${shareClass.name}`,
-          //   //   },
-          //   //   tx,
-          //   // );
+            tx,
+          );
         });
 
-        // return { success: true, message: "Share class created successfully.", shareClass };
+        return { success: true, message: "Share class created successfully." };
       } catch (error) {
         console.error("Error creating shareClass:", error);
         return {
           success: false,
-          message:
-            "Oops, something went wrong while onboarding. Please try again.",
+          message: "Oops, something went wrong. Please try again later.",
         };
       }
     }),

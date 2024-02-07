@@ -8,7 +8,7 @@ export const ShareClassMutationSchema = z.object({
   }),
   classType: z.enum(["common", "preferred"]),
   prefix: z.enum(["CS", "PS"]).optional(),
-  initialSharesAuthorized: z.coerce.number().min(1, {
+  initialSharesAuthorized: z.coerce.number().min(0, {
     message: "Initial shares authorized is required",
   }),
   boardApprovalDate: z.string().min(1, {
@@ -17,16 +17,16 @@ export const ShareClassMutationSchema = z.object({
   stockholderApprovalDate: z.string().min(1, {
     message: "Stockholder approval date is required",
   }),
-  votesPerShare: z.coerce.number().min(1, {
+  votesPerShare: z.coerce.number().min(0, {
     message: "Votes per share is required",
   }),
-  parValue: z.coerce.number().min(1, {
+  parValue: z.coerce.number().min(0, {
     message: "Par value is required",
   }),
-  pricePerShare: z.coerce.number().min(1, {
+  pricePerShare: z.coerce.number().min(0, {
     message: "Price per share is required",
   }),
-  seniority: z.coerce.number().min(1, {
+  seniority: z.coerce.number().min(0, {
     message: "Seniority is required",
   }),
 
@@ -34,10 +34,10 @@ export const ShareClassMutationSchema = z.object({
   conversionRights: z.enum(["convertsToFutureRound", "convertsToShareClassId"]),
   convertsToShareClassId: z.string().optional(),
 
-  liquidationPreferenceMultiple: z.coerce.number().min(1, {
+  liquidationPreferenceMultiple: z.coerce.number().min(0, {
     message: "Liquidation preference multiple is required",
   }),
-  participationCapMultiple: z.coerce.number().min(1, {
+  participationCapMultiple: z.coerce.number().min(0, {
     message: "Participation cap multiple is required",
   }),
 });

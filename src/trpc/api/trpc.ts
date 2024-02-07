@@ -36,6 +36,42 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   };
 };
 
+type TypeCreateTRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
+
+const protectedTRPCContext = ({ session, ...rest }: TypeCreateTRPCContext) => {
+  if (!session || !session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return {
+    ...rest,
+    // infers the `session` as non-nullable
+    session: { ...session, user: session.user },
+  };
+};
+
+export type TypeProtectedTRPCContext = ReturnType<typeof protectedTRPCContext>;
+
+const adminOnlyTRPCContext = ({
+  session,
+  ...rest
+}: TypeProtectedTRPCContext) => {
+  if (session.user.access !== "admin") {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return {
+    ...rest,
+    // infers the `access` as "admin"
+    session: {
+      ...session,
+      user: { ...session.user, access: session.user.access },
+    },
+  };
+};
+
+export type TypeAdminOnlyTRPCContext = ReturnType<typeof adminOnlyTRPCContext>;
+
 /**
  * 2. INITIALIZATION
  *
@@ -88,22 +124,20 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
+export const protectedProcedure = t.procedure.use(({ ctx: ctx_, next }) => {
+  const ctx = protectedTRPCContext(ctx_);
+
   return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
+    ctx,
   });
 });
 
-export const adminOnlyProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.session.user.access !== "admin") {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
+export const adminOnlyProcedure = protectedProcedure.use(
+  ({ ctx: ctx_, next }) => {
+    const ctx = adminOnlyTRPCContext(ctx_);
 
-  return next();
-});
+    return next({
+      ctx,
+    });
+  },
+);

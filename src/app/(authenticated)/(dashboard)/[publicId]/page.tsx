@@ -1,19 +1,13 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
-import EmptyOverview from "@/components/dashboard/overview/empty";
 import OverviewCard from "@/components/dashboard/overview/top-card";
 import ActivitiesCard from "@/components/dashboard/overview/activities-card";
 import DonutCard from "@/components/dashboard/overview/donut-card";
 import SummaryTable from "@/components/dashboard/overview/summary-table";
 
-const OverviewPage = () => {
-  const params = useParams<{ publicId: string }>();
-  const { data } = useSession();
-  const firstName = data?.user.name?.split(" ")[0];
-  const publicCompanyId = params.publicId;
-
+const OverviewPage = ({
+  params: { publicId },
+}: {
+  params: { publicId: string };
+}) => {
   return (
     <>
       {/* <EmptyOverview firstName={firstName} publicCompanyId={publicCompanyId} /> */}
@@ -25,7 +19,7 @@ const OverviewPage = () => {
         </p>
       </header>
 
-      <div className="grid max-h-[500px] gap-8 md:grid-cols-12">
+      <div className="grid  gap-8 md:grid-cols-12">
         <div className="sm:col-span-12 md:col-span-6 lg:col-span-8">
           {/* Overview */}
           <section className="mt-6">
@@ -47,7 +41,10 @@ const OverviewPage = () => {
         </div>
 
         <div className="mt-6 sm:col-span-12 md:col-span-6 lg:col-span-4">
-          <ActivitiesCard className="border-none bg-transparent shadow-none" />
+          <ActivitiesCard
+            publicId={publicId}
+            className="border-none bg-transparent shadow-none"
+          />
         </div>
       </div>
 

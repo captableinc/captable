@@ -1,4 +1,3 @@
-import { type ReactNode } from "react";
 import { Button } from "../button";
 import {
   DropdownMenu,
@@ -8,17 +7,12 @@ import {
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from "../dropdown-menu";
-import { type Table } from "@tanstack/react-table";
 
-interface DataTableViewOptionsProps<TData> {
-  table: Table<TData>;
-  actionLabel: ReactNode;
-}
+import { useDataTable } from "./data-table";
+import { RiArrowDownSLine } from "@remixicon/react";
 
-export function DataTableViewOptions<TData>({
-  table,
-  actionLabel,
-}: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions() {
+  const { table } = useDataTable();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,7 +21,8 @@ export function DataTableViewOptions<TData>({
           size="sm"
           className="ml-auto hidden h-8 lg:flex"
         >
-          {actionLabel}
+          Select columns{" "}
+          <RiArrowDownSLine aria-hidden className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">

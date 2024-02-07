@@ -1,9 +1,10 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
-import { onboardingRouter } from "../routers/onboarding-router/router";
-import { waitListRouter } from "../routers/waitlist-router/router";
-import { stakeholderRouter } from "../routers/stakeholder-router/router";
+import { auditRouter } from "../routers/audit-router/router";
 import { companyRouter } from "../routers/company-router/router";
 import { shareClassRouter } from "../routers/share-class/router";
+import { waitListRouter } from "../routers/waitlist-router/router";
+import { onboardingRouter } from "../routers/onboarding-router/router";
+import { stakeholderRouter } from "../routers/stakeholder-router/router";
 
 /**
  * This is the primary router for your server.
@@ -11,6 +12,7 @@ import { shareClassRouter } from "../routers/share-class/router";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  audit: auditRouter,
   company: companyRouter,
   waitList: waitListRouter,
   onboarding: onboardingRouter,

@@ -169,7 +169,7 @@ enum ConversionRightsEnum {
 // https://open-cap-table-coalition.github.io/Open-Cap-Format-OCF/schema_markdown/schema/objects/StockClass/
 model ShareClass {
   id                      String          @id @default(cuid())
-  idx                     String // auto-generated, auto-incremented based on company
+  idx                     Int // auto-generated, auto-incremented based on company
   name                    String
   classType               ShareTypeEnum   @default(common)
   prefix                  SharePrefixEnum @default(CS)
@@ -183,7 +183,7 @@ model ShareClass {
 
   // Conversion Rights
   conversionRights       ConversionRightsEnum @default(convertsToFutureRound)
-  convertsToShareClassId String
+  convertsToShareClassId String?
 
   liquidationPreferenceMultiple Float
   participationCapMultiple      Float
@@ -195,6 +195,7 @@ model ShareClass {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, idx])
   @@index([companyId])
 }
 

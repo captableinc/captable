@@ -16,7 +16,8 @@
     "lint": "next lint",
     "start": "next start",
     "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" && npx prisma format",
-    "email:preview": "email preview ./src/emails"
+    "email:preview": "email preview ./src/emails",
+    "smpt:dev": "mailpit"
   },
   "dependencies": {
     "@ant-design/plots": "^2.1.12",

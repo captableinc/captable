@@ -76,7 +76,12 @@ export const onboardingRouter = createTRPCRouter({
 
         return { success: true, message: "successfully onboarded", publicId };
       } catch (error) {
-        return { success: false, message: "failed to onboard" };
+        console.error("Error onboarding:", error);
+        return {
+          success: false,
+          message:
+            "Oops, something went wrong while onboarding. Please try again.",
+        };
       }
     }),
 });

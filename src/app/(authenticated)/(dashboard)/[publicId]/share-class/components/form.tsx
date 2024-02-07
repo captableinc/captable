@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RiArrowRightLine } from "@remixicon/react";
+import { useToast } from "@/components/ui/use-toast";
 
 import {
   Select,
@@ -76,6 +79,7 @@ const ShareClassForm = ({
     liquidationPreferenceMultiple,
     participationCapMultiple,
   } = shareClass;
+
   const form = useForm<ShareClassMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -98,6 +102,8 @@ const ShareClassForm = ({
   });
 
   const { watch } = form;
+  const router = useRouter();
+  const { toast } = useToast();
   const isSubmitting = form.formState.isSubmitting;
   const watchConversionRights = watch("conversionRights") as string;
   const [renderShareClassInput, setRenderShareClassInput] = useState(false);
@@ -110,12 +116,26 @@ const ShareClassForm = ({
     }
   }, [watchConversionRights]);
 
+  const mutation = api.shareClass.create.useMutation({
+    onSuccess: async ({ success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully created"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      router.push(`/${publicId}/share-class`);
+    },
+  });
+
   const onSubmit = async (values: ShareClassMutationType) => {
-    console.log({ values });
+    await mutation.mutateAsync(values);
   };
 
   return (
-    <Card className={cn(className)}>
+    <Card className={cn(className, "mt-6")}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 p-6 md:grid-cols-3">

@@ -16,7 +16,7 @@ const NewShareClass = () => {
         </p>
       </header>
 
-      <ShareClassForm publicId={publicId} className="mt-6" />
+      <ShareClassForm publicId={publicId} />
     </>
   );
 };

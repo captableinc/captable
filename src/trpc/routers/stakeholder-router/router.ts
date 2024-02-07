@@ -3,10 +3,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/trpc/api/trpc";
-import {
-  ZodReInviteMutationSchema,
-  ZodUpdateMemberMutationSchema,
-} from "./schema";
+import { ZodReInviteMutationSchema } from "./schema";
 
 import {
   generateInviteToken,
@@ -20,6 +17,7 @@ import { acceptMemberProcedure } from "./accept-member";
 import { revokeInviteProcedure } from "./revoke-invite";
 import { removeMemberProcedure } from "./remove-member";
 import { deactivateUserProcedure } from "./deactivate-user";
+import { updateMemberProcedure } from "./update-member";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: inviteMemberProcedure,
@@ -32,52 +30,7 @@ export const stakeholderRouter = createTRPCRouter({
 
   deactivateUser: deactivateUserProcedure,
 
-  updateMember: adminOnlyProcedure
-    .input(ZodUpdateMemberMutationSchema)
-    .mutation(async ({ ctx: { session, db }, input }) => {
-      const { membershipId, name, email, ...rest } = input;
-      const user = session.user;
-
-      await db.$transaction(async (tx) => {
-        const member = await tx.membership.update({
-          where: {
-            status: "accepted",
-            id: membershipId,
-            companyId: session.user.companyId,
-          },
-          data: {
-            ...rest,
-            user: {
-              update: {
-                name,
-              },
-            },
-          },
-          select: {
-            userId: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        });
-
-        await Audit.create(
-          {
-            action: "stakeholder.updated",
-            companyId: user.companyId,
-            actor: { type: "user", id: user.id },
-            context: {},
-            target: [{ type: "user", id: member.userId }],
-            summary: `${user.name} updated ${member.user?.name} details`,
-          },
-          tx,
-        );
-      });
-
-      return { success: true };
-    }),
+  updateMember: updateMemberProcedure,
   reInvite: adminOnlyProcedure
     .input(ZodReInviteMutationSchema)
     .mutation(async ({ ctx: { session, db }, input }) => {

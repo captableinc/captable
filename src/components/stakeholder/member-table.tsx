@@ -209,9 +209,10 @@ export const columns: ColumnDef<Member[number]>[] = [
 
       const handleDeactivateStakeholder = async () => {
         try {
-          await removeMember.mutateAsync({ membershipId });
           if (status === "pending" && email) {
             await revokeInvite.mutateAsync({ email, membershipId });
+          } else {
+            await removeMember.mutateAsync({ membershipId });
           }
 
           router.refresh();

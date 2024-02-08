@@ -6,6 +6,7 @@ export const acceptMemberProcedure = protectedProcedure
   .input(ZodAcceptMemberMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
+    const { userAgent, requestIp } = ctx;
 
     const { publicId } = await ctx.db.$transaction(async (trx) => {
       await trx.verificationToken.delete({
@@ -57,7 +58,10 @@ export const acceptMemberProcedure = protectedProcedure
         action: "stakeholder.accepted",
         companyId: membership.company.id,
         actor: { type: "user", id: user.id },
-        context: {},
+        context: {
+          requestIp,
+          userAgent,
+        },
         target: [{ type: "user", id: membership.userId }],
         summary: `${membership?.user?.name} accepted to join ${membership.company.name} with ${membership.access} access`,
       });

@@ -7,6 +7,8 @@ export const shareClassRouter = createTRPCRouter({
   create: adminOnlyProcedure
     .input(ShareClassMutationSchema)
     .mutation(async ({ ctx, input }) => {
+      const { userAgent, requestIp } = ctx;
+
       try {
         const companyId = ctx.session.user.companyId;
         const prefix = (input.classType === "common" ? "CS" : "PS") as
@@ -46,7 +48,10 @@ export const shareClassRouter = createTRPCRouter({
               action: "shareClass.created",
               companyId,
               actor: { type: "user", id: ctx.session.user.id },
-              context: {},
+              context: {
+                userAgent,
+                requestIp,
+              },
               target: [{ type: "company", id: companyId }],
               summary: `${ctx.session.user.name} created a share class - ${input.name}`,
             },

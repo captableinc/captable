@@ -4,7 +4,7 @@ import { Audit } from "@/server/audit";
 
 export const updateMemberProcedure = adminOnlyProcedure
   .input(ZodUpdateMemberMutationSchema)
-  .mutation(async ({ ctx: { session, db }, input }) => {
+  .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const { membershipId, name, email, ...rest } = input;
     const user = session.user;
 
@@ -38,7 +38,10 @@ export const updateMemberProcedure = adminOnlyProcedure
           action: "stakeholder.updated",
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
-          context: {},
+          context: {
+            requestIp,
+            userAgent,
+          },
           target: [{ type: "user", id: member.userId }],
           summary: `${user.name} updated ${member.user?.name} details`,
         },

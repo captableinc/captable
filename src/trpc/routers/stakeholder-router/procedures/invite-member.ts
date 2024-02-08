@@ -13,6 +13,7 @@ export const inviteMemberProcedure = adminOnlyProcedure
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
     const { name, email, title, access } = input;
+    const { userAgent, requestIp } = ctx;
 
     //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
     const { authTokenHash, expires, memberInviteTokenHash, token } =
@@ -127,7 +128,10 @@ export const inviteMemberProcedure = adminOnlyProcedure
             action: "stakeholder.invited",
             companyId: company.id,
             actor: { type: "user", id: user.id },
-            context: {},
+            context: {
+              requestIp,
+              userAgent,
+            },
             target: [{ type: "user", id: membership.userId }],
             summary: `${user.name} invited ${membership.user?.name} to join ${company.name} as a ${membership.access}`,
           },

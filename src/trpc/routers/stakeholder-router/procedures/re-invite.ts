@@ -10,7 +10,7 @@ import { Audit } from "@/server/audit";
 
 export const reInviteProcedure = adminOnlyProcedure
   .input(ZodReInviteMutationSchema)
-  .mutation(async ({ ctx: { session, db }, input }) => {
+  .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
     const companyId = user.companyId;
 
@@ -84,7 +84,10 @@ export const reInviteProcedure = adminOnlyProcedure
             action: "stakeholder.re-invited",
             companyId: company.id,
             actor: { type: "user", id: user.id },
-            context: {},
+            context: {
+              requestIp,
+              userAgent,
+            },
             target: [{ type: "user", id: membership.userId }],
             summary: `${user.name} reinvited ${membership.user?.name} to join ${company.name} with ${membership.access} access`,
           },

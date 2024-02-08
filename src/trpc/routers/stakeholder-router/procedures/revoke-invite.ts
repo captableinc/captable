@@ -7,7 +7,7 @@ import { removeMemberHandler } from "./remove-member";
 export const revokeInviteProcedure = adminOnlyProcedure
   .input(ZodRevokeInviteMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const { db, session } = ctx;
+    const { db, session, requestIp, userAgent } = ctx;
     const user = session.user;
     const { membershipId, email } = input;
 
@@ -38,7 +38,10 @@ export const revokeInviteProcedure = adminOnlyProcedure
         action: "stakeholder.revoked-invite",
         companyId: user.companyId,
         actor: { type: "user", id: user.id },
-        context: {},
+        context: {
+          requestIp,
+          userAgent,
+        },
         target: [{ type: "user", id: membership?.userId }],
         summary: `${user.name} revoked ${membership?.user?.name} to join ${membership?.company?.name} with ${membership?.access} access`,
       });

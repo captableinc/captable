@@ -33,6 +33,7 @@ export const acceptMemberProcedure = protectedProcedure
           lastAccessed: new Date(),
           isOnboarded: true,
           userId: user.id,
+          workEmail: input.workEmail,
         },
         select: {
           company: {

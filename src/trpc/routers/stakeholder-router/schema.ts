@@ -13,8 +13,9 @@ export type TypeZodInviteMemberMutationSchema = z.infer<
 
 export const ZodAcceptMemberMutationSchema = z.object({
   membershipId: z.string().min(1),
-  name: z.string().min(1),
+  name: z.string().min(1, "This field is required"),
   token: z.string().min(1),
+  workEmail: z.string().email().min(1, "This field is required"),
 });
 
 export type TypeZodAcceptMemberMutationSchema = z.infer<

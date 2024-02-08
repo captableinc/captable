@@ -210,6 +210,7 @@ model EquityPlan {
   id                         String                   @id @default(cuid())
   name                       String
   boardApprovalDate          DateTime
+  planEffectiveDate          DateTime?
   initialSharesReserved      BigInt
   defaultCancellatonBehavior CancellationBehaviorEnum
   comments                   Json                     @default("[]")

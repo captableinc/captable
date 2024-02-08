@@ -62,43 +62,9 @@ const ShareClassForm = ({
     participationCapMultiple: 0,
   },
 }: ShareClassFormProps) => {
-  const {
-    id,
-    idx,
-    name,
-    classType,
-    initialSharesAuthorized,
-    boardApprovalDate,
-    stockholderApprovalDate,
-    votesPerShare,
-    parValue,
-    pricePerShare,
-    seniority,
-    conversionRights,
-    convertsToShareClassId,
-    liquidationPreferenceMultiple,
-    participationCapMultiple,
-  } = shareClass;
-
   const form = useForm<ShareClassMutationType>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      id,
-      idx,
-      name,
-      classType,
-      initialSharesAuthorized,
-      boardApprovalDate,
-      stockholderApprovalDate,
-      votesPerShare,
-      parValue,
-      pricePerShare,
-      seniority,
-      conversionRights,
-      convertsToShareClassId,
-      liquidationPreferenceMultiple,
-      participationCapMultiple,
-    },
+    defaultValues: shareClass,
   });
 
   const { watch } = form;

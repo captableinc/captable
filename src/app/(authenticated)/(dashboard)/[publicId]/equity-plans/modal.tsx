@@ -16,7 +16,7 @@ const EquityPlanModal = ({
   equityPlan,
 }: EquityPlanType) => {
   return (
-    <Modal size="2xl" title={title} subtitle={subtitle} trigger={trigger}>
+    <Modal size="xl" title={title} subtitle={subtitle} trigger={trigger}>
       <EquityPlanForm />
     </Modal>
   );

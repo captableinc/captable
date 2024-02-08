@@ -213,7 +213,7 @@ model EquityPlan {
   planEffectiveDate          DateTime?
   initialSharesReserved      BigInt
   defaultCancellatonBehavior CancellationBehaviorEnum
-  comments                   Json                     @default("[]")
+  comments                   String?
 
   companyId    String
   company      Company    @relation(fields: [companyId], references: [id])

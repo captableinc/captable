@@ -47,7 +47,7 @@ const Modal = ({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className={cn(
-          "no-scrollbar mb-10 mt-10 max-h-[80vh] gap-0 overflow-scroll bg-white p-0",
+          "mb-10 mt-10 gap-0 bg-white p-0",
           size === "sm" && "sm:max-w-sm",
           size === "md" && "sm:max-w-md",
           size === "lg" && "sm:max-w-lg",
@@ -55,23 +55,25 @@ const Modal = ({
           size === "2xl" && "sm:max-w-2xl",
         )}
       >
-        <header className="border-b border-gray-200 p-5">
-          <div className="">
-            <DialogHeader>
-              <div className="flex justify-center">
-                <OpenCapLogo className="mb-3 h-10 w-10" />
-              </div>
-              <DialogTitle className="mb-4 text-center">{title}</DialogTitle>
-              <DialogDescription className="text-center">
-                {subtitle}
-              </DialogDescription>
-            </DialogHeader>
-          </div>
-        </header>
+        <div className="no-scrollbar max-h-[80vh] overflow-scroll">
+          <header className="border-b border-gray-200 p-5">
+            <div className="">
+              <DialogHeader>
+                <div className="flex justify-center">
+                  <OpenCapLogo className="mb-3 h-10 w-10" />
+                </div>
+                <DialogTitle className="mb-4 text-center">{title}</DialogTitle>
+                <DialogDescription className="text-center">
+                  {subtitle}
+                </DialogDescription>
+              </DialogHeader>
+            </div>
+          </header>
 
-        <section className=" bg-gray-100 px-8 py-5">
-          <div className="">{children}</div>
-        </section>
+          <section className=" bg-gray-100 px-8 py-5">
+            <div className="">{children}</div>
+          </section>
+        </div>
       </DialogContent>
     </Dialog>
   );

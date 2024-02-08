@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import {
   EquityPlanMutationSchema,
@@ -45,7 +45,7 @@ const EquityPlanForm = ({
     initialSharesReserved: 0,
     defaultCancellatonBehavior: "RETURN_TO_POOL",
     shareClassId: "",
-    comments: [],
+    comments: "",
   },
 }: EquityFormType) => {
   const form = useForm<EquityPlanMutationType>({
@@ -60,8 +60,8 @@ const EquityPlanForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-          <div className="col-span-full">
+        <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6 md:col-span-2">
+          <div className="sm:col-span-3">
             <FormField
               control={form.control}
               name="name"
@@ -76,11 +76,136 @@ const EquityPlanForm = ({
               )}
             />
           </div>
-          <div className="sm:col-span-3">two</div>
-          <div className="sm:col-span-3">three</div>
+
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="initialSharesReserved"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Initial reserved shares</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="boardApprovalDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Board approval date</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="date" />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="planEffectiveDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Plan effective date</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="date" />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="shareClassId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Select a share class</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a share class" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="create-a-share-class">
+                        Create a share class
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="defaultCancellatonBehavior"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Default cancellation behavior</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a behavior" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="RETIRE">Retire</SelectItem>
+                      <SelectItem value="RETURN_TO_POOL">
+                        Return to pool
+                      </SelectItem>
+                      <SelectItem value="HOLD_AS_CAPITAL_STOCK">
+                        Hold as capital stock
+                      </SelectItem>
+                      <SelectItem value="DEFINED_PER_PLAN_SECURITY">
+                        Defined per plan security
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="sm:col-span-6">
+            <FormField
+              control={form.control}
+              name="comments"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="mt-8 flex justify-end">
           <Button type="submit">Create an equity plan</Button>
         </div>
       </form>

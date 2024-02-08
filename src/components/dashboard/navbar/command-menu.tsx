@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  RiPieChart2Fill,
+  RiSparklingFill,
+  RiUploadCloud2Fill,
+  RiAccountCircleFill,
+} from "@remixicon/react";
+
 import {
   CommandDialog,
   CommandEmpty,
@@ -8,34 +14,50 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
-import { Button } from "@/components/ui/button";
+
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const Pages = [
   {
+    id: "ai",
+    title: "Ask an AI",
+    path: "/ai",
+    icon: RiSparklingFill,
+  },
+  {
+    id: "stakeholders",
     title: "Add Stakeholder",
     path: "/stakeholders",
+    icon: RiAccountCircleFill,
   },
   {
+    id: "documents",
     title: "Upload document",
     path: "/documents",
+    icon: RiUploadCloud2Fill,
   },
   {
+    id: "captable",
     title: "Create an equity plan",
     path: "/captable",
+    icon: RiPieChart2Fill,
   },
   {
+    id: "securities",
     title: "Create a share class",
     path: "/securities",
+    icon: RiPieChart2Fill,
   },
   {
+    id: "safe",
     title: "Create a SAFE",
     path: "/safe",
+    icon: RiPieChart2Fill,
   },
 ];
 
@@ -80,12 +102,35 @@ export function CommandMenu() {
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
+        <CommandList className="no-scrollbar">
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Suggestions">
             {Pages.map((page) => (
-              <CommandItem key={page.path} onSelect={() => push(page.path)}>
-                {page.title}
+              <CommandItem
+                key={page.id}
+                onSelect={() => push(page.path)}
+                className=""
+              >
+                <div
+                  className={cn(
+                    "rounded-lg p-0.5",
+                    page.id === "ai" ? "bg-teal-100" : "bg-gray-200",
+                  )}
+                >
+                  {page.id === "ai" ? (
+                    <page.icon
+                      className="h-4 w-4 p-0.5 text-teal-600"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <page.icon
+                      className="h-4 w-4 p-0.5 text-primary"
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
+
+                <span className="ml-2">{page.title}</span>
               </CommandItem>
             ))}
           </CommandGroup>

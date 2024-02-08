@@ -1,7 +1,6 @@
-import { createTRPCRouter, adminOnlyProcedure } from "@/trpc/api/trpc";
-import { EquityPlanMutationSchema } from "./schema";
-
 import { Audit } from "@/server/audit";
+import { EquityPlanMutationSchema } from "./schema";
+import { createTRPCRouter, adminOnlyProcedure } from "@/trpc/api/trpc";
 
 export const equityPlanRouter = createTRPCRouter({
   create: adminOnlyProcedure
@@ -10,10 +9,13 @@ export const equityPlanRouter = createTRPCRouter({
       try {
         const companyId = ctx.session.user.companyId;
 
-        const equityPlan = await ctx.db.$transaction(async (tx) => {
+        await ctx.db.$transaction(async (tx) => {
           const data = {
             companyId,
             name: input.name,
+            planEffectiveDate: input.planEffectiveDate
+              ? new Date(input.planEffectiveDate)
+              : null,
             boardApprovalDate: new Date(input.boardApprovalDate),
             initialSharesReserved: input.initialSharesReserved,
             shareClassId: input.shareClassId,
@@ -34,9 +36,9 @@ export const equityPlanRouter = createTRPCRouter({
           );
         });
 
-        return { success: true, message: "Share class created successfully." };
+        return { success: true, message: "Equity plan created successfully." };
       } catch (error) {
-        console.error("Error creating shareClass:", error);
+        console.error("Error creating an equity plan:", error);
         return {
           success: false,
           message: "Oops, something went wrong. Please try again later.",

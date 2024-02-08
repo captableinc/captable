@@ -1,16 +1,5 @@
 import { z } from "zod";
 
-const userObject = z.object({
-  id: z.string(),
-  name: z.string(),
-});
-
-const commentObject = z.object({
-  user: userObject,
-  comment: z.string(),
-  date: z.string(),
-});
-
 export const EquityPlanMutationSchema = z.object({
   id: z.string().optional(),
   idx: z.number().optional(),
@@ -20,7 +9,8 @@ export const EquityPlanMutationSchema = z.object({
   boardApprovalDate: z.string().min(1, {
     message: "Board approval date is required",
   }),
-  initialSharesReserved: z.coerce.number().min(0, {
+  planEffectiveDate: z.string().optional(),
+  initialSharesReserved: z.coerce.number().min(1, {
     message: "Initial reserved shares is required",
   }),
   shareClassId: z.string().min(1, {
@@ -32,7 +22,7 @@ export const EquityPlanMutationSchema = z.object({
     "HOLD_AS_CAPITAL_STOCK",
     "DEFINED_PER_PLAN_SECURITY",
   ]),
-  comments: z.array(commentObject).optional(),
+  comments: z.string().optional(),
 });
 
 export type EquityPlanMutationType = z.infer<typeof EquityPlanMutationSchema>;

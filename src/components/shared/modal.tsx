@@ -47,7 +47,7 @@ const Modal = ({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className={cn(
-          "gap-0 bg-white p-0",
+          "no-scrollbar mb-10 mt-10 max-h-[80vh] gap-0 overflow-scroll bg-white p-0",
           size === "sm" && "sm:max-w-sm",
           size === "md" && "sm:max-w-md",
           size === "lg" && "sm:max-w-lg",
@@ -69,7 +69,9 @@ const Modal = ({
           </div>
         </header>
 
-        <section className=" bg-gray-100 px-8 py-5">{children}</section>
+        <section className=" bg-gray-100 px-8 py-5">
+          <div className="">{children}</div>
+        </section>
       </DialogContent>
     </Dialog>
   );

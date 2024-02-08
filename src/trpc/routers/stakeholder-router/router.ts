@@ -537,7 +537,9 @@ export const stakeholderRouter = createTRPCRouter({
       },
 
       orderBy: {
-        createdAt: "asc",
+        user: {
+          name: "asc",
+        },
       },
     });
 

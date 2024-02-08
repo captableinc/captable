@@ -21,7 +21,9 @@ export const getMembersProcedure = protectedProcedure.query(async ({ ctx }) => {
     },
 
     orderBy: {
-      createdAt: "asc",
+      user: {
+        name: "asc",
+      },
     },
   });
 

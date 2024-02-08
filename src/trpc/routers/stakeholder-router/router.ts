@@ -11,18 +11,11 @@ import { getMembersProcedure } from "./procedures/get-members";
 
 export const stakeholderRouter = createTRPCRouter({
   inviteMember: inviteMemberProcedure,
-
   acceptMember: acceptMemberProcedure,
-
   revokeInvite: revokeInviteProcedure,
-
   removeMember: removeMemberProcedure,
-
   deactivateUser: deactivateUserProcedure,
-
   updateMember: updateMemberProcedure,
-
   reInvite: reInviteProcedure,
-
   getMembers: getMembersProcedure,
 });

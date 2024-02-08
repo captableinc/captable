@@ -2,6 +2,7 @@ import { createTRPCRouter } from "@/trpc/api/trpc";
 import { auditRouter } from "../routers/audit-router/router";
 import { companyRouter } from "../routers/company-router/router";
 import { shareClassRouter } from "../routers/share-class/router";
+import { equityPlanRouter } from "../routers/equity-plan/router";
 import { waitListRouter } from "../routers/waitlist-router/router";
 import { onboardingRouter } from "../routers/onboarding-router/router";
 import { stakeholderRouter } from "../routers/stakeholder-router/router";
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   waitList: waitListRouter,
   onboarding: onboardingRouter,
   shareClass: shareClassRouter,
+  equityPlan: equityPlanRouter,
   stakeholder: stakeholderRouter,
 });
 

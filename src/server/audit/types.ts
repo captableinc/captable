@@ -21,7 +21,7 @@ export type AuditTarget = ActionTypeData[];
 export type AuditContext = Overwrite<
   Record<string, string>,
   {
-    location?: string;
-    user_agent?: string;
+    requestIp: string;
+    userAgent: string;
   }
 >;

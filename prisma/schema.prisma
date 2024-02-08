@@ -110,6 +110,7 @@ model Membership {
   access      MEMBERSHIP_ACCESS @default(stakeholder)
   isOnboarded Boolean           @default(false)
 
+  workEmail    String?
   lastAccessed DateTime @default(now())
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

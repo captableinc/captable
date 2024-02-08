@@ -44,6 +44,7 @@ export function VerifyMemberForm({
       name: "",
       membershipId,
       token,
+      workEmail: "",
     },
   });
 
@@ -66,19 +67,36 @@ export function VerifyMemberForm({
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-y-4"
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Your full name</FormLabel>
-                  <FormControl>
-                    <Input disabled={isSubmitting} {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
+            <fieldset disabled={isSubmitting} className="flex flex-col gap-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your full name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="workEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Work email</FormLabel>
+                    <FormControl>
+                      <Input type="email" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+            </fieldset>
+
             <Button
               loading={isSubmitting}
               loadingText="Onboarding..."

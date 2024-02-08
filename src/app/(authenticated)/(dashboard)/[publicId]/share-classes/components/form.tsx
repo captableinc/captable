@@ -110,7 +110,8 @@ const ShareClassForm = ({
                 Basic Information:
               </h2>
               <p className="mt-1 text-sm leading-6 text-gray-600">
-                Let{`'`}s start with share class name and type.
+                Let{`'`}s start with share class name, type of share and
+                authorized number of shares.
               </p>
             </div>
 
@@ -184,8 +185,9 @@ const ShareClassForm = ({
                 Financial Details:
               </h2>
               <p className="mt-1 text-sm leading-6 text-gray-600">
-                Specify votes per share, par value, and price per share to
-                outline the financial characteristics of the Share Class.
+                Please provide the number of votes each share carries, mention
+                the par value, and state the price per share to describe the
+                financial features of the share class.
               </p>
             </div>
 
@@ -296,7 +298,7 @@ const ShareClassForm = ({
               <p className="mt-1 text-sm leading-6 text-gray-600">
                 Specify seniority, conversion rights, and participation cap
                 multiples to highlight conversion options and preferences for
-                the Share Class.
+                the share class.
               </p>
             </div>
 

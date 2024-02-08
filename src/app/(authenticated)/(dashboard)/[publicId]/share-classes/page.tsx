@@ -3,6 +3,7 @@ import { db } from "@/server/db";
 import ShareClassTable from "./table";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import type { ShareClass } from "@prisma/client";
 import { withServerSession } from "@/server/auth";
 import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
@@ -23,7 +24,7 @@ const SharesPage = async ({ params }: SharesPageParams) => {
   const { publicId } = params;
   const session = await withServerSession();
   const companyId = session?.user?.companyId;
-  let shareClasses = [];
+  let shareClasses: ShareClass[] = [];
 
   if (companyId) {
     shareClasses = await getShareClasses(companyId);

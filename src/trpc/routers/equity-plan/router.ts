@@ -10,7 +10,7 @@ export const equityPlanRouter = createTRPCRouter({
       try {
         const companyId = ctx.session.user.companyId;
 
-        const equityPlan = await ctx.db.$transaction(async (tx) => {
+        await ctx.db.$transaction(async (tx) => {
           const data = {
             companyId,
             name: input.name,

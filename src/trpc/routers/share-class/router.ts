@@ -13,7 +13,7 @@ export const shareClassRouter = createTRPCRouter({
           | "CS"
           | "PS";
 
-        const shareClass = await ctx.db.$transaction(async (tx) => {
+        await ctx.db.$transaction(async (tx) => {
           const maxIdx = await tx.shareClass.count({
             where: {
               companyId,
@@ -40,15 +40,15 @@ export const shareClassRouter = createTRPCRouter({
             participationCapMultiple: input.participationCapMultiple,
           };
 
-          const sc = await tx.shareClass.create({ data });
-          const audit = await Audit.create(
+          await tx.shareClass.create({ data });
+          await Audit.create(
             {
               action: "shareClass.created",
               companyId,
               actor: { type: "user", id: ctx.session.user.id },
               context: {},
               target: [{ type: "company", id: companyId }],
-              summary: `${ctx.session.user.name} created a share class - (${prefix}-${idx}) ${input.name}`,
+              summary: `${ctx.session.user.name} created a share class - ${input.name}`,
             },
             tx,
           );

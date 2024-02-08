@@ -26,8 +26,8 @@ import { OpenCapLogo } from "@/components/shared/logo";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
 type ModalProps = {
-  title: string;
-  subtitle: string;
+  title: string | React.ReactNode;
+  subtitle: string | React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
   trigger: React.ReactNode;
   children: React.ReactNode;

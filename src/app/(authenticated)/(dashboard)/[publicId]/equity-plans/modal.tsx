@@ -1,3 +1,4 @@
+import { useState } from "react";
 import EquityPlanForm from "./form";
 import Modal from "@/components/shared/modal";
 import type { EquityPlan } from "@prisma/client";
@@ -15,9 +16,22 @@ const EquityPlanModal = ({
   trigger,
   equityPlan,
 }: EquityPlanType) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Modal size="xl" title={title} subtitle={subtitle} trigger={trigger}>
-      <EquityPlanForm />
+    <Modal
+      size="xl"
+      title={title}
+      subtitle={subtitle}
+      trigger={trigger}
+      dialogProps={{
+        open,
+        onOpenChange: (val) => {
+          setOpen(val);
+        },
+      }}
+    >
+      <EquityPlanForm setOpen={setOpen} />
     </Modal>
   );
 };

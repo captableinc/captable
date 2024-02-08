@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -33,10 +34,12 @@ const formSchema = EquityPlanMutationSchema;
 
 type EquityFormType = {
   className?: string;
+  setOpen: (val: boolean) => void;
   equityPlan?: EquityPlanMutationType;
 };
 
 const EquityPlanForm = ({
+  setOpen,
   className,
   equityPlan = {
     name: "",
@@ -48,13 +51,33 @@ const EquityPlanForm = ({
     comments: "",
   },
 }: EquityFormType) => {
+  const router = useRouter();
+  const { toast } = useToast();
+
   const form = useForm<EquityPlanMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: equityPlan,
   });
 
+  const isSubmitting = form.formState.isSubmitting;
+  const mutation = api.equityPlan.create.useMutation({
+    onSuccess: async ({ success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully created"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      form.reset();
+      setOpen(false);
+      router.refresh();
+    },
+  });
+
   const onSubmit = async (values: EquityPlanMutationType) => {
-    debugger;
+    await mutation.mutateAsync(values);
   };
 
   return (
@@ -206,7 +229,13 @@ const EquityPlanForm = ({
         </div>
 
         <div className="mt-8 flex justify-end">
-          <Button type="submit">Create an equity plan</Button>
+          <Button
+            loading={isSubmitting}
+            loadingText="Submitting..."
+            type="submit"
+          >
+            Create an equity plan
+          </Button>
         </div>
       </form>
     </Form>

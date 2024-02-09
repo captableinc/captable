@@ -11,7 +11,7 @@ type ShareClassType = {
   subtitle: string | React.ReactNode;
   trigger: React.ReactNode;
   shareClass?: ShareClassMutationType;
-  shareClasses: ShareClassMutationType[];
+  shareClasses?: ShareClassMutationType[];
 };
 
 const ShareClassModal = ({
@@ -19,7 +19,7 @@ const ShareClassModal = ({
   subtitle,
   trigger,
   shareClass,
-  shareClasses,
+  shareClasses = [] as ShareClassMutationType[],
   type = "create",
 }: ShareClassType) => {
   const [open, setOpen] = useState(false);

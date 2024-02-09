@@ -95,8 +95,11 @@ export function CommandMenu() {
         </div>
         <p className="text-sm text-muted-foreground">
           {" "}
-          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-3 font-mono">
-            ⌘ <span className="text-xs">K</span>
+          <kbd className="pointer-events-none mr-1.5 inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono shadow">
+            ⌘
+          </kbd>
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-xs shadow">
+            K
           </kbd>
         </p>
       </Button>

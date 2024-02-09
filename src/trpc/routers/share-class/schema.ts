@@ -8,14 +8,16 @@ export const ShareClassMutationSchema = z.object({
   }),
   classType: z.enum(["common", "preferred"]),
   prefix: z.enum(["CS", "PS"]).optional(),
-  initialSharesAuthorized: z.coerce.number().min(0, {
-    message: "Initial shares authorized is required",
+  initialSharesAuthorized: z.coerce.number().min(1, {
+    message: "Authorized shares is required",
   }),
-  boardApprovalDate: z.string().min(1, {
-    message: "Board approval date is required",
+  boardApprovalDate: z.coerce.date({
+    required_error: "Board approval date is required",
+    invalid_type_error: "This is not a valid date",
   }),
-  stockholderApprovalDate: z.string().min(1, {
-    message: "Stockholder approval date is required",
+  stockholderApprovalDate: z.coerce.date({
+    required_error: "Stockholder approval date is required",
+    invalid_type_error: "This is not a valid date",
   }),
   votesPerShare: z.coerce.number().min(0, {
     message: "Votes per share is required",
@@ -32,7 +34,7 @@ export const ShareClassMutationSchema = z.object({
 
   // Conversion rights
   conversionRights: z.enum(["convertsToFutureRound", "convertsToShareClassId"]),
-  convertsToShareClassId: z.string().optional(),
+  convertsToShareClassId: z.string().nullable(),
 
   liquidationPreferenceMultiple: z.coerce.number().min(0, {
     message: "Liquidation preference multiple is required",

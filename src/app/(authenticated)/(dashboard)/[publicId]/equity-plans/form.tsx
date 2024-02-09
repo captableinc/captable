@@ -16,10 +16,12 @@ import {
 
 import {
   Select,
+  SelectItem,
+  SelectGroup,
+  SelectLabel,
+  SelectValue,
   SelectTrigger,
   SelectContent,
-  SelectItem,
-  SelectValue,
 } from "@/components/ui/select";
 
 import {
@@ -102,6 +104,10 @@ const EquityPlanForm = ({
       : await updateMutation.mutateAsync(values);
   };
 
+  const parseBigInt = (value: number) => {
+    return Number(value);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -133,7 +139,7 @@ const EquityPlanForm = ({
                     <Input
                       type="number"
                       {...field}
-                      value={field.value ? field.value : 0}
+                      value={parseBigInt(field.value)}
                     />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
@@ -207,9 +213,10 @@ const EquityPlanForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="create-a-share-class">
-                        Create a share class
-                      </SelectItem>
+                      <SelectGroup>
+                        <SelectLabel>No share classes</SelectLabel>
+                        {/* <SelectItem value="xxxxxx">xxxxxx</SelectItem> */}
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-xs font-light" />

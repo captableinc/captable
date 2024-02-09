@@ -7,6 +7,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import ShareClassModal from "./modal";
+import Tldr from "@/components/shared/tldr";
 import { Card } from "@/components/ui/card";
 import type { ShareClass } from "@prisma/client";
 const formatter = new Intl.NumberFormat("en-US");
@@ -45,7 +47,24 @@ const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
                 klass.stockholderApprovalDate,
               ).toLocaleDateString("en-US")}`}</TableCell>
               <TableCell>
-                <RiEqualizer2Line className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700" />
+                <ShareClassModal
+                  type="update"
+                  title="Update share class"
+                  shareClass={klass}
+                  subtitle={
+                    <Tldr
+                      message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
+                      cta={{
+                        label: "Learn more",
+                        // TODO - this link should be updated to the correct URL
+                        href: "https://opencap.co/help",
+                      }}
+                    />
+                  }
+                  trigger={
+                    <RiEqualizer2Line className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700" />
+                  }
+                />
               </TableCell>
             </TableRow>
           ))}

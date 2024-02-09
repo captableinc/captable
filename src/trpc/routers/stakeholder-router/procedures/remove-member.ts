@@ -20,7 +20,7 @@ interface removeMemberHandlerOptions {
 }
 
 export async function removeMemberHandler({
-  ctx: { db, session },
+  ctx: { db, session, requestIp, userAgent },
   input,
 }: removeMemberHandlerOptions) {
   const user = session.user;
@@ -52,7 +52,10 @@ export async function removeMemberHandler({
         action: "stakeholder.removed",
         companyId: user.companyId,
         actor: { type: "user", id: user.id },
-        context: {},
+        context: {
+          requestIp,
+          userAgent,
+        },
         target: [{ type: "user", id: member.userId }],
         summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
       },

@@ -6,6 +6,8 @@ export const equityPlanRouter = createTRPCRouter({
   create: adminOnlyProcedure
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
+      const { userAgent, requestIp } = ctx;
+
       try {
         const companyId = ctx.session.user.companyId;
 
@@ -28,7 +30,10 @@ export const equityPlanRouter = createTRPCRouter({
               action: "equityPlan.created",
               companyId,
               actor: { type: "user", id: ctx.session.user.id },
-              context: {},
+              context: {
+                requestIp,
+                userAgent,
+              },
               target: [{ type: "company", id: companyId }],
               summary: `${ctx.session.user.name} created an equity plan - ${input.name}`,
             },

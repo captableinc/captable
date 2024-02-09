@@ -8,6 +8,7 @@ export const onboardingRouter = createTRPCRouter({
   onboard: protectedProcedure
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
+      const { userAgent, requestIp } = ctx;
       try {
         const { publicId } = await ctx.db.$transaction(async (tx) => {
           const publicId = generatePublicId();
@@ -52,7 +53,10 @@ export const onboardingRouter = createTRPCRouter({
               action: "user.onboarded",
               companyId: company.id,
               actor: { type: "user", id: user.id },
-              context: {},
+              context: {
+                userAgent,
+                requestIp,
+              },
               target: [{ type: "company", id: company.id }],
               summary: `${user.name} onboarded ${company.name}`,
             },
@@ -64,7 +68,10 @@ export const onboardingRouter = createTRPCRouter({
               action: "company.created",
               companyId: company.id,
               actor: { type: "user", id: user.id },
-              context: {},
+              context: {
+                userAgent,
+                requestIp,
+              },
               target: [{ type: "company", id: company.id }],
               summary: `${user.name} created company ${company.name}`,
             },

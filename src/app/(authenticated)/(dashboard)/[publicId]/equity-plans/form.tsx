@@ -64,7 +64,7 @@ const EquityPlanForm = ({
   });
 
   const isSubmitting = form.formState.isSubmitting;
-  const mutation = api.equityPlan.create.useMutation({
+  const createMutation = api.equityPlan.create.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
         variant: success ? "default" : "destructive",
@@ -80,8 +80,26 @@ const EquityPlanForm = ({
     },
   });
 
+  const updateMutation = api.equityPlan.update.useMutation({
+    onSuccess: async ({ success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully updated"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      form.reset();
+      setOpen(false);
+      router.refresh();
+    },
+  });
+
   const onSubmit = async (values: EquityPlanMutationType) => {
-    await mutation.mutateAsync(values);
+    type === "create"
+      ? await createMutation.mutateAsync(values)
+      : await updateMutation.mutateAsync(values);
   };
 
   return (
@@ -258,7 +276,12 @@ const EquityPlanForm = ({
             loadingText="Submitting..."
             type="submit"
           >
-            Create an equity plan
+            {
+              {
+                create: "Create equity plan",
+                update: "Update equity plan",
+              }[type]
+            }
           </Button>
         </div>
       </form>

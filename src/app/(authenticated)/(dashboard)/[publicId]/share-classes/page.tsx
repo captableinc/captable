@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { db } from "@/server/db";
 import ShareClassTable from "./table";
+import ShareClassModal from "./modal";
 import { Card } from "@/components/ui/card";
+import Tldr from "@/components/shared/tldr";
 import { Button } from "@/components/ui/button";
-import type { ShareClass } from "@prisma/client";
 import { withServerSession } from "@/server/auth";
 import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 type SharesPageParams = {
   params: {
@@ -24,10 +26,12 @@ const SharesPage = async ({ params }: SharesPageParams) => {
   const { publicId } = params;
   const session = await withServerSession();
   const companyId = session?.user?.companyId;
-  let shareClasses: ShareClass[] = [];
+  let shareClasses: ShareClassMutationType[] = [];
 
   if (companyId) {
-    shareClasses = await getShareClasses(companyId);
+    shareClasses = (await getShareClasses(
+      companyId,
+    )) as unknown as ShareClassMutationType[];
   }
 
   if (shareClasses.length === 0) {
@@ -37,12 +41,26 @@ const SharesPage = async ({ params }: SharesPageParams) => {
         title="You do not have any share classes!"
         subtitle="Please click the button below to create a new share class."
       >
-        <Link href={`/${publicId}/share-classes/new`} passHref>
-          <Button size="lg">
-            <RiAddFill className="mr-2 h-5 w-5" />
-            Create a share class
-          </Button>
-        </Link>
+        <ShareClassModal
+          type="create"
+          title="Create a share class"
+          subtitle={
+            <Tldr
+              message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+              cta={{
+                label: "Learn more",
+                // TODO - this link should be updated to the correct URL
+                href: "https://opencap.co/help",
+              }}
+            />
+          }
+          trigger={
+            <Button size="lg">
+              <RiAddFill className="mr-2 h-5 w-5" />
+              Create a share class
+            </Button>
+          }
+        />
       </EmptyState>
     );
   }
@@ -53,17 +71,31 @@ const SharesPage = async ({ params }: SharesPageParams) => {
         <div className="gap-y-3">
           <h3 className="font-medium">Share classes</h3>
           <p className="text-sm text-muted-foreground">
-            Manage the share classes for your company
+            Manage your company{`'`}s share classes
           </p>
         </div>
 
         <div>
-          <Link href={`/${publicId}/share-classes/new`} passHref>
-            <Button>
-              <RiAddFill className="mr-2 h-5 w-5" />
-              Create a share class
-            </Button>
-          </Link>
+          <ShareClassModal
+            type="create"
+            title="Create a share class"
+            subtitle={
+              <Tldr
+                message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+                cta={{
+                  label: "Learn more",
+                  // TODO - this link should be updated to the correct URL
+                  href: "https://opencap.co/help",
+                }}
+              />
+            }
+            trigger={
+              <Button>
+                <RiAddFill className="mr-2 h-5 w-5" />
+                Create a share class
+              </Button>
+            }
+          />
         </div>
       </div>
 

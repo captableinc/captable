@@ -1,25 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import EquityPlanForm from "./form";
+import ShareClassForm from "./form";
 import Modal from "@/components/shared/modal";
-import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
-type EquityPlanType = {
+type ShareClassType = {
   type: string;
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
   trigger: React.ReactNode;
-  equityPlan?: EquityPlanMutationType;
+  shareClass?: ShareClassMutationType;
 };
 
-const EquityPlanModal = ({
+const ShareClassModal = ({
   title,
   subtitle,
   trigger,
-  equityPlan,
+  shareClass,
   type = "create",
-}: EquityPlanType) => {
+}: ShareClassType) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -35,9 +35,9 @@ const EquityPlanModal = ({
         },
       }}
     >
-      <EquityPlanForm type={type} setOpen={setOpen} equityPlan={equityPlan} />
+      <ShareClassForm type={type} setOpen={setOpen} shareClass={shareClass} />
     </Modal>
   );
 };
 
-export default EquityPlanModal;
+export default ShareClassModal;

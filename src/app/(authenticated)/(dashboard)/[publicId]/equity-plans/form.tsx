@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -32,6 +34,7 @@ import {
 const formSchema = EquityPlanMutationSchema;
 
 type EquityFormType = {
+  type?: string;
   className?: string;
   setOpen: (val: boolean) => void;
   equityPlan?: EquityPlanMutationType;
@@ -40,10 +43,12 @@ type EquityFormType = {
 const EquityPlanForm = ({
   setOpen,
   className,
+  type = "create",
   equityPlan = {
+    id: "",
     name: "",
-    boardApprovalDate: "",
-    planEffectiveDate: "",
+    boardApprovalDate: new Date(),
+    planEffectiveDate: null,
     initialSharesReserved: 0,
     defaultCancellatonBehavior: "RETURN_TO_POOL",
     shareClassId: "",
@@ -59,7 +64,7 @@ const EquityPlanForm = ({
   });
 
   const isSubmitting = form.formState.isSubmitting;
-  const mutation = api.equityPlan.create.useMutation({
+  const createMutation = api.equityPlan.create.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
         variant: success ? "default" : "destructive",
@@ -75,8 +80,26 @@ const EquityPlanForm = ({
     },
   });
 
+  const updateMutation = api.equityPlan.update.useMutation({
+    onSuccess: async ({ success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully updated"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      form.reset();
+      setOpen(false);
+      router.refresh();
+    },
+  });
+
   const onSubmit = async (values: EquityPlanMutationType) => {
-    await mutation.mutateAsync(values);
+    type === "create"
+      ? await createMutation.mutateAsync(values)
+      : await updateMutation.mutateAsync(values);
   };
 
   return (
@@ -107,7 +130,11 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Initial reserved shares</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input
+                      type="number"
+                      {...field}
+                      value={field.value ? field.value : 0}
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -123,7 +150,15 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Board approval date</FormLabel>
                   <FormControl>
-                    <Input {...field} type="date" />
+                    <Input
+                      type="date"
+                      {...field}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
+                      }
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -139,7 +174,15 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Plan effective date</FormLabel>
                   <FormControl>
-                    <Input {...field} type="date" />
+                    <Input
+                      type="date"
+                      {...field}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
+                      }
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -218,7 +261,7 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Comment</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <Textarea className="resize-none" {...field} />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -233,7 +276,12 @@ const EquityPlanForm = ({
             loadingText="Submitting..."
             type="submit"
           >
-            Create an equity plan
+            {
+              {
+                create: "Create equity plan",
+                update: "Update equity plan",
+              }[type]
+            }
           </Button>
         </div>
       </form>

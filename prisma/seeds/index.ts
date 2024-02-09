@@ -28,9 +28,9 @@ const seed = async () => {
 
     console.log("Seeding database".underline.cyan);
     return db.$transaction(async () => {
-      const admins = await seedAdmins();
-      const companies = await seedCompanies();
-      const stakeholders = await seedStakeholders();
+      await seedAdmins();
+      await seedCompanies();
+      await seedStakeholders();
     });
   } else {
     throw new Error("Seeding aborted");

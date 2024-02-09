@@ -1,18 +1,13 @@
-import Link from "next/link";
 import { db } from "@/server/db";
 import EquityPlanModal from "./modal";
 import EquityPlanTable from "./table";
 import { Card } from "@/components/ui/card";
 import Tldr from "@/components/shared/tldr";
 import { Button } from "@/components/ui/button";
-import type { EquityPlan } from "@prisma/client";
 import { withServerSession } from "@/server/auth";
 import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
-import {
-  EquityPlanMutationSchema,
-  type EquityPlanMutationType,
-} from "@/trpc/routers/equity-plan/schema";
+import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 
 const getEquityPlans = async (companyId: string) => {
   return await db.equityPlan.findMany({
@@ -30,8 +25,6 @@ const EquityPlanPage = async () => {
       companyId,
     )) as unknown as EquityPlanMutationType[];
   }
-
-  console.log({ equityPlans });
 
   if (equityPlans.length === 0) {
     return (

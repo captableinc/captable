@@ -56,6 +56,7 @@ export const equityPlanRouter = createTRPCRouter({
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        const { userAgent, requestIp } = ctx;
         const companyId = ctx.session.user.companyId;
 
         await ctx.db.$transaction(async (tx) => {
@@ -81,7 +82,10 @@ export const equityPlanRouter = createTRPCRouter({
               action: "equityPlan.updated",
               companyId,
               actor: { type: "user", id: ctx.session.user.id },
-              context: {},
+              context: {
+                requestIp,
+                userAgent,
+              },
               target: [{ type: "company", id: companyId }],
               summary: `${ctx.session.user.name} updated an equity plan - ${input.name}`,
             },

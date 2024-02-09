@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/trpc/react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -32,6 +34,7 @@ import {
 const formSchema = EquityPlanMutationSchema;
 
 type EquityFormType = {
+  type?: string;
   className?: string;
   setOpen: (val: boolean) => void;
   equityPlan?: EquityPlanMutationType;
@@ -40,10 +43,12 @@ type EquityFormType = {
 const EquityPlanForm = ({
   setOpen,
   className,
+  type = "create",
   equityPlan = {
+    id: "",
     name: "",
-    boardApprovalDate: "",
-    planEffectiveDate: "",
+    boardApprovalDate: new Date(),
+    planEffectiveDate: null,
     initialSharesReserved: 0,
     defaultCancellatonBehavior: "RETURN_TO_POOL",
     shareClassId: "",
@@ -107,7 +112,11 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Initial reserved shares</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input
+                      type="number"
+                      {...field}
+                      value={field.value ? field.value : 0}
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -123,7 +132,15 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Board approval date</FormLabel>
                   <FormControl>
-                    <Input {...field} type="date" />
+                    <Input
+                      type="date"
+                      {...field}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
+                      }
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -139,7 +156,15 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Plan effective date</FormLabel>
                   <FormControl>
-                    <Input {...field} type="date" />
+                    <Input
+                      type="date"
+                      {...field}
+                      value={
+                        field.value
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
+                      }
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -218,7 +243,7 @@ const EquityPlanForm = ({
                 <FormItem>
                   <FormLabel>Comment</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <Textarea className="resize-none" {...field} />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>

@@ -1,13 +1,16 @@
+"use client";
+
 import { useState } from "react";
 import EquityPlanForm from "./form";
 import Modal from "@/components/shared/modal";
-import type { EquityPlan } from "@prisma/client";
+import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 
 type EquityPlanType = {
+  type: string;
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
   trigger: React.ReactNode;
-  equityPlan?: EquityPlan;
+  equityPlan?: EquityPlanMutationType;
 };
 
 const EquityPlanModal = ({
@@ -15,6 +18,7 @@ const EquityPlanModal = ({
   subtitle,
   trigger,
   equityPlan,
+  type = "create",
 }: EquityPlanType) => {
   const [open, setOpen] = useState(false);
 
@@ -31,7 +35,7 @@ const EquityPlanModal = ({
         },
       }}
     >
-      <EquityPlanForm setOpen={setOpen} />
+      <EquityPlanForm type={type} setOpen={setOpen} equityPlan={equityPlan} />
     </Modal>
   );
 };

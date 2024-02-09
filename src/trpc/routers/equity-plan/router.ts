@@ -21,6 +21,7 @@ export const equityPlanRouter = createTRPCRouter({
             boardApprovalDate: new Date(input.boardApprovalDate),
             initialSharesReserved: input.initialSharesReserved,
             shareClassId: input.shareClassId,
+            comments: input.comments,
             defaultCancellatonBehavior: input.defaultCancellatonBehavior,
           };
 

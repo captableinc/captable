@@ -10,12 +10,12 @@ import {
 import ShareClassModal from "./modal";
 import Tldr from "@/components/shared/tldr";
 import { Card } from "@/components/ui/card";
-import type { ShareClass } from "@prisma/client";
 const formatter = new Intl.NumberFormat("en-US");
 import { RiEqualizer2Line } from "@remixicon/react";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 type ShareClassTableProps = {
-  shareClasses: ShareClass[];
+  shareClasses: ShareClassMutationType[];
 };
 
 const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
@@ -53,7 +53,7 @@ const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
                   shareClass={klass}
                   subtitle={
                     <Tldr
-                      message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
+                      message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
                       cta={{
                         label: "Learn more",
                         // TODO - this link should be updated to the correct URL

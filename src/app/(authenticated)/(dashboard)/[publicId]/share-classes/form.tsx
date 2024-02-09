@@ -42,12 +42,14 @@ type ShareClassFormType = {
   className?: string;
   setOpen: (val: boolean) => void;
   shareClass?: ShareClassMutationType;
+  shareClasses: ShareClassMutationType[];
 };
 
 const ShareClassForm = ({
   setOpen,
   className,
   type = "create",
+  shareClasses,
   shareClass = {
     id: "",
     name: "",
@@ -78,7 +80,7 @@ const ShareClassForm = ({
   const [renderShareClassInput, setRenderShareClassInput] = useState(false);
 
   useEffect(() => {
-    if (watchConversionRights === "convertsToStockClassId") {
+    if (watchConversionRights === "convertsToShareClassId") {
       setRenderShareClassInput(true);
     } else {
       setRenderShareClassInput(false);
@@ -361,7 +363,7 @@ const ShareClassForm = ({
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="convertsToStockClassId" />
+                          <RadioGroupItem value="convertsToShareClassId" />
                         </FormControl>
                         <FormLabel className="font-normal">
                           Converts to specific share class
@@ -377,7 +379,7 @@ const ShareClassForm = ({
 
           <div className="sm:col-span-3">
             {
-              // if conversionRights === "convertsToStockClassId"
+              // if conversionRights === "convertsToShareClassId"
               renderShareClassInput && (
                 <div className="sm:col-span-3">
                   <FormField
@@ -397,8 +399,20 @@ const ShareClassForm = ({
                           </FormControl>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>No share classes</SelectLabel>
-                              {/* <SelectItem value="xxxxxx">xxxxxx</SelectItem> */}
+                              <SelectLabel>
+                                {shareClasses.length > 0
+                                  ? "Share classes"
+                                  : "No share classes"}
+                              </SelectLabel>
+
+                              {shareClasses.map((shareClass) => (
+                                <SelectItem
+                                  key={shareClass.id}
+                                  value={shareClass.id!}
+                                >
+                                  {shareClass.name}
+                                </SelectItem>
+                              ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>

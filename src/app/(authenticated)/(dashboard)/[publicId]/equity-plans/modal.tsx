@@ -4,6 +4,7 @@ import { useState } from "react";
 import EquityPlanForm from "./form";
 import Modal from "@/components/shared/modal";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 type EquityPlanType = {
   type: string;
@@ -11,6 +12,7 @@ type EquityPlanType = {
   subtitle: string | React.ReactNode;
   trigger: React.ReactNode;
   equityPlan?: EquityPlanMutationType;
+  shareClasses: ShareClassMutationType[];
 };
 
 const EquityPlanModal = ({
@@ -18,6 +20,7 @@ const EquityPlanModal = ({
   subtitle,
   trigger,
   equityPlan,
+  shareClasses,
   type = "create",
 }: EquityPlanType) => {
   const [open, setOpen] = useState(false);
@@ -35,7 +38,12 @@ const EquityPlanModal = ({
         },
       }}
     >
-      <EquityPlanForm type={type} setOpen={setOpen} equityPlan={equityPlan} />
+      <EquityPlanForm
+        type={type}
+        setOpen={setOpen}
+        equityPlan={equityPlan}
+        shareClasses={shareClasses}
+      />
     </Modal>
   );
 };

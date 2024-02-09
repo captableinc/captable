@@ -8,9 +8,16 @@ import { withServerSession } from "@/server/auth";
 import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 const getEquityPlans = async (companyId: string) => {
   return await db.equityPlan.findMany({
+    where: { companyId },
+  });
+};
+
+const getShareClasses = async (companyId: string) => {
+  return await db.shareClass.findMany({
     where: { companyId },
   });
 };
@@ -26,6 +33,10 @@ const EquityPlanPage = async () => {
     )) as unknown as EquityPlanMutationType[];
   }
 
+  const shareClasses: ShareClassMutationType[] = (await getShareClasses(
+    companyId,
+  )) as unknown as ShareClassMutationType[];
+
   if (equityPlans.length === 0) {
     return (
       <EmptyState
@@ -36,6 +47,7 @@ const EquityPlanPage = async () => {
         <EquityPlanModal
           type="create"
           title="Create an equity plan"
+          shareClasses={shareClasses}
           subtitle={
             <Tldr
               message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
@@ -71,6 +83,7 @@ const EquityPlanPage = async () => {
           <EquityPlanModal
             type="create"
             title="Create an equity plan"
+            shareClasses={shareClasses}
             subtitle={
               <Tldr
                 message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
@@ -93,7 +106,10 @@ const EquityPlanPage = async () => {
 
       <Card className="mt-3">
         <div className="p-6">
-          <EquityPlanTable equityPlans={equityPlans} />
+          <EquityPlanTable
+            equityPlans={equityPlans}
+            shareClasses={shareClasses}
+          />
         </div>
       </Card>
     </div>

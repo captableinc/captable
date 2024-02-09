@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 import {
   EquityPlanMutationSchema,
@@ -40,12 +41,14 @@ type EquityFormType = {
   className?: string;
   setOpen: (val: boolean) => void;
   equityPlan?: EquityPlanMutationType;
+  shareClasses: ShareClassMutationType[];
 };
 
 const EquityPlanForm = ({
   setOpen,
   className,
   type = "create",
+  shareClasses,
   equityPlan = {
     id: "",
     name: "",
@@ -214,8 +217,20 @@ const EquityPlanForm = ({
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>No share classes</SelectLabel>
-                        {/* <SelectItem value="xxxxxx">xxxxxx</SelectItem> */}
+                        <SelectLabel>
+                          {shareClasses.length > 0
+                            ? "Share classes"
+                            : "No share classes"}
+                        </SelectLabel>
+
+                        {shareClasses.map((shareClass) => (
+                          <SelectItem
+                            key={shareClass.id}
+                            value={shareClass.id!}
+                          >
+                            {shareClass.name}
+                          </SelectItem>
+                        ))}
                       </SelectGroup>
                     </SelectContent>
                   </Select>

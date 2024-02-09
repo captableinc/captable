@@ -14,9 +14,11 @@ import type { EquityPlan } from "@prisma/client";
 const formatter = new Intl.NumberFormat("en-US");
 import { RiEqualizer2Line } from "@remixicon/react";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 type EquityPlanTableProps = {
   equityPlans: EquityPlanMutationType[];
+  shareClasses: ShareClassMutationType[];
 };
 
 const getCancelationBehavior = (behavior: string) => {
@@ -34,7 +36,10 @@ const getCancelationBehavior = (behavior: string) => {
   }
 };
 
-const EquityPlanTable = ({ equityPlans }: EquityPlanTableProps) => {
+const EquityPlanTable = ({
+  equityPlans,
+  shareClasses,
+}: EquityPlanTableProps) => {
   return (
     <Card>
       <Table className="">
@@ -74,6 +79,7 @@ const EquityPlanTable = ({ equityPlans }: EquityPlanTableProps) => {
                   type="update"
                   title="Update an equity plan"
                   equityPlan={plan}
+                  shareClasses={shareClasses}
                   subtitle={
                     <Tldr
                       message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."

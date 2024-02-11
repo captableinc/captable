@@ -116,10 +116,10 @@ model Membership {
   updatedAt    DateTime @updatedAt
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   companyId String
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -131,7 +131,7 @@ model Audit {
   id String @id @default(cuid())
 
   companyId String
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   summary String?
 

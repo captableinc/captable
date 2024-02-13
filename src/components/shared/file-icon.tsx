@@ -1,10 +1,10 @@
 import {
-  RiFileUnknowLine,
-  RiFileWordLine,
-  RiFileExcelLine,
-  RiFilePdf2Line,
-  RiFileImageLine,
   RiFileGifLine,
+  RiFileWordLine,
+  RiFilePdf2Line,
+  RiFileExcelLine,
+  RiFileImageLine,
+  RiFileUnknowLine,
 } from "@remixicon/react";
 
 type FileIconProps = {
@@ -17,9 +17,10 @@ const FileIcon = ({ type, className }: FileIconProps) => {
     case "jpeg":
     case "jpg":
     case "png":
-    case "gif":
     case "svg":
       return <RiFileImageLine className={className} />;
+    case "gif":
+      return <RiFileGifLine className={className} />;
     case "doc":
     case "docx":
       return <RiFileWordLine className={className} />;

@@ -2,9 +2,15 @@ import { db } from "@/server/db";
 import DocumentsTable from "./table";
 import DocumentUploadModal from "./modal";
 import { Card } from "@/components/ui/card";
-import Uploader from "@/components/ui/uploader";
+import { Button } from "@/components/ui/button";
 import { withServerSession } from "@/server/auth";
-import { RiUploadCloudLine } from "@remixicon/react";
+import type { Document, User } from "@prisma/client";
+import EmptyState from "@/components/shared/empty-state";
+import { RiUploadCloudLine, RiAddFill } from "@remixicon/react";
+
+interface DocumentType extends Document {
+  uploadedBy: User | null;
+}
 
 const getDocuments = async (companyId: string) => {
   return await db.document.findMany({
@@ -18,27 +24,24 @@ const getDocuments = async (companyId: string) => {
 const DocumentsPage = async () => {
   const session = await withServerSession();
   const companyId = session?.user?.companyId;
-  const documents = await getDocuments(companyId);
+  const documents: DocumentType[] = await getDocuments(companyId);
 
   if (documents.length === 0) {
     return (
-      <div className="w-full">
-        <Uploader
-          header={
-            <>
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
-                <span className="text-teal-500">
-                  <RiUploadCloudLine />
-                </span>
-              </div>
-
-              <h3 className="mb-5 text-3xl font-semibold">
-                You do not have any documents yet.
-              </h3>
-            </>
+      <EmptyState
+        icon={<RiUploadCloudLine />}
+        title="You do not have any documents!"
+        subtitle="Please click the button below to upload a new document."
+      >
+        <DocumentUploadModal
+          trigger={
+            <Button size="lg">
+              <RiAddFill className="mr-2 h-5 w-5" />
+              Upload a document
+            </Button>
           }
         />
-      </div>
+      </EmptyState>
     );
   }
 
@@ -53,7 +56,14 @@ const DocumentsPage = async () => {
         </div>
 
         <div>
-          <DocumentUploadModal />
+          <DocumentUploadModal
+            trigger={
+              <Button>
+                <RiAddFill className="mr-2 h-5 w-5" />
+                Upload a document
+              </Button>
+            }
+          />
         </div>
       </div>
 

@@ -43,6 +43,9 @@ const nuke = async () => {
     await db.user.deleteMany();
     await db.membership.deleteMany();
     await db.company.deleteMany();
+    await db.shareClass.deleteMany();
+    await db.equityPlan.deleteMany();
+    await db.document.deleteMany();
     await db.audit.deleteMany();
     await db.session.deleteMany();
   });

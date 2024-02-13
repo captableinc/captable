@@ -51,6 +51,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   companies     Membership[]
+  documents     Document[]
 }
 
 model WaitlistUser {
@@ -87,6 +88,7 @@ model Company {
   audits       Audit[]
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
+  documents    Document[]
 
   @@unique([publicId])
 }
@@ -190,7 +192,7 @@ model ShareClass {
   participationCapMultiple      Float
 
   companyId   String
-  company     Company      @relation(fields: [companyId], references: [id])
+  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   equityPlans EquityPlan[]
 
   createdAt DateTime @default(now())
@@ -217,13 +219,32 @@ model EquityPlan {
   comments                   String?
 
   companyId    String
-  company      Company    @relation(fields: [companyId], references: [id])
+  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   shareClassId String
-  shareClass   ShareClass @relation(fields: [shareClassId], references: [id])
+  shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([shareClassId])
   @@index([companyId])
+}
+
+model Document {
+  id        String  @id @default(cuid())
+  name      String
+  type      String
+  size      Int
+  url       String
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  uploadedById String?
+  uploadedBy   User?   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([uploadedById])
 }

@@ -5,10 +5,11 @@ import { Button } from "./button";
 import { getFileSizeSuffix } from "@/lib/utils";
 
 type uploadProps = {
+  header?: React.ReactNode;
   uploadType?: "avatar" | "companyLogo" | "incorporationDocument";
 };
 
-function Uploader({ uploadType }: uploadProps) {
+function Uploader({ uploadType, header }: uploadProps) {
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     // Do something with the files
     console.log(acceptedFiles, uploadType);
@@ -34,12 +35,13 @@ function Uploader({ uploadType }: uploadProps) {
         {...getRootProps({ className: "dropzone" })}
         className="flex w-full flex-col items-center justify-center  rounded-md border border-dashed border-border px-5 py-10"
       >
-        <input {...getInputProps()} />
+        {header}
+        <input {...getInputProps()} multiple={false} />
         <p className="text-center text-neutral-500">
-          Drop files here or click to select
+          Drop & drop, or select a file to upload
         </p>
         <Button onClick={open} variant={"default"} className="mt-5">
-          Select file
+          Select file(s)
         </Button>
       </div>
       <aside className="mt-5">

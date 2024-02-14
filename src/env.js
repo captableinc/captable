@@ -7,12 +7,12 @@ const COERCED_BOOLEAN = z
   // transform to boolean using preferred coercion logic
   .transform((s) => s !== "false" && s !== "0");
 
-const ONLY_BOOLEAN = z
-  .string()
-  // only allow "true" or "false"
-  .refine((s) => s === "true" || s === "false")
-  // transform to boolean
-  .transform((s) => s === "true");
+// const ONLY_BOOLEAN = z
+//   .string()
+//   // only allow "true" or "false"
+//   .refine((s) => s === "true" || s === "false")
+//   // transform to boolean
+//   .transform((s) => s === "true");
 
 export const env = createEnv({
   /**

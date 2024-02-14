@@ -49,8 +49,8 @@ export const getPresignedPutUrl = async ({
 }: getPresignedUrlOptions) => {
   const { name, ext } = path.parse(fileName);
 
-  const Key = `${keyPrefix ? keyPrefix + "/" : ""}${customId(12)}/${slugify(
-    name,
+  const Key = `${keyPrefix ?? customId(12)}/${slugify(name)}-${customId(
+    6,
   )}${ext}`;
 
   const putObjectCommand = new PutObjectCommand({

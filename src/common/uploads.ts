@@ -3,6 +3,8 @@ import {
   type getPresignedUrlOptions,
 } from "@/server/file-uploads";
 
+import { type DocumentMutationType } from "@/trpc/routers/document-router/schema";
+
 /**
  * usage
  * ```js
@@ -43,7 +45,6 @@ export const uploadFile = async (
     );
   }
 
-  return {
-    uploadKey: key,
-  };
+  const { name, type, size } = file;
+  return { key, name, type, size } as DocumentMutationType;
 };

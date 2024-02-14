@@ -32,7 +32,6 @@ import {
 import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
 
-import Image from "next/image";
 import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";

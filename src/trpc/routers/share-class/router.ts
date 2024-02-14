@@ -82,6 +82,7 @@ export const shareClassRouter = createTRPCRouter({
 
         await ctx.db.$transaction(async (tx) => {
           const data = {
+            prefix,
             name: input.name,
             classType: input.classType,
             initialSharesAuthorized: input.initialSharesAuthorized,

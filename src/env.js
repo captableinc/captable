@@ -59,7 +59,7 @@ export const env = createEnv({
     UPLOAD_BUCKET: z.string(),
     UPLOAD_ACCESS_KEY_ID: z.string().optional(),
     UPLOAD_SECRET_ACCESS_KEY: z.string().optional(),
-    UPLOAD_PROVIDER: z.enum(["s3", "r2"]),
+    UPLOAD_PROVIDER: z.enum(["S3", "R2"]),
 
     // google
     GOOGLE_CLIENT_ID: z.string().optional(),

@@ -3,12 +3,18 @@
 import { useState } from "react";
 import Modal from "@/components/shared/modal";
 import Uploader from "@/components/ui/uploader";
+import { useRouter } from "next/navigation";
 
 type DocumentUploadModalProps = {
   trigger: React.ReactNode;
+  companyPublicId: string;
 };
 
-const DocumentUploadModal = ({ trigger }: DocumentUploadModalProps) => {
+const DocumentUploadModal = ({
+  trigger,
+  companyPublicId,
+}: DocumentUploadModalProps) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   return (
@@ -23,7 +29,15 @@ const DocumentUploadModal = ({ trigger }: DocumentUploadModalProps) => {
         },
       }}
     >
-      <Uploader setOpen={setOpen} />
+      <Uploader
+        companyPublicId={companyPublicId}
+        keyPrefix="generic-document"
+        type="GENERIC"
+        onSuccess={() => {
+          router.refresh();
+          setOpen(false);
+        }}
+      />
     </Modal>
   );
 };

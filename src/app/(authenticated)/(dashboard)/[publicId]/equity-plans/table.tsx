@@ -10,7 +10,6 @@ import {
 import EquityPlanModal from "./modal";
 import Tldr from "@/components/shared/tldr";
 import { Card } from "@/components/ui/card";
-import type { EquityPlan } from "@prisma/client";
 const formatter = new Intl.NumberFormat("en-US");
 import { RiEqualizer2Line } from "@remixicon/react";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";

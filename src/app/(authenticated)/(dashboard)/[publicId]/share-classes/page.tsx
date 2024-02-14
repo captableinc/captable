@@ -9,20 +9,13 @@ import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
-type SharesPageParams = {
-  params: {
-    publicId: string;
-  };
-};
-
 const getShareClasses = async (companyId: string) => {
   return await db.shareClass.findMany({
     where: { companyId },
   });
 };
 
-const SharesPage = async ({ params }: SharesPageParams) => {
-  const { publicId } = params;
+const SharesPage = async () => {
   const session = await withServerSession();
   const companyId = session?.user?.companyId;
   let shareClasses: ShareClassMutationType[] = [];

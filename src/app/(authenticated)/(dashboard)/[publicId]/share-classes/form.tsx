@@ -47,7 +47,6 @@ type ShareClassFormType = {
 
 const ShareClassForm = ({
   setOpen,
-  className,
   type = "create",
   shareClasses,
   shareClass = {

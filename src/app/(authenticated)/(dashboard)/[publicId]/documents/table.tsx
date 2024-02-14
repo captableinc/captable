@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import type { Document, User } from "@prisma/client";
 import FileIcon from "@/components/shared/file-icon";
 import { RiExpandRightLine } from "@remixicon/react";

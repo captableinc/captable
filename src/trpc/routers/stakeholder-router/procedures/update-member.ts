@@ -5,7 +5,7 @@ import { Audit } from "@/server/audit";
 export const updateMemberProcedure = adminOnlyProcedure
   .input(ZodUpdateMemberMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
-    const { membershipId, name, email, ...rest } = input;
+    const { membershipId, name, ...rest } = input;
     const user = session.user;
 
     await db.$transaction(async (tx) => {

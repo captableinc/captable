@@ -46,7 +46,6 @@ type EquityFormType = {
 
 const EquityPlanForm = ({
   setOpen,
-  className,
   type = "create",
   shareClasses,
   equityPlan = {

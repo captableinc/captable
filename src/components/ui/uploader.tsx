@@ -24,17 +24,19 @@ type DocumentUploadDropzone = Omit<
 
 type UploaderProps = {
   header?: React.ReactNode;
-  companyPublicId: string;
-  keyPrefix: string;
-  type: TDocumentType;
 
+  // should be companyPublicId or membershipId or userId
+  identifier: string;
+
+  keySuffix: string;
+  type: TDocumentType;
   onSuccess?: (data: UploadReturn) => void | Promise<void>;
 } & DocumentUploadDropzone;
 
 export function Uploader({
   header,
-  companyPublicId,
-  keyPrefix,
+  identifier,
+  keySuffix,
   type,
   onSuccess,
   ...rest
@@ -47,7 +49,7 @@ export function Uploader({
     try {
       setUploading(true);
       for (const file of acceptedFiles) {
-        const upload = await uploadFile(file, { companyPublicId, keyPrefix });
+        const upload = await uploadFile(file, { identifier, keySuffix });
 
         const data = await mutateAsync({ ...upload, type });
 

@@ -30,8 +30,8 @@ const DocumentUploadModal = ({
       }}
     >
       <Uploader
-        companyPublicId={companyPublicId}
-        keyPrefix="generic-document"
+        identifier={companyPublicId}
+        keySuffix="generic-document"
         type="GENERIC"
         onSuccess={() => {
           router.refresh();

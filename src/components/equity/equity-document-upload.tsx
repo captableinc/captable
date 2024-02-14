@@ -21,8 +21,8 @@ export function EquityDocumentUpload({
       trigger={<Button>Upload Document</Button>}
     >
       <Uploader
-        companyPublicId={companyPublicId}
-        keyPrefix="equity-doc-uploads"
+        identifier={companyPublicId}
+        keySuffix="equity-doc-uploads"
         type="EQUITY"
         onSuccess={(data) => {
           router.push(`/${companyPublicId}/documents/${data.publicId}`);

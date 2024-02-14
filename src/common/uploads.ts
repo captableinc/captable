@@ -3,8 +3,6 @@ import {
   type getPresignedUrlOptions,
 } from "@/server/file-uploads";
 
-import { type DocumentMutationType } from "@/trpc/routers/document-router/schema";
-
 /**
  * usage
  * ```js
@@ -21,12 +19,15 @@ import { type DocumentMutationType } from "@/trpc/routers/document-router/schema
  */
 export const uploadFile = async (
   file: File,
-  options?: Pick<getPresignedUrlOptions, "expiresIn" | "keyPrefix">,
+  options: Pick<
+    getPresignedUrlOptions,
+    "expiresIn" | "keyPrefix" | "companyPublicId"
+  >,
 ) => {
   const { url, key } = await getPresignedPutUrl({
     contentType: file.type,
     fileName: file.name,
-    ...(options && { ...options }),
+    ...options,
   });
 
   const body = await file.arrayBuffer();
@@ -46,5 +47,12 @@ export const uploadFile = async (
   }
 
   const { name, type, size } = file;
-  return { key, name, type, size } as DocumentMutationType;
+  return {
+    key,
+    name,
+    mimeType: type,
+    size,
+  };
 };
+
+export type TUploadFile = Awaited<ReturnType<typeof uploadFile>>;

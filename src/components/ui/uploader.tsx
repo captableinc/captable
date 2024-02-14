@@ -1,45 +1,66 @@
 "use client";
+
 import { Button } from "./button";
 import { api } from "@/trpc/react";
-import { useSession } from "next-auth/react";
+
 import { uploadFile } from "@/common/uploads";
-import { useRouter } from "next/navigation";
+
 import React, { useState, useCallback } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { useDropzone, type FileWithPath } from "react-dropzone";
+import {
+  useDropzone,
+  type FileWithPath,
+  type DropzoneOptions,
+} from "react-dropzone";
+import { type TDocumentType } from "@/trpc/routers/document-router/schema";
+import { type RouterOutputs } from "@/trpc/shared";
 
-type UploadProps = {
+type UploadReturn = RouterOutputs["document"]["create"];
+
+type DocumentUploadDropzone = Omit<
+  DropzoneOptions,
+  "noClick" | "noKeyboard" | "onDrop"
+>;
+
+type UploaderProps = {
   header?: React.ReactNode;
-  setOpen?: (val: boolean) => void;
-  uploadType?: "avatar" | "document";
-};
+  companyPublicId: string;
+  keyPrefix: string;
+  type: TDocumentType;
 
-function Uploader({ header, setOpen }: UploadProps) {
-  const router = useRouter();
+  onSuccess?: (data: UploadReturn) => void | Promise<void>;
+} & DocumentUploadDropzone;
+
+export function Uploader({
+  header,
+  companyPublicId,
+  keyPrefix,
+  type,
+  onSuccess,
+  ...rest
+}: UploaderProps) {
   const { toast } = useToast();
-  const { data: session } = useSession();
   const [uploading, setUploading] = useState(false);
-  const publicId = session?.user.companyPublicId;
-  const uploader = api.document.create.useMutation();
+  const { mutateAsync } = api.document.create.useMutation();
 
-  const processFiles = async (acceptedFiles: FileWithPath[]) => {
-    for (const file of acceptedFiles) {
-      const upload = await uploadFile(file, { keyPrefix: publicId });
-      await uploader.mutateAsync(upload);
-    }
-  };
-
-  const uploadFiles = async (acceptedFiles: FileWithPath[]) => {
+  const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     try {
       setUploading(true);
-      await processFiles(acceptedFiles);
-      router.refresh();
-      setOpen && setOpen(false);
-      toast({
-        variant: "default",
-        title: "🎉 Successfully uploaded",
-        description: "Your document(s) has been uploaded.",
-      });
+      for (const file of acceptedFiles) {
+        const upload = await uploadFile(file, { companyPublicId, keyPrefix });
+
+        const data = await mutateAsync({ ...upload, type });
+
+        if (onSuccess) {
+          await onSuccess(data);
+        }
+
+        toast({
+          variant: "default",
+          title: "🎉 Successfully uploaded",
+          description: "Your document(s) has been uploaded.",
+        });
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
       toast({
@@ -50,16 +71,15 @@ function Uploader({ header, setOpen }: UploadProps) {
     } finally {
       setUploading(false);
     }
-  };
-
-  const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
-    await uploadFiles(acceptedFiles);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { getRootProps, getInputProps, open } = useDropzone({
+    ...rest,
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onDrop,
   });
 

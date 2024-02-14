@@ -1,6 +1,7 @@
-import { RiAddFill } from "@remixicon/react";
+"use client";
+
+import { useState } from "react";
 import Modal from "@/components/shared/modal";
-import { Button } from "@/components/ui/button";
 import Uploader from "@/components/ui/uploader";
 
 type DocumentUploadModalProps = {
@@ -8,13 +9,21 @@ type DocumentUploadModalProps = {
 };
 
 const DocumentUploadModal = ({ trigger }: DocumentUploadModalProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Modal
       title="Upload a document"
       subtitle="Upload a document to your company's document library."
       trigger={trigger}
+      dialogProps={{
+        open,
+        onOpenChange: (val) => {
+          setOpen(val);
+        },
+      }}
     >
-      <Uploader />
+      <Uploader setOpen={setOpen} />
     </Modal>
   );
 };

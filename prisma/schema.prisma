@@ -235,7 +235,7 @@ model Document {
   name      String
   type      String
   size      Int
-  url       String
+  key       String
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 

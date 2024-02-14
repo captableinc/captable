@@ -1,34 +1,67 @@
 "use client";
 import { Button } from "./button";
-import React, { useCallback, useState } from "react";
+import { api } from "@/trpc/react";
+import { useSession } from "next-auth/react";
+import { uploadFile } from "@/common/uploads";
+import { useRouter } from "next/navigation";
+import React, { useState, useCallback } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { useDropzone, type FileWithPath } from "react-dropzone";
-import { getFileSizeSuffix } from "@/lib/utils";
 
-type uploadProps = {
+type UploadProps = {
   header?: React.ReactNode;
+  setOpen?: (val: boolean) => void;
   uploadType?: "avatar" | "document";
 };
 
-function Uploader({ uploadType, header }: uploadProps) {
+function Uploader({ header, setOpen }: UploadProps) {
+  const router = useRouter();
+  const { toast } = useToast();
+  const { data: session } = useSession();
   const [uploading, setUploading] = useState(false);
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    // Do something with the files
-    console.log(acceptedFiles, uploadType);
+  const publicId = session?.user.companyPublicId;
+  const uploader = api.document.create.useMutation();
+
+  const processFiles = async (acceptedFiles: FileWithPath[]) => {
+    for (const file of acceptedFiles) {
+      const upload = await uploadFile(file, { keyPrefix: publicId });
+      await uploader.mutateAsync(upload);
+    }
+  };
+
+  const uploadFiles = async (acceptedFiles: FileWithPath[]) => {
+    try {
+      setUploading(true);
+      await processFiles(acceptedFiles);
+      router.refresh();
+      setOpen && setOpen(false);
+      toast({
+        variant: "default",
+        title: "🎉 Successfully uploaded",
+        description: "Your document(s) has been uploaded.",
+      });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please reload the page and try again later.",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
+    await uploadFiles(acceptedFiles);
   }, []);
 
-  const { acceptedFiles, getRootProps, getInputProps, open } = useDropzone({
+  const { getRootProps, getInputProps, open } = useDropzone({
     // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
     onDrop,
   });
-
-  //Shows a list of files that have been accepted
-  const files = acceptedFiles.map((file: FileWithPath) => (
-    <li key={file.path}>
-      {`${file.path} - ${file.size} ${getFileSizeSuffix(file.size)}`}
-    </li>
-  ));
 
   return (
     <section className="w-full">
@@ -50,13 +83,6 @@ function Uploader({ uploadType, header }: uploadProps) {
           {uploading ? "Uploading..." : "Select a file"}
         </Button>
       </div>
-
-      {files.length > 0 && (
-        <aside className="mt-5">
-          <h5 className="font-medium">Files</h5>
-          <ul>{files}</ul>
-        </aside>
-      )}
     </section>
   );
 }

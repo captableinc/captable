@@ -1,22 +1,10 @@
-import { createTRPCRouter, adminOnlyProcedure } from "@/trpc/api/trpc";
-import { DocumentMutationSchema } from "./schema";
+import { createTRPCRouter } from "@/trpc/api/trpc";
+import { createDocumentProcedure } from "./procedures/create-document";
+import { getDocumentProcedure } from "./procedures/get-document";
+import { getAllDocumentsProcedure } from "./procedures/get-all-documents";
 
 export const documentRouter = createTRPCRouter({
-  create: adminOnlyProcedure
-    .input(DocumentMutationSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { db, session } = ctx;
-      const uploadedById = session.user.id;
-      const companyId = session.user.companyId;
-
-      await db.document.create({
-        data: {
-          ...input,
-          uploadedById,
-          companyId,
-        },
-      });
-
-      return { success: true };
-    }),
+  create: createDocumentProcedure,
+  get: getDocumentProcedure,
+  getAll: getAllDocumentsProcedure,
 });

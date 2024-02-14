@@ -51,7 +51,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   companies     Membership[]
-  documents     Document[]
 }
 
 model WaitlistUser {
@@ -122,6 +121,9 @@ model Membership {
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  documentReceived DocumentRecepients[]
+  documentUploaded Document[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -230,21 +232,85 @@ model EquityPlan {
   @@index([companyId])
 }
 
-model Document {
-  id        String  @id @default(cuid())
-  name      String
-  type      String
-  size      Int
-  key       String
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+enum UploadProviders {
+  S3
+  R2
+}
 
-  uploadedById String?
-  uploadedBy   User?   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+enum DocumentType {
+  SAFE
+  EQUITY
+  GENERIC
+}
+
+enum DocumentStatus {
+  DRAFT
+  COMPLETED
+}
+
+model Document {
+  id             String          @id @default(cuid())
+  publicId       String
+  status         DocumentStatus  @default(DRAFT)
+  name           String
+  key            String
+  type           DocumentType
+  size           Int
+  mimeType       String
+  uploadProvider UploadProviders
+  companyId      String
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  fields DocumentFields[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([publicId])
   @@index([companyId])
-  @@index([uploadedById])
+  @@index([uploaderId])
+}
+
+enum DocumentFieldTypes {
+  TEXT
+  TEXT_AREA
+  RADIO
+  CHECK_BOX
+  SIGNATURE
+  DATE
+  DATE_TIME
+  EMAIL
+}
+
+model DocumentFields {
+  id          String             @id @default(cuid())
+  name        String
+  type        DocumentFieldTypes @default(TEXT)
+  placeholder String             @default("")
+  required    Boolean            @default(false)
+  documentId  String
+  document    Document           @relation(fields: [documentId], references: [id])
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([documentId])
+}
+
+enum DocumentSigningStatus {
+  NOT_SIGNED
+  SIGNED
+}
+
+model DocumentRecepients {
+  id           String                @id @default(cuid())
+  signedStatus DocumentSigningStatus
+  membershipId String
+  membership   Membership            @relation(fields: [membershipId], references: [id])
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@index([membershipId])
 }

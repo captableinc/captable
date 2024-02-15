@@ -293,10 +293,13 @@ model TemplateField {
   width       Decimal
   height      Decimal
 
-  templates Template[]
+  Template   Template @relation(fields: [templateId], references: [id])
+  templateId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([templateId])
 }
 
 enum TemplateStatus {
@@ -322,13 +325,11 @@ model Template {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  templateFieldId String
-  fields          TemplateField @relation(fields: [templateFieldId], references: [id])
+  fields TemplateField[]
 
   @@index([bucketId])
   @@index([uploaderId])
   @@index([companyId])
-  @@index([templateFieldId])
 }
 
 enum EsignRecipientStatus {

@@ -232,6 +232,24 @@ model EquityPlan {
   @@index([companyId])
 }
 
+enum BucketType {
+  DOCUMENT
+  TEMPLATE
+  OTHER
+}
+
+model Bucket {
+  id       String     @id @default(cuid())
+  name     String
+  key      String
+  mimeType String
+  size     Int
+  type     BucketType @default(OTHER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 enum UploadProviders {
   S3
   R2

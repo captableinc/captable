@@ -88,6 +88,7 @@ model Company {
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
   documents    Document[]
+  buckets      Bucket[]
 
   @@unique([publicId])
 }
@@ -124,6 +125,7 @@ model Membership {
 
   documentReceived DocumentRecepients[]
   documentUploaded Document[]
+  buckets          Bucket[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -246,8 +248,17 @@ model Bucket {
   size     Int
   type     BucketType @default(OTHER)
 
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([uploaderId])
+  @@index([companyId])
 }
 
 enum UploadProviders {

@@ -12,10 +12,10 @@ import {
   type FileWithPath,
   type DropzoneOptions,
 } from "react-dropzone";
-import { type TDocumentType } from "@/trpc/routers/document-router/schema";
+
 import { type RouterOutputs } from "@/trpc/shared";
 
-type UploadReturn = RouterOutputs["document"]["create"];
+type UploadReturn = RouterOutputs["bucket"]["create"];
 
 type DocumentUploadDropzone = Omit<
   DropzoneOptions,
@@ -29,7 +29,7 @@ type UploaderProps = {
   identifier: string;
 
   keySuffix: string;
-  type: TDocumentType;
+
   onSuccess?: (data: UploadReturn) => void | Promise<void>;
 } & DocumentUploadDropzone;
 
@@ -37,13 +37,12 @@ export function Uploader({
   header,
   identifier,
   keySuffix,
-  type,
   onSuccess,
   ...rest
 }: UploaderProps) {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
-  const { mutateAsync } = api.document.create.useMutation();
+  const { mutateAsync } = api.bucket.create.useMutation();
 
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     try {
@@ -51,7 +50,7 @@ export function Uploader({
       for (const file of acceptedFiles) {
         const upload = await uploadFile(file, { identifier, keySuffix });
 
-        const data = await mutateAsync({ ...upload, type });
+        const data = await mutateAsync({ ...upload });
 
         if (onSuccess) {
           await onSuccess(data);

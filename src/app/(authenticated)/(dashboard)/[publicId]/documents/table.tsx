@@ -36,12 +36,12 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
             <TableRow key={document.id}>
               <TableCell className="relative flex">
                 <FileIcon
-                  type={document.type}
+                  type={document.bucket.mimeType}
                   className="mr-2 inline-block h-5 w-5 text-muted-foreground"
                 />
                 <span className="inline-block">{document.name}</span>
               </TableCell>
-              <TableCell>{document.mimeType}</TableCell>
+              <TableCell>{document.bucket.mimeType}</TableCell>
               <TableCell>{document.createdAt.toDateString()}</TableCell>
               <TableCell>{document.uploader.user.name}</TableCell>
               <TableCell>

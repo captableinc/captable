@@ -27,7 +27,7 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Type</TableHead>
+            {/* <TableHead>Type</TableHead> */}
             <TableHead>Uploaded</TableHead>
             <TableHead>Owner</TableHead>
             <TableHead></TableHead>
@@ -36,14 +36,11 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
         <TableBody>
           {documents.map((document) => (
             <TableRow key={document.id}>
-              <TableCell className="relative flex">
-                <FileIcon
-                  type={document.type}
-                  className="mr-2 inline-block h-5 w-5 text-muted-foreground"
-                />
-                <span className="inline-block">{document.name}</span>
+              <TableCell className="flex items-center ">
+                <FileIcon type={document.type} />
+                <span className="flex">{document.name}</span>
               </TableCell>
-              <TableCell>{document.type}</TableCell>
+              {/* <TableCell>{document.type}</TableCell> */}
               <TableCell>{document.createdAt.toDateString()}</TableCell>
               <TableCell>{document.uploadedBy?.name}</TableCell>
               <TableCell>

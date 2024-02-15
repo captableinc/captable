@@ -18,6 +18,14 @@ export const getAllDocumentsProcedure = protectedProcedure.query(
             },
           },
         },
+        bucket: {
+          select: {
+            key: true,
+            mimeType: true,
+            size: true,
+            name: true,
+          },
+        },
       },
     });
 

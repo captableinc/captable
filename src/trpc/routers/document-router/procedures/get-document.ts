@@ -13,9 +13,13 @@ export const getDocumentProcedure = protectedProcedure
         companyId: user.companyId,
       },
       select: {
-        key: true,
+        bucket: {
+          select: {
+            key: true,
+          },
+        },
       },
     });
 
-    return getPresignedGetUrl(data.key);
+    return getPresignedGetUrl(data.bucket.key);
   });

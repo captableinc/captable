@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Modal from "../shared/modal";
 import { Button } from "../ui/button";
 import { Uploader } from "../ui/uploader";
+import { api } from "@/trpc/react";
 
 interface EquityDocumentUploadProps {
   companyPublicId: string;
@@ -14,6 +15,8 @@ export function EquityDocumentUpload({
 }: EquityDocumentUploadProps) {
   const router = useRouter();
 
+  const { mutateAsync } = api.template.create.useMutation();
+
   return (
     <Modal
       title="Upload equity document"
@@ -23,9 +26,15 @@ export function EquityDocumentUpload({
       <Uploader
         identifier={companyPublicId}
         keySuffix="equity-doc-uploads"
-        type="EQUITY"
-        onSuccess={(data) => {
-          router.push(`/${companyPublicId}/templates/${data.publicId}`);
+        onSuccess={async (bucketData) => {
+          const equityTemplate = await mutateAsync({
+            bucketId: bucketData.id,
+            name: bucketData.name,
+          });
+
+          router.push(
+            `/${companyPublicId}/templates/${equityTemplate.publicId}`,
+          );
         }}
         accept={{
           "application/pdf": [".pdf"],

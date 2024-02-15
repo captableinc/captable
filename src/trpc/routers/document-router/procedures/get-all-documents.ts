@@ -27,6 +27,9 @@ export const getAllDocumentsProcedure = protectedProcedure.query(
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return data;

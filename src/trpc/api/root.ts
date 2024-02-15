@@ -7,6 +7,7 @@ import { documentRouter } from "../routers/document-router/router";
 import { waitListRouter } from "../routers/waitlist-router/router";
 import { onboardingRouter } from "../routers/onboarding-router/router";
 import { stakeholderRouter } from "../routers/stakeholder-router/router";
+import { bucketRouter } from "../routers/bucket-router/router";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   shareClass: shareClassRouter,
   equityPlan: equityPlanRouter,
   stakeholder: stakeholderRouter,
+  bucket: bucketRouter,
 });
 
 // export type definition of API

@@ -87,8 +87,8 @@ model Company {
   audits       Audit[]
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
-
-  buckets Bucket[]
+  documents    Document[]
+  templates    Template[]
 
   @@unique([publicId])
 }
@@ -123,9 +123,9 @@ model Membership {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  documentReceived DocumentRecepients[]
-
-  buckets Bucket[]
+  documentReceived EsignRecipient[]
+  documents        Document[]
+  templates        Template[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -234,19 +234,33 @@ model EquityPlan {
   @@index([companyId])
 }
 
-enum BucketType {
-  DOCUMENT
-  TEMPLATE
-  OTHER
-}
-
 model Bucket {
-  id       String     @id @default(cuid())
+  id       String @id @default(cuid())
   name     String
   key      String
   mimeType String
   size     Int
-  type     BucketType @default(OTHER)
+
+  documents Document[]
+  templates Template[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum DocumentStatus {
+  draft
+  completed
+}
+
+model Document {
+  id       String         @id @default(cuid())
+  publicId String
+  name     String
+  status   DocumentStatus @default(draft)
+
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
 
   uploaderId String
   uploader   Membership @relation(fields: [uploaderId], references: [id])
@@ -254,70 +268,86 @@ model Bucket {
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
 
-  documents Document[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([uploaderId])
-  @@index([companyId])
-}
-
-enum DocumentStatus {
-  DRAFT
-  COMPLETED
-}
-
-model Document {
-  id       String         @id @default(cuid())
-  publicId String
-  status   DocumentStatus @default(DRAFT)
-
-  bucketId String
-  bucket   Bucket @relation(fields: [bucketId], references: [id])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([publicId])
   @@index([bucketId])
+  @@index([uploaderId])
+  @@index([companyId])
 }
 
-enum DocumentFieldTypes {
-  TEXT
-  TEXT_AREA
-  RADIO
-  CHECK_BOX
-  SIGNATURE
-  DATE
-  DATE_TIME
-  EMAIL
+enum FieldTypes {
+  text
+  textArea
+  radio
+  checkBox
+  signature
+  date
+  dateTime
+  email
 }
 
-model DocumentFields {
-  id          String             @id @default(cuid())
+model TemplateField {
+  id          String     @id @default(cuid())
   name        String
-  type        DocumentFieldTypes @default(TEXT)
-  placeholder String             @default("")
-  required    Boolean            @default(false)
-  documentId  String
+  type        FieldTypes @default(text)
+  placeholder String     @default("")
+  required    Boolean    @default(false)
+  positionX   Decimal
+  positionY   Decimal
+  width       Decimal
+  height      Decimal
+
+  templates Template[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-enum DocumentSigningStatus {
-  NOT_SIGNED
-  SIGNED
+model Template {
+  id       String @id @default(cuid())
+  publicId String
+  name     String
+
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
+
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  templateFieldId String
+  fields          TemplateField @relation(fields: [templateFieldId], references: [id])
+
+  @@index([bucketId])
+  @@index([uploaderId])
+  @@index([companyId])
+  @@index([templateFieldId])
 }
 
-model DocumentRecepients {
-  id           String                @id @default(cuid())
-  signedStatus DocumentSigningStatus
-  membershipId String
-  membership   Membership            @relation(fields: [membershipId], references: [id])
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+enum EsignRecipientStatus {
+  notSigned
+  signed
+}
+
+model EsignRecipient {
+  id String @id @default(cuid())
+
+  email String?
+
+  status EsignRecipientStatus
+
+  membershipId String?
+  membership   Membership? @relation(fields: [membershipId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([membershipId])
 }

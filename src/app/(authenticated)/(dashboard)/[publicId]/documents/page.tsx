@@ -8,7 +8,7 @@ import type { Document, User } from "@prisma/client";
 import EmptyState from "@/components/shared/empty-state";
 import { RiUploadCloudLine, RiAddFill } from "@remixicon/react";
 
-interface DocumentType extends Document {
+export interface DocumentType extends Document {
   uploadedBy: User | null;
 }
 
@@ -17,6 +17,9 @@ const getDocuments = async (companyId: string) => {
     where: { companyId },
     include: {
       uploadedBy: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 };

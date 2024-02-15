@@ -1,15 +1,19 @@
+"use client";
+
+import { dayjsExt } from "@/common/dayjs";
 import { Card } from "@/components/ui/card";
 import type { Document, User } from "@prisma/client";
 import FileIcon from "@/components/shared/file-icon";
-import { RiExpandRightLine } from "@remixicon/react";
+import { RiFileDownloadLine } from "@remixicon/react";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 
 import {
   Table,
+  TableRow,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
 } from "@/components/ui/table";
 
 interface DocumentType extends Document {
@@ -21,6 +25,11 @@ type DocumentTableProps = {
 };
 
 const DocumentsTable = ({ documents }: DocumentTableProps) => {
+  const openFileOnTab = async (key: string) => {
+    const fileUrl = await getPresignedGetUrl(key);
+    window.open(fileUrl.url, "_blank");
+  };
+
   return (
     <Card>
       <Table className="">
@@ -28,8 +37,8 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
           <TableRow>
             <TableHead>Name</TableHead>
             {/* <TableHead>Type</TableHead> */}
-            <TableHead>Uploaded</TableHead>
             <TableHead>Owner</TableHead>
+            <TableHead>Uploaded</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -40,11 +49,17 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
                 <FileIcon type={document.type} />
                 <span className="flex">{document.name}</span>
               </TableCell>
-              {/* <TableCell>{document.type}</TableCell> */}
-              <TableCell>{document.createdAt.toDateString()}</TableCell>
               <TableCell>{document.uploadedBy?.name}</TableCell>
+              <TableCell>{dayjsExt().to(document.createdAt)}</TableCell>
               <TableCell>
-                <RiExpandRightLine className="cursor-pointer text-muted-foreground" />
+                <button
+                  onClick={async () => {
+                    await openFileOnTab(document.key);
+                  }}
+                  className="cursor-pointer text-muted-foreground hover:text-primary/80"
+                >
+                  <RiFileDownloadLine className="cursor-pointer text-muted-foreground hover:text-primary/80" />
+                </button>
               </TableCell>
             </TableRow>
           ))}

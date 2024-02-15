@@ -6,7 +6,7 @@ const TemplateDetailPage = async ({
 }: {
   params: { templatePublicId: string };
 }) => {
-  const { url } = await api.document.get.query({
+  const { url } = await api.template.get.query({
     publicId: params.templatePublicId,
   });
 

@@ -87,8 +87,8 @@ model Company {
   audits       Audit[]
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
-  documents    Document[]
-  buckets      Bucket[]
+
+  buckets Bucket[]
 
   @@unique([publicId])
 }
@@ -124,8 +124,8 @@ model Membership {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   documentReceived DocumentRecepients[]
-  documentUploaded Document[]
-  buckets          Bucket[]
+
+  buckets Bucket[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -254,22 +254,13 @@ model Bucket {
   companyId String
   company   Company @relation(fields: [companyId], references: [id])
 
+  documents Document[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([uploaderId])
   @@index([companyId])
-}
-
-enum UploadProviders {
-  S3
-  R2
-}
-
-enum DocumentType {
-  SAFE
-  EQUITY
-  GENERIC
 }
 
 enum DocumentStatus {
@@ -278,29 +269,18 @@ enum DocumentStatus {
 }
 
 model Document {
-  id             String          @id @default(cuid())
-  publicId       String
-  status         DocumentStatus  @default(DRAFT)
-  name           String
-  key            String
-  type           DocumentType
-  size           Int
-  mimeType       String
-  uploadProvider UploadProviders
-  companyId      String
-  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id       String         @id @default(cuid())
+  publicId String
+  status   DocumentStatus @default(DRAFT)
 
-  uploaderId String
-  uploader   Membership @relation(fields: [uploaderId], references: [id])
-
-  fields DocumentFields[]
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([publicId])
-  @@index([companyId])
-  @@index([uploaderId])
+  @@index([bucketId])
 }
 
 enum DocumentFieldTypes {
@@ -321,11 +301,9 @@ model DocumentFields {
   placeholder String             @default("")
   required    Boolean            @default(false)
   documentId  String
-  document    Document           @relation(fields: [documentId], references: [id])
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
 
-  @@index([documentId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum DocumentSigningStatus {

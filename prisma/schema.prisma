@@ -248,16 +248,10 @@ model Bucket {
   updatedAt DateTime @updatedAt
 }
 
-enum DocumentStatus {
-  draft
-  completed
-}
-
 model Document {
-  id       String         @id @default(cuid())
+  id       String @id @default(cuid())
   publicId String
   name     String
-  status   DocumentStatus @default(draft)
 
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id])
@@ -305,10 +299,16 @@ model TemplateField {
   updatedAt DateTime @updatedAt
 }
 
+enum TemplateStatus {
+  draft
+  completed
+}
+
 model Template {
-  id       String @id @default(cuid())
+  id       String         @id @default(cuid())
   publicId String
   name     String
+  status   TemplateStatus @default(draft)
 
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id])

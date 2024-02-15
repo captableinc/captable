@@ -7,14 +7,11 @@ import {
   RiFileUnknowLine,
 } from "@remixicon/react";
 
-import { cn } from "@/lib/utils";
-
 type FileIconProps = {
   type: string;
-  className?: string;
 };
 
-const FileIcon = ({ type, className }: FileIconProps) => {
+const FileIcon = ({ type }: FileIconProps) => {
   switch (type) {
     case "image/jpeg":
     case "image/png":

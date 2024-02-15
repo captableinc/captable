@@ -25,7 +25,7 @@ export function EquityDocumentUpload({
         keySuffix="equity-doc-uploads"
         type="EQUITY"
         onSuccess={(data) => {
-          router.push(`/${companyPublicId}/documents/${data.publicId}`);
+          router.push(`/${companyPublicId}/templates/${data.publicId}`);
         }}
         accept={{
           "application/pdf": [".pdf"],

@@ -70,6 +70,8 @@ export const getPresignedGetUrl = async (key: string) => {
   const getObjectCommand = new GetObjectCommand({
     Bucket,
     Key: key,
+    // ResponseContentDisposition: `attachment; filename="${key}"`,
+    ResponseContentDisposition: `inline`,
   });
 
   const url = await getSignedUrl(S3, getObjectCommand, {

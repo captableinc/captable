@@ -37,10 +37,10 @@ export const onboardingRouter = createTRPCRouter({
 
           await tx.membership.create({
             data: {
-              access: "admin",
+              access: "ADMIN",
               active: true,
               isOnboarded: true,
-              status: "accepted",
+              status: "ACCEPTED",
               title: input.user.title,
               userId: user.id,
               companyId: company.id,

@@ -32,7 +32,7 @@ export const reInviteProcedure = adminOnlyProcedure
         const membership = await tx.membership.findFirstOrThrow({
           where: {
             id: input.membershipId,
-            status: "pending",
+            status: "PENDING",
             companyId,
           },
 

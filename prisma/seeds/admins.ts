@@ -13,13 +13,25 @@ const seedAdmins = async () => {
   const admins: UserType[] = [
     {
       name: faker.person.fullName(),
-      email: "ceo@cap.new",
+      email: "ceo@example.com",
       image: faker.image.avatar(),
     },
 
     {
       name: faker.person.fullName(),
-      email: "cto@cap.new",
+      email: "cto@example.com",
+      image: faker.image.avatar(),
+    },
+
+    {
+      name: faker.person.fullName(),
+      email: "cfo@example.com",
+      image: faker.image.avatar(),
+    },
+
+    {
+      name: faker.person.fullName(),
+      email: "lawyer@example.com",
       image: faker.image.avatar(),
     },
   ];

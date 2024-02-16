@@ -46,7 +46,7 @@ export const MemberInviteEmail = ({
               <strong>{companyName}</strong> on <strong>OpenCap</strong>.
             </Text>
 
-            <Section className="mb-[32px] mt-[32px] text-center">
+            <Section className="mb-[32px] mt-[32px]">
               <Button
                 className="rounded bg-black px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={inviteLink}
@@ -56,7 +56,10 @@ export const MemberInviteEmail = ({
             </Section>
             <Text className="!text-[14px] leading-[24px] text-black">
               or copy and paste this URL into your browser:{" "}
-              <Link href={inviteLink} className="text-blue-600 no-underline">
+              <Link
+                href={inviteLink}
+                className="break-all text-blue-600 no-underline"
+              >
                 {inviteLink}
               </Link>
             </Text>
@@ -78,7 +81,8 @@ export const MemberInviteEmail = ({
 MemberInviteEmail.PreviewProps = {
   invitedBy: "joker",
   companyName: "Batmobile",
-  inviteLink: "https://opencap.co/teams/invite/foo",
+  inviteLink:
+    "https://opencap.co/teams/invite/foo/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com",
 } as MemberInviteEmailProps;
 
 export default MemberInviteEmail;

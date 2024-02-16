@@ -30,7 +30,7 @@ export const acceptMemberProcedure = protectedProcedure
         },
         data: {
           active: true,
-          status: "accepted",
+          status: "ACCEPTED",
           lastAccessed: new Date(),
           isOnboarded: true,
           userId: user.id,

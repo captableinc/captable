@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 "use client";
 
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
-
-import type { PDFDocumentProxy } from "pdfjs-dist";
 import { useCallback, useState } from "react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
@@ -24,7 +21,7 @@ interface PdfViewerProps {
   file: string | File | null;
 }
 
-export function PdfViewer({ file }: PdfViewerProps) {
+const PdfViewer = ({ file }: PdfViewerProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
@@ -39,11 +36,15 @@ export function PdfViewer({ file }: PdfViewerProps) {
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
-  function onDocumentLoadSuccess({
-    numPages: nextNumPages,
-  }: PDFDocumentProxy): void {
+  const onDocumentLoadSuccess = (event: {
+    numPages?: number;
+    document?: {
+      numPages: number;
+    };
+  }): void => {
+    const nextNumPages = event.numPages ?? event.document?.numPages;
     setNumPages(nextNumPages);
-  }
+  };
 
   return (
     <div className="w-full max-w-[calc(100%-2em)]" ref={setContainerRef}>
@@ -64,4 +65,6 @@ export function PdfViewer({ file }: PdfViewerProps) {
       </Document>
     </div>
   );
-}
+};
+
+export default PdfViewer;

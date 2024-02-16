@@ -36,7 +36,9 @@ export interface getPresignedUrlOptions {
   contentType: string;
   expiresIn?: number;
   fileName: string;
-  keyPrefix?: string;
+  keySuffix: string;
+  // should be companyPublicId or membershipId or userId
+  identifier: string;
 }
 
 const TEN_MINUTES_IN_SECONDS = 10 * 60;
@@ -45,12 +47,13 @@ export const getPresignedPutUrl = async ({
   contentType,
   expiresIn,
   fileName,
-  keyPrefix,
+  keySuffix,
+  identifier,
 }: getPresignedUrlOptions) => {
   const { name, ext } = path.parse(fileName);
 
-  const Key = `${keyPrefix ?? customId(12)}/${slugify(name)}-${customId(
-    6,
+  const Key = `${identifier}/${keySuffix}/${customId(12)}/${slugify(
+    name,
   )}${ext}`;
 
   const putObjectCommand = new PutObjectCommand({

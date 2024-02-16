@@ -51,7 +51,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   companies     Membership[]
-  documents     Document[]
 }
 
 model WaitlistUser {
@@ -61,9 +60,10 @@ model WaitlistUser {
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  identifier      String
+  token           String           @unique
+  expires         DateTime
+  eSignRecipients EsignRecipient[]
 
   @@unique([identifier, token])
 }
@@ -89,6 +89,7 @@ model Company {
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
   documents    Document[]
+  templates    Template[]
 
   @@unique([publicId])
 }
@@ -122,6 +123,10 @@ model Membership {
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  documentReceived EsignRecipient[]
+  documents        Document[]
+  templates        Template[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -230,21 +235,125 @@ model EquityPlan {
   @@index([companyId])
 }
 
-model Document {
-  id        String  @id @default(cuid())
-  name      String
-  type      String
-  size      Int
-  key       String
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+model Bucket {
+  id       String @id @default(cuid())
+  name     String
+  key      String
+  mimeType String
+  size     Int
 
-  uploadedById String?
-  uploadedBy   User?   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  documents Document[]
+  templates Template[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Document {
+  id       String @id @default(cuid())
+  publicId String
+  name     String
+
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
+
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([publicId])
+  @@index([bucketId])
+  @@index([uploaderId])
   @@index([companyId])
-  @@index([uploadedById])
+}
+
+enum FieldTypes {
+  text
+  textArea
+  radio
+  checkBox
+  signature
+  date
+  dateTime
+  email
+}
+
+model TemplateField {
+  id          String     @id @default(cuid())
+  name        String
+  type        FieldTypes @default(text)
+  placeholder String     @default("")
+  required    Boolean    @default(false)
+  positionX   Decimal
+  positionY   Decimal
+  width       Decimal
+  height      Decimal
+  order       Int
+  Template    Template   @relation(fields: [templateId], references: [id])
+  templateId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([templateId])
+}
+
+enum TemplateStatus {
+  draft
+  completed
+}
+
+model Template {
+  id       String         @id @default(cuid())
+  publicId String
+  name     String
+  status   TemplateStatus @default(draft)
+
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
+
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fields TemplateField[]
+
+  @@index([bucketId])
+  @@index([uploaderId])
+  @@index([companyId])
+}
+
+enum EsignRecipientStatus {
+  notSigned
+  signed
+}
+
+model EsignRecipient {
+  id String @id @default(cuid())
+
+  email String?
+
+  status EsignRecipientStatus
+
+  membershipId String?
+  membership   Membership? @relation(fields: [membershipId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  token                  VerificationToken @relation(fields: [verificationTokenToken], references: [token])
+  verificationTokenToken String
+
+  @@index([membershipId])
+  @@index([verificationTokenToken])
 }

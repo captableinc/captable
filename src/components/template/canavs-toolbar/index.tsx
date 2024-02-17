@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import * as Toolbar from "@radix-ui/react-toolbar";
-import { type FieldTypes } from "@prisma/client";
+import { type FieldTypes } from "@/prisma-enums";
 import { useFieldCanvasContext } from "@/contexts/field-canvas-context";
 import { FieldTypeData } from "../field-type-data";
 import { api } from "@/trpc/react";

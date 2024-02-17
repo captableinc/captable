@@ -1,5 +1,5 @@
 import { capitalize } from "lodash-es";
-import { MEMBERSHIP_ACCESS, MEMBERHIP_STATUS } from "@prisma/client";
+import { MEMBERSHIP_ACCESS, MEMBERHIP_STATUS } from "@/prisma-enums";
 
 export const accessValues = Object.keys(MEMBERSHIP_ACCESS).map((item) => ({
   label: capitalize(item),

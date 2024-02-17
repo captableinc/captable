@@ -4,7 +4,7 @@ import { db } from "@/server/db";
 import colors from "colors";
 colors.enable();
 
-import type { MEMBERHIP_STATUS, MEMBERSHIP_ACCESS } from "@prisma/client";
+import type { MEMBERHIP_STATUS, MEMBERSHIP_ACCESS } from "@/prisma-enums";
 
 type UserType = {
   name: string;

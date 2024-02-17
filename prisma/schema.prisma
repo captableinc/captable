@@ -293,11 +293,10 @@ model TemplateField {
   type        FieldTypes @default(TEXT)
   placeholder String     @default("")
   required    Boolean    @default(false)
-  positionX   Decimal
-  positionY   Decimal
+  top         Decimal
+  left        Decimal
   width       Decimal
   height      Decimal
-  order       Int
   template    Template   @relation(fields: [templateId], references: [id])
   templateId  String
 

@@ -1,6 +1,7 @@
 import { api } from "@/trpc/server";
-import { Card } from "@/components/ui/card";
 import PdfViewer from "@/components/ui/pdf-viewer";
+import { Card } from "@/components/ui/card";
+import { FieldCanvas } from "@/components/template/field-canvas";
 
 const TemplateDetailPage = async ({
   params,
@@ -19,8 +20,9 @@ const TemplateDetailPage = async ({
           <div className="h-[500px]">Sidebar</div>
         </Card>
       </div>
-      <div className="col-span-12 lg:col-span-6 xl:col-span-8">
+      <div className="relative col-span-12 cursor-crosshair select-none  lg:col-span-6 xl:col-span-8">
         <PdfViewer file={url} />
+        <FieldCanvas />
       </div>
     </div>
   );

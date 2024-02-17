@@ -50,21 +50,21 @@ type MembersType = {
 };
 
 const humanizeStatus = (status: string, active: boolean) => {
-  if (status === "pending") {
+  if (status === "PENDING") {
     return (
       <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
         Pending
       </span>
     );
   }
-  if (status === "accepted" && active) {
+  if (status === "ACCEPTED" && active) {
     return (
       <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
         Active
       </span>
     );
   }
-  if (status === "accepted" && !active) {
+  if (status === "ACCEPTED" && !active) {
     return (
       <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
         Inactive
@@ -196,12 +196,12 @@ export const columns: ColumnDef<Member[number]>[] = [
         },
       });
 
-      const isAdmin = data?.user?.access === "admin";
+      const isAdmin = data?.user?.access === "ADMIN";
       const status = member.status;
       const membershipId = member.id;
       const email = member.user?.email;
       const deleteAction =
-        status === "pending" ? "Revoke invite" : "Remove member";
+        status === "PENDING" ? "Revoke invite" : "Remove member";
 
       const isAdminActionable = isAdmin && member.userId !== data?.user.id;
 
@@ -209,7 +209,7 @@ export const columns: ColumnDef<Member[number]>[] = [
 
       const handleDeactivateStakeholder = async () => {
         try {
-          if (status === "pending" && email) {
+          if (status === "PENDING" && email) {
             await revokeInvite.mutateAsync({ email, membershipId });
           } else {
             await removeMember.mutateAsync({ membershipId });
@@ -244,13 +244,13 @@ export const columns: ColumnDef<Member[number]>[] = [
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {isAdminActionable && status === "pending" && (
+            {isAdminActionable && status === "PENDING" && (
               <DropdownMenuItem onSelect={handleReinvite}>
-                ReInvite
+                Re-invite
               </DropdownMenuItem>
             )}
 
-            {isAdmin && status === "accepted" && (
+            {isAdmin && status === "ACCEPTED" && (
               <MemberModal
                 isEditMode
                 membershipId={member.id}
@@ -260,7 +260,7 @@ export const columns: ColumnDef<Member[number]>[] = [
                   name: member.user?.name ?? "",
                   email: email ?? "",
                   title: member.title ?? "",
-                  access: member.access ?? "stakeholder",
+                  access: member.access ?? "STAKEHOLDER",
                 }}
               >
                 <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">

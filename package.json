@@ -16,8 +16,8 @@
     "lint": "next lint",
     "start": "next start",
     "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" && npx prisma format",
+    "email:dev": "mailpit",
     "email:preview": "email preview ./src/emails",
-    "smpt:dev": "mailpit",
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs"
   },
   "dependencies": {

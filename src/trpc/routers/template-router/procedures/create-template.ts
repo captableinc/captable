@@ -10,7 +10,7 @@ export const createTemplateProcedure = protectedProcedure
 
     return ctx.db.template.create({
       data: {
-        status: "draft",
+        status: "DRAFT",
         publicId,
         companyId: user.companyId,
         uploaderId: user.membershipId,

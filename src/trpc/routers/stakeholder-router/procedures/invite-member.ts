@@ -57,7 +57,7 @@ export const inviteMemberProcedure = adminOnlyProcedure
         });
 
         // if already a member, throw error
-        if (prevMembership && prevMembership.status === "accepted") {
+        if (prevMembership && prevMembership.status === "ACCEPTED") {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "user already a member",
@@ -69,20 +69,20 @@ export const inviteMemberProcedure = adminOnlyProcedure
           create: {
             title,
             active: false,
-            access: access || "stakeholder",
+            access: access || "STAKEHOLDER",
             isOnboarded: false,
             lastAccessed: new Date(),
             companyId: user.companyId,
             userId: invitedUser.id,
-            status: "pending",
+            status: "PENDING",
           },
           update: {
             title,
             active: false,
-            access: access || "stakeholder",
+            access: access || "STAKEHOLDER",
             isOnboarded: false,
             lastAccessed: new Date(),
-            status: "pending",
+            status: "PENDING",
           },
           where: {
             companyId_userId: {

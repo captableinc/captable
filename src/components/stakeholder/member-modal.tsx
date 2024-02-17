@@ -198,8 +198,8 @@ const MemberModal = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="admin">Admin access</SelectItem>
-                      <SelectItem value="stakeholder">
+                      <SelectItem value="ADMIN">Admin access</SelectItem>
+                      <SelectItem value="STAKEHOLDER">
                         Limited access
                       </SelectItem>
                     </SelectContent>

@@ -41,7 +41,10 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
           </Section>
           <Text className="!text-[14px] leading-[24px] text-black">
             or copy and paste this URL into your browser:{" "}
-            <Link href={magicLink} className="text-blue-600 no-underline">
+            <Link
+              href={magicLink}
+              className="break-all text-blue-600 no-underline"
+            >
               {magicLink}
             </Link>
           </Text>
@@ -59,7 +62,7 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
 );
 
 MagicLinkEmail.PreviewProps = {
-  magicLink: constants.url,
+  magicLink: `${constants.url}/api/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com`,
 } as MagicLinkEmailProps;
 
 export default MagicLinkEmail;

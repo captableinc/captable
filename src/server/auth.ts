@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
           where: {
             userId: token.sub,
             isOnboarded: true,
-            status: "accepted",
+            status: "ACCEPTED",
           },
           orderBy: {
             lastAccessed: "desc",
@@ -112,7 +112,7 @@ export const authOptions: NextAuthOptions = {
           token.companyId = "";
           token.membershipId = "";
           token.companyPublicId = "";
-          token.access = "stakeholder";
+          token.access = "STAKEHOLDER";
         }
       }
 

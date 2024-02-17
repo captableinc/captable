@@ -52,7 +52,7 @@ const ShareClassForm = ({
   shareClass = {
     id: "",
     name: "",
-    classType: "common",
+    classType: "COMMON",
     initialSharesAuthorized: 0,
     boardApprovalDate: new Date(),
     stockholderApprovalDate: new Date(),
@@ -60,7 +60,7 @@ const ShareClassForm = ({
     parValue: 0,
     pricePerShare: 0,
     seniority: 0,
-    conversionRights: "convertsToFutureRound",
+    conversionRights: "CONVERTS_TO_FUTURE_ROUND",
     convertsToShareClassId: "",
     liquidationPreferenceMultiple: 0,
     participationCapMultiple: 0,
@@ -79,7 +79,7 @@ const ShareClassForm = ({
   const [renderShareClassInput, setRenderShareClassInput] = useState(false);
 
   useEffect(() => {
-    if (watchConversionRights === "convertsToShareClassId") {
+    if (watchConversionRights === "CONVERTS_TO_SHARE_CLASS_ID") {
       setRenderShareClassInput(true);
     } else {
       setRenderShareClassInput(false);
@@ -165,8 +165,8 @@ const ShareClassForm = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="common">Common share</SelectItem>
-                      <SelectItem value="preferred">Preferred share</SelectItem>
+                      <SelectItem value="COMMON">Common share</SelectItem>
+                      <SelectItem value="PREFERRED">Preferred share</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage className="text-xs font-light" />
@@ -354,7 +354,7 @@ const ShareClassForm = ({
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="convertsToFutureRound" />
+                          <RadioGroupItem value="CONVERTS_TO_FUTURE_ROUND" />
                         </FormControl>
                         <FormLabel className="font-normal">
                           Converts to future round
@@ -362,7 +362,7 @@ const ShareClassForm = ({
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="convertsToShareClassId" />
+                          <RadioGroupItem value="CONVERTS_TO_SHARE_CLASS_ID" />
                         </FormControl>
                         <FormLabel className="font-normal">
                           Converts to specific share class
@@ -378,7 +378,7 @@ const ShareClassForm = ({
 
           <div className="sm:col-span-3">
             {
-              // if conversionRights === "convertsToShareClassId"
+              // if conversionRights === "CONVERTS_TO_SHARE_CLASS_ID"
               renderShareClassInput && (
                 <div className="sm:col-span-3">
                   <FormField

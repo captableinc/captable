@@ -52,7 +52,7 @@ const ShareClassForm = ({
   shareClass = {
     id: "",
     name: "",
-    classType: "common",
+    classType: "COMMON",
     initialSharesAuthorized: 0,
     boardApprovalDate: new Date(),
     stockholderApprovalDate: new Date(),

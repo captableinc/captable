@@ -196,7 +196,7 @@ export const columns: ColumnDef<Member[number]>[] = [
         },
       });
 
-      const isAdmin = data?.user?.access === "admin";
+      const isAdmin = data?.user?.access === "ADMIN";
       const status = member.status;
       const membershipId = member.id;
       const email = member.user?.email;

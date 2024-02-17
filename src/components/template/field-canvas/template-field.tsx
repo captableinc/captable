@@ -8,7 +8,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { RiSketching, RiText } from "@remixicon/react";
+
+import { FieldTypeData } from "../field-type-data";
+import { useFieldCanvasContext } from "@/contexts/field-canvas-context";
 
 interface TemplateFieldProps {
   left: number;
@@ -18,9 +20,9 @@ interface TemplateFieldProps {
   id: string;
   name: string;
   focusId: string;
+  type: string;
 
   handleFocus: (id: string) => void;
-  handleDelete: (id: string) => void;
 }
 
 export function TemplateField({
@@ -32,8 +34,10 @@ export function TemplateField({
   name,
   focusId,
   handleFocus,
-  handleDelete,
+  type,
 }: TemplateFieldProps) {
+  const { handleDeleteField } = useFieldCanvasContext();
+
   return (
     <button
       className="group absolute z-20 cursor-pointer overflow-visible border-2 border-red-600 bg-red-300/50"
@@ -58,30 +62,28 @@ export function TemplateField({
           variant="ghost"
           size="sm"
           onClick={() => {
-            handleDelete(id);
+            handleDeleteField(id);
           }}
         >
           X
         </Button>
 
         <div className="flex">
-          <Select defaultValue="text">
+          <Select defaultValue={type}>
             <SelectTrigger className="trigger group h-8">
-              <SelectValue defaultValue="text" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="text">
-                <span className="flex items-center gap-x-2">
-                  <RiText className="h-4 w-4" aria-hidden />
-                  <span className="group-[.trigger]:hidden">Text</span>
-                </span>
-              </SelectItem>
-              <SelectItem value="signature">
-                <span className="flex items-center gap-x-2">
-                  <RiSketching className="h-4 w-4" aria-hidden />
-                  <span className="group-[.trigger]:hidden">Signature</span>
-                </span>
-              </SelectItem>
+              {FieldTypeData.map((item) => (
+                <SelectItem key={item.label} value={item.value}>
+                  <span className="flex items-center gap-x-2">
+                    <item.icon className="h-4 w-4" aria-hidden />
+                    <span className="group-[.trigger]:hidden">
+                      {item.label}
+                    </span>
+                  </span>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

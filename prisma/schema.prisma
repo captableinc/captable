@@ -12,6 +12,10 @@ generator json {
   provider = "prisma-json-types-generator"
 }
 
+generator enums {
+  provider = "tsx ./prisma/enum-generator"
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())

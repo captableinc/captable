@@ -27,7 +27,7 @@ const LoginForm = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      email: process.env.NODE_ENV === "development" ? "ceo@example.com" : "",
     },
   });
 
@@ -79,6 +79,7 @@ const LoginForm = () => {
                               autoCapitalize="none"
                               autoComplete="email"
                               autoCorrect="off"
+                              autoFocus
                               required
                               disabled={isSubmitting}
                               {...field}

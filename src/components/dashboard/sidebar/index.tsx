@@ -13,13 +13,16 @@ import {
   RiFolderChartFill,
   RiListIndefinite,
   RiListCheck3,
-  RiEqualizer2Line,
+  RiGroup2Line,
+  RiGroup2Fill,
   RiFolderChart2Line,
   RiFolderChart2Fill,
-  RiAccountCircleLine,
-  RiAccountCircleFill,
   RiFileTextLine,
   RiFileTextFill,
+  RiBuildingLine,
+  RiBuildingFill,
+  RiAccountCircleLine,
+  RiAccountCircleFill,
 } from "@remixicon/react";
 
 import {
@@ -55,8 +58,8 @@ const navigation = [
   {
     name: "Stakeholders",
     href: "/stakeholders",
-    icon: RiAccountCircleLine,
-    activeIcon: RiAccountCircleFill,
+    icon: RiGroup2Line,
+    activeIcon: RiGroup2Fill,
   },
   {
     name: "Share classes",
@@ -142,7 +145,7 @@ const navigation = [
   },
 ];
 
-const forms = [
+const legal = [
   {
     id: 1,
     name: "409A Valuation",
@@ -154,6 +157,40 @@ const forms = [
     id: 2,
     name: "Form 3921",
     href: "/3921",
+    icon: RiFileTextLine,
+    activeIcon: RiFileTextFill,
+  },
+];
+
+const settings = [
+  {
+    id: 1,
+    name: "Profile",
+    href: "/profile",
+    icon: RiAccountCircleLine,
+    activeIcon: RiAccountCircleFill,
+  },
+
+  {
+    id: 2,
+    name: "Company",
+    href: "/company",
+    icon: RiBuildingLine,
+    activeIcon: RiBuildingFill,
+  },
+
+  {
+    id: 3,
+    name: "Team",
+    href: "/team",
+    icon: RiFileTextLine,
+    activeIcon: RiFileTextFill,
+  },
+
+  {
+    id: 4,
+    name: "Billing",
+    href: "/billing",
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
@@ -267,12 +304,12 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
               })}
             </ul>
 
-            <div className="py-2">
+            <div className="py-3">
               <div className="text-xs font-semibold leading-6 text-gray-400">
                 Legal
               </div>
               <ul role="list" className=" space-y-1">
-                {forms.map((item) => {
+                {legal.map((item) => {
                   const href = basePath + item.href;
                   const isActive =
                     currentPath === href ||
@@ -293,12 +330,33 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                 })}
               </ul>
             </div>
-            <NavLink
-              active={currentPath === "/settings"}
-              name="Settings"
-              href={`${basePath}/settings`}
-              icon={RiEqualizer2Line}
-            />
+
+            <div className="py-3">
+              <div className="text-xs font-semibold leading-6 text-gray-400">
+                Settings
+              </div>
+              <ul role="list" className=" space-y-1">
+                {settings.map((item) => {
+                  const href = basePath + item.href;
+                  const isActive =
+                    currentPath === href ||
+                    (currentPath === basePath && item.href === "/") ||
+                    (currentPath.includes(`${item.href}/`) &&
+                      item.href !== "/");
+
+                  return (
+                    <li key={item.name}>
+                      <NavLink
+                        active={isActive}
+                        name={item.name}
+                        href={`${basePath}${item.href}`}
+                        icon={isActive ? item.activeIcon : item.icon}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -19,9 +19,10 @@ const maxWidth = 800;
 
 interface PdfViewerProps {
   file: string | File | null;
+  onSuccess?: () => void;
 }
 
-const PdfViewer = ({ file }: PdfViewerProps) => {
+export const PdfViewer = ({ file, onSuccess }: PdfViewerProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
@@ -41,7 +42,11 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     document?: {
       numPages: number;
     };
-  }): void => {
+  }) => {
+    if (onSuccess) {
+      onSuccess();
+    }
+
     const nextNumPages = event.numPages ?? event.document?.numPages;
     setNumPages(nextNumPages);
   };
@@ -66,5 +71,3 @@ const PdfViewer = ({ file }: PdfViewerProps) => {
     </div>
   );
 };
-
-export default PdfViewer;

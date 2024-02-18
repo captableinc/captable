@@ -37,7 +37,7 @@ const StakeholdersPage = async () => {
         </div>
       </div>
 
-      <Card className="mt-3">
+      <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
         <MemberTable members={members.data} />
       </Card>
     </div>

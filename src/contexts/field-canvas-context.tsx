@@ -3,6 +3,7 @@
 import { type ReactNode, createContext, useContext, useState } from "react";
 import { type FieldTypes } from "@/prisma-enums";
 import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
+import { produce } from "immer";
 
 type Field = TypeZodAddFieldMutationSchema["data"][number];
 
@@ -12,6 +13,7 @@ interface fieldCanvasContextProps {
   handleFieldType: (val: FieldTypes | undefined) => void;
   handleDeleteField: (id: string) => void;
   addField: (data: Field) => void;
+  updateField: (id: string, data: Partial<Field>) => void;
 }
 
 const fieldCanvasContext = createContext<null | fieldCanvasContextProps>(null);
@@ -33,12 +35,30 @@ export function FieldContextProvider({
   };
 
   const handleDeleteField = (id: string) => {
-    const filteredArray = fields.filter((item) => item.id !== id);
-    setFields(filteredArray);
+    const deletedItem = produce(fields, (draft) => {
+      const index = draft.findIndex((item) => item.id === id);
+      if (index !== -1) draft.splice(index, 1);
+    });
+
+    setFields(deletedItem);
   };
 
   const addField = (data: Field) => {
-    setFields([...fields, data]);
+    const addedFields = produce(fields, (draft) => {
+      draft.push(data);
+    });
+    setFields(addedFields);
+  };
+
+  const updateField = (id: string, data: Partial<Field>) => {
+    const updatedField = produce(fields, (draft) => {
+      const index = draft.findIndex((item) => item.id === id);
+      if (index !== -1) {
+        draft[index] = { ...(draft[index] as Field), ...data };
+      }
+    });
+
+    setFields(updatedField);
   };
 
   return (
@@ -49,6 +69,7 @@ export function FieldContextProvider({
         fields,
         handleDeleteField,
         addField,
+        updateField,
       }}
     >
       {children}

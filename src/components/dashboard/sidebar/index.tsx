@@ -95,34 +95,6 @@ const navigation = [
         name: "Convertible notes",
         href: "/convertible-notes",
       },
-      // {
-      //   name: "RSUs",
-      //   href: "/rsus",
-      // },
-      // {
-      //   name: "Phantom",
-      //   href: "/phantom",
-      // },
-      // {
-      //   name: "ESPP",
-      //   href: "/espp",
-      // },
-      // {
-      //   name: "Warrants",
-      //   href: "/warrants",
-      // },
-      // {
-      //   name: "KISS",
-      //   href: "/kiss",
-      // },
-      // {
-      //   name: "SARs",
-      //   href: "/sars",
-      // },
-      // {
-      //   name: "Other",
-      //   href: "/other",
-      // },
     ],
   },
   {
@@ -183,8 +155,8 @@ const settings = [
     id: 3,
     name: "Team",
     href: "/team",
-    icon: RiFileTextLine,
-    activeIcon: RiFileTextFill,
+    icon: RiGroup2Line,
+    activeIcon: RiGroup2Fill,
   },
 
   {

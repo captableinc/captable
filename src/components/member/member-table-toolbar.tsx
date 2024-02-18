@@ -11,7 +11,7 @@ export function MemberTableToolbar() {
 
   return (
     <div className="flex w-full items-center justify-between">
-      <div className="flex flex-col space-y-2 sm:flex-1 sm:flex-row sm:items-center sm:space-x-2">
+      <div className="flex flex-col gap-2 sm:flex-1 sm:flex-row sm:items-center sm:gap-0 sm:space-x-2">
         <Input
           placeholder="Search by name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

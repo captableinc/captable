@@ -4,7 +4,7 @@ export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),
   name: z.string().min(1),
   title: z.string().min(1),
-  access: z.enum(["admin", "stakeholder"]),
+  access: z.enum(["ADMIN", "STAKEHOLDER"]),
 });
 
 export type TypeZodInviteMemberMutationSchema = z.infer<
@@ -58,7 +58,7 @@ export const ZodUpdateMemberMutationSchema = z
         email: z.string().email(),
         name: z.string(),
         title: z.string(),
-        access: z.enum(["admin", "stakeholder"]),
+        access: z.enum(["ADMIN", "STAKEHOLDER"]),
       })
       .partial(),
   );

@@ -51,7 +51,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   companies     Membership[]
-  documents     Document[]
 }
 
 model WaitlistUser {
@@ -89,27 +88,28 @@ model Company {
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
   documents    Document[]
+  templates    Template[]
 
   @@unique([publicId])
 }
 
 enum MEMBERHIP_STATUS {
-  pending
-  accepted
-  declined
+  PENDING
+  ACCEPTED
+  DECLINED
 }
 
 enum MEMBERSHIP_ACCESS {
-  admin
-  stakeholder
+  ADMIN
+  STAKEHOLDER
 }
 
 model Membership {
   id          String            @id @default(cuid())
   title       String?
   active      Boolean           @default(true)
-  status      MEMBERHIP_STATUS  @default(pending)
-  access      MEMBERSHIP_ACCESS @default(stakeholder)
+  status      MEMBERHIP_STATUS  @default(PENDING)
+  access      MEMBERSHIP_ACCESS @default(ADMIN)
   isOnboarded Boolean           @default(false)
 
   workEmail    String?
@@ -123,39 +123,48 @@ model Membership {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  documentReceived EsignRecipient[]
+  documents        Document[]
+  templates        Template[]
+
   @@unique([companyId, userId])
   @@index([companyId])
   @@index([status])
   @@index([userId])
 }
 
+enum StakeholderTypeEnum {
+  INDIVIDUAL
+  INSTITUTION
+}
+
+model Stakeholder {
+  id    String              @id @default(cuid())
+  name  String
+  email String
+  type  StakeholderTypeEnum @default(INSTITUTION)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Audit {
-  id String @id @default(cuid())
-
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  summary String?
-
-  /// [AuditAction]
-  action     String
+  id         String   @id @default(cuid())
+  companyId  String
+  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  summary    String?
+  action     String // AuditAction
   occurredAt DateTime @default(now())
-
-  /// [AuditActor]
-  actor Json
-
-  /// [AuditTarget]
-  target Json[]
-
-  /// [AuditContext]
-  context Json
+  actor      Json // AuditActor
+  target     Json[] // AuditTarget
+  context    Json // AuditContext
 
   @@index([companyId])
 }
 
 enum ShareTypeEnum {
-  common
-  preferred
+  COMMON
+  PREFERRED
 }
 
 enum SharePrefixEnum {
@@ -164,8 +173,8 @@ enum SharePrefixEnum {
 }
 
 enum ConversionRightsEnum {
-  convertsToFutureRound
-  convertsToShareClassId
+  CONVERTS_TO_FUTURE_ROUND
+  CONVERTS_TO_SHARE_CLASS_ID
 }
 
 // Based on OCF format
@@ -174,7 +183,7 @@ model ShareClass {
   id                      String          @id @default(cuid())
   idx                     Int // auto-generated, auto-incremented based on company
   name                    String
-  classType               ShareTypeEnum   @default(common)
+  classType               ShareTypeEnum   @default(COMMON)
   prefix                  SharePrefixEnum @default(CS)
   initialSharesAuthorized BigInt
   boardApprovalDate       DateTime
@@ -185,7 +194,7 @@ model ShareClass {
   seniority               Int
 
   // Conversion Rights
-  conversionRights       ConversionRightsEnum @default(convertsToFutureRound)
+  conversionRights       ConversionRightsEnum @default(CONVERTS_TO_FUTURE_ROUND)
   convertsToShareClassId String?
 
   liquidationPreferenceMultiple Float
@@ -230,21 +239,120 @@ model EquityPlan {
   @@index([companyId])
 }
 
-model Document {
-  id        String  @id @default(cuid())
-  name      String
-  type      String
-  size      Int
-  key       String
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+model Bucket {
+  id       String @id @default(cuid())
+  name     String
+  key      String
+  mimeType String
+  size     Int
 
-  uploadedById String?
-  uploadedBy   User?   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  documents Document[]
+  templates Template[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Document {
+  id       String @id @default(cuid())
+  publicId String
+  name     String
+
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
+
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([publicId])
+  @@index([bucketId])
+  @@index([uploaderId])
   @@index([companyId])
-  @@index([uploadedById])
+}
+
+enum FieldTypes {
+  TEXT
+  RADIO
+  EMAIL
+  DATE
+  DATETIME
+  TEXTAREA
+  CHECKBOX
+  SIGNATURE
+}
+
+model TemplateField {
+  id          String     @id @default(cuid())
+  name        String
+  type        FieldTypes @default(TEXT)
+  placeholder String     @default("")
+  required    Boolean    @default(false)
+  positionX   Decimal
+  positionY   Decimal
+  width       Decimal
+  height      Decimal
+  order       Int
+  template    Template   @relation(fields: [templateId], references: [id])
+  templateId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([templateId])
+}
+
+enum TemplateStatus {
+  DRAFT
+  COMPLETE
+}
+
+model Template {
+  id       String         @id @default(cuid())
+  publicId String
+  name     String
+  status   TemplateStatus @default(DRAFT)
+
+  bucketId String
+  bucket   Bucket @relation(fields: [bucketId], references: [id])
+
+  uploaderId String
+  uploader   Membership @relation(fields: [uploaderId], references: [id])
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fields TemplateField[]
+
+  @@index([bucketId])
+  @@index([uploaderId])
+  @@index([companyId])
+}
+
+enum EsignRecipientStatus {
+  SENT
+  SIGNED
+  PENDING
+}
+
+model EsignRecipient {
+  id     String               @id @default(cuid())
+  email  String?
+  status EsignRecipientStatus @default(PENDING)
+
+  membershipId String?
+  membership   Membership? @relation(fields: [membershipId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([membershipId])
 }

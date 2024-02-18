@@ -59,13 +59,13 @@ const adminOnlyTRPCContext = ({
   session,
   ...rest
 }: TypeProtectedTRPCContext) => {
-  if (session.user.access !== "admin") {
+  if (session.user.access !== "ADMIN") {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
   return {
     ...rest,
-    // infers the `access` as "admin"
+    // infers the `access` as "ADMIN"
     session: {
       ...session,
       user: { ...session.user, access: session.user.access },

@@ -27,7 +27,7 @@ const StakeholdersPage = async () => {
               name: "",
               email: "",
               title: "",
-              access: "stakeholder",
+              access: "STAKEHOLDER",
             }}
           >
             <Button className="w-full md:w-auto">

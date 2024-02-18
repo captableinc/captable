@@ -11,7 +11,7 @@ export const updateMemberProcedure = adminOnlyProcedure
     await db.$transaction(async (tx) => {
       const member = await tx.membership.update({
         where: {
-          status: "accepted",
+          status: "ACCEPTED",
           id: membershipId,
           companyId: session.user.companyId,
         },

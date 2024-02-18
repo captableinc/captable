@@ -1,33 +1,16 @@
-import { db } from "@/server/db";
 import DocumentsTable from "./table";
 import DocumentUploadModal from "./modal";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { withServerSession } from "@/server/auth";
-import type { Document, User } from "@prisma/client";
+
 import EmptyState from "@/components/shared/empty-state";
 import { RiUploadCloudLine, RiAddFill } from "@remixicon/react";
-
-export interface DocumentType extends Document {
-  uploadedBy: User | null;
-}
-
-const getDocuments = async (companyId: string) => {
-  return await db.document.findMany({
-    where: { companyId },
-    include: {
-      uploadedBy: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-};
+import { api } from "@/trpc/server";
+import { withServerSession } from "@/server/auth";
 
 const DocumentsPage = async () => {
+  const documents = await api.document.getAll.query();
   const session = await withServerSession();
-  const companyId = session?.user?.companyId;
-  const documents: DocumentType[] = await getDocuments(companyId);
 
   if (documents.length === 0) {
     return (
@@ -37,6 +20,7 @@ const DocumentsPage = async () => {
         subtitle="Please click the button below to upload a new document."
       >
         <DocumentUploadModal
+          companyPublicId={session.user.companyPublicId}
           trigger={
             <Button size="lg">
               <RiAddFill className="mr-2 h-5 w-5" />
@@ -60,6 +44,7 @@ const DocumentsPage = async () => {
 
         <div>
           <DocumentUploadModal
+            companyPublicId={session.user.companyPublicId}
             trigger={
               <Button>
                 <RiAddFill className="mr-2 h-5 w-5" />

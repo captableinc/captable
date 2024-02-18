@@ -55,10 +55,12 @@ seed()
   .then(async () => {
     console.log("✅ Database seeding completed".green);
     console.log(
-      `💌 We have created two admin accounts for you. Please login with one of these emails:\n`
+      `💌 We have created four admin accounts for you. Please login with one of these emails:\n`
         .cyan,
-      `ceo@cap.new\n`.underline.yellow,
-      `cto@cap.new`.underline.yellow,
+      `ceo@example.com\n`.underline.yellow,
+      `cto@example.com\n`.underline.yellow,
+      `cfo@example.com\n`.underline.yellow,
+      `lawyer@example.com\n`.underline.yellow,
     );
     await db.$disconnect();
   })

@@ -11,7 +11,7 @@ export const shareClassRouter = createTRPCRouter({
 
       try {
         const companyId = ctx.session.user.companyId;
-        const prefix = (input.classType === "common" ? "CS" : "PS") as
+        const prefix = (input.classType === "COMMON" ? "CS" : "PS") as
           | "CS"
           | "PS";
 
@@ -76,7 +76,7 @@ export const shareClassRouter = createTRPCRouter({
 
       try {
         const companyId = ctx.session.user.companyId;
-        const prefix = (input.classType === "common" ? "CS" : "PS") as
+        const prefix = (input.classType === "COMMON" ? "CS" : "PS") as
           | "CS"
           | "PS";
 

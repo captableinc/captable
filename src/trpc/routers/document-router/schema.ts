@@ -1,10 +1,18 @@
 import { z } from "zod";
 
-export const DocumentMutationSchema = z.object({
-  key: z.string(),
+export const ZodCreateDocumentMutationSchema = z.object({
   name: z.string(),
-  type: z.string(),
-  size: z.number(),
+  bucketId: z.string(),
 });
 
-export type DocumentMutationType = z.infer<typeof DocumentMutationSchema>;
+export type TypeZodCreateDocumentMutationSchema = z.infer<
+  typeof ZodCreateDocumentMutationSchema
+>;
+
+export const ZodGetDocumentQuerySchema = z.object({
+  publicId: z.string(),
+});
+
+export type TypeZodGetDocumentQuerySchema = z.infer<
+  typeof ZodGetDocumentQuerySchema
+>;

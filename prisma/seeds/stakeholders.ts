@@ -1,4 +1,3 @@
-import type { User, Company } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import { sample } from "lodash-es";
 import { db } from "@/server/db";
@@ -59,11 +58,19 @@ const seedStakeholders = async (count = 25) => {
 
   companies.forEach((company) => {
     admins.forEach((admin) => {
+      const title = admin.email?.includes("ceo")
+        ? "CEO"
+        : admin.email?.includes("cto")
+          ? "CTO"
+          : admin.email?.includes("cfo")
+            ? "CFO"
+            : "Lawyer at Lawfirm LLP";
+
       stakeholders.push({
-        title: admin.email?.includes("ceo") ? "CEO" : "CTO",
+        title,
         active: true,
-        status: "accepted",
-        access: "admin",
+        status: "ACCEPTED",
+        access: "ADMIN",
         isOnboarded: true,
         userId: admin.id,
         companyId: company.id,
@@ -74,8 +81,8 @@ const seedStakeholders = async (count = 25) => {
       stakeholders.push({
         title: faker.name.jobTitle(),
         active: sample([true, false]) as boolean,
-        status: sample(["accepted", "pending"]),
-        access: "stakeholder",
+        status: sample(["ACCEPTED", "PENDING"]),
+        access: "STAKEHOLDER",
         isOnboarded: true,
         userId: user.id,
         companyId: company.id,

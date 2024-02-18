@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 import { FieldTypeData } from "../field-type-data";
 import { useFieldCanvasContext } from "@/contexts/field-canvas-context";
-
+import { type FieldTypes } from "@/prisma-enums";
 interface TemplateFieldProps {
   left: number;
   top: number;
@@ -36,7 +36,7 @@ export function TemplateField({
   handleFocus,
   type,
 }: TemplateFieldProps) {
-  const { handleDeleteField } = useFieldCanvasContext();
+  const { handleDeleteField, updateField } = useFieldCanvasContext();
 
   return (
     <button
@@ -69,7 +69,12 @@ export function TemplateField({
         </Button>
 
         <div className="flex">
-          <Select defaultValue={type}>
+          <Select
+            onValueChange={(value) => {
+              updateField(id, { type: value as FieldTypes });
+            }}
+            defaultValue={type}
+          >
             <SelectTrigger className="trigger group h-8">
               <SelectValue />
             </SelectTrigger>
@@ -87,7 +92,14 @@ export function TemplateField({
             </SelectContent>
           </Select>
         </div>
-        <Input type="text" defaultValue={name} className="h-8 min-w-16" />
+        <Input
+          type="text"
+          value={name}
+          onChange={(value) => {
+            updateField(id, { name: value.target.value });
+          }}
+          className="h-8 min-w-16"
+        />
       </div>
     </button>
   );

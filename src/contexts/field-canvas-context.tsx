@@ -2,7 +2,7 @@
 
 import { type ReactNode, createContext, useContext, useState } from "react";
 import { type FieldTypes } from "@/prisma-enums";
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-router/schema";
+import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
 
 type Field = TypeZodAddFieldMutationSchema["data"][number];
 

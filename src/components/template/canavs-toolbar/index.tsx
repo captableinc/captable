@@ -15,7 +15,7 @@ interface CanvasToolbarProps {
 export function CanvasToolbar({ templatePublicId }: CanvasToolbarProps) {
   const { toast } = useToast();
   const { handleFieldType, fieldType, fields } = useFieldCanvasContext();
-  const { mutateAsync } = api.template.addField.useMutation({
+  const { mutateAsync } = api.templateField.add.useMutation({
     onSuccess: () => {
       toast({
         variant: "default",

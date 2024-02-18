@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { NumericFormat } from "react-number-format";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -124,10 +125,6 @@ const ShareClassForm = ({
       : await updateMutation.mutateAsync(values);
   };
 
-  const parseBigInt = (value: number) => {
-    return Number(value);
-  };
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -179,19 +176,27 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="initialSharesAuthorized"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Authorized shares</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      value={parseBigInt(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Authorized shares</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        decimalScale={0}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 
@@ -247,15 +252,27 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="votesPerShare"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Votes per share</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Votes per share</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        decimalScale={0}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 
@@ -263,15 +280,27 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="parValue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Par value</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Par value</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        decimalScale={0}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 
@@ -279,15 +308,26 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="pricePerShare"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price per share</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Price per share</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 
@@ -295,15 +335,27 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="seniority"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Seniority</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Seniority</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        decimalScale={0}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 
@@ -311,15 +363,26 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="liquidationPreferenceMultiple"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Liquidation preference multiple</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Liquidation preference multiple</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 
@@ -327,15 +390,26 @@ const ShareClassForm = ({
             <FormField
               control={form.control}
               name="participationCapMultiple"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Participation cap multiple</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Participation cap multiple</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        {...rest}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 

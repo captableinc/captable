@@ -51,6 +51,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   companies     Membership[]
+  teams         Team[]
 }
 
 model WaitlistUser {
@@ -84,6 +85,7 @@ model Company {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   users        Membership[]
+  teams        Team[]
   audits       Audit[]
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
@@ -108,8 +110,8 @@ model Membership {
   id          String            @id @default(cuid())
   title       String?
   active      Boolean           @default(true)
-  status      MEMBERHIP_STATUS  @default(PENDING)
   access      MEMBERSHIP_ACCESS @default(ADMIN)
+  status      MEMBERHIP_STATUS  @default(PENDING)
   isOnboarded Boolean           @default(false)
 
   workEmail    String?
@@ -131,6 +133,35 @@ model Membership {
   @@index([companyId])
   @@index([status])
   @@index([userId])
+}
+
+enum TeamStatus {
+  PENDING
+  ACCEPTED
+}
+
+model Team {
+  id String @id @default(cuid())
+
+  status      TeamStatus @default(PENDING)
+  active      Boolean    @default(true)
+  isOnboarded Boolean    @default(false)
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inviteAt   DateTime?
+  acceptedAt DateTime?
+  accessedAt DateTime?
+
+  @@unique([companyId, userId])
+  @@index([userId])
+  @@index([companyId])
 }
 
 enum StakeholderTypeEnum {

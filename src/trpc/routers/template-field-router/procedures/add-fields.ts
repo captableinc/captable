@@ -7,7 +7,6 @@ export const addFieldProcedure = protectedProcedure
     const user = ctx.session.user;
 
     await ctx.db.$transaction(async (tx) => {
-      const deleteAbleIds = input.data.map((item) => item.id);
       const template = await tx.template.findFirstOrThrow({
         where: {
           publicId: input.templatePublicId,
@@ -17,17 +16,11 @@ export const addFieldProcedure = protectedProcedure
           id: true,
         },
       });
-
-      try {
-        await tx.templateField.deleteMany({
-          where: {
-            templateId: template.id,
-            id: {
-              in: deleteAbleIds,
-            },
-          },
-        });
-      } catch (error) {}
+      await tx.templateField.deleteMany({
+        where: {
+          templateId: template.id,
+        },
+      });
 
       const data = input.data.map((item) => ({
         ...item,

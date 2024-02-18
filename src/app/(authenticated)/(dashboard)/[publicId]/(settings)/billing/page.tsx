@@ -1,5 +1,5 @@
 const BillingPage = () => {
-  return <div>Company settings page</div>;
+  return <div>Billing page</div>;
 };
 
 export default BillingPage;

@@ -19,10 +19,8 @@ import {
   RiFolderChart2Fill,
   RiFileTextLine,
   RiFileTextFill,
-  RiBuildingLine,
-  RiBuildingFill,
-  RiAccountCircleLine,
-  RiAccountCircleFill,
+  RiEqualizer2Line,
+  RiEqualizer2Fill,
 } from "@remixicon/react";
 
 import {
@@ -35,6 +33,7 @@ import {
 import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
 
+import Link from "next/link";
 import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -117,13 +116,13 @@ const navigation = [
   },
 ];
 
-const legal = [
+const company = [
   {
     id: 1,
-    name: "409A Valuation",
-    href: "/409a",
-    icon: RiFileTextLine,
-    activeIcon: RiFileTextFill,
+    name: "Settings",
+    href: "/company",
+    icon: RiEqualizer2Line,
+    activeIcon: RiEqualizer2Fill,
   },
   {
     id: 2,
@@ -132,37 +131,10 @@ const legal = [
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
-];
-
-const settings = [
-  {
-    id: 1,
-    name: "Profile",
-    href: "/profile",
-    icon: RiAccountCircleLine,
-    activeIcon: RiAccountCircleFill,
-  },
-
-  {
-    id: 2,
-    name: "Company",
-    href: "/company",
-    icon: RiBuildingLine,
-    activeIcon: RiBuildingFill,
-  },
-
   {
     id: 3,
-    name: "Team",
-    href: "/team",
-    icon: RiGroup2Line,
-    activeIcon: RiGroup2Fill,
-  },
-
-  {
-    id: 4,
-    name: "Billing",
-    href: "/billing",
+    name: "409A Valuation",
+    href: "/409a",
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
@@ -182,7 +154,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
   return (
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
-        <div className="gap-y-4 py-4">
+        <div className="fixed gap-y-4 py-4">
           <div className="flex items-center px-1 py-2">
             <OpenCapLogo className="h-7 w-auto" />
 
@@ -278,37 +250,10 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
 
             <div className="py-3">
               <div className="text-xs font-semibold leading-6 text-gray-400">
-                Legal
+                Company
               </div>
               <ul role="list" className=" space-y-1">
-                {legal.map((item) => {
-                  const href = basePath + item.href;
-                  const isActive =
-                    currentPath === href ||
-                    (currentPath === basePath && item.href === "/") ||
-                    (currentPath.includes(`${item.href}/`) &&
-                      item.href !== "/");
-
-                  return (
-                    <li key={item.name}>
-                      <NavLink
-                        active={isActive}
-                        name={item.name}
-                        href={`${basePath}${item.href}`}
-                        icon={isActive ? item.activeIcon : item.icon}
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
-            <div className="py-3">
-              <div className="text-xs font-semibold leading-6 text-gray-400">
-                Settings
-              </div>
-              <ul role="list" className=" space-y-1">
-                {settings.map((item) => {
+                {company.map((item) => {
                   const href = basePath + item.href;
                   const isActive =
                     currentPath === href ||

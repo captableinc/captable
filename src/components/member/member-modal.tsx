@@ -12,14 +12,6 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
@@ -27,7 +19,7 @@ import { api } from "@/trpc/react";
 import {
   ZodInviteMemberMutationSchema,
   type TypeZodInviteMemberMutationSchema,
-} from "@/trpc/routers/stakeholder-router/schema";
+} from "@/trpc/routers/member-router/schema";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -55,7 +47,7 @@ const MemberModal = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
-  const inviteMember = api.stakeholder.inviteMember.useMutation({
+  const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
       setOpen(false);
       toast({
@@ -74,7 +66,7 @@ const MemberModal = ({
     },
   });
 
-  const updateMember = api.stakeholder.updateMember.useMutation({
+  const updateMember = api.member.updateMember.useMutation({
     onSuccess: () => {
       setOpen(false);
       toast({

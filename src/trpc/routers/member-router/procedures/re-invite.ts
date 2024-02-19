@@ -5,7 +5,7 @@ import {
   generateMembershipIdentifier,
   revokeExistingInviteTokens,
   sendMembershipInviteEmail,
-} from "@/server/stakeholder";
+} from "@/server/member";
 import { Audit } from "@/server/audit";
 
 export const reInviteProcedure = withAuth

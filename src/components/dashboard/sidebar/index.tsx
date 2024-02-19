@@ -252,7 +252,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
               <div className="text-xs font-semibold leading-6 text-gray-400">
                 Company
               </div>
-              <ul role="list" className=" space-y-1">
+              <ul role="list" className="space-y-1">
                 {company.map((item) => {
                   const href = basePath + item.href;
                   const isActive =

@@ -2,7 +2,7 @@
 import {
   ZodAcceptMemberMutationSchema,
   type TypeZodAcceptMemberMutationSchema,
-} from "@/trpc/routers/stakeholder-router/schema";
+} from "@/trpc/routers/member-router/schema";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { RiArrowRightLine } from "@remixicon/react";
@@ -32,7 +32,7 @@ export function VerifyMemberForm({
 }: VerifyMemberFormProps) {
   const { update } = useSession();
   const router = useRouter();
-  const acceptMember = api.stakeholder.acceptMember.useMutation({
+  const acceptMember = api.member.acceptMember.useMutation({
     onSuccess: async ({ publicId }) => {
       await update();
       router.push(`/${publicId}`);

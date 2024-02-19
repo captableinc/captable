@@ -9,7 +9,7 @@ import { updateMemberProcedure } from "./procedures/update-member";
 import { reInviteProcedure } from "./procedures/re-invite";
 import { getMembersProcedure } from "./procedures/get-members";
 
-export const stakeholderRouter = createTRPCRouter({
+export const memberRouter = createTRPCRouter({
   inviteMember: inviteMemberProcedure,
   acceptMember: acceptMemberProcedure,
   revokeInvite: revokeInviteProcedure,

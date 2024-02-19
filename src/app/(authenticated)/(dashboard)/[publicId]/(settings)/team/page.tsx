@@ -1,5 +1,5 @@
-import MemberModal from "@/components/stakeholder/member-modal";
-import MemberTable from "@/components/stakeholder/member-table";
+import MemberModal from "@/components/member/member-modal";
+import MemberTable from "@/components/member/member-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -7,7 +7,7 @@ import { api } from "@/trpc/server";
 import { RiAddLine } from "@remixicon/react";
 
 const StakeholdersPage = async () => {
-  const members = await api.stakeholder.getMembers.query();
+  const members = await api.member.getMembers.query();
 
   return (
     <div className="flex flex-col gap-y-3">

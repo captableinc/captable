@@ -30,7 +30,7 @@ import {
 import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import MemberModal from "@/components/stakeholder/member-modal";
+import MemberModal from "@/components/member/member-modal";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { type RouterOutputs } from "@/trpc/shared";
@@ -43,7 +43,7 @@ import { DataTable } from "../ui/data-table/data-table";
 import { DataTablePagination } from "../ui/data-table/data-table-pagination";
 import { SortButton } from "../ui/data-table/data-table-buttons";
 
-type Member = RouterOutputs["stakeholder"]["getMembers"]["data"];
+type Member = RouterOutputs["member"]["getMembers"]["data"];
 
 type MembersType = {
   members: Member;
@@ -165,10 +165,10 @@ export const columns: ColumnDef<Member[number]>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { data } = useSession();
       const member = row.original;
-      const removeMember = api.stakeholder.removeMember.useMutation();
-      const revokeInvite = api.stakeholder.revokeInvite.useMutation();
-      const revInvite = api.stakeholder.reInvite.useMutation();
-      const toggleActivation = api.stakeholder.toggleActivation.useMutation({
+      const removeMember = api.member.removeMember.useMutation();
+      const revokeInvite = api.member.revokeInvite.useMutation();
+      const revInvite = api.member.reInvite.useMutation();
+      const toggleActivation = api.member.toggleActivation.useMutation({
         onSuccess: () => {
           router.refresh();
         },

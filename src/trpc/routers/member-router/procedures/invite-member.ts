@@ -4,7 +4,7 @@ import {
   generateInviteToken,
   generateMembershipIdentifier,
   sendMembershipInviteEmail,
-} from "@/server/stakeholder";
+} from "@/server/member";
 import { TRPCError } from "@trpc/server";
 import { Audit } from "@/server/audit";
 

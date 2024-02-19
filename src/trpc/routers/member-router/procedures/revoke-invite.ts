@@ -1,6 +1,6 @@
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodRevokeInviteMutationSchema } from "../schema";
-import { revokeExistingInviteTokens } from "@/server/stakeholder";
+import { revokeExistingInviteTokens } from "@/server/member";
 import { Audit } from "@/server/audit";
 import { removeMemberHandler } from "./remove-member";
 

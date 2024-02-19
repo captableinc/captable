@@ -1,7 +1,7 @@
 import { capitalize } from "lodash-es";
-import { MembershipStatusEnum } from "@prisma/client";
+import { MemberStatusEnum } from "@prisma/client";
 
-export const statusValues = Object.keys(MembershipStatusEnum).map((item) => ({
+export const statusValues = Object.keys(MemberStatusEnum).map((item) => ({
   label: capitalize(item),
   value: item,
 }));

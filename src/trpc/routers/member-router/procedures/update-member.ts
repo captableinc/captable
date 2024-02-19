@@ -5,14 +5,14 @@ import { Audit } from "@/server/audit";
 export const updateMemberProcedure = withAuth
   .input(ZodUpdateMemberMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
-    const { membershipId, name, ...rest } = input;
+    const { memberId, name, ...rest } = input;
     const user = session.user;
 
     await db.$transaction(async (tx) => {
-      const member = await tx.membership.update({
+      const member = await tx.member.update({
         where: {
           status: "ACTIVE",
-          id: membershipId,
+          id: memberId,
           companyId: session.user.companyId,
         },
         data: {

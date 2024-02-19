@@ -37,7 +37,7 @@ export interface getPresignedUrlOptions {
   expiresIn?: number;
   fileName: string;
   keySuffix: string;
-  // should be companyPublicId or membershipId or userId
+  // should be companyPublicId or memberId or userId
   identifier: string;
 }
 

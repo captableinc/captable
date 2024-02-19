@@ -22,14 +22,11 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 interface VerifyMemberFormProps {
-  membershipId: string;
+  memberId: string;
   token: string;
 }
 
-export function VerifyMemberForm({
-  membershipId,
-  token,
-}: VerifyMemberFormProps) {
+export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
   const { update } = useSession();
   const router = useRouter();
   const acceptMember = api.member.acceptMember.useMutation({
@@ -42,7 +39,7 @@ export function VerifyMemberForm({
     resolver: zodResolver(ZodAcceptMemberMutationSchema),
     defaultValues: {
       name: "",
-      membershipId,
+      memberId,
       token,
       workEmail: "",
     },

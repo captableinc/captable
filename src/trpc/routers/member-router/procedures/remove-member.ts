@@ -22,12 +22,12 @@ export async function removeMemberHandler({
   input,
 }: removeMemberHandlerOptions) {
   const user = session.user;
-  const { membershipId } = input;
+  const { memberId } = input;
 
   await db.$transaction(async (tx: Prisma.TransactionClient) => {
-    const member = await tx.membership.delete({
+    const member = await tx.member.delete({
       where: {
-        id: membershipId,
+        id: memberId,
         companyId: session.user.companyId,
       },
       select: {

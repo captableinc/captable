@@ -39,7 +39,7 @@ const nuke = async () => {
   console.log("🚀 Nuking database records".yellow);
   return db.$transaction(async (db) => {
     await db.user.deleteMany();
-    await db.membership.deleteMany();
+    await db.member.deleteMany();
     await db.company.deleteMany();
     await db.shareClass.deleteMany();
     await db.equityPlan.deleteMany();

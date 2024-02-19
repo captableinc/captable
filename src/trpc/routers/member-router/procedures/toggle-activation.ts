@@ -6,12 +6,12 @@ export const toggleActivation = withAuth
   .input(ZodToggleActivationMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
-    const { membershipId, status } = input;
+    const { memberId, status } = input;
 
     await db.$transaction(async (tx) => {
-      const member = await tx.membership.update({
+      const member = await tx.member.update({
         where: {
-          id: membershipId,
+          id: memberId,
           companyId: session.user.companyId,
         },
         data: {

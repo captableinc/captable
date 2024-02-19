@@ -11,7 +11,7 @@ export const createDocumentProcedure = withAuth
     const document = await ctx.db.document.create({
       data: {
         companyId: user.companyId,
-        uploaderId: user.membershipId,
+        uploaderId: user.memberId,
         publicId,
         ...input,
       },

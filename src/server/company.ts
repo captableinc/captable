@@ -1,7 +1,7 @@
 import { db } from "./db";
 
 export const getCompanyList = async (userId: string) => {
-  const data = await db.membership.findMany({
+  const data = await db.member.findMany({
     where: {
       userId,
     },

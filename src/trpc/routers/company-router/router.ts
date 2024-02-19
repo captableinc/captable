@@ -7,7 +7,7 @@ export const companyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { db } = ctx;
 
-      await db.membership.update({
+      await db.member.update({
         where: {
           id: input.id,
         },

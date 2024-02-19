@@ -15,7 +15,7 @@ import { db } from "@/server/db";
 import { env } from "@/env";
 import { sendMail } from "./mailer";
 import MagicLinkEmail from "@/emails/MagicLinkEmail";
-import { type MembershipStatusEnum } from "@prisma/client";
+import { type MemberStatusEnum } from "@prisma/client";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -32,9 +32,9 @@ declare module "next-auth" {
       id: string;
       isOnboarded: boolean;
       companyId: string;
-      membershipId: string;
+      memberId: string;
       companyPublicId: string;
-      status: MembershipStatusEnum | "";
+      status: MemberStatusEnum | "";
     } & DefaultSession["user"];
   }
 }
@@ -43,10 +43,10 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     companyId: string;
-    membershipId: string;
+    memberId: string;
     isOnboarded: boolean;
     companyPublicId: string;
-    status: MembershipStatusEnum | "";
+    status: MemberStatusEnum | "";
   }
 }
 
@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
     session({ session, token }) {
       session.user.isOnboarded = token.isOnboarded;
       session.user.companyId = token.companyId;
-      session.user.membershipId = token.membershipId;
+      session.user.memberId = token.memberId;
       session.user.companyPublicId = token.companyPublicId;
       session.user.status = token.status;
 
@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token, trigger }) {
       if (trigger) {
-        const membership = await db.membership.findFirst({
+        const member = await db.member.findFirst({
           where: {
             userId: token.sub,
             isOnboarded: true,
@@ -100,18 +100,18 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (membership) {
-          console.log({ membership });
-          token.status = membership.status;
-          token.name = membership.user?.name;
-          token.membershipId = membership.id;
-          token.companyId = membership.companyId;
-          token.isOnboarded = membership.isOnboarded;
-          token.companyPublicId = membership.company.publicId;
+        if (member) {
+          console.log({ member });
+          token.status = member.status;
+          token.name = member.user?.name;
+          token.memberId = member.id;
+          token.companyId = member.companyId;
+          token.isOnboarded = member.isOnboarded;
+          token.companyPublicId = member.company.publicId;
         } else {
           token.status = "";
           token.companyId = "";
-          token.membershipId = "";
+          token.memberId = "";
           token.isOnboarded = false;
           token.companyPublicId = "";
         }

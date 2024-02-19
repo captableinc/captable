@@ -2,8 +2,8 @@ import { withAuth } from "@/trpc/api/trpc";
 import { ZodInviteMemberMutationSchema } from "../schema";
 import {
   generateInviteToken,
-  generateMembershipIdentifier,
-  sendMembershipInviteEmail,
+  generateMemberIdentifier,
+  sendMemberInviteEmail,
 } from "@/server/member";
 import { TRPCError } from "@trpc/server";
 import { Audit } from "@/server/audit";
@@ -47,7 +47,7 @@ export const inviteMemberProcedure = withAuth
         });
 
         // check if user is already a member
-        const prevMembership = await tx.membership.findUnique({
+        const prevMember = await tx.member.findUnique({
           where: {
             companyId_userId: {
               companyId: user.companyId,
@@ -57,15 +57,15 @@ export const inviteMemberProcedure = withAuth
         });
 
         // if already a member, throw error
-        if (prevMembership && prevMembership.status === "ACTIVE") {
+        if (prevMember && prevMember.status === "ACTIVE") {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "user already a member",
           });
         }
 
-        //  create membership
-        const membership = await tx.membership.upsert({
+        //  create member
+        const member = await tx.member.upsert({
           create: {
             title,
             isOnboarded: false,
@@ -100,9 +100,9 @@ export const inviteMemberProcedure = withAuth
         // custom verification token for member invitation
         const { token: verificationToken } = await tx.verificationToken.create({
           data: {
-            identifier: generateMembershipIdentifier({
+            identifier: generateMemberIdentifier({
               email,
-              membershipId: membership.id,
+              memberId: member.id,
             }),
             token: memberInviteTokenHash,
             expires,
@@ -127,8 +127,8 @@ export const inviteMemberProcedure = withAuth
               requestIp,
               userAgent,
             },
-            target: [{ type: "user", id: membership.userId }],
-            summary: `${user.name} invited ${membership.user?.name} to join ${company.name}`,
+            target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} invited ${member.user?.name} to join ${company.name}`,
           },
           tx,
         );
@@ -137,7 +137,7 @@ export const inviteMemberProcedure = withAuth
       },
     );
 
-    await sendMembershipInviteEmail({
+    await sendMemberInviteEmail({
       verificationToken,
       token,
       email,

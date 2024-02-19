@@ -6,7 +6,7 @@ export const getMembersProcedure = withAuth.query(async ({ ctx }) => {
     session: { user },
   } = ctx;
 
-  const data = await db.membership.findMany({
+  const data = await db.member.findMany({
     where: {
       companyId: user.companyId,
     },

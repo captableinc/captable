@@ -175,7 +175,7 @@ export const columns: ColumnDef<Member[number]>[] = [
       });
 
       const status = member.status;
-      const membershipId = member.id;
+      const memberId = member.id;
       const email = member.user?.email;
 
       const isActive = status === "ACTIVE";
@@ -186,9 +186,9 @@ export const columns: ColumnDef<Member[number]>[] = [
       const handleRevokeOrRemove = async () => {
         try {
           if (isPending && email) {
-            await revokeInvite.mutateAsync({ email, membershipId });
+            await revokeInvite.mutateAsync({ email, memberId });
           } else {
-            await removeMember.mutateAsync({ membershipId });
+            await removeMember.mutateAsync({ memberId });
           }
 
           router.refresh();
@@ -199,13 +199,13 @@ export const columns: ColumnDef<Member[number]>[] = [
         try {
           await toggleActivation.mutateAsync({
             status: isActive ? "INACTIVE" : "ACTIVE",
-            membershipId,
+            memberId,
           });
         } catch (error) {}
       };
 
       const handleReinvite = () => {
-        revInvite.mutate({ membershipId: member.id });
+        revInvite.mutate({ memberId: member.id });
       };
 
       return (
@@ -229,7 +229,7 @@ export const columns: ColumnDef<Member[number]>[] = [
             {status === "ACTIVE" && (
               <MemberModal
                 isEditMode
-                membershipId={member.id}
+                memberId={member.id}
                 title="Update team member"
                 subtitle="Update team member's account information."
                 member={{

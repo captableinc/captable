@@ -1,4 +1,4 @@
-import type { MembershipStatusEnum } from "@prisma/client";
+import type { MemberStatusEnum } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import { db } from "@/server/db";
 import colors from "colors";
@@ -10,7 +10,7 @@ type UserType = {
   title?: string;
   image?: string;
   isOnboarded?: boolean;
-  status?: MembershipStatusEnum;
+  status?: MemberStatusEnum;
 };
 
 const seedTeam = async () => {
@@ -72,11 +72,11 @@ const seedTeam = async () => {
     });
 
     companies.forEach(async (company) => {
-      await db.membership.create({
+      await db.member.create({
         data: {
           title,
           isOnboarded,
-          status: status as MembershipStatusEnum,
+          status: status as MemberStatusEnum,
           userId: user.id,
           companyId: company.id,
         },

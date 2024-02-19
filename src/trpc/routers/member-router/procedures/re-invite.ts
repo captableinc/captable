@@ -2,9 +2,9 @@ import { withAuth } from "@/trpc/api/trpc";
 import { ZodReInviteMutationSchema } from "../schema";
 import {
   generateInviteToken,
-  generateMembershipIdentifier,
+  generateMemberIdentifier,
   revokeExistingInviteTokens,
-  sendMembershipInviteEmail,
+  sendMemberInviteEmail,
 } from "@/server/member";
 import { Audit } from "@/server/audit";
 
@@ -29,9 +29,9 @@ export const reInviteProcedure = withAuth
           },
         });
 
-        const membership = await tx.membership.findFirstOrThrow({
+        const member = await tx.member.findFirstOrThrow({
           where: {
-            id: input.membershipId,
+            id: input.memberId,
             status: "PENDING",
             companyId,
           },
@@ -46,14 +46,14 @@ export const reInviteProcedure = withAuth
           },
         });
 
-        const email = membership.user.email;
+        const email = member.user.email;
 
         if (!email) {
           throw new Error("invited email not found");
         }
 
         await revokeExistingInviteTokens({
-          membershipId: membership.id,
+          memberId: member.id,
           email,
           tx,
         });
@@ -61,9 +61,9 @@ export const reInviteProcedure = withAuth
         // custom verification token for member invitation
         const { token: verificationToken } = await tx.verificationToken.create({
           data: {
-            identifier: generateMembershipIdentifier({
+            identifier: generateMemberIdentifier({
               email,
-              membershipId: membership.id,
+              memberId: member.id,
             }),
             token: memberInviteTokenHash,
             expires,
@@ -88,8 +88,8 @@ export const reInviteProcedure = withAuth
               requestIp,
               userAgent,
             },
-            target: [{ type: "user", id: membership.userId }],
-            summary: `${user.name} reinvited ${membership.user?.name} to join ${company.name} with ${membership.access} access`,
+            target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} reinvited ${member.user?.name} to join ${company.name} with ${member.access} access`,
           },
           tx,
         );
@@ -98,7 +98,7 @@ export const reInviteProcedure = withAuth
       },
     );
 
-    await sendMembershipInviteEmail({
+    await sendMemberInviteEmail({
       verificationToken,
       token,
       email,

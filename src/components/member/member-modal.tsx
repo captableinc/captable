@@ -34,8 +34,8 @@ type MemberModalType = {
 } & editModeType;
 
 type editModeType =
-  | { isEditMode: true; membershipId: string }
-  | { isEditMode?: false; membershipId?: never };
+  | { isEditMode: true; memberId: string }
+  | { isEditMode?: false; memberId?: never };
 
 const MemberModal = ({
   title,
@@ -101,7 +101,7 @@ const MemberModal = ({
       if (rest.isEditMode) {
         await updateMember.mutateAsync({
           ...values,
-          membershipId: rest.membershipId,
+          memberId: rest.memberId,
         });
       } else {
         await inviteMember.mutateAsync(values);

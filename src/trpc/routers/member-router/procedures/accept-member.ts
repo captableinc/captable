@@ -24,9 +24,9 @@ export const acceptMemberProcedure = withAuth
         },
       });
 
-      const membership = await trx.membership.update({
+      const member = await trx.member.update({
         where: {
-          id: input.membershipId,
+          id: input.memberId,
         },
         data: {
           status: "ACTIVE",
@@ -54,17 +54,17 @@ export const acceptMemberProcedure = withAuth
 
       await Audit.create({
         action: "stakeholder.accepted",
-        companyId: membership.company.id,
+        companyId: member.company.id,
         actor: { type: "user", id: user.id },
         context: {
           requestIp,
           userAgent,
         },
-        target: [{ type: "user", id: membership.userId }],
-        summary: `${membership?.user?.name} joined ${membership.company.name}`,
+        target: [{ type: "user", id: member.userId }],
+        summary: `${member?.user?.name} joined ${member.company.name}`,
       });
 
-      return { publicId: membership.company.publicId };
+      return { publicId: member.company.publicId };
     });
 
     return { success: true, publicId };

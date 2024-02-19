@@ -11,7 +11,7 @@ export type TypeZodInviteMemberMutationSchema = z.infer<
 >;
 
 export const ZodAcceptMemberMutationSchema = z.object({
-  membershipId: z.string().min(1),
+  memberId: z.string().min(1),
   name: z.string().min(1, "This field is required"),
   token: z.string().min(1),
   workEmail: z.string().email().min(1, "This field is required"),
@@ -23,7 +23,7 @@ export type TypeZodAcceptMemberMutationSchema = z.infer<
 
 export const ZodRevokeInviteMutationSchema = z.object({
   email: z.string().email().min(1),
-  membershipId: z.string().min(1),
+  memberId: z.string().min(1),
 });
 
 export type TypeZodRevokeInviteMutationSchema = z.infer<
@@ -31,7 +31,7 @@ export type TypeZodRevokeInviteMutationSchema = z.infer<
 >;
 
 export const ZodRemoveMemberMutationSchema = z.object({
-  membershipId: z.string().min(1),
+  memberId: z.string().min(1),
 });
 
 export type TypeZodRemoveMemberMutationSchema = z.infer<
@@ -40,7 +40,7 @@ export type TypeZodRemoveMemberMutationSchema = z.infer<
 
 export const ZodToggleActivationMutationSchema = z.object({
   status: z.enum(["ACTIVE", "INACTIVE", "PENDING"]),
-  membershipId: z.string().min(1),
+  memberId: z.string().min(1),
 });
 
 export type TypeZodToggleActivationMutationSchema = z.infer<
@@ -49,7 +49,7 @@ export type TypeZodToggleActivationMutationSchema = z.infer<
 
 export const ZodUpdateMemberMutationSchema = z
   .object({
-    membershipId: string(),
+    memberId: string(),
   })
   .merge(
     z
@@ -66,7 +66,7 @@ export type TypeZodUpdateMemberMutationSchema = z.infer<
 >;
 
 export const ZodReInviteMutationSchema = z.object({
-  membershipId: z.string().min(1),
+  memberId: z.string().min(1),
 });
 
 export type TypeZodReInviteMutationSchema = z.infer<

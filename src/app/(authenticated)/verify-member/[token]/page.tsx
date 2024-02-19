@@ -9,10 +9,7 @@ export default async function VerifyMember({
 }) {
   const session = await withServerSession();
 
-  const { membershipId } = await checkVerificationToken(
-    token,
-    session.user.email,
-  );
+  const { memberId } = await checkVerificationToken(token, session.user.email);
 
-  return <VerifyMemberForm membershipId={membershipId} token={token} />;
+  return <VerifyMemberForm memberId={memberId} token={token} />;
 }

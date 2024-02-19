@@ -13,7 +13,7 @@ export const createTemplateProcedure = withAuth
         status: "DRAFT",
         publicId,
         companyId: user.companyId,
-        uploaderId: user.membershipId,
+        uploaderId: user.memberId,
         ...input,
       },
       select: {

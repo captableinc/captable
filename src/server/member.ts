@@ -26,10 +26,10 @@ export const checkVerificationToken = async (
     throw new Error("invalid invite or invite expired");
   }
 
-  const [email, membershipId] = invite.identifier.split(":");
+  const [email, memberId] = invite.identifier.split(":");
 
-  if (!membershipId) {
-    throw new Error("membership id not found");
+  if (!memberId) {
+    throw new Error("member id not found");
   }
 
   if (!email) {
@@ -40,22 +40,22 @@ export const checkVerificationToken = async (
     throw new Error("invalid email");
   }
 
-  return { membershipId, email };
+  return { memberId, email };
 };
 
-interface generateMembershipIdentifierOptions {
+interface generateMemberIdentifierOptions {
   email: string;
-  membershipId: string;
+  memberId: string;
 }
 
-export const generateMembershipIdentifier = ({
+export const generateMemberIdentifier = ({
   email,
-  membershipId,
-}: generateMembershipIdentifierOptions) => {
-  return `${email}:${membershipId}`;
+  memberId,
+}: generateMemberIdentifierOptions) => {
+  return `${email}:${memberId}`;
 };
 
-interface sendMembershipInviteEmailOptions {
+interface sendMemberInviteEmailOptions {
   verificationToken: string;
   token: string;
   email: string;
@@ -63,13 +63,13 @@ interface sendMembershipInviteEmailOptions {
   user: { email: string | null | undefined; name: string | null | undefined };
 }
 
-export async function sendMembershipInviteEmail({
+export async function sendMemberInviteEmail({
   company,
   email,
   verificationToken,
   token,
   user,
-}: sendMembershipInviteEmailOptions) {
+}: sendMemberInviteEmailOptions) {
   const baseUrl = process.env.NEXTAUTH_URL;
   const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
 
@@ -109,21 +109,21 @@ export async function generateInviteToken() {
 }
 
 interface revokeExistingInviteTokensOptions {
-  membershipId: string;
+  memberId: string;
   email: string;
   tx?: Prisma.TransactionClient;
 }
 
 export async function revokeExistingInviteTokens({
   email,
-  membershipId,
+  memberId,
   tx,
 }: revokeExistingInviteTokensOptions) {
   const dbClient = tx ?? db;
 
-  const identifier = generateMembershipIdentifier({
+  const identifier = generateMemberIdentifier({
     email,
-    membershipId,
+    memberId,
   });
 
   const verificationToken = await dbClient.verificationToken.findMany({

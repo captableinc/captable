@@ -10,8 +10,8 @@ export function MemberTableToolbar() {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex w-full items-center justify-between">
+      <div className="flex flex-col gap-2 sm:flex-1 sm:flex-row sm:items-center sm:gap-0 sm:space-x-2">
         <Input
           placeholder="Search by name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -20,21 +20,22 @@ export function MemberTableToolbar() {
           }
           className="h-8 w-64"
         />
+        <div className="space-x-2">
+          {table.getColumn("status") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("status")}
+              title="Status"
+              options={statusValues}
+            />
+          )}
 
-        {table.getColumn("status") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={statusValues}
-          />
-        )}
-
-        {isFiltered && (
-          <ResetButton
-            className="p-1"
-            onClick={() => table.resetColumnFilters()}
-          />
-        )}
+          {isFiltered && (
+            <ResetButton
+              className="p-1"
+              onClick={() => table.resetColumnFilters()}
+            />
+          )}
+        </div>
       </div>
       <DataTableViewOptions />
     </div>

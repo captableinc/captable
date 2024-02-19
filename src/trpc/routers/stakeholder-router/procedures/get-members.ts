@@ -1,6 +1,6 @@
-import { protectedProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 
-export const getMembersProcedure = protectedProcedure.query(async ({ ctx }) => {
+export const getMembersProcedure = withAuth.query(async ({ ctx }) => {
   const {
     db,
     session: { user },

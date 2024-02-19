@@ -1,4 +1,4 @@
-import { adminOnlyProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodReInviteMutationSchema } from "../schema";
 import {
   generateInviteToken,
@@ -8,7 +8,7 @@ import {
 } from "@/server/stakeholder";
 import { Audit } from "@/server/audit";
 
-export const reInviteProcedure = adminOnlyProcedure
+export const reInviteProcedure = withAuth
   .input(ZodReInviteMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;

@@ -1,11 +1,11 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "./schema";
 import { generatePublicId } from "@/common/id";
 
 import { Audit } from "@/server/audit";
 
 export const onboardingRouter = createTRPCRouter({
-  onboard: protectedProcedure
+  onboard: withAuth
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { userAgent, requestIp } = ctx;

@@ -1,14 +1,12 @@
-import {
-  type TypeAdminOnlyTRPCContext,
-  adminOnlyProcedure,
-} from "@/trpc/api/trpc";
+import { type withAuthTrpcContextType, withAuth } from "@/trpc/api/trpc";
 import {
   type TypeZodRemoveMemberMutationSchema,
   ZodRemoveMemberMutationSchema,
 } from "../schema";
 import { Audit } from "@/server/audit";
+import { type Prisma } from "@prisma/client";
 
-export const removeMemberProcedure = adminOnlyProcedure
+export const removeMemberProcedure = withAuth
   .input(ZodRemoveMemberMutationSchema)
   .mutation(async (args) => {
     return await removeMemberHandler(args);
@@ -16,7 +14,7 @@ export const removeMemberProcedure = adminOnlyProcedure
 
 interface removeMemberHandlerOptions {
   input: TypeZodRemoveMemberMutationSchema;
-  ctx: TypeAdminOnlyTRPCContext;
+  ctx: withAuthTrpcContextType;
 }
 
 export async function removeMemberHandler({
@@ -26,7 +24,7 @@ export async function removeMemberHandler({
   const user = session.user;
   const { membershipId } = input;
 
-  await db.$transaction(async (tx) => {
+  await db.$transaction(async (tx: Prisma.TransactionClient) => {
     const member = await tx.membership.delete({
       where: {
         id: membershipId,

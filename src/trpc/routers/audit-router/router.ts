@@ -1,8 +1,8 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodGetAuditsQuerySchema } from "./schema";
 
 export const auditRouter = createTRPCRouter({
-  getAudits: protectedProcedure
+  getAudits: withAuth
     .input(ZodGetAuditsQuerySchema)
     .query(async ({ ctx, input }) => {
       const { db, session } = ctx;

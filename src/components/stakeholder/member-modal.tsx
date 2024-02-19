@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 
 import {
@@ -98,7 +99,6 @@ const MemberModal = ({
       name: member.name ?? "",
       email: member.email ?? "",
       title: member.title ?? "",
-      access: member.access ?? "",
     },
   });
 
@@ -154,7 +154,7 @@ const MemberModal = ({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Work email</FormLabel>
                 <FormControl>
                   <Input
                     disabled={isSubmitting || rest.isEditMode === true}
@@ -167,50 +167,28 @@ const MemberModal = ({
             )}
           />
 
-          <div className="mb-2 grid grid-cols-2 gap-3">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Job title</FormLabel>
-                  <FormControl>
-                    <Input disabled={isSubmitting} {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Job title</FormLabel>
+                <FormControl>
+                  <Input disabled={isSubmitting} {...field} />
+                </FormControl>
+                <FormDescription className="text-xs">
+                  Eg: Co-Founder & CTO, Lawyer at Law Firm LLP
+                </FormDescription>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="access"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Access</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="ADMIN">Admin access</SelectItem>
-                      <SelectItem value="STAKEHOLDER">
-                        Limited access
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <Button loading={isSubmitting} loadingText="Sending invite...">
+          <Button
+            loading={isSubmitting}
+            loadingText="Sending invite..."
+            className="mt-5"
+          >
             {rest.isEditMode === true ? "Update stakeholder" : "Send an invite"}
           </Button>
 

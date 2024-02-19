@@ -1,4 +1,4 @@
-import { adminOnlyProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodInviteMemberMutationSchema } from "../schema";
 import {
   generateInviteToken,
@@ -8,11 +8,11 @@ import {
 import { TRPCError } from "@trpc/server";
 import { Audit } from "@/server/audit";
 
-export const inviteMemberProcedure = adminOnlyProcedure
+export const inviteMemberProcedure = withAuth
   .input(ZodInviteMemberMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
-    const { name, email, title, access } = input;
+    const { name, email, title } = input;
     const { userAgent, requestIp } = ctx;
 
     //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
@@ -57,7 +57,7 @@ export const inviteMemberProcedure = adminOnlyProcedure
         });
 
         // if already a member, throw error
-        if (prevMembership && prevMembership.status === "ACCEPTED") {
+        if (prevMembership && prevMembership.status === "ACTIVE") {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "user already a member",
@@ -68,8 +68,6 @@ export const inviteMemberProcedure = adminOnlyProcedure
         const membership = await tx.membership.upsert({
           create: {
             title,
-            active: false,
-            access: access || "STAKEHOLDER",
             isOnboarded: false,
             lastAccessed: new Date(),
             companyId: user.companyId,
@@ -78,8 +76,6 @@ export const inviteMemberProcedure = adminOnlyProcedure
           },
           update: {
             title,
-            active: false,
-            access: access || "STAKEHOLDER",
             isOnboarded: false,
             lastAccessed: new Date(),
             status: "PENDING",
@@ -98,7 +94,6 @@ export const inviteMemberProcedure = adminOnlyProcedure
                 name: true,
               },
             },
-            access: true,
           },
         });
 
@@ -133,7 +128,7 @@ export const inviteMemberProcedure = adminOnlyProcedure
               userAgent,
             },
             target: [{ type: "user", id: membership.userId }],
-            summary: `${user.name} invited ${membership.user?.name} to join ${company.name} as a ${membership.access}`,
+            summary: `${user.name} invited ${membership.user?.name} to join ${company.name}`,
           },
           tx,
         );

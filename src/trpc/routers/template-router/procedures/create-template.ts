@@ -1,8 +1,8 @@
-import { protectedProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodCreateTemplateMutationSchema } from "../schema";
 import { generatePublicId } from "@/common/id";
 
-export const createTemplateProcedure = protectedProcedure
+export const createTemplateProcedure = withAuth
   .input(ZodCreateTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const publicId = generatePublicId();

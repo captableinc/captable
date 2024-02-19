@@ -1,9 +1,9 @@
-import { adminOnlyProcedure } from "@/trpc/api/trpc";
-import { ZodDeactivateUserMutationSchema } from "../schema";
+import { withAuth } from "@/trpc/api/trpc";
+import { ZodToggleActivationMutationSchema } from "../schema";
 import { Audit } from "@/server/audit";
 
-export const deactivateUserProcedure = adminOnlyProcedure
-  .input(ZodDeactivateUserMutationSchema)
+export const toggleActivation = withAuth
+  .input(ZodToggleActivationMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
     const { membershipId, status } = input;
@@ -15,7 +15,7 @@ export const deactivateUserProcedure = adminOnlyProcedure
           companyId: session.user.companyId,
         },
         data: {
-          active: status,
+          status,
         },
         select: {
           userId: true,

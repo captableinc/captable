@@ -1,8 +1,8 @@
-import { adminOnlyProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodUpdateMemberMutationSchema } from "../schema";
 import { Audit } from "@/server/audit";
 
-export const updateMemberProcedure = adminOnlyProcedure
+export const updateMemberProcedure = withAuth
   .input(ZodUpdateMemberMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const { membershipId, name, ...rest } = input;
@@ -11,7 +11,7 @@ export const updateMemberProcedure = adminOnlyProcedure
     await db.$transaction(async (tx) => {
       const member = await tx.membership.update({
         where: {
-          status: "ACCEPTED",
+          status: "ACTIVE",
           id: membershipId,
           companyId: session.user.companyId,
         },

@@ -1,10 +1,10 @@
-import { createTRPCRouter, adminOnlyProcedure } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ShareClassMutationSchema } from "./schema";
 
 import { Audit } from "@/server/audit";
 
 export const shareClassRouter = createTRPCRouter({
-  create: adminOnlyProcedure
+  create: withAuth
     .input(ShareClassMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { userAgent, requestIp } = ctx;
@@ -69,7 +69,7 @@ export const shareClassRouter = createTRPCRouter({
       }
     }),
 
-  update: adminOnlyProcedure
+  update: withAuth
     .input(ShareClassMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { userAgent, requestIp } = ctx;

@@ -4,7 +4,6 @@ export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),
   name: z.string().min(1),
   title: z.string().min(1),
-  access: z.enum(["ADMIN", "STAKEHOLDER"]),
 });
 
 export type TypeZodInviteMemberMutationSchema = z.infer<
@@ -39,13 +38,13 @@ export type TypeZodRemoveMemberMutationSchema = z.infer<
   typeof ZodRemoveMemberMutationSchema
 >;
 
-export const ZodDeactivateUserMutationSchema = z.object({
+export const ZodToggleActivationMutationSchema = z.object({
+  status: z.enum(["ACTIVE", "INACTIVE", "PENDING"]),
   membershipId: z.string().min(1),
-  status: z.boolean(),
 });
 
-export type TypeZodDeactivateUserMutationSchema = z.infer<
-  typeof ZodDeactivateUserMutationSchema
+export type TypeZodToggleActivationMutationSchema = z.infer<
+  typeof ZodToggleActivationMutationSchema
 >;
 
 export const ZodUpdateMemberMutationSchema = z
@@ -58,7 +57,6 @@ export const ZodUpdateMemberMutationSchema = z
         email: z.string().email(),
         name: z.string(),
         title: z.string(),
-        access: z.enum(["ADMIN", "STAKEHOLDER"]),
       })
       .partial(),
   );

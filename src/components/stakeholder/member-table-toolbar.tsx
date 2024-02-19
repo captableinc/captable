@@ -1,7 +1,7 @@
 import { Input } from "../ui/input";
 import { DataTableFacetedFilter } from "../ui/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "../ui/data-table/data-table-view-options";
-import { accessValues, statusValues } from "./data";
+import { statusValues } from "./data";
 import { useDataTable } from "../ui/data-table/data-table";
 import { ResetButton } from "../ui/data-table/data-table-buttons";
 
@@ -18,8 +18,9 @@ export function MemberTableToolbar() {
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="w-64"
+          className="h-8 w-64"
         />
+
         {table.getColumn("status") && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
@@ -27,15 +28,12 @@ export function MemberTableToolbar() {
             options={statusValues}
           />
         )}
-        {table.getColumn("access") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("access")}
-            title="Access"
-            options={accessValues}
-          />
-        )}
+
         {isFiltered && (
-          <ResetButton onClick={() => table.resetColumnFilters()} />
+          <ResetButton
+            className="p-1"
+            onClick={() => table.resetColumnFilters()}
+          />
         )}
       </div>
       <DataTableViewOptions />

@@ -49,7 +49,7 @@ type MembersType = {
   members: Member;
 };
 
-const humanizeStatus = (status: string, active: boolean) => {
+const humanizeStatus = (status: string) => {
   if (status === "PENDING") {
     return (
       <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
@@ -57,14 +57,14 @@ const humanizeStatus = (status: string, active: boolean) => {
       </span>
     );
   }
-  if (status === "ACCEPTED" && active) {
+  if (status === "ACTIVE") {
     return (
       <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
         Active
       </span>
     );
   }
-  if (status === "ACCEPTED" && !active) {
+  if (status === "INACTIVE") {
     return (
       <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
         Inactive
@@ -138,9 +138,7 @@ export const columns: ColumnDef<Member[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => (
-      <div className="text-left capitalize">{row.getValue("title")}</div>
-    ),
+    cell: ({ row }) => <div className="text-left">{row.getValue("title")}</div>,
   },
   {
     accessorKey: "status",
@@ -152,27 +150,7 @@ export const columns: ColumnDef<Member[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => (
-      <div>{humanizeStatus(row.original.status, row.original.active)}</div>
-    ),
-    filterFn: (row, id, value: string[]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "access",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Access"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("access")}</div>
-    ),
+    cell: ({ row }) => <div>{humanizeStatus(row.original.status)}</div>,
     filterFn: (row, id, value: string[]) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return value.includes(row.getValue(id));
@@ -190,26 +168,24 @@ export const columns: ColumnDef<Member[number]>[] = [
       const removeMember = api.stakeholder.removeMember.useMutation();
       const revokeInvite = api.stakeholder.revokeInvite.useMutation();
       const revInvite = api.stakeholder.reInvite.useMutation();
-      const deactivateUser = api.stakeholder.deactivateUser.useMutation({
+      const toggleActivation = api.stakeholder.toggleActivation.useMutation({
         onSuccess: () => {
           router.refresh();
         },
       });
 
-      const isAdmin = data?.user?.access === "ADMIN";
       const status = member.status;
       const membershipId = member.id;
       const email = member.user?.email;
-      const deleteAction =
-        status === "PENDING" ? "Revoke invite" : "Remove member";
 
-      const isAdminActionable = isAdmin && member.userId !== data?.user.id;
+      const isActive = status === "ACTIVE";
+      const isPending = status === "PENDING";
+      const deleteAction = isPending ? "Revoke invite" : "Remove member";
+      const isAdminActionable = member.userId !== data?.user.id;
 
-      const userStatus = member.active;
-
-      const handleDeactivateStakeholder = async () => {
+      const handleRevokeOrRemove = async () => {
         try {
-          if (status === "PENDING" && email) {
+          if (isPending && email) {
             await revokeInvite.mutateAsync({ email, membershipId });
           } else {
             await removeMember.mutateAsync({ membershipId });
@@ -219,11 +195,11 @@ export const columns: ColumnDef<Member[number]>[] = [
         } catch (error) {}
       };
 
-      const handleDeactivate = async () => {
+      const handleToggleActivation = async () => {
         try {
-          await deactivateUser.mutateAsync({
+          await toggleActivation.mutateAsync({
+            status: isActive ? "INACTIVE" : "ACTIVE",
             membershipId,
-            status: !userStatus,
           });
         } catch (error) {}
       };
@@ -246,39 +222,41 @@ export const columns: ColumnDef<Member[number]>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             {isAdminActionable && status === "PENDING" && (
               <DropdownMenuItem onSelect={handleReinvite}>
-                Re-invite
+                Re-invite member
               </DropdownMenuItem>
             )}
 
-            {isAdmin && status === "ACCEPTED" && (
+            {status === "ACTIVE" && (
               <MemberModal
                 isEditMode
                 membershipId={member.id}
-                title="Update stakeholder"
-                subtitle="Update stakeholder's account information."
+                title="Update team member"
+                subtitle="Update team member's account information."
                 member={{
                   name: member.user?.name ?? "",
                   email: email ?? "",
                   title: member.title ?? "",
-                  access: member.access ?? "STAKEHOLDER",
                 }}
               >
                 <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                  Update
+                  Update member
                 </span>
               </MemberModal>
             )}
 
             <DropdownMenuSeparator />
+
+            {!isPending && (
+              <DropdownMenuItem
+                onSelect={handleToggleActivation}
+                disabled={!isAdminActionable}
+                className="text-red-500"
+              >
+                {isActive ? "Deactivate member" : "Activate member"}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
-              onSelect={handleDeactivate}
-              disabled={!isAdminActionable}
-              className="text-red-500"
-            >
-              {userStatus ? "Deactivate" : "Activate User"}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={handleDeactivateStakeholder}
+              onSelect={handleRevokeOrRemove}
               disabled={!isAdminActionable}
               className="text-red-500"
             >

@@ -1,10 +1,10 @@
-import { adminOnlyProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodRevokeInviteMutationSchema } from "../schema";
 import { revokeExistingInviteTokens } from "@/server/stakeholder";
 import { Audit } from "@/server/audit";
 import { removeMemberHandler } from "./remove-member";
 
-export const revokeInviteProcedure = adminOnlyProcedure
+export const revokeInviteProcedure = withAuth
   .input(ZodRevokeInviteMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { db, session, requestIp, userAgent } = ctx;
@@ -25,7 +25,6 @@ export const revokeInviteProcedure = adminOnlyProcedure
               name: true,
             },
           },
-          access: true,
           company: {
             select: {
               name: true,
@@ -43,7 +42,7 @@ export const revokeInviteProcedure = adminOnlyProcedure
           userAgent,
         },
         target: [{ type: "user", id: membership?.userId }],
-        summary: `${user.name} revoked ${membership?.user?.name} to join ${membership?.company?.name} with ${membership?.access} access`,
+        summary: `${user.name} revoked ${membership?.user?.name} to join ${membership?.company?.name}`,
       });
     });
 

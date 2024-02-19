@@ -20,7 +20,7 @@ const SettingsLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <PageLayout title="Settings">
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-4">
+        <div className="col-span-12 md:col-span-3">
           <ul className="text-sm text-gray-700">
             <li className="rounded py-1.5">
               <Link href={`/${companyPublicId}/company`}>
@@ -48,7 +48,7 @@ const SettingsLayout = async ({ children }: { children: React.ReactNode }) => {
             </li>
           </ul>
         </div>
-        <div className="col-span-12 md:col-span-8">
+        <div className="col-span-12 md:col-span-9">
           <Card className="p-5">{children}</Card>
         </div>
       </div>

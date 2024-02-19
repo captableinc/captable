@@ -20,7 +20,6 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    NODE_ENV: z.string().default("development"),
     DATABASE_URL: z
       .string()
       .url()
@@ -28,7 +27,7 @@ export const env = createEnv({
         (str) => !str.includes("YOUR_DATABASE_URL_HERE"),
         "You forgot to change the default URL",
       ),
-    NODE_NODE_ENV: z
+    NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
     NEXTAUTH_SECRET: z.string(),
@@ -85,7 +84,6 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
-    NODE_NODE_ENV: process.env.NODE_NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     EMAIL_SERVER: process.env.EMAIL_SERVER,

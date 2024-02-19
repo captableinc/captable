@@ -34,7 +34,7 @@ export const toggleActivation = withAuth
 
       await Audit.create(
         {
-          action: status ? "stakeholder.activated" : "stakeholder.deactivated",
+          action: status ? "member.activated" : "member.deactivated",
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
           context: {

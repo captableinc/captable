@@ -81,7 +81,7 @@ export const reInviteProcedure = withAuth
 
         await Audit.create(
           {
-            action: "stakeholder.re-invited",
+            action: "member.re-invited",
             companyId: company.id,
             actor: { type: "user", id: user.id },
             context: {

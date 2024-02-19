@@ -53,7 +53,7 @@ export const acceptMemberProcedure = withAuth
       });
 
       await Audit.create({
-        action: "stakeholder.accepted",
+        action: "member.accepted",
         companyId: member.company.id,
         actor: { type: "user", id: user.id },
         context: {

@@ -34,7 +34,7 @@ export const revokeInviteProcedure = withAuth
       });
 
       await Audit.create({
-        action: "stakeholder.revoked-invite",
+        action: "member.revoked-invite",
         companyId: user.companyId,
         actor: { type: "user", id: user.id },
         context: {

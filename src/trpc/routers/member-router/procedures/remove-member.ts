@@ -47,7 +47,7 @@ export async function removeMemberHandler({
 
     await Audit.create(
       {
-        action: "stakeholder.removed",
+        action: "member.removed",
         companyId: user.companyId,
         actor: { type: "user", id: user.id },
         context: {

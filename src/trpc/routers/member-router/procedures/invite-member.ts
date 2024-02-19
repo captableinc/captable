@@ -120,7 +120,7 @@ export const inviteMemberProcedure = withAuth
 
         await Audit.create(
           {
-            action: "stakeholder.invited",
+            action: "member.invited",
             companyId: company.id,
             actor: { type: "user", id: user.id },
             context: {

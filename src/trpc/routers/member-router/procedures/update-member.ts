@@ -35,7 +35,7 @@ export const updateMemberProcedure = withAuth
 
       await Audit.create(
         {
-          action: "stakeholder.updated",
+          action: "member.updated",
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
           context: {

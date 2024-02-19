@@ -42,12 +42,12 @@ export function CompanySwitcher({ companies, publicId }: CompanySwitcherProps) {
         }
 
         if (newValue !== value) {
-          const membership = companies.find(
+          const member = companies.find(
             (item) => item.company.publicId === newValue,
           );
 
-          if (membership) {
-            await switchCompany.mutateAsync({ id: membership.id });
+          if (member) {
+            await switchCompany.mutateAsync({ id: member.id });
             await update();
             router.push(`/${newValue}${segment ? "/" + segment : ""}`);
           }

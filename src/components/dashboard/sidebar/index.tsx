@@ -13,13 +13,14 @@ import {
   RiFolderChartFill,
   RiListIndefinite,
   RiListCheck3,
-  RiEqualizer2Line,
+  RiGroup2Line,
+  RiGroup2Fill,
   RiFolderChart2Line,
   RiFolderChart2Fill,
-  RiAccountCircleLine,
-  RiAccountCircleFill,
   RiFileTextLine,
   RiFileTextFill,
+  RiEqualizer2Line,
+  RiEqualizer2Fill,
 } from "@remixicon/react";
 
 import {
@@ -32,6 +33,7 @@ import {
 import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
 
+import Link from "next/link";
 import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -55,8 +57,8 @@ const navigation = [
   {
     name: "Stakeholders",
     href: "/stakeholders",
-    icon: RiAccountCircleLine,
-    activeIcon: RiAccountCircleFill,
+    icon: RiGroup2Line,
+    activeIcon: RiGroup2Fill,
   },
   {
     name: "Share classes",
@@ -92,34 +94,6 @@ const navigation = [
         name: "Convertible notes",
         href: "/convertible-notes",
       },
-      // {
-      //   name: "RSUs",
-      //   href: "/rsus",
-      // },
-      // {
-      //   name: "Phantom",
-      //   href: "/phantom",
-      // },
-      // {
-      //   name: "ESPP",
-      //   href: "/espp",
-      // },
-      // {
-      //   name: "Warrants",
-      //   href: "/warrants",
-      // },
-      // {
-      //   name: "KISS",
-      //   href: "/kiss",
-      // },
-      // {
-      //   name: "SARs",
-      //   href: "/sars",
-      // },
-      // {
-      //   name: "Other",
-      //   href: "/other",
-      // },
     ],
   },
   {
@@ -142,18 +116,25 @@ const navigation = [
   },
 ];
 
-const forms = [
+const company = [
   {
     id: 1,
-    name: "409A Valuation",
-    href: "/409a",
-    icon: RiFileTextLine,
-    activeIcon: RiFileTextFill,
+    name: "Settings",
+    href: "/company",
+    icon: RiEqualizer2Line,
+    activeIcon: RiEqualizer2Fill,
   },
   {
     id: 2,
     name: "Form 3921",
     href: "/3921",
+    icon: RiFileTextLine,
+    activeIcon: RiFileTextFill,
+  },
+  {
+    id: 3,
+    name: "409A Valuation",
+    href: "/409a",
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
@@ -173,7 +154,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
   return (
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
-        <div className="gap-y-4 py-4">
+        <div className="fixed gap-y-4 py-4">
           <div className="flex items-center px-1 py-2">
             <OpenCapLogo className="h-7 w-auto" />
 
@@ -267,12 +248,12 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
               })}
             </ul>
 
-            <div className="py-2">
+            <div className="py-3">
               <div className="text-xs font-semibold leading-6 text-gray-400">
-                Legal
+                Company
               </div>
-              <ul role="list" className=" space-y-1">
-                {forms.map((item) => {
+              <ul role="list" className="space-y-1">
+                {company.map((item) => {
                   const href = basePath + item.href;
                   const isActive =
                     currentPath === href ||
@@ -293,12 +274,6 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                 })}
               </ul>
             </div>
-            <NavLink
-              active={currentPath === "/settings"}
-              name="Settings"
-              href={`${basePath}/settings`}
-              icon={RiEqualizer2Line}
-            />
           </div>
         </div>
       </div>

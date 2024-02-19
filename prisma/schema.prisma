@@ -43,14 +43,14 @@ model Session {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?      @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  companies     Membership[]
+  companies     Member[]
 }
 
 model WaitlistUser {
@@ -83,7 +83,7 @@ model Company {
 
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  users        Membership[]
+  users        Member[]
   audits       Audit[]
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
@@ -93,29 +93,21 @@ model Company {
   @@unique([publicId])
 }
 
-enum MEMBERHIP_STATUS {
+enum MemberStatusEnum {
+  ACTIVE
+  INACTIVE
   PENDING
-  ACCEPTED
-  DECLINED
 }
 
-enum MEMBERSHIP_ACCESS {
-  ADMIN
-  STAKEHOLDER
-}
-
-model Membership {
-  id          String            @id @default(cuid())
-  title       String?
-  active      Boolean           @default(true)
-  status      MEMBERHIP_STATUS  @default(PENDING)
-  access      MEMBERSHIP_ACCESS @default(ADMIN)
-  isOnboarded Boolean           @default(false)
-
+model Member {
+  id           String           @id @default(cuid())
+  title        String?
+  status       MemberStatusEnum @default(PENDING)
+  isOnboarded  Boolean          @default(false)
   workEmail    String?
-  lastAccessed DateTime @default(now())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  lastAccessed DateTime         @default(now())
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -259,13 +251,13 @@ model Document {
   name     String
 
   bucketId String
-  bucket   Bucket @relation(fields: [bucketId], references: [id])
+  bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
   uploaderId String
-  uploader   Membership @relation(fields: [uploaderId], references: [id])
+  uploader   Member @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   companyId String
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -298,7 +290,7 @@ model TemplateField {
   width       Decimal
   height      Decimal
   order       Int
-  template    Template   @relation(fields: [templateId], references: [id])
+  template    Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
   templateId  String
 
   createdAt DateTime @default(now())
@@ -319,13 +311,13 @@ model Template {
   status   TemplateStatus @default(DRAFT)
 
   bucketId String
-  bucket   Bucket @relation(fields: [bucketId], references: [id])
+  bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
   uploaderId String
-  uploader   Membership @relation(fields: [uploaderId], references: [id])
+  uploader   Member @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   companyId String
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -348,11 +340,11 @@ model EsignRecipient {
   email  String?
   status EsignRecipientStatus @default(PENDING)
 
-  membershipId String?
-  membership   Membership? @relation(fields: [membershipId], references: [id])
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([membershipId])
+  @@index([memberId])
 }

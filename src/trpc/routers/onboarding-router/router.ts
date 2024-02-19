@@ -1,11 +1,11 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "./schema";
 import { generatePublicId } from "@/common/id";
 
 import { Audit } from "@/server/audit";
 
 export const onboardingRouter = createTRPCRouter({
-  onboard: protectedProcedure
+  onboard: withAuth
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { userAgent, requestIp } = ctx;
@@ -35,12 +35,10 @@ export const onboardingRouter = createTRPCRouter({
             },
           });
 
-          await tx.membership.create({
+          await tx.member.create({
             data: {
-              access: "ADMIN",
-              active: true,
               isOnboarded: true,
-              status: "ACCEPTED",
+              status: "ACTIVE",
               title: input.user.title,
               userId: user.id,
               companyId: company.id,

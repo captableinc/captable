@@ -5,6 +5,9 @@ import { redirect } from "next/navigation";
 const OnboardingPage = async () => {
   const session = await withServerSession();
   const user = session.user;
+  console.log({
+    user,
+  });
   if (user.isOnboarded) {
     redirect("/dashboard");
   }

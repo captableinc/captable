@@ -16,7 +16,7 @@ export function NavBar({ publicId, companies }: SideBarProps) {
           <MobileDrawer publicId={publicId} companies={companies} />
           <div className="flex items-center gap-6">
             <CommandMenu />
-            <UserDropdown />
+            <UserDropdown companyPublicId={publicId} />
           </div>
         </div>
       </header>

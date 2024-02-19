@@ -1,13 +1,13 @@
-import { createTRPCRouter, protectedProcedure } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
 
 export const companyRouter = createTRPCRouter({
-  switchCompany: protectedProcedure
+  switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { db } = ctx;
 
-      await db.membership.update({
+      await db.member.update({
         where: {
           id: input.id,
         },

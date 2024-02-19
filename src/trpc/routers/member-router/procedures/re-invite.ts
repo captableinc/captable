@@ -89,7 +89,7 @@ export const reInviteProcedure = withAuth
               userAgent,
             },
             target: [{ type: "user", id: member.userId }],
-            summary: `${user.name} reinvited ${member.user?.name} to join ${company.name} with ${member.access} access`,
+            summary: `${user.name} reinvited ${member.user?.name} to join ${company.name}`,
           },
           tx,
         );

@@ -1,9 +1,9 @@
 import { Audit } from "@/server/audit";
 import { EquityPlanMutationSchema } from "./schema";
-import { createTRPCRouter, adminOnlyProcedure } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 
 export const equityPlanRouter = createTRPCRouter({
-  create: adminOnlyProcedure
+  create: withAuth
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { userAgent, requestIp } = ctx;
@@ -52,7 +52,7 @@ export const equityPlanRouter = createTRPCRouter({
       }
     }),
 
-  update: adminOnlyProcedure
+  update: withAuth
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {

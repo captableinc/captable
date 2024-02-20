@@ -25,7 +25,7 @@ type DocumentUploadDropzone = Omit<
 type UploaderProps = {
   header?: React.ReactNode;
 
-  // should be companyPublicId or membershipId or userId
+  // should be companyPublicId or memberId or userId
   identifier: string;
 
   keySuffix: string;

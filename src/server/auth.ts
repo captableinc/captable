@@ -15,7 +15,7 @@ import { db } from "@/server/db";
 import { env } from "@/env";
 import { sendMail } from "./mailer";
 import MagicLinkEmail from "@/emails/MagicLinkEmail";
-import { type MEMBERSHIP_ACCESS } from "@/prisma-enums";
+import { type MemberStatusEnum } from "@/prisma-enums";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -32,9 +32,9 @@ declare module "next-auth" {
       id: string;
       isOnboarded: boolean;
       companyId: string;
-      membershipId: string;
+      memberId: string;
       companyPublicId: string;
-      access: MEMBERSHIP_ACCESS;
+      status: MemberStatusEnum | "";
     } & DefaultSession["user"];
   }
 }
@@ -42,11 +42,11 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
-    isOnboarded: boolean;
     companyId: string;
-    membershipId: string;
+    memberId: string;
+    isOnboarded: boolean;
     companyPublicId: string;
-    access: MEMBERSHIP_ACCESS;
+    status: MemberStatusEnum | "";
   }
 }
 
@@ -60,9 +60,9 @@ export const authOptions: NextAuthOptions = {
     session({ session, token }) {
       session.user.isOnboarded = token.isOnboarded;
       session.user.companyId = token.companyId;
-      session.user.membershipId = token.membershipId;
+      session.user.memberId = token.memberId;
       session.user.companyPublicId = token.companyPublicId;
-      session.user.access = token.access;
+      session.user.status = token.status;
 
       if (token.sub) {
         session.user.id = token.sub;
@@ -73,20 +73,20 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token, trigger }) {
       if (trigger) {
-        const membership = await db.membership.findFirst({
+        const member = await db.member.findFirst({
           where: {
             userId: token.sub,
             isOnboarded: true,
-            status: "ACCEPTED",
+            status: "ACTIVE",
           },
           orderBy: {
             lastAccessed: "desc",
           },
           select: {
             id: true,
+            status: true,
             companyId: true,
             isOnboarded: true,
-            access: true,
             user: {
               select: {
                 name: true,
@@ -100,19 +100,20 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (membership) {
-          token.isOnboarded = membership.isOnboarded;
-          token.companyId = membership.companyId;
-          token.membershipId = membership.id;
-          token.name = membership.user?.name;
-          token.companyPublicId = membership.company.publicId;
-          token.access = membership.access;
+        if (member) {
+          console.log({ member });
+          token.status = member.status;
+          token.name = member.user?.name;
+          token.memberId = member.id;
+          token.companyId = member.companyId;
+          token.isOnboarded = member.isOnboarded;
+          token.companyPublicId = member.company.publicId;
         } else {
-          token.isOnboarded = false;
+          token.status = "";
           token.companyId = "";
-          token.membershipId = "";
+          token.memberId = "";
+          token.isOnboarded = false;
           token.companyPublicId = "";
-          token.access = "STAKEHOLDER";
         }
       }
 

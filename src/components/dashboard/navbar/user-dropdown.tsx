@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,11 @@ import {
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
-export function UserDropdown() {
+type UserDropdownProps = {
+  companyPublicId: string;
+};
+
+export function UserDropdown({ companyPublicId }: UserDropdownProps) {
   const { data } = useSession();
   const name = data?.user.name;
   const email = data?.user.email;
@@ -42,18 +47,24 @@ export function UserDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          <Link href={`/${companyPublicId}/profile`}>
+            <DropdownMenuItem>
+              Profile
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/${companyPublicId}/billing`}>
+            <DropdownMenuItem>
+              Billing
+              <DropdownMenuShortcut>⇧⌘B</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </Link>
+          <Link href={`/${companyPublicId}/company`}>
+            <DropdownMenuItem>
+              Company settings
+              <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem

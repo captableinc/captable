@@ -3,9 +3,8 @@ import inquirer from "inquirer";
 import colors from "colors";
 colors.enable();
 
-import seedAdmins from "./admins";
+import seedTeam from "./team";
 import seedCompanies from "./companies";
-import seedStakeholders from "./stakeholders";
 import type { QuestionCollection } from "inquirer";
 
 if (process.env.NODE_ENV === "production") {
@@ -28,9 +27,8 @@ const seed = async () => {
 
     console.log("Seeding database".underline.cyan);
     return db.$transaction(async () => {
-      await seedAdmins();
       await seedCompanies();
-      await seedStakeholders();
+      await seedTeam();
     });
   } else {
     throw new Error("Seeding aborted");
@@ -41,7 +39,7 @@ const nuke = async () => {
   console.log("🚀 Nuking database records".yellow);
   return db.$transaction(async (db) => {
     await db.user.deleteMany();
-    await db.membership.deleteMany();
+    await db.member.deleteMany();
     await db.company.deleteMany();
     await db.shareClass.deleteMany();
     await db.equityPlan.deleteMany();
@@ -51,7 +49,7 @@ const nuke = async () => {
   });
 };
 
-seed()
+await seed()
   .then(async () => {
     console.log("✅ Database seeding completed".green);
     console.log(

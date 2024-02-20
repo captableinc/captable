@@ -1,8 +1,8 @@
-import { protectedProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodGetDocumentQuerySchema } from "../schema";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 
-export const getDocumentProcedure = protectedProcedure
+export const getDocumentProcedure = withAuth
   .input(ZodGetDocumentQuerySchema)
   .query(async ({ ctx, input }) => {
     const user = ctx.session.user;

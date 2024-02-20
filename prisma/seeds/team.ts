@@ -1,4 +1,4 @@
-import type { MemberStatusEnum } from "@prisma/client";
+import type { MemberStatusEnum } from "@/prisma-enums";
 import { faker } from "@faker-js/faker";
 import { db } from "@/server/db";
 import colors from "colors";

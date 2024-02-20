@@ -1,7 +1,7 @@
-import { protectedProcedure } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
 
-export const addFieldProcedure = protectedProcedure
+export const addFieldProcedure = withAuth
   .input(ZodAddFieldMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;

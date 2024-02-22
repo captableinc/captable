@@ -25,7 +25,7 @@ export function EquityDocumentUpload({
     >
       <Uploader
         identifier={companyPublicId}
-        keySuffix="equity-doc-uploads"
+        keyPrefix="equity-doc"
         onSuccess={async (bucketData) => {
           const equityTemplate = await mutateAsync({
             bucketId: bucketData.id,

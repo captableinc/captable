@@ -7,7 +7,7 @@ export const getTemplateProcedure = withAuth
   .query(async ({ ctx, input }) => {
     const user = ctx.session.user;
 
-    const data = await ctx.db.template.findFirstOrThrow({
+    const template = await ctx.db.template.findFirstOrThrow({
       where: {
         publicId: input.publicId,
         companyId: user.companyId,
@@ -18,8 +18,27 @@ export const getTemplateProcedure = withAuth
             key: true,
           },
         },
+        fields: {
+          select: {
+            id: true,
+            name: true,
+            width: true,
+            height: true,
+            top: true,
+            left: true,
+            required: true,
+            placeholder: true,
+            type: true,
+          },
+        },
       },
     });
 
-    return getPresignedGetUrl(data.bucket.key);
+    const { key, url } = await getPresignedGetUrl(template.bucket.key);
+
+    return {
+      fields: template.fields,
+      key,
+      url,
+    };
   });

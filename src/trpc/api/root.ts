@@ -9,6 +9,7 @@ import { onboardingRouter } from "../routers/onboarding-router/router";
 import { memberRouter } from "../routers/member-router/router";
 import { bucketRouter } from "../routers/bucket-router/router";
 import { templateRouter } from "../routers/template-router/router";
+import { templateFieldRouter } from "../routers/template-field-router/router";
 
 /**
  * This is the primary router for your server.
@@ -26,6 +27,7 @@ export const appRouter = createTRPCRouter({
   member: memberRouter,
   bucket: bucketRouter,
   template: templateRouter,
+  templateField: templateFieldRouter,
 });
 
 // export type definition of API

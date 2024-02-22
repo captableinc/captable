@@ -21,7 +21,7 @@ export const uploadFile = async (
   file: File,
   options: Pick<
     getPresignedUrlOptions,
-    "expiresIn" | "keySuffix" | "identifier"
+    "expiresIn" | "keyPrefix" | "identifier"
   >,
 ) => {
   const { url, key } = await getPresignedPutUrl({

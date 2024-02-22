@@ -12,6 +12,10 @@ generator json {
   provider = "prisma-json-types-generator"
 }
 
+generator enums {
+  provider = "node ./prisma/enum-generator.cjs"
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -285,12 +289,11 @@ model TemplateField {
   type        FieldTypes @default(TEXT)
   placeholder String     @default("")
   required    Boolean    @default(false)
-  positionX   Decimal
-  positionY   Decimal
-  width       Decimal
-  height      Decimal
-  order       Int
-  template    Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  top         Int
+  left        Int
+  width       Int
+  height      Int
+  template    Template   @relation(fields: [templateId], references: [id])
   templateId  String
 
   createdAt DateTime @default(now())

@@ -15,7 +15,7 @@ import { db } from "@/server/db";
 import { env } from "@/env";
 import { sendMail } from "./mailer";
 import MagicLinkEmail from "@/emails/MagicLinkEmail";
-import { type MemberStatusEnum } from "@prisma/client";
+import { type MemberStatusEnum } from "@/prisma-enums";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;

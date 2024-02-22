@@ -18,7 +18,7 @@ const seedTeam = async () => {
     {
       name: faker.person.fullName(),
       email: "ceo@example.com",
-      image: faker.image.avatar(),
+      // image: faker.image.avatar(),
       title: "Co-Founder & CEO",
       status: "ACTIVE",
       isOnboarded: true,
@@ -27,7 +27,7 @@ const seedTeam = async () => {
     {
       name: faker.person.fullName(),
       email: "cto@example.com",
-      image: faker.image.avatar(),
+      // image: faker.image.avatar(),
       title: "Co-Founder & CTO",
       status: "ACTIVE",
       isOnboarded: true,
@@ -36,7 +36,7 @@ const seedTeam = async () => {
     {
       name: faker.person.fullName(),
       email: "cfo@example.com",
-      image: faker.image.avatar(),
+      // image: faker.image.avatar(),
       title: "CFO",
       status: "PENDING",
       isOnboarded: false,
@@ -45,14 +45,14 @@ const seedTeam = async () => {
     {
       name: faker.person.fullName(),
       email: "lawyer@example.com",
-      image: faker.image.avatar(),
+      // image: faker.image.avatar(),
       title: "Lawyer at Law Firm LLP",
       status: "PENDING",
     },
     {
       name: faker.person.fullName(),
       email: "accountant@example.com",
-      image: faker.image.avatar(),
+      // image: faker.image.avatar(),
       title: "Accountant at XYZ Accounting, Inc.",
       status: "INACTIVE",
     },
@@ -62,12 +62,13 @@ const seedTeam = async () => {
   const companies = await db.company.findMany();
 
   team.forEach(async (t) => {
-    const { name, email, image, title, status, isOnboarded } = t;
+    // const { name, email, image, title, status, isOnboarded } = t
+    const { name, email, title, status, isOnboarded } = t;
     const user = await db.user.create({
       data: {
         name,
         email,
-        image,
+        // image,
       },
     });
 

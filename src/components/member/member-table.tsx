@@ -111,14 +111,7 @@ export const columns: ColumnDef<Member[number]>[] = [
     cell: ({ row }) => (
       <div className="flex">
         <Avatar className="">
-          <AvatarImage
-            src={
-              row.original?.user?.image ??
-              `https://api.dicebear.com/7.x/initials/svg?seed=${
-                row.original?.user?.name ?? row.original?.user?.email
-              }`
-            }
-          />
+          <AvatarImage src={row.original?.user?.image ?? "/avatar.svg"} />
         </Avatar>
 
         <div className=" ml-2">

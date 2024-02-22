@@ -28,7 +28,7 @@ type UploaderProps = {
   // should be companyPublicId or memberId or userId
   identifier: string;
 
-  keySuffix: string;
+  keyPrefix: string;
 
   onSuccess?: (data: UploadReturn) => void | Promise<void>;
 } & DocumentUploadDropzone;
@@ -36,7 +36,7 @@ type UploaderProps = {
 export function Uploader({
   header,
   identifier,
-  keySuffix,
+  keyPrefix,
   onSuccess,
   ...rest
 }: UploaderProps) {
@@ -48,7 +48,7 @@ export function Uploader({
     try {
       setUploading(true);
       for (const file of acceptedFiles) {
-        const upload = await uploadFile(file, { identifier, keySuffix });
+        const upload = await uploadFile(file, { identifier, keyPrefix });
 
         const data = await mutateAsync({ ...upload });
 

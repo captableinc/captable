@@ -34,7 +34,7 @@ const DocumentUploadModal = ({
     >
       <Uploader
         identifier={companyPublicId}
-        keySuffix="generic-document"
+        keyPrefix="generic-document"
         onSuccess={async (uploadedData) => {
           await mutateAsync({
             name: uploadedData.name,

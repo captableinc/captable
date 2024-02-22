@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardDescription,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 import { DonutChart } from "@tremor/react";
 import DonutSelector from "./donut-selector";
@@ -79,14 +74,12 @@ const DonutCard = () => {
       {isClient && (
         <Card className="h-[365px]">
           <CardHeader>
-            <CardDescription>
-              <>
-                <div className="flex">
-                  <span>Ownership by</span>
-                  <DonutSelector selected={selected} onChange={setSelected} />
-                </div>
-              </>
-            </CardDescription>
+            <div className="text-sm text-gray-700">
+              <div className="flex">
+                <span>Ownership by</span>
+                <DonutSelector selected={selected} onChange={setSelected} />
+              </div>
+            </div>
           </CardHeader>
 
           <CardContent>

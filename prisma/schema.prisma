@@ -85,14 +85,15 @@ model Company {
   state         String
   zipcode       String
 
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   users        Member[]
   audits       Audit[]
   shareClasses ShareClass[]
   equityPlans  EquityPlan[]
   documents    Document[]
   templates    Template[]
+  stakeholders Stakeholder[]
 
   @@unique([publicId])
 }
@@ -134,14 +135,43 @@ enum StakeholderTypeEnum {
   INSTITUTION
 }
 
+enum StakeholderRelationshipEnum {
+  ADVISOR
+  BOARD_MEMBER
+  CONSULTANT
+  EMPLOYEE
+  EX_ADVISOR
+  EX_CONSULTANT
+  EX_EMPLOYEE
+  EXECUTIVE
+  FOUNDER
+  INVESTOR
+  NON_US_EMPLOYEE
+  OFFICER
+  OTHER
+}
+
 model Stakeholder {
-  id    String              @id @default(cuid())
-  name  String
-  email String
-  type  StakeholderTypeEnum @default(INSTITUTION)
+  id                  String                      @id @default(cuid())
+  name                String
+  email               String
+  institutionName     String?
+  stakeholder_type    StakeholderTypeEnum         @default(INDIVIDUAL)
+  currentRelationship StakeholderRelationshipEnum @default(EMPLOYEE)
+  taxId               String?
+
+  streetAddress String?
+  city          String?
+  state         String?
+  zipcode       String?
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([companyId])
 }
 
 model Audit {

@@ -9,7 +9,7 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["randomuser.me"],
+    domains: ["randomuser.me", "avatars.githubusercontent.com"],
   },
   webpack: (config) => {
     /**

@@ -30,6 +30,9 @@ export const getTemplateProcedure = withAuth
             placeholder: true,
             type: true,
           },
+          orderBy: {
+            top: "asc",
+          },
         },
       },
     });

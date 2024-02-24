@@ -6,3 +6,7 @@ export const ZodCreateBucketMutationSchema = z.object({
   mimeType: z.string(),
   size: z.number(),
 });
+
+export type TypeZodCreateBucketMutationSchema = z.infer<
+  typeof ZodCreateBucketMutationSchema
+>;

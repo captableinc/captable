@@ -156,7 +156,7 @@ model Stakeholder {
   name                String
   email               String
   institutionName     String?
-  stakeholder_type    StakeholderTypeEnum         @default(INDIVIDUAL)
+  stakeholderType     StakeholderTypeEnum         @default(INDIVIDUAL)
   currentRelationship StakeholderRelationshipEnum @default(EMPLOYEE)
   taxId               String?
 

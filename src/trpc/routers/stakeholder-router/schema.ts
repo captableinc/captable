@@ -1,29 +1,15 @@
+import {
+  StakeholderRelationshipEnum,
+  StakeholderTypeEnum,
+} from "@/prisma-enums";
 import { z } from "zod";
-
-const StakeholderTypeEnum = z.enum(["INDIVIDUAL", "INSTITUTION"]);
-
-const StakeholderRelationshipEnum = z.enum([
-  "ADVISOR",
-  "BOARD_MEMBER",
-  "CONSULTANT",
-  "EMPLOYEE",
-  "EX_ADVISOR",
-  "EX_CONSULTANT",
-  "EX_EMPLOYEE",
-  "EXECUTIVE",
-  "FOUNDER",
-  "INVESTOR",
-  "NON_US_EMPLOYEE",
-  "OFFICER",
-  "OTHER",
-]);
 
 export const ZodAddStakeholdersMutationSchema = z.object({
   name: z.string().min(1),
   email: z.string().email().min(1),
   institutionName: z.string().min(1).optional(),
-  stakeholderType: StakeholderTypeEnum,
-  currentRelationship: StakeholderRelationshipEnum,
+  stakeholderType: z.nativeEnum(StakeholderTypeEnum),
+  currentRelationship: z.nativeEnum(StakeholderRelationshipEnum),
   taxId: z.string().min(1).optional(),
   streetAddress: z.string().min(1).optional(),
   city: z.string().min(1).optional(),

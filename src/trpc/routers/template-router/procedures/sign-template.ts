@@ -25,7 +25,7 @@ export const signTemplateProcedure = withAuth
     const modifiedPdfBytes = await doc.save();
 
     const file = {
-      name: `${template.name}.pdf`,
+      name: `${template.name}`,
       type: "application/pdf",
       arrayBuffer: async () => Promise.resolve(Buffer.from(modifiedPdfBytes)),
       size: 0,

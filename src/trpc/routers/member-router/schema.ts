@@ -72,3 +72,15 @@ export const ZodReInviteMutationSchema = z.object({
 export type TypeZodReInviteMutationSchema = z.infer<
   typeof ZodReInviteMutationSchema
 >;
+
+export const ZodUpdateProfileMutationSchema = z.object({
+  fullName: z.string().min(2).max(40),
+  jobTitle: z.string().min(2).max(30),
+  loginEmail: z.string().email(),
+  workEmail: z.string().email(),
+  avatarUrl: z.string(),
+});
+
+export type TypeZodUserProfileMutationSchema = z.infer<
+  typeof ZodUpdateProfileMutationSchema
+>;

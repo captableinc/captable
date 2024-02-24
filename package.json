@@ -61,7 +61,7 @@
     "immer": "^10.0.3",
     "jsx-email": "^1.7.2",
     "lodash-es": "^4.17.21",
-    "lucide-react": "^0.312.0",
+    "lucide-react": "^0.338.0",
     "nanoid": "^5.0.4",
     "next": "^14.1.0",
     "next-auth": "^4.24.5",

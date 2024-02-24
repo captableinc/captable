@@ -18,7 +18,7 @@ const StakeholderRelationshipEnum = z.enum([
   "OTHER",
 ]);
 
-export const ZodCreateStakeholderMutationSchema = z.object({
+export const ZodAddStakeholdersMutationSchema = z.object({
   name: z.string().min(1),
   email: z.string().email().min(1),
   institutionName: z.string().min(1).optional(),
@@ -31,6 +31,6 @@ export const ZodCreateStakeholderMutationSchema = z.object({
   zipcode: z.string().min(1).optional(),
 });
 
-export type TypeZodCreateStakeholderMutationSchema = z.infer<
-  typeof ZodCreateStakeholderMutationSchema
+export type TypeZodAddStakeholdersMutationSchema = z.infer<
+  typeof ZodAddStakeholdersMutationSchema
 >;

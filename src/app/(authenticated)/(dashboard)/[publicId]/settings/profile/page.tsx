@@ -6,14 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 const ProfileSettingsPage = () => {
   const { data } = useSession();

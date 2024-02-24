@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RiArrowRightLine } from "@remixicon/react";
+import { RiArrowRightLine, RiBuildingLine } from "@remixicon/react";
 import {
   Select,
   SelectContent,
@@ -24,6 +24,7 @@ import {
   ZodOnboardingMutationSchema,
   type TypeZodOnboardingMutationSchema,
 } from "@/trpc/routers/onboarding-router/schema";
+import Image from "next/image";
 import type { User } from "next-auth";
 
 import { api } from "@/trpc/react";
@@ -83,6 +84,29 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="col-span-full flex items-center gap-x-8">
+          {currentUser.image ? (
+            <Image
+              src={currentUser.image}
+              alt="Company logo"
+              width={50}
+              height={50}
+              className="flex-none rounded-full object-cover"
+            />
+          ) : (
+            <div className="h-30 w-30 flex items-center rounded-full bg-[#CCFBF1] p-2">
+              <RiBuildingLine className="h-16 w-16 flex-none rounded-full object-cover text-[#14B8A6]" />
+            </div>
+          )}
+          <div>
+            <Button size="sm" variant={"outline"} type="button">
+              Change company logo
+            </Button>
+            <p className="mt-2 text-xs text-gray-700">
+              JPG, GIF or PNG. 1MB max.
+            </p>
+          </div>
+        </div>
         <div className="grid gap-2">
           <div className="grid gap-5">
             {formType === "onboarding" && (

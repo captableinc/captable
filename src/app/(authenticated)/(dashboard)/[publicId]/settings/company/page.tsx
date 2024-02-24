@@ -5,7 +5,7 @@ const CompanySettingsPage = async () => {
   const session = await withServerSession();
   const user = session.user;
 
-  return <CompanyForm currentUser={user} />;
+  return <CompanyForm formType="edit-company" currentUser={user} />;
 };
 
 export default CompanySettingsPage;

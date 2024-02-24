@@ -95,7 +95,7 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
             />
           ) : (
             <div className="h-30 w-30 flex items-center rounded-full bg-[#CCFBF1] p-2">
-              <RiBuildingLine className="h-16 w-16 flex-none rounded-full object-cover text-[#14B8A6]" />
+              <RiBuildingLine className="h-16 w-16 flex-none shrink-0 rounded-full object-cover text-[#14B8A6]" />
             </div>
           )}
           <div>

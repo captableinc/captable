@@ -17,4 +17,9 @@ export const companyRouter = createTRPCRouter({
       });
       return { success: true };
     }),
+  updateCompany: withAuth
+    .input(ZodSwitchCompanyMutationSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { db } = ctx;
+    }),
 });

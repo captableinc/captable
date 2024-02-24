@@ -43,6 +43,29 @@ type CompanyFormProps = {
 const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
   const { update } = useSession();
   const router = useRouter();
+  api.company.getCompany.useQuery(undefined, {
+    enabled: formType === "edit-company",
+    onSuccess: (data) => {
+      form.reset({
+        user: {
+          name: currentUser.name ?? "",
+          email: currentUser.email ?? "",
+        },
+        company: {
+          name: data.name ?? "",
+          incorporationType: data.incorporationType ?? "",
+          incorporationDate: new Date(data.incorporationDate).toString() ?? "",
+          incorporationCountry: data.incorporationCountry ?? "",
+          incorporationState: data.incorporationState ?? "",
+          streetAddress: data.streetAddress ?? "",
+          city: data.city ?? "",
+          state: data.state ?? "",
+          zipcode: data.zipcode ?? "",
+        },
+      });
+    },
+  });
+
   const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,7 +88,7 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
     },
   });
 
-  const mutation = api.onboarding.onboard.useMutation({
+  const onBoardingMutation = api.onboarding.onboard.useMutation({
     onSuccess: async ({ publicId }) => {
       await update();
 
@@ -73,10 +96,22 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
     },
   });
 
+  const companySettingMutation = api.company.updateCompany.useMutation({
+    onSuccess: async () => {
+      await update();
+
+      router.back();
+    },
+  });
+
   // 2. Define a submit handler.
   async function onSubmit(values: TypeZodOnboardingMutationSchema) {
     try {
-      await mutation.mutateAsync(values);
+      if (formType === "create-company" || formType === "onboarding") {
+        await onBoardingMutation.mutateAsync(values);
+      } else if (formType === "edit-company") {
+        await companySettingMutation.mutateAsync(values);
+      }
     } catch (error) {}
   }
 

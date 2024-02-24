@@ -54,7 +54,9 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
         company: {
           name: data.name ?? "",
           incorporationType: data.incorporationType ?? "",
-          incorporationDate: new Date(data.incorporationDate).toString() ?? "",
+          incorporationDate: new Date(data.incorporationDate)
+            .toISOString()
+            .split("T")[0],
           incorporationCountry: data.incorporationCountry ?? "",
           incorporationState: data.incorporationState ?? "",
           streetAddress: data.streetAddress ?? "",

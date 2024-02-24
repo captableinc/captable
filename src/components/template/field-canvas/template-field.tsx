@@ -39,7 +39,7 @@ export function TemplateField({
   const { handleDeleteField, updateField } = useFieldCanvasContext();
 
   return (
-    <button
+    <div
       className="group absolute z-20 cursor-pointer overflow-visible border-2 border-red-600 bg-red-300/50"
       style={{
         left,
@@ -50,6 +50,8 @@ export function TemplateField({
       onClick={() => {
         handleFocus(id);
       }}
+      role="button"
+      tabIndex={0}
     >
       <div
         style={{ bottom: height }}
@@ -101,6 +103,6 @@ export function TemplateField({
           className="h-8 min-w-16"
         />
       </div>
-    </button>
+    </div>
   );
 }

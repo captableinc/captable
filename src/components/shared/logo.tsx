@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export const OpenCapLogo = ({ className }: { className?: string }) => {
   return (
     <Image
-      className={cn(className)}
+      className={cn("rounded", className)}
       height={100}
       width={100}
       src={logo}

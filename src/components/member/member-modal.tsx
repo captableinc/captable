@@ -181,11 +181,11 @@ const MemberModal = ({
             loadingText="Sending invite..."
             className="mt-5"
           >
-            {rest.isEditMode === true ? "Update stakeholder" : "Send an invite"}
+            {rest.isEditMode === true ? "Update team member" : "Send an invite"}
           </Button>
 
           <p className="text-center text-xs text-gray-500">
-            We{`'`}ll send an email to your stakeholder with a link to create an
+            We{`'`}ll send an email to your team member with a link to create an
             account.
           </p>
         </form>

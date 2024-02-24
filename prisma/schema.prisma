@@ -94,6 +94,7 @@ model Company {
   documents    Document[]
   templates    Template[]
   stakeholders Stakeholder[]
+  investments  Investment[]
 
   @@unique([publicId])
 }
@@ -168,10 +169,37 @@ model Stakeholder {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  investments Investment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([companyId])
+}
+
+model Investment {
+  id       String   @id @default(cuid())
+  amount   Float // Amount of money invested
+  shares   BigInt // Number of shares issued to the investor at the time of investment
+  date     DateTime
+  comments String?
+
+  shareClassId String
+  shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Investors => StakeholderRelationshipEnum["INVESTOR"]
+  stakeholderId String
+  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([stakeholderId])
+  @@index([shareClassId])
 }
 
 model Audit {
@@ -229,6 +257,7 @@ model ShareClass {
   companyId   String
   company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   equityPlans EquityPlan[]
+  investments Investment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

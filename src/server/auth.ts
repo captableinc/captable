@@ -183,7 +183,8 @@ export const withServerSession = async () => {
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    throw new Error("session not found");
+    // throw new Error("session not found");
+    console.log("session not found");
   }
 
   return session;

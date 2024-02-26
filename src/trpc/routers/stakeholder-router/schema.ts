@@ -4,7 +4,7 @@ import {
 } from "@/prisma-enums";
 import { z } from "zod";
 
-export const ZodAddStakeholdersMutationSchema = z.object({
+export const ZodAddStakeholderMutationSchema = z.object({
   name: z.string().min(1),
   email: z.string().email().min(1),
   institutionName: z.string().min(1).optional(),
@@ -17,6 +17,10 @@ export const ZodAddStakeholdersMutationSchema = z.object({
   zipcode: z.string().min(1).optional(),
 });
 
-export type TypeZodAddStakeholdersMutationSchema = z.infer<
-  typeof ZodAddStakeholdersMutationSchema
+export type TypeZodAddStakeholderMutationSchema = z.infer<
+  typeof ZodAddStakeholderMutationSchema
 >;
+
+export const ZodAddStakeholderArrayMutationSchema = z.array(
+  ZodAddStakeholderMutationSchema,
+);

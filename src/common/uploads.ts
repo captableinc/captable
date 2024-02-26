@@ -1,4 +1,5 @@
 import {
+  getPresignedGetUrl,
   getPresignedPutUrl,
   type getPresignedUrlOptions,
 } from "@/server/file-uploads";
@@ -56,3 +57,23 @@ export const uploadFile = async (
 };
 
 export type TUploadFile = Awaited<ReturnType<typeof uploadFile>>;
+
+export const getFileFromS3 = async (key: string) => {
+  const { url } = await getPresignedGetUrl(key);
+
+  const response = await fetch(url, {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to get file "${key}", failed with status code ${response.status}`,
+    );
+  }
+
+  const buffer = await response.arrayBuffer();
+
+  const binaryData = new Uint8Array(buffer);
+
+  return binaryData;
+};

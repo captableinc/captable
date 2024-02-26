@@ -48,14 +48,19 @@ export const signTemplateProcedure = withAuth
       const value = input?.data?.[field?.name];
 
       if (value) {
-        const cord = {
-          x: field.left,
-          y: pageHeight - (field.top - field.height),
+        const textHeight = font.heightAtSize(fontSize);
+        const heightRatio = pageHeight / field.viewportHeight;
+        const widthRatio = pageWidth / field.viewportWidth;
+
+        const fieldX = field.left * widthRatio;
+        const fieldY = field.top * heightRatio;
+
+        firstPage.drawText(value, {
+          x: fieldX,
+          y: pageHeight - fieldY - textHeight,
           font,
           size: fontSize,
-        };
-
-        firstPage.drawText(value, cord);
+        });
       }
     }
 

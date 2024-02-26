@@ -57,9 +57,5 @@ export const parseStakeholderTextareaCSV = (csvData: string) => {
     return filtered;
   });
 
-  // mappedCSV.forEach((csvObj) => {
-
-  // });
-
   return mappedCSV;
 };

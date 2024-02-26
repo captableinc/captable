@@ -1,10 +1,11 @@
-import { Road_Rage } from "next/font/google";
+import { ZodAddStakeholderMutationSchema } from "@/trpc/routers/stakeholder-router/schema";
 import Papa, { type ParseResult } from "papaparse";
+import { ZodError } from "zod";
 
 export const parseStakeholderTextareaCSV = (csvData: string) => {
   const parsed: ParseResult<string[]> = Papa.parse(csvData, {
     header: false,
-    skipEmptyLines: true,
+    skipEmptyLines: "greedy",
   });
 
   const keys = [
@@ -23,6 +24,7 @@ export const parseStakeholderTextareaCSV = (csvData: string) => {
   const mappedCSV = parsed.data.map((csv) => {
     const values = csv.map((value, index) => {
       value = value.trim();
+
       // make stakeholderType and currentRelationship uppercase
       if (index === 3 || index === 4) {
         value = value.toUpperCase();
@@ -31,7 +33,7 @@ export const parseStakeholderTextareaCSV = (csvData: string) => {
     });
 
     if (values.length != keys.length) {
-      throw Error(
+      throw new Error(
         `Invalid values, Please make sure you have ${keys.length} values. Put "" (empty string) for the optional fields.`,
       );
     }
@@ -44,8 +46,20 @@ export const parseStakeholderTextareaCSV = (csvData: string) => {
       Object.entries(entry).filter(([_, value]) => value != undefined),
     );
 
+    try {
+      ZodAddStakeholderMutationSchema.parse(filtered);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        throw new Error(error.issues[0]?.message);
+      }
+    }
+
     return filtered;
   });
+
+  // mappedCSV.forEach((csvObj) => {
+
+  // });
 
   return mappedCSV;
 };

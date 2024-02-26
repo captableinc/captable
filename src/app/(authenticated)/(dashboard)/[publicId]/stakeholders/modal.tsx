@@ -18,8 +18,9 @@ type StakeholderType = {
 
 const StakeholderModal = ({ title, subtitle, trigger }: StakeholderType) => {
   const [open, setOpen] = useState(false);
-
+  const [csvError, setCSVError] = useState("");
   const [csvData, setCSVData] = useState("");
+
   const { mutateAsync } = api.stakeholder.addStakeholders.useMutation({
     onSuccess: async ({ message }) => {
       toast({
@@ -32,6 +33,8 @@ const StakeholderModal = ({ title, subtitle, trigger }: StakeholderType) => {
 
   const handleCSVSubmit = async () => {
     try {
+      setCSVError("");
+
       const parsedData = parseStakeholderTextareaCSV(
         csvData,
       ) as TypeZodAddStakeholderMutationSchema[];
@@ -40,6 +43,7 @@ const StakeholderModal = ({ title, subtitle, trigger }: StakeholderType) => {
       setOpen(false);
     } catch (error) {
       console.error(error);
+      setCSVError((error as Error).message);
     }
   };
 
@@ -53,6 +57,7 @@ const StakeholderModal = ({ title, subtitle, trigger }: StakeholderType) => {
         open,
         onOpenChange: (val) => {
           setOpen(val);
+          setCSVError("");
         },
       }}
     >
@@ -60,6 +65,7 @@ const StakeholderModal = ({ title, subtitle, trigger }: StakeholderType) => {
         <div className="space-y-2">
           <Label>Add stakeholders manually</Label>
           <Textarea onChange={(e) => setCSVData(e.target.value)} />
+          {csvError && <p className="text-xs text-red-500">{csvError}</p>}
           <Button className="ml-auto block" onClick={handleCSVSubmit}>
             Add
           </Button>

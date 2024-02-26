@@ -15,8 +15,6 @@ const options = {
 
 const resizeObserverOptions = {};
 
-const maxWidth = 800;
-
 interface PdfViewerProps {
   file: string | File | null;
   onSuccess?: () => void;
@@ -25,7 +23,7 @@ interface PdfViewerProps {
 export const PdfViewer = ({ file, onSuccess }: PdfViewerProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
-  const [containerWidth, setContainerWidth] = useState<number>();
+  const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const onResize = useCallback<ResizeObserverCallback>((entries) => {
     const [entry] = entries;
@@ -52,19 +50,20 @@ export const PdfViewer = ({ file, onSuccess }: PdfViewerProps) => {
   };
 
   return (
-    <div className="w-full max-w-[calc(100%-2em)]" ref={setContainerRef}>
+    <div className="overflow-hidden" ref={setContainerRef}>
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
         options={options}
+        className="w-full overflow-hidden rounded"
       >
         {Array.from(new Array(numPages), (el, index) => (
           <Page
             key={`page_${index + 1}`}
             pageNumber={index + 1}
-            width={
-              containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
-            }
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
+            width={containerWidth}
           />
         ))}
       </Document>

@@ -73,14 +73,24 @@ export type TypeZodReInviteMutationSchema = z.infer<
   typeof ZodReInviteMutationSchema
 >;
 
-export const ZodUpdateProfileMutationSchema = z.object({
-  fullName: z.string().min(2).max(40),
-  jobTitle: z.string().min(2).max(30),
-  loginEmail: z.string().email(),
-  workEmail: z.string().email(),
+const AvatarUploadInput = z.object({
+  type: z.literal("avatar"),
   avatarUrl: z.string(),
 });
 
-export type TypeZodUserProfileMutationSchema = z.infer<
+const ProfileUpdateInput = z.object({
+  type: z.literal("profile"),
+  profile: z.object({
+    fullName: z.string().min(2).max(40),
+    jobTitle: z.string().min(2).max(30),
+    loginEmail: z.string().email(),
+    workEmail: z.string().email(),
+  }),
+});
+
+export const ZodUpdateProfileMutationSchema =
+  AvatarUploadInput.or(ProfileUpdateInput);
+
+export type TypeZodUpdateProfileMutationSchema = z.infer<
   typeof ZodUpdateProfileMutationSchema
 >;

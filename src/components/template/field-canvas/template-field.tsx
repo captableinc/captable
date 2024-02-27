@@ -10,19 +10,28 @@ import {
 import { cn } from "@/lib/utils";
 
 import { FieldTypeData } from "../field-type-data";
-import { useFieldCanvasContext } from "@/contexts/field-canvas-context";
-import { type FieldTypes } from "@/prisma-enums";
+
+import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
+import { useFormContext } from "react-hook-form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+
+type Field = TypeZodAddFieldMutationSchema["data"][number];
+
 interface TemplateFieldProps {
   left: number;
   top: number;
   width: number;
   height: number;
   id: string;
-  name: string;
   focusId: string;
-  type: string;
-
+  index: number;
   handleFocus: (id: string) => void;
+  handleDelete: () => void;
 }
 
 export function TemplateField({
@@ -31,12 +40,12 @@ export function TemplateField({
   top,
   width,
   id,
-  name,
   focusId,
   handleFocus,
-  type,
+  index,
+  handleDelete,
 }: TemplateFieldProps) {
-  const { handleDeleteField, updateField } = useFieldCanvasContext();
+  const { control } = useFormContext<{ fields: Field[] }>();
 
   return (
     <div
@@ -64,43 +73,57 @@ export function TemplateField({
           variant="ghost"
           size="sm"
           onClick={() => {
-            handleDeleteField(id);
+            handleDelete();
           }}
         >
           X
         </Button>
 
-        <div className="flex">
-          <Select
-            onValueChange={(value) => {
-              updateField(id, { type: value as FieldTypes });
-            }}
-            defaultValue={type}
-          >
-            <SelectTrigger className="trigger group h-8">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {FieldTypeData.map((item) => (
-                <SelectItem key={item.label} value={item.value}>
-                  <span className="flex items-center gap-x-2">
-                    <item.icon className="h-4 w-4" aria-hidden />
-                    <span className="group-[.trigger]:hidden">
-                      {item.label}
-                    </span>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Input
-          type="text"
-          value={name}
-          onChange={(value) => {
-            updateField(id, { name: value.target.value });
-          }}
-          className="h-8 min-w-16"
+        <FormField
+          control={control}
+          name={`fields.${index}.type`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Field type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="trigger group h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {FieldTypeData.map((item) => (
+                    <SelectItem key={item.label} value={item.value}>
+                      <span className="flex items-center gap-x-2">
+                        <item.icon className="h-4 w-4" aria-hidden />
+                        <span className="group-[.trigger]:hidden">
+                          {item.label}
+                        </span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name={`fields.${index}.name`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Field Name</FormLabel>
+              <FormControl>
+                <Input
+                  className="h-8 min-w-16"
+                  type="text"
+                  required
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
       </div>
     </div>

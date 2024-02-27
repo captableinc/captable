@@ -1,8 +1,6 @@
-name: "Setup node and cache node_modules"
-inputs:
-  node_version:
-    required: false
-    default: v18.x
+on:
+  push:
+  pull_request:
 
 jobs:
   cache-and-install:
@@ -15,10 +13,10 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
-      - uses: pnpm/action-setup@v3
-        name: Install pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
         with:
           version: 8
           run_install: false

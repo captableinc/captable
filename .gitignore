@@ -43,6 +43,5 @@ yarn-error.log*
 *.tsbuildinfo
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
 
 /src/prisma-enums

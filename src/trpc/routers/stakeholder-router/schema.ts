@@ -6,9 +6,7 @@ import { z } from "zod";
 
 export const ZodAddStakeholderMutationSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
-  email: z.string().email().min(1, {
-    message: "Invalid email",
-  }),
+  email: z.string().email().min(1),
   institutionName: z.string().min(1).optional(),
   stakeholderType: z.nativeEnum(StakeholderTypeEnum, {
     errorMap: () => ({ message: "Invalid value for stakeholderType" }),

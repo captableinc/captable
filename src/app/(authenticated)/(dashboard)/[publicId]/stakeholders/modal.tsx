@@ -35,6 +35,11 @@ const StakeholderModal = ({ title, subtitle, trigger }: StakeholderType) => {
     try {
       setCSVError("");
 
+      if (!csvData) {
+        setCSVError("This field is required");
+        return;
+      }
+
       const parsedData = parseStakeholderTextareaCSV(
         csvData,
       ) as TypeZodAddStakeholderMutationSchema[];

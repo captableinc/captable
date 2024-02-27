@@ -34,7 +34,7 @@ export const parseStakeholderTextareaCSV = (csvData: string) => {
 
     if (values.length != keys.length) {
       throw new Error(
-        `Invalid values, Please make sure you have ${keys.length} values. Put "" (empty string) for the optional fields.`,
+        `Invalid values, Please make sure you have ${keys.length} values. You can put "" (empty string) for the optional fields.`,
       );
     }
 
@@ -46,15 +46,17 @@ export const parseStakeholderTextareaCSV = (csvData: string) => {
       Object.entries(entry).filter(([_, value]) => value != undefined),
     );
 
+    return filtered;
+  });
+
+  mappedCSV.forEach((csv) => {
     try {
-      ZodAddStakeholderMutationSchema.parse(filtered);
+      ZodAddStakeholderMutationSchema.parse(csv);
     } catch (error) {
       if (error instanceof ZodError) {
         throw new Error(error.issues[0]?.message);
       }
     }
-
-    return filtered;
   });
 
   return mappedCSV;

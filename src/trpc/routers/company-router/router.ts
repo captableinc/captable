@@ -1,8 +1,6 @@
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
-import { generatePublicId } from "@/common/id";
-import { Audit } from "@/server/audit";
 
 export const companyRouter = createTRPCRouter({
   getCompany: withAuth.query(async ({ ctx }) => {
@@ -34,14 +32,14 @@ export const companyRouter = createTRPCRouter({
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const memberAuthroized = await ctx.db.member.findFirst({
+        const memberAuthorized = await ctx.db.member.findFirst({
           where: {
             userId: ctx.session.user.id,
             companyId: ctx.session.user.companyId,
           },
         });
 
-        if (!memberAuthroized) {
+        if (!memberAuthorized) {
           return {
             success: false,
             message: "You are not authorized to perform this action",

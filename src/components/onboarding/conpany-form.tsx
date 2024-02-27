@@ -75,6 +75,7 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
   useEffect(() => {
     if (formType === "edit-company" && companyQuery.isFetched) {
       const data = companyQuery.data;
+      const today = new Date().toISOString().split("T")[0];
       form.reset({
         user: {
           name: currentUser.name ?? "",
@@ -84,7 +85,9 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
         company: {
           name: data?.name,
           incorporationType: data?.incorporationType,
-          incorporationDate: new Date().toISOString().split("T")[0],
+          incorporationDate: data?.incorporationDate
+            ? new Date(data.incorporationDate).toISOString().split("T")[0]
+            : today,
           incorporationCountry: data?.incorporationCountry,
           incorporationState: data?.incorporationState,
           streetAddress: data?.streetAddress,

@@ -32,6 +32,10 @@ interface TemplateFieldProps {
   index: number;
   handleFocus: (id: string) => void;
   handleDelete: () => void;
+  viewportWidth: number;
+  viewportHeight: number;
+  currentViewportWidth: number;
+  currentViewportHeight: number;
 }
 
 export function TemplateField({
@@ -44,17 +48,29 @@ export function TemplateField({
   handleFocus,
   index,
   handleDelete,
+  currentViewportHeight,
+  currentViewportWidth,
+  viewportHeight,
+  viewportWidth,
 }: TemplateFieldProps) {
   const { control } = useFormContext<{ fields: Field[] }>();
+
+  const heightRatio = currentViewportHeight / viewportHeight;
+  const widthRatio = currentViewportWidth / viewportWidth;
+
+  const newLeft = widthRatio * left;
+  const newTop = heightRatio * top;
+  const newHeight = heightRatio * height;
+  const newWidth = widthRatio * width;
 
   return (
     <div
       className="group absolute z-20 cursor-pointer overflow-visible border-2 border-red-600 bg-red-300/50"
       style={{
-        left,
-        top,
-        width,
-        height,
+        left: newLeft,
+        top: newTop,
+        width: newWidth,
+        height: newHeight,
       }}
       onClick={() => {
         handleFocus(id);

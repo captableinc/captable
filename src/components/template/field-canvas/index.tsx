@@ -1,15 +1,18 @@
 "use client";
 
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { TemplateField } from "./template-field";
 import { DrawingField } from "./drawing-field";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { useResizeObserver } from "@wojtekmaj/react-hooks";
 
 interface FieldCanvasProp {
   mode?: "readonly" | "edit";
 }
+
+const resizeObserverOptions = {};
 
 export function FieldCanvas({ mode = "edit" }: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
@@ -17,12 +20,23 @@ export function FieldCanvas({ mode = "edit" }: FieldCanvasProp) {
     name: "fields",
     control,
   });
-
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [endPos, setEndPos] = useState({ x: 0, y: 0 });
   const [focusId, setFocusId] = useState("");
+  const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
+
+  const onResize = useCallback<ResizeObserverCallback>((entries) => {
+    const [entry] = entries;
+
+    if (entry) {
+      const { height, width } = entry.contentRect;
+      setViewport({ height, width });
+    }
+  }, []);
+
+  useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
   const handleFocus = (id: string) => {
     if (mode === "edit") {
@@ -33,6 +47,7 @@ export function FieldCanvas({ mode = "edit" }: FieldCanvasProp) {
   return (
     <>
       <div
+        ref={setContainerRef}
         className="absolute bottom-0 left-0 right-0 top-0 z-10 cursor-crosshair"
         onMouseDown={(e) => {
           e.preventDefault();
@@ -105,6 +120,10 @@ export function FieldCanvas({ mode = "edit" }: FieldCanvasProp) {
 
       {fields.map((field, index) => (
         <TemplateField
+          viewportWidth={field.viewportWidth}
+          viewportHeight={field.viewportHeight}
+          currentViewportWidth={viewport.width}
+          currentViewportHeight={viewport.height}
           key={field.id}
           focusId={focusId}
           height={field.height}

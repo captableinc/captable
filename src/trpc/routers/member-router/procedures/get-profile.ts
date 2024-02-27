@@ -13,10 +13,17 @@ export const getProfileProcedure = withAuth.query(async ({ ctx }) => {
     select: {
       title: true,
       workEmail: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+          image: true,
+        },
+      },
     },
   });
 
-  const { name, email, image } = user;
+  const { name = "", email = "", image = "" } = memberData?.user ?? {};
 
   const { title = "", workEmail = "" } = memberData ?? {};
 
@@ -25,7 +32,7 @@ export const getProfileProcedure = withAuth.query(async ({ ctx }) => {
     jobTitle: title,
     loginEmail: email,
     workEmail: workEmail,
-    avatarUrl: image ?? "",
+    avatarUrl: image,
   };
 
   return payload;

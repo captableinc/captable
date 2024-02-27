@@ -33,81 +33,36 @@ export const companyRouter = createTRPCRouter({
   updateCompany: withAuth
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { userAgent, requestIp } = ctx;
       try {
-        const { publicId } = await ctx.db.$transaction(async (tx) => {
-          const publicId = generatePublicId();
-
-          const company = await tx.company.create({
-            data: {
-              ...input.company,
-              incorporationDate: new Date(input.company.incorporationDate),
-              publicId,
-            },
-          });
-
-          const user = await tx.user.update({
-            where: {
-              id: ctx.session.user.id,
-            },
-            data: {
-              name: `${input.user.name}`,
-              email: `${input.user.email}`,
-            },
-            select: {
-              id: true,
-              name: true,
-            },
-          });
-
-          await tx.member.create({
-            data: {
-              isOnboarded: true,
-              status: "ACTIVE",
-              title: input.user.title,
-              userId: user.id,
-              companyId: company.id,
-              lastAccessed: new Date(),
-            },
-          });
-
-          await Audit.create(
-            {
-              action: "user.onboarded",
-              companyId: company.id,
-              actor: { type: "user", id: user.id },
-              context: {
-                userAgent,
-                requestIp,
-              },
-              target: [{ type: "company", id: company.id }],
-              summary: `${user.name} onboarded ${company.name}`,
-            },
-            tx,
-          );
-
-          await Audit.create(
-            {
-              action: "company.created",
-              companyId: company.id,
-              actor: { type: "user", id: user.id },
-              context: {
-                userAgent,
-                requestIp,
-              },
-              target: [{ type: "company", id: company.id }],
-              summary: `${user.name} created company ${company.name}`,
-            },
-            tx,
-          );
-
-          return { publicId };
+        const memberAuthroized = await ctx.db.member.findFirst({
+          where: {
+            userId: ctx.session.user.id,
+            companyId: ctx.session.user.companyId,
+          },
         });
 
+        if (!memberAuthroized) {
+          return {
+            success: false,
+            message: "You are not authorized to perform this action",
+          };
+        }
+
+        const { company } = input;
+        const { incorporationDate, ...rest } = company;
+
+        await ctx.db.company.update({
+          where: {
+            id: ctx.session.user.companyId,
+          },
+          data: {
+            incorporationDate: new Date(incorporationDate),
+            ...rest,
+          },
+        });
         return {
           success: true,
           message: "successfully updated company",
-          publicId,
         };
       } catch (error) {
         console.error("Error onboarding:", error);

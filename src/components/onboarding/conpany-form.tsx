@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -32,6 +33,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import countries from "@/lib/countries";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = ZodOnboardingMutationSchema;
 
@@ -43,29 +45,9 @@ type CompanyFormProps = {
 const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
   const { update } = useSession();
   const router = useRouter();
-  api.company.getCompany.useQuery(undefined, {
+  const { toast } = useToast();
+  const companyQuery = api.company.getCompany.useQuery(undefined, {
     enabled: formType === "edit-company",
-    onSuccess: (data) => {
-      form.reset({
-        user: {
-          name: currentUser.name ?? "",
-          email: currentUser.email ?? "",
-        },
-        company: {
-          name: data.name ?? "",
-          incorporationType: data.incorporationType ?? "",
-          incorporationDate: new Date(data.incorporationDate)
-            .toISOString()
-            .split("T")[0],
-          incorporationCountry: data.incorporationCountry ?? "",
-          incorporationState: data.incorporationState ?? "",
-          streetAddress: data.streetAddress ?? "",
-          city: data.city ?? "",
-          state: data.state ?? "",
-          zipcode: data.zipcode ?? "",
-        },
-      });
-    },
   });
 
   const form = useForm<TypeZodOnboardingMutationSchema>({
@@ -90,6 +72,30 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
     },
   });
 
+  useEffect(() => {
+    if (formType === "edit-company" && companyQuery.isFetched) {
+      const data = companyQuery.data;
+      form.reset({
+        user: {
+          name: currentUser.name ?? "",
+          email: currentUser.email ?? "",
+          title: "",
+        },
+        company: {
+          name: data?.name,
+          incorporationType: data?.incorporationType,
+          incorporationDate: new Date().toISOString().split("T")[0],
+          incorporationCountry: data?.incorporationCountry,
+          incorporationState: data?.incorporationState,
+          streetAddress: data?.streetAddress,
+          city: data?.city,
+          state: data?.state,
+          zipcode: data?.zipcode,
+        },
+      });
+    }
+  }, [formType, companyQuery.isFetched, companyQuery.data, currentUser, form]);
+
   const onBoardingMutation = api.onboarding.onboard.useMutation({
     onSuccess: async ({ publicId }) => {
       await update();
@@ -99,10 +105,16 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
   });
 
   const companySettingMutation = api.company.updateCompany.useMutation({
-    onSuccess: async () => {
+    onSuccess: async ({ success, message }) => {
       await update();
 
-      router.back();
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully updated"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
     },
   });
 
@@ -137,7 +149,9 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
           )}
           <div>
             <Button size="sm" variant={"outline"} type="button">
-              Change company logo
+              {formType === "edit-company"
+                ? "Change company logo"
+                : "Upload company logo"}
             </Button>
             <p className="mt-2 text-xs text-gray-700">
               JPG, GIF or PNG. 1MB max.
@@ -223,10 +237,7 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Incorporation type</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select type" />
@@ -267,10 +278,7 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Incorporation country</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select country" />

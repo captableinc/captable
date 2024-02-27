@@ -25,7 +25,7 @@ export default async function SigningPage(props: SigningPageProps) {
           </TemplateFieldProvider>
         </div>
       </div>
-      <div className="sticky top-0 flex min-h-full w-64 flex-col lg:border-l">
+      <div className="sticky top-0 flex min-h-full w-80 flex-col lg:border-l">
         <SigningFields token={props.params.token} fields={fields} />
       </div>
     </div>

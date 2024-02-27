@@ -63,16 +63,18 @@ export const authOptions: NextAuthOptions = {
       session.user.memberId = token.memberId;
       session.user.companyPublicId = token.companyPublicId;
       session.user.status = token.status;
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.image = token.picture ?? "";
 
       if (token.sub) {
         session.user.id = token.sub;
       }
-
       return session;
     },
 
-    async jwt({ token, trigger }) {
-      if (trigger) {
+    async jwt({ token, trigger, session }) {
+      if (trigger && trigger !== "update") {
         const member = await db.member.findFirst({
           where: {
             userId: token.sub,
@@ -101,7 +103,6 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (member) {
-          console.log({ member });
           token.status = member.status;
           token.name = member.user?.name;
           token.memberId = member.id;
@@ -115,6 +116,16 @@ export const authOptions: NextAuthOptions = {
           token.isOnboarded = false;
           token.companyPublicId = "";
         }
+      }
+
+      if (trigger === "update") {
+        const newToken = {
+          ...token,
+          ...session?.user,
+          picture: session?.user?.image || "",
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return newToken;
       }
 
       return token;

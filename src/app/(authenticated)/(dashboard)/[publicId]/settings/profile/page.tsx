@@ -10,21 +10,59 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/trpc/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
+import { uploadFile } from "@/common/uploads";
+import { env } from "@/env";
+
+enum PayloadType {
+  PROFILE_DATA = "profile",
+  PROFILE_AVATAR = "avatar",
+}
+
+type ProfilePayload = {
+  type: PayloadType.PROFILE_DATA;
+  payload: {
+    fullName: string;
+    jobTitle: string;
+    loginEmail: string;
+    workEmail: string;
+  };
+};
+
+type AvatarPayload = {
+  type: PayloadType.PROFILE_AVATAR;
+  payload: {
+    avatarUrl: string;
+  };
+};
+
+type RootPayload = ProfilePayload | AvatarPayload;
+
+type MemberProfile = {
+  data: {
+    fullName: string;
+    jobTitle: string;
+    loginEmail: string;
+    workEmail: string;
+    avatarUrl: string;
+  };
+};
 
 const profileSettingsSchema = z.object({
   fullName: z.string().min(2).max(40),
   jobTitle: z.string().min(2).max(30),
-  loginEmail: z.string().email(),
-  workEmail: z.string().email(),
-  avatarUrl: z.string(),
+  loginEmail: z.string().email().min(2),
+  workEmail: z.string().email().min(2),
 });
 
 const ProfileSettingsPage = () => {
+  const { data: session, update } = useSession();
   const { toast } = useToast();
   const utils = api.useUtils();
-  const memberProfile = api.member.getProfile.useQuery();
+  // @ts-expect-error xxxx
+  const memberProfile: MemberProfile = api.member.getProfile.useQuery();
 
-  const [file, setFile] = useState<File | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // @ts-expect-error: xxxx
@@ -36,13 +74,63 @@ const ProfileSettingsPage = () => {
   const { errors } = form.formState;
   const isSubmitting = form.formState.isSubmitting;
   const isDirty = form.formState.isDirty;
-  const canSave: boolean = file ? isDirty || !!file : isDirty;
+  const canSave: boolean = avatarUrl ? !!avatarUrl : isDirty;
 
-  // @ts-expect-error: xxxx
   const saveProfileMutation = api.member.updateProfile.useMutation({
-    onSuccess: async () => {
-      await utils.member.getProfile.invalidate();
-      return toast({
+    // @ts-expect-error xxxx
+    onSuccess: async (
+      message: { success: boolean },
+      rootPayload: RootPayload,
+    ) => {
+      if (!message.success) return;
+
+      const { fullName, loginEmail } = memberProfile.data;
+
+      switch (rootPayload.type) {
+        case PayloadType.PROFILE_DATA:
+          console.log("ran-profile-data");
+
+          const updatedProfilePayload = rootPayload.payload;
+
+          if (
+            loginEmail !== updatedProfilePayload.loginEmail ||
+            fullName !== updatedProfilePayload.fullName
+          ) {
+            const updateUser = {
+              ...session,
+              user: {
+                ...session?.user,
+                name: updatedProfilePayload.fullName,
+                email: updatedProfilePayload.loginEmail,
+              },
+            };
+            await update(updateUser);
+          }
+
+          await utils.member.getProfile.invalidate();
+
+          break;
+
+        case PayloadType.PROFILE_AVATAR:
+          const _updatedProfilePayload = rootPayload.payload;
+
+          const updateUser = {
+            ...session,
+            user: {
+              ...session?.user,
+              image: _updatedProfilePayload.avatarUrl,
+            },
+          };
+          console.log("Updating session");
+          await update(updateUser);
+
+          break;
+
+        default:
+          break;
+      }
+
+      toast({
         variant: "default",
         title: "Profile changed successfully.",
       });
@@ -64,82 +152,128 @@ const ProfileSettingsPage = () => {
   }, [memberProfile?.data, form]);
 
   const handleImageUpload = async (
-    _file: File,
+    file: File,
   ): Promise<{ imageUrl: string }> => {
-    // const options = {
-    //   expiresIn: 3600,
-    //   keyPrefix: "opencap",
-    //   identifier: "unique-id",
-    // };
-    // const { key, ...rest } = await uploadFile(file, options);
-    // const imageUrl = `${process.env.UPLOAD_ENDPOINT}/${key}`;
-    return { imageUrl: "https://avatars.githubusercontent.com/u/456802?v=4" };
+    const options = {
+      expiresIn: 3600,
+      keyPrefix: "profile-avatars",
+      //eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+      identifier: session?.user.id!,
+    };
+    const { key } = await uploadFile(file, options, "publicBucket");
+
+    const s3BaseURL = `https://${env.PUBLIC_UPLOAD_BUCKET}.s3.amazonaws.com`;
+
+    const imageUrl = `${s3BaseURL}/${key}`;
+    // const imageUrl = "https://avatars.githubusercontent.com/u/8019099?s=64&v=4";
+
+    return { imageUrl };
   };
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
 
-    if (files?.[0]) {
-      const maxSizeInBytes = 1024 * 1024; // 1 MB
+  const validateFile = (file: File) => {
+    const maxSizeInBytes = 1024 * 1024; // 1 MB
 
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
 
-      if (files[0].size > maxSizeInBytes) {
-        return toast({
+    if (file.size > maxSizeInBytes) {
+      toast({
+        variant: "destructive",
+        title: "File limit exceeded.",
+        description: "File size exceeds the maximum allowed(1 MB)",
+      });
+      return false;
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid file format.",
+        description: "Allowed types: JPEG, PNG, GIF",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file =
+      event.target.files && event.target.files.length > 0
+        ? event.target.files[0]
+        : null;
+
+    if (!file) return;
+
+    const canUpload = validateFile(file);
+
+    if (canUpload) {
+      try {
+        const { imageUrl } = await handleImageUpload(file);
+
+        if (!imageUrl) {
+          return toast({
+            variant: "destructive",
+            title: "Failed uploading the image.",
+            description: "Please try again later.",
+          });
+        }
+
+        setAvatarUrl(imageUrl);
+      } catch (error) {
+        console.error("Something went wrong", error);
+        toast({
           variant: "destructive",
-          title: "File limit exceeded.",
-          description: "File size exceeds the maximum allowed(1 MB)",
+          title: "Failed uploading image.",
+          description: "Please try again later.",
         });
       }
-      if (!allowedTypes.includes(files[0].type)) {
-        return toast({
-          variant: "destructive",
-          title: "Invalid file format.",
-          description: "Allowed types: JPEG, PNG, GIF",
-        });
-      }
-      setFile(files[0]);
     }
   };
+
   const handleAvatarChange = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
+
   const handleRemoveAvatar = () => {
-    setFile(null);
+    setAvatarUrl("");
   };
+
   async function onSubmit(values: z.infer<typeof profileSettingsSchema>) {
-    const { fullName, jobTitle, loginEmail, workEmail, avatarUrl } = values;
-    try {
-      if (!file) {
-        saveProfileMutation.mutate({
-          fullName,
-          jobTitle,
-          loginEmail,
-          workEmail,
+    if (avatarUrl) {
+      saveProfileMutation.mutate({
+        type: PayloadType.PROFILE_AVATAR,
+        payload: {
           avatarUrl,
-        });
-      } else {
-        const { imageUrl } = await handleImageUpload(file);
-        saveProfileMutation.mutate({
-          fullName,
-          jobTitle,
-          loginEmail,
-          workEmail,
-          avatarUrl: imageUrl,
-        });
-      }
-    } catch (error) {
-      console.error("Something went wrong", error);
+        },
+      });
+      setAvatarUrl("");
+      return;
     }
+
+    const { fullName, jobTitle, loginEmail, workEmail } = values;
+
+    saveProfileMutation.mutate({
+      type: PayloadType.PROFILE_DATA,
+      payload: {
+        fullName,
+        jobTitle,
+        loginEmail,
+        workEmail,
+      },
+    });
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-6">
           <div className="col-span-full flex items-center gap-x-8">
             <Image
-              src={memberProfile?.data?.avatarUrl ?? "/avatar.svg"}
+              src={session?.user.image ?? "/avatar.svg"}
               alt="User avatar"
               width={50}
               height={50}
@@ -152,6 +286,7 @@ const ProfileSettingsPage = () => {
                   size="sm"
                   variant={"outline"}
                   type="button"
+                  disabled={!!avatarUrl}
                 >
                   Change avatar
                 </Button>
@@ -166,20 +301,20 @@ const ProfileSettingsPage = () => {
                 </p>
               </div>
               <>
-                {file && (
+                {avatarUrl && (
                   <div className="flex items-center space-x-2">
-                    <p className="mt-2 text-sm text-green-700">
-                      {file.name.length > 12
-                        ? `${file.name.slice(0, 12)}.. .${file.type} selected`
-                        : `${file.name} selected`}
+                    <p className="mt-2 rounded-md bg-yellow-100 px-2 text-sm text-green-700">
+                      {avatarUrl.length > 12
+                        ? `${avatarUrl.slice(0, 16)}.jpg  (Uploaded successfully)`
+                        : `${avatarUrl}.jpg  (Uploaded successfully)`}
                     </p>
                     <Button
                       onClick={handleRemoveAvatar}
                       variant={"outline"}
-                      className="border-none text-xl text-red-600 hover:bg-white hover:text-slate-600"
+                      className="mt-1 border-none text-xl text-red-600 hover:bg-white hover:text-slate-600"
                       size={"sm"}
                     >
-                      x
+                      <p className="font-bold">X</p>
                     </Button>
                   </div>
                 )}
@@ -230,8 +365,8 @@ const ProfileSettingsPage = () => {
 
         <div className="mt-8 flex justify-end">
           <Button
-            disabled={isSubmitting || !canSave}
-            loading={isSubmitting}
+            disabled={!!isSubmitting || !canSave}
+            loading={!!isSubmitting}
             loadingText="Saving..."
             type="submit"
           >

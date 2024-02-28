@@ -1,5 +1,5 @@
 import { withAuth } from "@/trpc/api/trpc";
-import { ZodUpdateProfileMutationSchema } from "../schema";
+import { ZodUpdateProfileMutationSchema, PayloadType } from "../schema";
 import { Audit } from "@/server/audit";
 
 export const updateProfileProcedure = withAuth
@@ -7,8 +7,8 @@ export const updateProfileProcedure = withAuth
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
 
-    if (input.type === "profile") {
-      const { fullName, loginEmail, workEmail, jobTitle } = input.profile;
+    if (input.type === PayloadType.PROFILE_DATA) {
+      const { fullName, loginEmail, workEmail, jobTitle } = input.payload;
 
       await db.$transaction(async (tx) => {
         const member = await tx.member.update({
@@ -56,8 +56,8 @@ export const updateProfileProcedure = withAuth
       return { success: true };
     }
 
-    if (input.type === "avatar") {
-      const { avatarUrl } = input;
+    if (input.type === PayloadType.PROFILE_AVATAR) {
+      const { avatarUrl } = input.payload;
 
       await db.$transaction(async (tx) => {
         const member = await tx.member.update({
@@ -93,7 +93,7 @@ export const updateProfileProcedure = withAuth
               userAgent,
             },
             target: [{ type: "user", id: member.userId }],
-            summary: `${user.name} uploaded new profile avatar.`,
+            summary: `${user.name} uploaded new profile image.`,
           },
           tx,
         );

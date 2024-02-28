@@ -20,6 +20,7 @@ const accessKeyId = env.UPLOAD_ACCESS_KEY_ID;
 const secretAccessKey = env.UPLOAD_SECRET_ACCESS_KEY;
 const hasCredentials = accessKeyId && secretAccessKey;
 const Bucket = env.UPLOAD_BUCKET;
+const PublicBucket = env.PUBLIC_UPLOAD_BUCKET;
 
 const S3 = new S3Client({
   region,
@@ -39,6 +40,7 @@ export interface getPresignedUrlOptions {
   keyPrefix: string;
   // should be companyPublicId or memberId or userId
   identifier: string;
+  bucketMode: "privateBucket" | "publicBucket";
 }
 
 const TEN_MINUTES_IN_SECONDS = 10 * 60;
@@ -49,6 +51,7 @@ export const getPresignedPutUrl = async ({
   fileName,
   keyPrefix,
   identifier,
+  bucketMode,
 }: getPresignedUrlOptions) => {
   const { name, ext } = path.parse(fileName);
 
@@ -57,7 +60,7 @@ export const getPresignedPutUrl = async ({
   )}${ext}`;
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket,
+    Bucket: bucketMode === "privateBucket" ? Bucket : PublicBucket,
     Key,
     ContentType: contentType,
   });

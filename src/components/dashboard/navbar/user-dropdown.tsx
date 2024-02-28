@@ -72,7 +72,6 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
             await signOut();
           }}
         >
-          Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

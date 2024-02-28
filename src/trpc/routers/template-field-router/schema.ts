@@ -17,6 +17,7 @@ export const ZodAddFieldMutationSchema = z.object({
       type: z.nativeEnum(FieldTypes),
       viewportHeight: z.number(),
       viewportWidth: z.number(),
+      page: z.number(),
     }),
   ),
 });

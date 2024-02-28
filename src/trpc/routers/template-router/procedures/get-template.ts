@@ -31,6 +31,7 @@ export const getTemplateProcedure = withAuth
             type: true,
             viewportHeight: true,
             viewportWidth: true,
+            page: true,
           },
           orderBy: {
             top: "asc",

@@ -31,15 +31,10 @@ export const signTemplateProcedure = withAuth
 
     const pageHeights = pages.map((item) => item.getHeight());
 
-    const cumulativePageHeight = pageHeights.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      0,
-    );
-
     const pagesRange = pageHeights.reduce<[number, number][]>(
       (prev, curr, index) => {
         const prevRange = prev?.[index - 1]?.[1];
-        const startingRange = prevRange ? prevRange + 1 : 0;
+        const startingRange = prevRange ? prevRange : 0;
         const height = curr;
 
         prev.push([startingRange, height + startingRange]);
@@ -74,6 +69,14 @@ export const signTemplateProcedure = withAuth
         const fieldY = field.top * heightRatio;
 
         const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
+
+        // console.log({
+        //   withoutLength: pageHeight - fieldY - textHeight + topMargin,
+        //   y: pageHeight - fieldY * pages.length - textHeight + topMargin,
+        //   vv: fieldY * pages.length,
+        //   length: pages.length,
+        //   fieldY,
+        // });
 
         page.drawText(value, {
           x: fieldX,

@@ -74,7 +74,17 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, trigger, session }) {
-      if (trigger && trigger !== "update") {
+      if (trigger === "update") {
+        const newToken = {
+          ...token,
+          ...session?.user,
+          picture: session?.user?.image || "",
+        };
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return newToken;
+      }
+
+      if (trigger) {
         const member = await db.member.findFirst({
           where: {
             userId: token.sub,
@@ -116,16 +126,6 @@ export const authOptions: NextAuthOptions = {
           token.isOnboarded = false;
           token.companyPublicId = "";
         }
-      }
-
-      if (trigger === "update") {
-        const newToken = {
-          ...token,
-          ...session?.user,
-          picture: session?.user?.image || "",
-        };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return newToken;
       }
 
       return token;

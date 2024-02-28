@@ -1,5 +1,10 @@
 import { string, z } from "zod";
 
+export enum PayloadType {
+  PROFILE_DATA = "profile",
+  PROFILE_AVATAR = "avatar",
+}
+
 export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),
   name: z.string().min(1),
@@ -74,13 +79,15 @@ export type TypeZodReInviteMutationSchema = z.infer<
 >;
 
 const AvatarUploadInput = z.object({
-  type: z.literal("avatar"),
-  avatarUrl: z.string(),
+  type: z.literal(PayloadType.PROFILE_AVATAR),
+  payload: z.object({
+    avatarUrl: z.string(),
+  }),
 });
 
 const ProfileUpdateInput = z.object({
-  type: z.literal("profile"),
-  profile: z.object({
+  type: z.literal(PayloadType.PROFILE_DATA),
+  payload: z.object({
     fullName: z.string().min(2).max(40),
     jobTitle: z.string().min(2).max(30),
     loginEmail: z.string().email(),

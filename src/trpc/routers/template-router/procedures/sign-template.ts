@@ -27,19 +27,26 @@ export const signTemplateProcedure = withAuth
     const docBuffer = await getFileFromS3(template.bucket.key);
     const pdfDoc = await PDFDocument.load(docBuffer);
 
-    const firstPage = pdfDoc.getPages()[0];
+    const pages = pdfDoc.getPages();
 
-    if (!firstPage) {
-      throw new Error("page not found");
-    }
+    const pageHeights = pages.map((item) => item.getHeight());
 
-    const firstField = template.fields[0];
+    const cumulativePageHeight = pageHeights.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0,
+    );
 
-    if (!firstField) {
-      throw new Error("page not found");
-    }
+    const pagesRange = pageHeights.reduce<[number, number][]>(
+      (prev, curr, index) => {
+        const prevRange = prev?.[index - 1]?.[1];
+        const startingRange = prevRange ? prevRange + 1 : 0;
+        const height = curr;
 
-    const { width: pageWidth, height: pageHeight } = firstPage.getSize();
+        prev.push([startingRange, height + startingRange]);
+        return prev;
+      },
+      [],
+    );
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontSize = 8;
@@ -48,6 +55,17 @@ export const signTemplateProcedure = withAuth
       const value = input?.data?.[field?.name];
 
       if (value) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const pageNumber: number = field.page;
+
+        const page = pages.at(pageNumber);
+
+        if (!page) {
+          throw new Error("page not found");
+        }
+
+        const { width: pageWidth, height: pageHeight } = page.getSize();
+
         const textHeight = font.heightAtSize(fontSize);
         const heightRatio = pageHeight / field.viewportHeight;
         const widthRatio = pageWidth / field.viewportWidth;
@@ -55,9 +73,11 @@ export const signTemplateProcedure = withAuth
         const fieldX = field.left * widthRatio;
         const fieldY = field.top * heightRatio;
 
-        firstPage.drawText(value, {
+        const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
+
+        page.drawText(value, {
           x: fieldX,
-          y: pageHeight - fieldY - textHeight,
+          y: pageHeight - fieldY * pages.length - textHeight + topMargin,
           font,
           size: fontSize,
         });

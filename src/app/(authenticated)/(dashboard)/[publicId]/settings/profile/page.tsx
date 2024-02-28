@@ -15,8 +15,8 @@ import { uploadFile } from "@/common/uploads";
 import { env } from "@/env";
 
 enum PayloadType {
-  PROFILE_DATA = "profile",
-  PROFILE_AVATAR = "avatar",
+  PROFILE_DATA = "profile-data",
+  PROFILE_AVATAR = "profile-avatar",
 }
 
 type ProfilePayload = {

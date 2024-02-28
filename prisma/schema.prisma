@@ -297,6 +297,7 @@ model TemplateField {
   templateId     String
   viewportHeight Int
   viewportWidth  Int
+  page           Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

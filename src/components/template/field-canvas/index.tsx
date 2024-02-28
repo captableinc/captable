@@ -10,11 +10,22 @@ import { useResizeObserver } from "@wojtekmaj/react-hooks";
 
 interface FieldCanvasProp {
   mode?: "readonly" | "edit";
+  pageHeights: number[];
 }
 
 const resizeObserverOptions = {};
 
-export function FieldCanvas({ mode = "edit" }: FieldCanvasProp) {
+function getPageNumber(y: number, ranges: [number, number][]) {
+  for (let i = 0; i < ranges.length; i++) {
+    const range = ranges[i];
+    if (range && y >= range[0] && y <= range[1]) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+export function FieldCanvas({ mode = "edit", pageHeights }: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
   const { append, fields, remove } = useFieldArray({
     name: "fields",
@@ -91,18 +102,45 @@ export function FieldCanvas({ mode = "edit" }: FieldCanvasProp) {
           if (startPos.x !== endPos.x && startPos.y !== endPos.y) {
             const id = nanoid(12);
 
+            const cumulativePageHeight = pageHeights.reduce(
+              (accumulator, currentValue) => accumulator + currentValue,
+              0,
+            );
+
+            const heightRatio = cumulativePageHeight / viewport.height;
+
+            const top = Math.min(startPos.y, endPos.y);
+            const left = Math.min(startPos.x, endPos.x);
+            const width = Math.abs(endPos.x - startPos.x);
+            const height = Math.abs(endPos.y - startPos.y);
+
+            const pagesRange = pageHeights.reduce<[number, number][]>(
+              (prev, curr, index) => {
+                const prevRange = prev?.[index - 1]?.[1];
+                const startingRange = prevRange ? prevRange + 1 : 0;
+                const height = curr;
+
+                prev.push([startingRange, height + startingRange]);
+                return prev;
+              },
+              [],
+            );
+
+            const pageNum = getPageNumber(top * heightRatio, pagesRange);
+
             append({
               id,
               name: `field ${fields.length}`,
-              left: Math.min(startPos.x, endPos.x),
-              top: Math.min(startPos.y, endPos.y),
-              width: Math.abs(endPos.x - startPos.x),
-              height: Math.abs(endPos.y - startPos.y),
+              left,
+              top,
+              width,
+              height,
               type: fieldType,
               placeholder: "",
               required: true,
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
+              page: pageNum,
             });
 
             setFocusId(id);

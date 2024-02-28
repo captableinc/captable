@@ -6,6 +6,8 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { useCallback, useState } from "react";
 
+import type { PDFDocumentProxy } from "pdfjs-dist";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
 
 const options = {
@@ -17,10 +19,13 @@ const resizeObserverOptions = {};
 
 interface PdfViewerProps {
   file: string | File | null;
-  onSuccess?: () => void;
+  onDocumentLoadSuccess?: (e: PDFDocumentProxy) => Promise<void> | void;
 }
 
-export const PdfViewer = ({ file, onSuccess }: PdfViewerProps) => {
+export const PdfViewer = ({
+  file,
+  onDocumentLoadSuccess: _onDocumentLoadSuccess,
+}: PdfViewerProps) => {
   const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -35,17 +40,13 @@ export const PdfViewer = ({ file, onSuccess }: PdfViewerProps) => {
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
-  const onDocumentLoadSuccess = (event: {
-    numPages?: number;
-    document?: {
-      numPages: number;
-    };
-  }) => {
-    if (onSuccess) {
-      onSuccess();
+  const onDocumentLoadSuccess = async (event: PDFDocumentProxy) => {
+    if (_onDocumentLoadSuccess) {
+      await _onDocumentLoadSuccess(event);
     }
 
-    const nextNumPages = event.numPages ?? event.document?.numPages;
+    const nextNumPages = event.numPages;
+
     setNumPages(nextNumPages);
   };
 

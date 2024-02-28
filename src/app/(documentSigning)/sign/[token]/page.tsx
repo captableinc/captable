@@ -1,6 +1,7 @@
 import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { SigningFields } from "@/components/template/signing-fields";
 import { TemplateFieldProvider } from "@/providers/template-field-provider";
+import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 
 interface SigningPageProps {
@@ -14,6 +15,8 @@ export default async function SigningPage(props: SigningPageProps) {
     publicId: props.params.token,
   });
 
+  const session = await getServerAuthSession();
+  const companyPublicId = session?.user.companyPublicId;
   return (
     <div className="flex min-h-screen bg-gray-50">
       <div className="flex h-full flex-grow flex-col">
@@ -26,7 +29,11 @@ export default async function SigningPage(props: SigningPageProps) {
         </div>
       </div>
       <div className="sticky top-0 flex min-h-full w-80 flex-col lg:border-l">
-        <SigningFields token={props.params.token} fields={fields} />
+        <SigningFields
+          token={props.params.token}
+          fields={fields}
+          companyPublicId={companyPublicId}
+        />
       </div>
     </div>
   );

@@ -4,16 +4,38 @@ import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-fiel
 import { FieldRenderer } from "./field-renderer";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 type Field = TypeZodAddFieldMutationSchema["data"][number];
 
 interface SigningFieldsProps {
   fields: Field[];
   token: string;
+  companyPublicId: string | undefined;
 }
 
-export function SigningFields({ fields, token }: SigningFieldsProps) {
-  const { mutateAsync } = api.template.sign.useMutation();
+export function SigningFields({
+  fields,
+  token,
+  companyPublicId,
+}: SigningFieldsProps) {
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const { mutateAsync } = api.template.sign.useMutation({
+    onSuccess() {
+      toast({
+        variant: "default",
+        title: "🎉 Document signed Successfully",
+        description: "",
+      });
+
+      if (companyPublicId) {
+        router.push(`/${companyPublicId}/documents`);
+      }
+    },
+  });
 
   return (
     <form

@@ -48,6 +48,9 @@ const LoginForm = () => {
     await signIn("google", { callbackUrl: "/onboarding" });
   }
   const isSubmitting = form.formState.isSubmitting;
+  const isGoogleAuthEnabled = !!(
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+  );
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -101,26 +104,30 @@ const LoginForm = () => {
               </form>
             </Form>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t"></span>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
+            {isGoogleAuthEnabled && (
+              <>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
 
-            <Button
-              disabled={isSubmitting}
-              variant="outline"
-              type="button"
-              onClick={signInWithGoogle}
-            >
-              <RiGoogleFill className="mr-2 h-4 w-4" />
-              Google
-            </Button>
+                <Button
+                  disabled={isSubmitting}
+                  variant="outline"
+                  type="button"
+                  onClick={signInWithGoogle}
+                >
+                  <RiGoogleFill className="mr-2 h-4 w-4" />
+                  Google
+                </Button>
+              </>
+            )}
 
             <span className="text-center text-sm text-gray-500">
               Don{`'`}t have an account?{" "}

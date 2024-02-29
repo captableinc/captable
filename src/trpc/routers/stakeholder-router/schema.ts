@@ -5,6 +5,7 @@ import {
 import { z } from "zod";
 
 export const ZodAddStakeholderMutationSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1, { message: "Name is required" }),
   email: z.string().email().min(1),
   institutionName: z.string().min(1).optional(),
@@ -25,6 +26,6 @@ export const ZodAddStakeholderArrayMutationSchema = z.array(
   ZodAddStakeholderMutationSchema,
 );
 
-export type TypeZodAddStakeholderArrayMutationSchema = z.infer<
+export type TypeStakeholderArray = z.infer<
   typeof ZodAddStakeholderArrayMutationSchema
 >;

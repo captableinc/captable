@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { parseCSV } from "@/lib/csv-parser";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
-import { type TypeZodAddStakeholderArrayMutationSchema } from "@/trpc/routers/stakeholder-router/schema";
+import { type TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
+import { useRouter } from "next/navigation";
 
 type StakeholderUploaderType = {
   setOpen: (val: boolean) => void;
@@ -16,6 +17,8 @@ type StakeholderUploaderType = {
 const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
   const [csvFile, setCSVFile] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const router = useRouter();
 
   const { mutateAsync, isLoading } =
     api.stakeholder.addStakeholders.useMutation({
@@ -27,6 +30,8 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
             : "Uh oh! Something went wrong.",
           description: message,
         });
+
+        router.refresh();
       },
     });
 
@@ -42,7 +47,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
       }
 
       const parsedData = await parseCSV(csvFile[0]);
-      await mutateAsync(parsedData as TypeZodAddStakeholderArrayMutationSchema);
+      await mutateAsync(parsedData as TypeStakeholderArray);
 
       setOpen(false);
     } catch (error) {

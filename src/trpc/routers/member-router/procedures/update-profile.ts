@@ -1,6 +1,7 @@
 import { withAuth } from "@/trpc/api/trpc";
-import { ZodUpdateProfileMutationSchema, PayloadType } from "../schema";
+import { ZodUpdateProfileMutationSchema } from "../schema";
 import { Audit } from "@/server/audit";
+import { PayloadType } from "@/lib/constants";
 
 export const updateProfileProcedure = withAuth
   .input(ZodUpdateProfileMutationSchema)
@@ -15,7 +16,6 @@ export const updateProfileProcedure = withAuth
           where: {
             status: "ACTIVE",
             id: user.memberId,
-            companyId: user.companyId,
           },
           data: {
             title: jobTitle,
@@ -64,7 +64,6 @@ export const updateProfileProcedure = withAuth
           where: {
             status: "ACTIVE",
             id: user.memberId,
-            companyId: user.companyId,
           },
           data: {
             user: {

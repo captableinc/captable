@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/command";
 
 import { cn } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { RiSearchLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -90,7 +90,7 @@ export function CommandMenu() {
         onClick={() => setOpen((s) => !s)}
       >
         <div className="flex items-center">
-          <Search className="mr-2 h-5 w-5" />
+          <RiSearchLine className="mr-2 h-5 w-5" />
           <span>Type a command or search</span>
         </div>
         <p className="text-sm text-muted-foreground">

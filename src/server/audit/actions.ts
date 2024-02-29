@@ -13,4 +13,5 @@ export const AUDIT_ACTIONS = {
   ],
   shareClass: ["created", "updated", "deleted"],
   equityPlan: ["created", "updated", "deleted"],
+  document: ["created", "deleted"],
 } as const;

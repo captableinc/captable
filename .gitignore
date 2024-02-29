@@ -41,7 +41,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 

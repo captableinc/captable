@@ -33,7 +33,6 @@ import {
 import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
 
-import Link from "next/link";
 import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -120,7 +119,8 @@ const company = [
   {
     id: 1,
     name: "Settings",
-    href: "/company",
+    rootPath: "/settings/",
+    href: "/settings/company",
     icon: RiEqualizer2Line,
     activeIcon: RiEqualizer2Fill,
   },
@@ -258,7 +258,9 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                   const isActive =
                     currentPath === href ||
                     (currentPath === basePath && item.href === "/") ||
-                    (currentPath.includes(`${item.href}/`) &&
+                    (currentPath.includes(`/${item.href}/`) &&
+                      item.href !== "/") ||
+                    (currentPath.includes(`${item.rootPath}`) &&
                       item.href !== "/");
 
                   return (

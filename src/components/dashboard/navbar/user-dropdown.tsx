@@ -47,22 +47,22 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={`/${companyPublicId}/profile`}>
+          <Link href={`/${companyPublicId}/settings/profile`}>
             <DropdownMenuItem>
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/${companyPublicId}/billing`}>
+          <Link href={`/${companyPublicId}/settings/billing`}>
             <DropdownMenuItem>
               Billing
               <DropdownMenuShortcut>⇧⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/${companyPublicId}/company`}>
+          <Link href={`/${companyPublicId}/settings/notifications`}>
             <DropdownMenuItem>
-              Company settings
-              <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
+              Notifications
+              <DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>

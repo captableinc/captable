@@ -15,7 +15,7 @@ const StakeholderPage = async () => {
         title="Add or Import Stakeholders"
         subtitle={
           <Tldr
-            message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto esse id quibusdam nihil ullam eos temporibus explicabo ipsa!."
+            message="A quick brown fox jump over the lazy dog."
             cta={{
               label: "Learn more",
               // TODO - this link should be updated to the correct URL

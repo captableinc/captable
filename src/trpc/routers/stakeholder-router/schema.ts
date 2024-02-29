@@ -21,10 +21,10 @@ export const ZodAddStakeholderMutationSchema = z.object({
   zipcode: z.string().min(1).optional(),
 });
 
-export type TypeZodAddStakeholderMutationSchema = z.infer<
-  typeof ZodAddStakeholderMutationSchema
->;
-
 export const ZodAddStakeholderArrayMutationSchema = z.array(
   ZodAddStakeholderMutationSchema,
 );
+
+export type TypeZodAddStakeholderArrayMutationSchema = z.infer<
+  typeof ZodAddStakeholderArrayMutationSchema
+>;

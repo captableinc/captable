@@ -75,6 +75,16 @@ const SignupForm = () => {
                 </div>
               </form>
 
+              <span className="text-center text-sm text-gray-500">
+                Already have an account?{" "}
+                <Link
+                  href="/login"
+                  className="underline underline-offset-4 hover:text-primary "
+                >
+                  Login
+                </Link>
+              </span>
+
               <p className="px-8 text-center text-sm text-muted-foreground">
                 By clicking continue, you agree to our{" "}
                 <Link

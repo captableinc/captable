@@ -63,7 +63,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm leading-6 text-neutral-600">
+      <div className="text-sm leading-6 text-neutral-600">
         Please download the{" "}
         <Link
           href="/sample-csv/opencap-stakeholders-template.csv"
@@ -75,16 +75,16 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
           <span aria-hidden="true"> &darr;</span>
         </Link>
         , complete and upload it to import your existing or new stakeholders.
-      </p>
+      </div>
 
       <div
         className="flex h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-gray-300"
         onClick={() => fileInputRef.current?.click()}
       >
         <RiUploadLine className="h-7 w-7 text-neutral-500" />
-        <p className="text-sm text-neutral-500">
+        <span className="text-sm text-neutral-500">
           {csvFile.length !== 0 ? csvFile[0]?.name : "Click here to import"}
-        </p>
+        </span>
         <input
           onChange={onFileInputChange}
           type="file"
@@ -94,7 +94,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
         />
       </div>
 
-      <span className="text-xs">
+      <div className="text-xs">
         <Link
           target="_blank"
           rel="noopener noreferrer"
@@ -104,7 +104,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
           Learn more
         </Link>{" "}
         about the sample csv format
-      </span>
+      </div>
 
       <Button onClick={onImport} className="ml-auto block">
         {isLoading ? "Importing..." : "Import"}

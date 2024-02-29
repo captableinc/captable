@@ -21,14 +21,6 @@ export const StakeholderTableToolbar = () => {
           className="h-8 w-64"
         />
         <div className="space-x-2">
-          {table.getColumn("status") && (
-            <DataTableFacetedFilter
-              column={table.getColumn("status")}
-              title="Status"
-              options={statusValues}
-            />
-          )}
-
           {isFiltered && (
             <ResetButton
               className="p-1"

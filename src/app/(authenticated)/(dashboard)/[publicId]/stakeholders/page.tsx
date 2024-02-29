@@ -21,7 +21,8 @@ const StakeholdersPage = async () => {
           title="Add or Import Stakeholders"
           subtitle={
             <Tldr
-              message="A quick brown fox jump over the lazy dog."
+              message="Manage stakeholders by adding or importing them. 
+              Categorize, assign roles, and maintain contact info for investors, partners, and clients."
               cta={{
                 label: "Learn more",
                 // TODO - this link should be updated to the correct URL
@@ -55,7 +56,8 @@ const StakeholdersPage = async () => {
             title="Add or Import Stakeholders"
             subtitle={
               <Tldr
-                message="A quick brown fox jump over the lazy dog."
+                message="Manage stakeholders by adding or importing them. 
+                Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                 cta={{
                   label: "Learn more",
                   // TODO - this link should be updated to the correct URL

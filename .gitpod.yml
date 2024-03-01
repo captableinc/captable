@@ -22,7 +22,7 @@ ports:
   - port: 2500
     visibility: private
     onOpen: ignore
-  - port: 54321
+  - port: 5432
     visibility: private 
     onOpen: ignore
 

@@ -8,30 +8,30 @@ import {
  * ```js
  * import { uploadFile } from '@/common/uploads'
  *
-* const handleUpload = async (file: File) => {
-*   const { uploadKey } = await uploadFile(file);
-*
-*   // save to the database
-*   saveDB({ uploadKey });
-* };
-* ```
-
+ * const handleUpload = async (file: File) => {
+ *   const { uploadKey } = await uploadFile(file);
+ *
+ *   // save to the database
+ *   saveDB({ uploadKey });
+ * };
+ * ```
  */
+
 export const uploadFile = async (
   file: File,
   options: Pick<
     getPresignedUrlOptions,
     "expiresIn" | "keyPrefix" | "identifier"
   >,
+  bucketMode: "publicBucket" | "privateBucket" = "privateBucket",
 ) => {
   const { url, key } = await getPresignedPutUrl({
     contentType: file.type,
     fileName: file.name,
+    bucketMode,
     ...options,
   });
-
   const body = await file.arrayBuffer();
-
   const res = await fetch(url, {
     method: "PUT",
     headers: {
@@ -39,13 +39,11 @@ export const uploadFile = async (
     },
     body,
   });
-
   if (!res.ok) {
     throw new Error(
       `Failed to upload file "${file.name}", failed with status code ${res.status}`,
     );
   }
-
   const { name, type, size } = file;
   return {
     key,

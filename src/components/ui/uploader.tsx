@@ -2,9 +2,7 @@
 
 import { Button } from "./button";
 import { api } from "@/trpc/react";
-
 import { uploadFile } from "@/common/uploads";
-
 import React, { useState, useCallback } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import {
@@ -15,14 +13,14 @@ import {
 
 import { type RouterOutputs } from "@/trpc/shared";
 
-type UploadReturn = RouterOutputs["bucket"]["create"];
+export type UploadReturn = RouterOutputs["bucket"]["create"];
 
 type DocumentUploadDropzone = Omit<
   DropzoneOptions,
   "noClick" | "noKeyboard" | "onDrop"
 >;
 
-type UploaderProps = {
+type Props = {
   header?: React.ReactNode;
 
   // should be companyPublicId or memberId or userId
@@ -39,7 +37,7 @@ export function Uploader({
   keyPrefix,
   onSuccess,
   ...rest
-}: UploaderProps) {
+}: Props) {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
   const { mutateAsync } = api.bucket.create.useMutation();

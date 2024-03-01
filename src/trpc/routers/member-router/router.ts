@@ -8,6 +8,8 @@ import { toggleActivation } from "./procedures/toggle-activation";
 import { updateMemberProcedure } from "./procedures/update-member";
 import { reInviteProcedure } from "./procedures/re-invite";
 import { getMembersProcedure } from "./procedures/get-members";
+import { updateProfileProcedure } from "./procedures/update-profile";
+import { getProfileProcedure } from "./procedures/get-profile";
 
 export const memberRouter = createTRPCRouter({
   inviteMember: inviteMemberProcedure,
@@ -18,4 +20,6 @@ export const memberRouter = createTRPCRouter({
   updateMember: updateMemberProcedure,
   reInvite: reInviteProcedure,
   getMembers: getMembersProcedure,
+  getProfile: getProfileProcedure,
+  updateProfile: updateProfileProcedure,
 });

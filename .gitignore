@@ -45,3 +45,6 @@ yarn.lock
 pnpm-lock.yaml
 
 /src/prisma-enums
+
+#local
+/local

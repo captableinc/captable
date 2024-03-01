@@ -66,6 +66,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
       <div className="text-sm leading-6 text-neutral-600">
         Please download the{" "}
         <Link
+          download
           href="/sample-csv/opencap-stakeholders-template.csv"
           target="_blank"
           rel="noopener noreferrer"

@@ -13,33 +13,10 @@ export const addStakeholdersProcedure = withAuth
         companyId,
       }));
 
-      // get existing stakeholders
-      const existingStakeholders = await ctx.db.stakeholder.findMany({
-        where: {
-          companyId,
-        },
-        select: {
-          email: true,
-        },
+      await ctx.db.stakeholder.createMany({
+        data: inputDataWithCompanyId,
+        skipDuplicates: true,
       });
-
-      // filter out stakeholders who are already in the company
-      const uniqueStakeholders = inputDataWithCompanyId.filter(
-        (stakeholder) => {
-          return !existingStakeholders.some(
-            (existingStakeholder) =>
-              existingStakeholder.email === stakeholder.email,
-          );
-        },
-      );
-
-      // bulk create
-      if (uniqueStakeholders.length > 0) {
-        await ctx.db.stakeholder.createMany({
-          data: uniqueStakeholders,
-          skipDuplicates: true,
-        });
-      }
 
       return {
         success: true,

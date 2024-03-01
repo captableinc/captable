@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -156,7 +156,7 @@ enum StakeholderRelationshipEnum {
 model Stakeholder {
   id                  String                      @id @default(cuid())
   name                String
-  email               String
+  email               String                      @unique
   institutionName     String?
   stakeholderType     StakeholderTypeEnum         @default(INDIVIDUAL)
   currentRelationship StakeholderRelationshipEnum @default(EMPLOYEE)

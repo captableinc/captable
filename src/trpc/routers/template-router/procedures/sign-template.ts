@@ -44,7 +44,6 @@ export const signTemplateProcedure = withAuth
     );
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const fontSize = 8;
 
     for (const field of template.fields) {
       const value = input?.data?.[field?.name];
@@ -59,6 +58,8 @@ export const signTemplateProcedure = withAuth
           throw new Error("page not found");
         }
 
+        const fontSize = field.type === "SIGNATURE" ? 15 : 8;
+
         const { width: pageWidth, height: pageHeight } = page.getSize();
 
         const textHeight = font.heightAtSize(fontSize);
@@ -70,20 +71,26 @@ export const signTemplateProcedure = withAuth
 
         const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
 
-        // console.log({
-        //   withoutLength: pageHeight - fieldY - textHeight + topMargin,
-        //   y: pageHeight - fieldY * pages.length - textHeight + topMargin,
-        //   vv: fieldY * pages.length,
-        //   length: pages.length,
-        //   fieldY,
-        // });
+        if (field.type === "SIGNATURE") {
+          const image = await pdfDoc.embedPng(value);
 
-        page.drawText(value, {
-          x: fieldX,
-          y: pageHeight - fieldY * pages.length - textHeight + topMargin,
-          font,
-          size: fontSize,
-        });
+          const imageWidth = image.width * widthRatio;
+          const imageHeight = image.height * heightRatio;
+
+          page.drawImage(image, {
+            x: fieldX,
+            y: pageHeight - fieldY * pages.length + topMargin - fontSize,
+            width: imageWidth / 2,
+            height: imageHeight / 2,
+          });
+        } else {
+          page.drawText(value, {
+            x: fieldX,
+            y: pageHeight - fieldY * pages.length - textHeight + topMargin,
+            font,
+            size: fontSize,
+          });
+        }
       }
     }
 

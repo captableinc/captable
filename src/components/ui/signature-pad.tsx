@@ -44,86 +44,93 @@ function DrawingLine({ line }: { line: [Point] }) {
 }
 
 interface SignaturePadProps {
-  name: string;
+  onChange?: (value: string) => void;
 }
 
-export function SignaturePad({ name }: SignaturePadProps) {
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const [isDrawing, setIsDrawing] = useState<boolean>(false);
-  const [lines, setLines] = useState<[Point][]>([]);
-  const canvasSizeRef = useRef<{ width: number; height: number } | null>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
+  ({ onChange }) => {
+    const canvasRef = useRef<HTMLDivElement>(null);
+    const [isDrawing, setIsDrawing] = useState<boolean>(false);
+    const [lines, setLines] = useState<[Point][]>([]);
+    const canvasSizeRef = useRef<{ width: number; height: number } | null>(
+      null,
+    );
+    const svgRef = useRef<SVGSVGElement>(null);
 
-  const getCoordinates = (pointerEvent: MouseEvent<HTMLDivElement>): Point => {
-    const boundingArea = canvasRef.current?.getBoundingClientRect();
-    canvasSizeRef.current = boundingArea
-      ? {
-          width: boundingArea.width,
-          height: boundingArea.height,
-        }
-      : null;
+    const getCoordinates = (
+      pointerEvent: MouseEvent<HTMLDivElement>,
+    ): Point => {
+      const boundingArea = canvasRef.current?.getBoundingClientRect();
+      canvasSizeRef.current = boundingArea
+        ? {
+            width: boundingArea.width,
+            height: boundingArea.height,
+          }
+        : null;
 
-    const scrollLeft = window.scrollX ?? 0;
-    const scrollTop = window.scrollY ?? 0;
+      const scrollLeft = window.scrollX ?? 0;
+      const scrollTop = window.scrollY ?? 0;
 
-    if (!boundingArea) {
-      return { x: 0, y: 0 };
-    }
+      if (!boundingArea) {
+        return { x: 0, y: 0 };
+      }
 
-    return {
-      x: pointerEvent.pageX - boundingArea.left - scrollLeft,
-      y: pointerEvent.pageY - boundingArea.top - scrollTop,
+      return {
+        x: pointerEvent.pageX - boundingArea.left - scrollLeft,
+        y: pointerEvent.pageY - boundingArea.top - scrollTop,
+      };
     };
-  };
 
-  return (
-    <div
-      className="h-64 w-full cursor-crosshair border"
-      ref={canvasRef}
-      onMouseUp={async () => {
-        setIsDrawing(false);
+    return (
+      <div
+        className="h-64 w-full cursor-crosshair border"
+        ref={canvasRef}
+        onMouseUp={async () => {
+          setIsDrawing(false);
 
-        if (lines.length) {
-          if (svgRef.current) {
-            const png = await toPng(svgRef.current as unknown as HTMLElement);
+          if (onChange) {
+            if (lines.length) {
+              if (svgRef.current) {
+                const png = await toPng(
+                  svgRef.current as unknown as HTMLElement,
+                );
 
-            if (inputRef.current) {
-              inputRef.current.value = png;
+                onChange(png);
+              }
             }
           }
-        }
-      }}
-      onMouseDown={(e) => {
-        if (e.button !== 0) {
-          return;
-        }
+        }}
+        onMouseDown={(e) => {
+          if (e.button !== 0) {
+            return;
+          }
 
-        const point = getCoordinates(e);
+          const point = getCoordinates(e);
 
-        setLines((prevLines) => [...prevLines, [point]]);
-        setIsDrawing(true);
-      }}
-      onMouseMove={(e) => {
-        if (!isDrawing) {
-          return;
-        }
+          setLines((prevLines) => [...prevLines, [point]]);
+          setIsDrawing(true);
+        }}
+        onMouseMove={(e) => {
+          if (!isDrawing) {
+            return;
+          }
 
-        const point = getCoordinates(e);
+          const point = getCoordinates(e);
 
-        setLines((prevLines) =>
-          prevLines.map(
-            (line, index) =>
-              (index === prevLines.length - 1 ? [...line, point] : line) as [
-                Point,
-              ],
-          ),
-        );
-      }}
-    >
-      <Drawing ref={svgRef} lines={lines} />
+          setLines((prevLines) =>
+            prevLines.map(
+              (line, index) =>
+                (index === prevLines.length - 1 ? [...line, point] : line) as [
+                  Point,
+                ],
+            ),
+          );
+        }}
+      >
+        <Drawing ref={svgRef} lines={lines} />
+      </div>
+    );
+  },
+);
 
-      <input name={name} required minLength={1} type="hidden" ref={inputRef} />
-    </div>
-  );
-}
+SignaturePad.displayName = "SignaturePad";

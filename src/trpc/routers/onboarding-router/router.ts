@@ -4,6 +4,7 @@ import { generatePublicId } from "@/common/id";
 
 import { Audit } from "@/server/audit";
 
+// HERE: Reusing this same router for new company, onboarding and edit company.
 export const onboardingRouter = createTRPCRouter({
   onboard: withAuth
     .input(ZodOnboardingMutationSchema)

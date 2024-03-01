@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/navbar";
-import CompanyForm from "@/components/onboarding/conpany-form";
+import CompanyForm from "@/components/onboarding/company-form";
 import { withServerSession } from "@/server/auth";
 
 const OnboardingPage = async () => {

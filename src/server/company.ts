@@ -28,6 +28,7 @@ export const getCompany = async (userId: string, companyId: string) => {
     },
     select: {
       id: true,
+      title: true,
       company: {
         select: {
           id: true,

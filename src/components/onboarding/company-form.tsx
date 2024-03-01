@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import dayjs from "dayjs";
 import {
   Form,
   FormControl,
@@ -40,7 +41,7 @@ const formSchema = ZodOnboardingMutationSchema;
 type CompanyFormProps = {
   formType?: "onboarding" | "create-company" | "edit-company";
   currentUser: User;
-  companyServerResponse: TGetCompany;
+  companyServerResponse?: TGetCompany;
 };
 
 const CompanyForm = ({
@@ -54,7 +55,9 @@ const CompanyForm = ({
 
   const company = companyServerResponse?.company;
 
-  const today = new Date().toISOString().split("T")[0];
+  const incorporationDate = company?.incorporationDate
+    ? dayjs(company?.incorporationDate).format("YYYY-MM-DD")
+    : dayjs().format("YYYY-MM-DD");
 
   const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
@@ -62,14 +65,12 @@ const CompanyForm = ({
       user: {
         name: currentUser.name ?? "",
         email: currentUser.email ?? "",
-        title: "",
+        title: companyServerResponse?.title ?? "",
       },
       company: {
         name: company?.name,
         incorporationType: company?.incorporationType,
-        incorporationDate: company?.incorporationDate
-          ? new Date(company.incorporationDate).toISOString().split("T")[0]
-          : today,
+        incorporationDate,
         incorporationCountry: company?.incorporationCountry,
         incorporationState: company?.incorporationState,
         streetAddress: company?.streetAddress,
@@ -190,19 +191,22 @@ const CompanyForm = ({
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="user.title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Job title</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
-              />
+              {formType === "onboarding" ||
+                (formType === "create-company" && (
+                  <FormField
+                    control={form.control}
+                    name="user.title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Job title</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage className="text-xs font-light" />
+                      </FormItem>
+                    )}
+                  />
+                ))}
             </div>
 
             <hr />

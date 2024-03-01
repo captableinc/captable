@@ -33,6 +33,13 @@ export const companyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const memberAuthorized = await ctx.db.member.findFirst({
+          select: {
+            company: {
+              select: {
+                id: true,
+              },
+            },
+          },
           where: {
             userId: ctx.session.user.id,
             companyId: ctx.session.user.companyId,
@@ -51,7 +58,7 @@ export const companyRouter = createTRPCRouter({
 
         await ctx.db.company.update({
           where: {
-            id: ctx.session.user.companyId,
+            id: memberAuthorized.company.id,
           },
           data: {
             incorporationDate: new Date(incorporationDate),

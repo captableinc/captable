@@ -1,4 +1,4 @@
-import CompanyForm from "@/components/onboarding/conpany-form";
+import CompanyForm from "@/components/onboarding/company-form";
 import { withServerSession } from "@/server/auth";
 import { getCompany } from "@/server/company";
 

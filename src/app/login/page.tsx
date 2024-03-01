@@ -4,6 +4,7 @@ import { authOptions } from "@/server/auth";
 import { getServerSession } from "next-auth";
 
 import type { Metadata } from "next";
+import { IS_GOOGLE_AUTH_ENABLED } from "@/constants/auth";
 
 export const metadata: Metadata = {
   title: "OpenCap - Login",
@@ -17,5 +18,5 @@ export default async function AuthPage() {
     return redirect(`/${session.user.companyPublicId}`);
   }
 
-  return <LoginForm />;
+  return <LoginForm isGoogleAuthEnabled={IS_GOOGLE_AUTH_ENABLED} />;
 }

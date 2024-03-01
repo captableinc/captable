@@ -157,9 +157,9 @@ enum StakeholderRelationshipEnum {
 model Stakeholder {
   id                  String                      @id @default(cuid())
   name                String
-  email               String
+  email               String                      @unique
   institutionName     String?
-  stakeholder_type    StakeholderTypeEnum         @default(INDIVIDUAL)
+  stakeholderType     StakeholderTypeEnum         @default(INDIVIDUAL)
   currentRelationship StakeholderRelationshipEnum @default(EMPLOYEE)
   taxId               String?
 

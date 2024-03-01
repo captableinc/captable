@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RiArrowRightLine, RiBuildingLine } from "@remixicon/react";
+import { RiArrowRightLine, RiImageCircleFill } from "@remixicon/react";
 import {
   Select,
   SelectContent,
@@ -131,8 +131,8 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               className="flex-none rounded-full object-cover"
             />
           ) : (
-            <div className="h-30 w-30 flex items-center rounded-full bg-[#CCFBF1] p-2">
-              <RiBuildingLine className="h-16 w-16 flex-none shrink-0 rounded-full object-cover text-[#14B8A6]" />
+            <div className="h-30 w-30 flex items-center rounded-lg bg-[#CCFBF1] p-2">
+              <RiImageCircleFill className="m-2 h-10 w-10 flex-none shrink-0 rounded-full object-cover text-[#14B8A6]" />
             </div>
           )}
           <div>

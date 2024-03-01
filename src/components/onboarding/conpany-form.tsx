@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -34,21 +33,28 @@ import { useRouter } from "next/navigation";
 import countries from "@/lib/countries";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
+import { type TGetCompany } from "@/server/company";
 
 const formSchema = ZodOnboardingMutationSchema;
 
 type CompanyFormProps = {
   formType?: "onboarding" | "create-company" | "edit-company";
   currentUser: User;
+  companyServerResponse: TGetCompany;
 };
 
-const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
+const CompanyForm = ({
+  currentUser,
+  formType,
+  companyServerResponse,
+}: CompanyFormProps) => {
   const { update } = useSession();
   const router = useRouter();
   const { toast } = useToast();
-  const companyQuery = api.company.getCompany.useQuery(undefined, {
-    enabled: formType === "edit-company",
-  });
+
+  const company = companyServerResponse?.company;
+
+  const today = new Date().toISOString().split("T")[0];
 
   const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
@@ -59,45 +65,20 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
         title: "",
       },
       company: {
-        name: "",
-        incorporationType: "",
-        incorporationDate: "",
-        incorporationCountry: "",
-        incorporationState: "",
-        streetAddress: "",
-        city: "",
-        state: "",
-        zipcode: "",
+        name: company?.name,
+        incorporationType: company?.incorporationType,
+        incorporationDate: company?.incorporationDate
+          ? new Date(company.incorporationDate).toISOString().split("T")[0]
+          : today,
+        incorporationCountry: company?.incorporationCountry,
+        incorporationState: company?.incorporationState,
+        streetAddress: company?.streetAddress,
+        city: company?.city,
+        state: company?.state,
+        zipcode: company?.zipcode,
       },
     },
   });
-
-  useEffect(() => {
-    if (formType === "edit-company" && companyQuery.isFetched) {
-      const data = companyQuery.data;
-      const today = new Date().toISOString().split("T")[0];
-      form.reset({
-        user: {
-          name: currentUser.name ?? "",
-          email: currentUser.email ?? "",
-          title: "",
-        },
-        company: {
-          name: data?.name,
-          incorporationType: data?.incorporationType,
-          incorporationDate: data?.incorporationDate
-            ? new Date(data.incorporationDate).toISOString().split("T")[0]
-            : today,
-          incorporationCountry: data?.incorporationCountry,
-          incorporationState: data?.incorporationState,
-          streetAddress: data?.streetAddress,
-          city: data?.city,
-          state: data?.state,
-          zipcode: data?.zipcode,
-        },
-      });
-    }
-  }, [formType, companyQuery.isFetched, companyQuery.data, currentUser, form]);
 
   const onBoardingMutation = api.onboarding.onboard.useMutation({
     onSuccess: async ({ publicId }) => {
@@ -121,7 +102,6 @@ const CompanyForm = ({ currentUser, formType }: CompanyFormProps) => {
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: TypeZodOnboardingMutationSchema) {
     try {
       if (formType === "create-company" || formType === "onboarding") {

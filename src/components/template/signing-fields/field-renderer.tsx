@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SignaturePad } from "@/components/ui/signature-pad";
 import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
 
 type FieldRendererProps = Pick<
@@ -23,6 +24,8 @@ export function FieldRenderer({
           <Input required={required} id={id} name={name} />
         </div>
       );
+    case "SIGNATURE":
+      return <SignaturePad name={name} />;
 
     default:
       return null;

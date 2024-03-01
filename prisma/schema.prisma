@@ -411,3 +411,70 @@ model EsignRecipient {
 
   @@index([memberId])
 }
+
+enum SecuritiesStatusEnum {
+  ACTIVE
+  DRAFT
+  SIGNED
+  PENDING
+}
+
+enum VestingScheduleEnum {
+  VESTING_0_0_0   // Immediate vesting
+  VESTING_0_0_1   // 1 year cliff with no vesting
+  VESTING_4_1_0   // 4 years vesting every month with no cliff
+  VESTING_4_1_1   // 4 years vesting every month with 1 year cliff
+  VESTING_4_3_1   // 4 years vesting every 3 months with 1 year cliff
+  VESTING_4_6_1   // 4 years vesting every 6 months with 1 year cliff
+  VESTING_4_12_1  // 4 years vesting every year with 1 year cliff
+}
+
+model Share {
+  id       String   @id @default(cuid())
+  status   SecuritiesStatusEnum @default(DRAFT)
+  comments String?
+
+  certificateId String
+  quantity   Float // Number of shares
+  pricePerShare Float
+  capitalContribution Float // Total amount of money contributed/invested
+  ipContribution Float // Value of the intellectual property contributed
+  debtCancelled Float // Amount of debt cancelled
+  otherContributions Float // Other contributions
+
+  issueDate DateTime
+  boardApprovalDate DateTime
+
+  stakeholderId String
+  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  shareClassId String
+  shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
+
+  documentId String
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([documentId])
+  @@index([shareClassId])
+  @@index([stakeholderId])
+}
+
+model Option {
+
+}
+
+enum ConvertibleTypeEnum {
+  SAFE
+  CONVERTIBLE_NOTE
+}
+
+model Convertible {
+
+}

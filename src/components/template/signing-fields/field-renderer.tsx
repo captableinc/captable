@@ -1,31 +1,78 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+"use client";
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { SignaturePad } from "@/components/ui/signature-pad";
+import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
+import { useFormContext } from "react-hook-form";
 
 type FieldRendererProps = Pick<
   TypeZodAddFieldMutationSchema["data"][number],
-  "type" | "name" | "id" | "required"
+  "type" | "name" | "required"
 >;
 
-export function FieldRenderer({
-  type,
-  id,
-  name,
-  required,
-}: FieldRendererProps) {
+export function FieldRenderer({ type, name, required }: FieldRendererProps) {
+  const { control } = useFormContext<TemplateSigningFieldForm>();
+
   switch (type) {
     case "TEXT":
       return (
-        <div className="flex flex-col gap-y-2">
-          <Label>{name}</Label>
-          <Input required={required} id={id} name={name} />
-        </div>
+        <FormField
+          control={control}
+          rules={{
+            required: {
+              message: "this field is required",
+              value: required,
+            },
+          }}
+          name={`fieldValues.${name}` as const}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{name}</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       );
     case "SIGNATURE":
-      return <SignaturePad name={name} />;
+      return (
+        <FormField
+          control={control}
+          rules={{
+            required: {
+              message: "signature is required",
+              value: required,
+            },
+          }}
+          name={`fieldValues.${name}` as const}
+          render={({ field: { onChange } }) => (
+            <FormItem>
+              <FormLabel>{name}</FormLabel>
+              <FormControl>
+                <SignaturePad
+                  onChange={(val) => {
+                    onChange(val);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
 
     default:
       return null;

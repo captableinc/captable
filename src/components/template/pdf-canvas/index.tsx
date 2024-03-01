@@ -4,6 +4,7 @@ import { PdfViewer } from "@/components/ui/pdf-viewer";
 import { FieldCanvas } from "../field-canvas";
 import { memo, useCallback, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
+import { ReadOnlyFieldCanvas } from "../field-canvas/readonly-field-canvas";
 
 interface PdfCanvasProps {
   url: string;
@@ -37,7 +38,13 @@ export function PdfCanvas({ url, mode }: PdfCanvasProps) {
     <div className="relative col-span-12 select-none">
       <MemoPdfViewer onDocumentLoadSuccess={onDocumentLoadSuccess} file={url} />
 
-      {isLoaded ? <FieldCanvas pageHeights={pageHeights} mode={mode} /> : null}
+      {isLoaded ? (
+        mode === "edit" ? (
+          <FieldCanvas pageHeights={pageHeights} mode={mode} />
+        ) : (
+          <ReadOnlyFieldCanvas />
+        )
+      ) : null}
     </div>
   );
 }

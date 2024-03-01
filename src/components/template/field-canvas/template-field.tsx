@@ -19,6 +19,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { TemplateFieldContainer } from "./template-field-container";
 
 type Field = TypeZodAddFieldMutationSchema["data"][number];
 
@@ -55,23 +56,16 @@ export function TemplateField({
 }: TemplateFieldProps) {
   const { control } = useFormContext<{ fields: Field[] }>();
 
-  const heightRatio = currentViewportHeight / viewportHeight;
-  const widthRatio = currentViewportWidth / viewportWidth;
-
-  const newLeft = widthRatio * left;
-  const newTop = heightRatio * top;
-  const newHeight = heightRatio * height;
-  const newWidth = widthRatio * width;
-
   return (
-    <div
-      className="group absolute z-20 cursor-pointer overflow-visible border-2 border-red-600 bg-red-300/50"
-      style={{
-        left: newLeft,
-        top: newTop,
-        width: newWidth,
-        height: newHeight,
-      }}
+    <TemplateFieldContainer
+      viewportWidth={viewportWidth}
+      viewportHeight={viewportHeight}
+      currentViewportWidth={currentViewportWidth}
+      currentViewportHeight={currentViewportHeight}
+      width={width}
+      top={top}
+      left={left}
+      height={height}
       onClick={() => {
         handleFocus(id);
       }}
@@ -142,6 +136,6 @@ export function TemplateField({
           )}
         />
       </div>
-    </div>
+    </TemplateFieldContainer>
   );
 }

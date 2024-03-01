@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ZodOnboardingMutationSchema = z.object({
+export const ZodOnboardingUserMutationSchema = z.object({
   user: z.object({
     name: z.string().min(1, {
       message: "Name is required",
@@ -15,6 +15,9 @@ export const ZodOnboardingMutationSchema = z.object({
       })
       .optional(),
   }),
+});
+
+export const ZodCompanyMutationSchema = z.object({
   company: z.object({
     name: z.string().min(1, {
       message: "Company name is required",
@@ -45,6 +48,14 @@ export const ZodOnboardingMutationSchema = z.object({
     }),
   }),
 });
+
+export const ZodOnboardingMutationSchema = ZodOnboardingUserMutationSchema.and(
+  ZodCompanyMutationSchema,
+);
+
+export type TypeZodCompanyMutationSchema = z.infer<
+  typeof ZodCompanyMutationSchema
+>;
 
 export type TypeZodOnboardingMutationSchema = z.infer<
   typeof ZodOnboardingMutationSchema

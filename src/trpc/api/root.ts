@@ -10,6 +10,7 @@ import { memberRouter } from "../routers/member-router/router";
 import { bucketRouter } from "../routers/bucket-router/router";
 import { templateRouter } from "../routers/template-router/router";
 import { templateFieldRouter } from "../routers/template-field-router/router";
+import { stakeholderRouter } from "../routers/stakeholder-router/router";
 
 /**
  * This is the primary router for your server.
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
   bucket: bucketRouter,
   template: templateRouter,
   templateField: templateFieldRouter,
+  stakeholder: stakeholderRouter,
 });
 
 // export type definition of API

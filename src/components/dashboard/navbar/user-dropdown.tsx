@@ -31,7 +31,7 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
-            <AvatarImage src={image ?? ""} alt="avatar" />
+            <AvatarImage src={image ?? "/avatar.svg"} alt="avatar" />
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
         </Button>
@@ -47,22 +47,22 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href={`/${companyPublicId}/profile`}>
+          <Link href={`/${companyPublicId}/settings/profile`}>
             <DropdownMenuItem>
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/${companyPublicId}/billing`}>
+          <Link href={`/${companyPublicId}/settings/billing`}>
             <DropdownMenuItem>
               Billing
               <DropdownMenuShortcut>⇧⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
-          <Link href={`/${companyPublicId}/company`}>
+          <Link href={`/${companyPublicId}/settings/notifications`}>
             <DropdownMenuItem>
-              Company settings
-              <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
+              Notifications
+              <DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
@@ -72,7 +72,7 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
             await signOut();
           }}
         >
-          Log out
+          Log Out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

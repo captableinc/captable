@@ -7,7 +7,7 @@ export type AuditActions = {
 }[keyof ActionList];
 
 type Overwrite<Base, Overrides> = Omit<Base, keyof Overrides> & Overrides;
-type ActionType = "user" | "company";
+type ActionType = "user" | "company" | "document";
 
 interface ActionTypeData {
   type: ActionType;

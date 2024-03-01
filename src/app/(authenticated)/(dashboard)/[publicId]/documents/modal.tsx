@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Modal from "@/components/shared/modal";
-import Uploader from "@/components/ui/uploader";
+import Uploader, { type UploadReturn } from "@/components/ui/uploader";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
 
@@ -35,7 +35,7 @@ const DocumentUploadModal = ({
       <Uploader
         identifier={companyPublicId}
         keyPrefix="generic-document"
-        onSuccess={async (uploadedData) => {
+        onSuccess={async (uploadedData: UploadReturn) => {
           await mutateAsync({
             name: uploadedData.name,
             bucketId: uploadedData.id,

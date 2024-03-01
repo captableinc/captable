@@ -147,11 +147,28 @@ npm run smpt
 
 Open your browser to the URLs given by the web app and studio processes. You're up and running, good job! 🎉
 
+#### Gitpod Setup
+
+- Click the button below to open this project in Gitpod.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/opencapco/opencap.co)
+
 ### One-click deploy
 
 _Coming soon to a PaaS near you:_
 
-- [Vercel](https://vercel.com/new/git/external?repository-url=https://github.com/opencapco/opencap.co)
-- [Render](https://render.com/deploy?repo=https://github.com/opencapco/opencap.co)
-- [Railway](https://railway.app/new?template=)
-- [Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/opencapco/opencap.co)
+### Vercel
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/opencapco/opencap.co)
+
+### Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/opencapco/opencap.co)
+
+### Railway
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new?template=)
+
+### Netlify
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/opencapco/opencap.co)

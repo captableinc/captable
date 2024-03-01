@@ -8,7 +8,9 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=opencap
     ports:
-      - 54321:5432
+      - 5432:5432
+    volumes:
+      - postgres_raw:/var/lib/postgresql/data  
 
   inbucket:
     image: inbucket/inbucket
@@ -34,3 +36,4 @@ services:
 
 volumes:
   minio:
+  postgres_raw:

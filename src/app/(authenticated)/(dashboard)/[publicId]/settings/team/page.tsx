@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";
 import { RiAddLine } from "@remixicon/react";
 
-const StakeholdersPage = async () => {
+const TeamMembersPage = async () => {
   const members = await api.member.getMembers.query();
 
   return (
@@ -44,4 +44,4 @@ const StakeholdersPage = async () => {
   );
 };
 
-export default StakeholdersPage;
+export default TeamMembersPage;

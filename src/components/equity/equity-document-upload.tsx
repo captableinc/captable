@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import Modal from "../shared/modal";
 import { Button } from "../ui/button";
-import { Uploader } from "../ui/uploader";
 import { api } from "@/trpc/react";
+import Uploader from "../ui/uploader";
 
 interface EquityDocumentUploadProps {
   companyPublicId: string;

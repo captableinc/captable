@@ -18,3 +18,8 @@ export const constants = {
     },
   },
 };
+
+export enum PayloadType {
+  PROFILE_DATA = "profile-data",
+  PROFILE_AVATAR = "profile-avatar",
+}

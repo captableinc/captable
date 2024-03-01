@@ -1,0 +1,48 @@
+tasks:
+  - init: |
+      yarn &&
+      cp .env.example .env &&
+      export NEXTAUTH_SECRET="$(openssl rand -base64 32)" &&
+      export NEXTAUTH_URL="$(gp url 3000)" &&
+      export EMAIL_SERVER_PORT=2500 &&
+      yarn docker:start &&
+      npx prisma migrate dev
+    command: yarn dev
+
+ports:
+  - port: 3000
+    visibility: public
+    onOpen: open-preview
+  - port: 9000
+    visibility: public
+    onOpen: ignore
+  - port: 1100
+    visibility: private
+    onOpen: ignore
+  - port: 2500
+    visibility: private
+    onOpen: ignore
+  - port: 54321
+    visibility: private 
+    onOpen: ignore
+
+github:
+  prebuilds:
+    master: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: true
+    addComment: true
+    addBadge: true
+
+vscode:
+  extensions:
+    - DavidAnson.vscode-markdownlint
+    - yzhang.markdown-all-in-one
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+    - bradlc.vscode-tailwindcss
+    - ban.spellright
+    - stripe.vscode-stripe
+    - Prisma.prisma
+    - ms-dotnettools.vscode-dotnet-runtime

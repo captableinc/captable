@@ -74,14 +74,14 @@ export const signTemplateProcedure = withAuth
         if (field.type === "SIGNATURE") {
           const image = await pdfDoc.embedPng(value);
 
-          const imageWidth = image.width * widthRatio;
-          const imageHeight = image.height * heightRatio;
+          const imageWidth = field.width * widthRatio;
+          const imageHeight = field.height * heightRatio;
 
           page.drawImage(image, {
             x: fieldX,
             y: pageHeight - fieldY * pages.length + topMargin - fontSize,
-            width: imageWidth / 2,
-            height: imageHeight / 2,
+            width: imageWidth,
+            height: imageHeight,
           });
         } else {
           page.drawText(value, {

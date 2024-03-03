@@ -63,9 +63,9 @@ const CompanyForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       user: {
-        name: currentUser.name ?? "",
-        email: currentUser.email ?? "",
-        title: companyServerResponse?.title ?? "",
+        name: formType === "onboarding" ? currentUser.name ?? "" : undefined,
+        email: formType === "onboarding" ? currentUser.email ?? "" : undefined,
+        title: formType === "edit-company" ? undefined : "",
       },
       company: {
         name: company?.name,
@@ -191,22 +191,21 @@ const CompanyForm = ({
                 )}
               />
 
-              {formType === "onboarding" ||
-                (formType === "create-company" && (
-                  <FormField
-                    control={form.control}
-                    name="user.title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Your Job title</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage className="text-xs font-light" />
-                      </FormItem>
-                    )}
-                  />
-                ))}
+              {(formType === "onboarding" || formType === "create-company") && (
+                <FormField
+                  control={form.control}
+                  name="user.title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Job title</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  )}
+                />
+              )}
             </div>
 
             <hr />

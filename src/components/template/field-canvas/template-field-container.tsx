@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { type ComponentProps, type ReactNode } from "react";
 
 export interface TemplateFieldContainerProps extends ComponentProps<"div"> {
@@ -22,6 +23,7 @@ export function TemplateFieldContainer({
   top,
   width,
   children,
+  className,
   ...rest
 }: TemplateFieldContainerProps) {
   const heightRatio = currentViewportHeight / viewportHeight;
@@ -34,7 +36,10 @@ export function TemplateFieldContainer({
 
   return (
     <div
-      className="group absolute z-20 flex cursor-pointer items-center overflow-hidden  border-2 border-red-600 bg-red-300/50"
+      className={cn(
+        "group absolute z-20 flex cursor-pointer items-center overflow-hidden  border-2 border-red-600 bg-red-300/50",
+        className,
+      )}
       style={{
         left: newLeft,
         top: newTop,

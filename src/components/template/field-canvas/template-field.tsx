@@ -58,6 +58,7 @@ export function TemplateField({
 
   return (
     <TemplateFieldContainer
+      className="overflow-visible"
       viewportWidth={viewportWidth}
       viewportHeight={viewportHeight}
       currentViewportWidth={currentViewportWidth}

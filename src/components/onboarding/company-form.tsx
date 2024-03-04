@@ -65,7 +65,7 @@ const CompanyForm = ({
       user: {
         name: formType === "onboarding" ? currentUser.name ?? "" : undefined,
         email: formType === "onboarding" ? currentUser.email ?? "" : undefined,
-        title: formType === "edit-company" ? undefined : "",
+        title: formType === "edit-company" ? undefined : companyServerResponse?.title ?? "",
       },
       company: {
         name: company?.name,

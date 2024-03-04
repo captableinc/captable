@@ -25,7 +25,7 @@ export const uploadFile = async (
   >,
   bucketMode: "publicBucket" | "privateBucket" = "privateBucket",
 ) => {
-  const { url, key } = await getPresignedPutUrl({
+  const { url, key, bucketUrl } = await getPresignedPutUrl({
     contentType: file.type,
     fileName: file.name,
     bucketMode,
@@ -44,12 +44,14 @@ export const uploadFile = async (
       `Failed to upload file "${file.name}", failed with status code ${res.status}`,
     );
   }
+
   const { name, type, size } = file;
   return {
     key,
     name,
     mimeType: type,
     size,
+    bucketUrl,
   };
 };
 

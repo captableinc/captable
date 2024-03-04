@@ -23,7 +23,11 @@ const loginSchema = z.object({
   email: z.string().email(),
 });
 
-const LoginForm = () => {
+interface LoginFormProps {
+  isGoogleAuthEnabled: boolean;
+}
+
+const LoginForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -48,9 +52,6 @@ const LoginForm = () => {
     await signIn("google", { callbackUrl: "/onboarding" });
   }
   const isSubmitting = form.formState.isSubmitting;
-  const isGoogleAuthEnabled = !!(
-    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-  );
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">

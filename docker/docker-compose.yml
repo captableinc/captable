@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=opencap
     ports:
-      - 5432:5432
+      - 54321:5432
     volumes:
       - postgres_raw:/var/lib/postgresql/data  
 

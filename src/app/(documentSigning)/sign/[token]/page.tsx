@@ -1,6 +1,5 @@
 import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { SigningFields } from "@/components/template/signing-fields";
-import { TemplateFieldProvider } from "@/providers/template-field-provider";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";

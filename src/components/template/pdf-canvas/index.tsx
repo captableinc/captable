@@ -13,7 +13,7 @@ interface PdfCanvasProps {
 
 const MemoPdfViewer = memo(PdfViewer);
 
-export function PdfCanvas({ url, mode }: PdfCanvasProps) {
+export function PdfCanvas({ url, mode = "edit" }: PdfCanvasProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const [pageHeights, setPageHeights] = useState<number[]>([]);

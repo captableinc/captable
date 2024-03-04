@@ -100,7 +100,7 @@ export function FieldCanvas({ mode = "edit", pageHeights }: FieldCanvasProp) {
           if (!isDrawing) return;
           setIsDrawing(false);
           if (startPos.x !== endPos.x && startPos.y !== endPos.y) {
-            const id = nanoid(12);
+            const id = nanoid();
 
             const cumulativePageHeight = pageHeights.reduce(
               (accumulator, currentValue) => accumulator + currentValue,

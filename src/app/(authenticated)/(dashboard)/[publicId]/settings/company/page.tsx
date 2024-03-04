@@ -1,20 +1,10 @@
-import CompanyForm from "@/components/onboarding/company-form";
-import { withServerSession } from "@/server/auth";
-import { getCompany } from "@/server/company";
+import { CompanyForm } from "@/components/onboarding/company-form";
+import { api } from "@/trpc/server";
 
 const CompanySettingsPage = async () => {
-  const session = await withServerSession();
-  const user = session.user;
+  const data = await api.company.getCompany.query();
 
-  const companyResponse = await getCompany(user.id, user.companyId);
-
-  return (
-    <CompanyForm
-      companyServerResponse={companyResponse}
-      formType="edit-company"
-      currentUser={user}
-    />
-  );
+  return <CompanyForm data={data} type="edit" />;
 };
 
 export default CompanySettingsPage;

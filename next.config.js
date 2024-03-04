@@ -20,16 +20,6 @@ const config = {
 
     return config;
   },
-
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/login",
-        permanent: true,
-      },
-    ];
-  },
 };
 
 export default config;

@@ -69,7 +69,10 @@ export const getPresignedPutUrl = async ({
     expiresIn: expiresIn ?? TEN_MINUTES_IN_SECONDS,
   });
 
-  return { url, key: Key };
+  const bucketUrl = new URL(url);
+  bucketUrl.search = "";
+
+  return { url, key: Key, bucketUrl: bucketUrl.toString() };
 };
 
 export const getPresignedGetUrl = async (key: string) => {

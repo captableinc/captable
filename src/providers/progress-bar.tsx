@@ -6,7 +6,7 @@ type ProviderProps = {
   children: React.ReactNode;
 };
 
-const ProgressBarProvider = ({ children }: ProviderProps) => {
+export const ProgressBarProvider = ({ children }: ProviderProps) => {
   return (
     <>
       <ProgressBar
@@ -19,5 +19,3 @@ const ProgressBarProvider = ({ children }: ProviderProps) => {
     </>
   );
 };
-
-export default ProgressBarProvider;

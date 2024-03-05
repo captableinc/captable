@@ -493,8 +493,9 @@ model Share {
 }
 
 enum OptionTypeEnum {
-  STOCK_OPTION
-  WARRANT
+  ISO // Incentive Stock Options
+  NSO // Non-satutory Stock Options
+  RSU // Restricted Stock Units
 }
 
 enum OptionStatusEnum {

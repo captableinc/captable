@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@ant-design/plots": "^2.1.12",
-    "@aws-sdk/client-s3": "^3.490.0",
+    "@aws-sdk/client-s3": "^3.525.0",
     "@aws-sdk/s3-request-presigner": "^3.490.0",
     "@hookform/resolvers": "^3.3.4",
     "@next-auth/prisma-adapter": "^1.0.7",

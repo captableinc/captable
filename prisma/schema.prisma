@@ -98,6 +98,7 @@ model Company {
   stakeholders Stakeholder[]
   investments  Investment[]
   shares       Share[]
+  options      Option[]
 
   @@unique([publicId])
 }
@@ -174,6 +175,7 @@ model Stakeholder {
 
   investments Investment[]
   shares      Share[]
+  options     Option[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -287,10 +289,13 @@ model EquityPlan {
   defaultCancellatonBehavior CancellationBehaviorEnum
   comments                   String?
 
-  companyId    String
-  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
   shareClassId String
   shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
+
+  options Option[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -330,6 +335,9 @@ model Document {
   shareId String?
   share   Share?  @relation(fields: [shareId], references: [id], onDelete: SetNull)
 
+  optionId String?
+  option   Option? @relation(fields: [optionId], references: [id], onDelete: SetNull)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -338,6 +346,7 @@ model Document {
   @@index([uploaderId])
   @@index([companyId])
   @@index([shareId])
+  @@index([optionId])
 }
 
 enum FieldTypes {
@@ -449,7 +458,7 @@ model Share {
   notes  String?
 
   certificateId       String
-  quantity            Float // Number of shares
+  quantity            Int // Number of shares
   pricePerShare       Float?
   capitalContribution Float? // Total amount of money contributed/invested
   ipContribution      Float? // Value of the intellectual property contributed
@@ -483,15 +492,50 @@ model Share {
   @@index([stakeholderId])
 }
 
-// model Option {
+enum OptionTypeEnum {
+  STOCK_OPTION
+  WARRANT
+}
 
-// }
+enum OptionStatusEnum {
+  DRAFT
+  ACTIVE
+  EXERCISED
+  EXPIRED
+  CANCELLED
+}
 
-// enum ConvertibleTypeEnum {
-//   SAFE
-//   CONVERTIBLE_NOTE
-// }
+model Option {
+  id            String  @id @default(cuid())
+  notes         String?
+  quantity      Int
+  exercisePrice Float
 
-// model Convertible {
+  type            OptionTypeEnum
+  status          OptionStatusEnum    @default(DRAFT)
+  vestingSchedule VestingScheduleEnum
 
-// }
+  issueDate         DateTime
+  expirationDate    DateTime
+  vestingStartDate  DateTime
+  boardApprovalDate DateTime
+  rule144Date       DateTime
+
+  documents Document[]
+
+  stakeholderId String
+  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  equityPlanId String
+  equityPlan   EquityPlan @relation(fields: [equityPlanId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([equityPlanId])
+  @@index([stakeholderId])
+}

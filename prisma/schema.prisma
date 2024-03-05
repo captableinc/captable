@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -96,6 +96,7 @@ model Company {
   templates    Template[]
   stakeholders Stakeholder[]
   investments  Investment[]
+  shares       Share[]
 
   @@unique([publicId])
 }
@@ -171,6 +172,7 @@ model Stakeholder {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   investments Investment[]
+  shares      Share[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -259,6 +261,7 @@ model ShareClass {
   company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   equityPlans EquityPlan[]
   investments Investment[]
+  shares      Share[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -323,6 +326,9 @@ model Document {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  shareId String?
+  share   Share?  @relation(fields: [shareId], references: [id], onDelete: SetNull)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -330,6 +336,7 @@ model Document {
   @@index([bucketId])
   @@index([uploaderId])
   @@index([companyId])
+  @@index([shareId])
 }
 
 enum FieldTypes {
@@ -420,29 +427,40 @@ enum SecuritiesStatusEnum {
 }
 
 enum VestingScheduleEnum {
-  VESTING_0_0_0   // Immediate vesting
-  VESTING_0_0_1   // 1 year cliff with no vesting
-  VESTING_4_1_0   // 4 years vesting every month with no cliff
-  VESTING_4_1_1   // 4 years vesting every month with 1 year cliff
-  VESTING_4_3_1   // 4 years vesting every 3 months with 1 year cliff
-  VESTING_4_6_1   // 4 years vesting every 6 months with 1 year cliff
-  VESTING_4_12_1  // 4 years vesting every year with 1 year cliff
+  VESTING_0_0_0 // Immediate vesting
+  VESTING_0_0_1 // 1 year cliff with no vesting
+  VESTING_4_1_0 // 4 years vesting every month with no cliff
+  VESTING_4_1_1 // 4 years vesting every month with 1 year cliff
+  VESTING_4_3_1 // 4 years vesting every 3 months with 1 year cliff
+  VESTING_4_6_1 // 4 years vesting every 6 months with 1 year cliff
+  VESTING_4_12_1 // 4 years vesting every year with 1 year cliff
+}
+
+enum ShareLegendsEnum {
+  US_SECURITIES_ACT // US Securities Act of 1933
+  SALE_AND_ROFR // Sale and Right of first refusal
+  TRANSFER_RESTRICTIONS // Bylaw transfer restrictions
 }
 
 model Share {
-  id       String   @id @default(cuid())
-  status   SecuritiesStatusEnum @default(DRAFT)
-  comments String?
+  id     String               @id @default(cuid())
+  status SecuritiesStatusEnum @default(DRAFT)
+  notes  String?
 
-  certificateId String
-  quantity   Float // Number of shares
-  pricePerShare Float
-  capitalContribution Float // Total amount of money contributed/invested
-  ipContribution Float // Value of the intellectual property contributed
-  debtCancelled Float // Amount of debt cancelled
-  otherContributions Float // Other contributions
+  certificateId       String
+  quantity            Float // Number of shares
+  pricePerShare       Float?
+  capitalContribution Float? // Total amount of money contributed/invested
+  ipContribution      Float? // Value of the intellectual property contributed
+  debtCancelled       Float? // Amount of debt cancelled
+  otherContributions  Float? // Other contributions
 
-  issueDate DateTime
+  vestingSchedule VestingScheduleEnum
+  companyLegends  ShareLegendsEnum[]
+
+  issueDate         DateTime
+  rule144Date       DateTime?
+  vestingStartDate  DateTime?
   boardApprovalDate DateTime
 
   stakeholderId String
@@ -454,27 +472,25 @@ model Share {
   shareClassId String
   shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
 
-  documentId String
-  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  documents Document[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([companyId])
-  @@index([documentId])
   @@index([shareClassId])
   @@index([stakeholderId])
 }
 
-model Option {
+// model Option {
 
-}
+// }
 
-enum ConvertibleTypeEnum {
-  SAFE
-  CONVERTIBLE_NOTE
-}
+// enum ConvertibleTypeEnum {
+//   SAFE
+//   CONVERTIBLE_NOTE
+// }
 
-model Convertible {
+// model Convertible {
 
-}
+// }

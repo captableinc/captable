@@ -61,7 +61,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
     defaultValues: {
       user: {
         email: type === "onboarding" ? user?.user.email ?? "" : undefined,
-        name: type === "onboarding" ? user?.user.name ?? "" : undefined,,
+        name: type === "onboarding" ? user?.user.name ?? "" : undefined,
         title: type === "edit" ? undefined : data?.title ?? "",
       },
       company: {

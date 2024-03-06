@@ -92,6 +92,7 @@ export const authOptions: NextAuthOptions = {
             user: {
               select: {
                 name: true,
+                image: true,
               },
             },
             company: {
@@ -109,6 +110,7 @@ export const authOptions: NextAuthOptions = {
           token.companyId = member.companyId;
           token.isOnboarded = member.isOnboarded;
           token.companyPublicId = member.company.publicId;
+          token.picture = member.user?.image;
         } else {
           token.status = "";
           token.companyId = "";

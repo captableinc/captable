@@ -62,7 +62,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
       user: {
         email: type === "onboarding" ? user?.user.email ?? "" : undefined,
         name: type === "onboarding" ? user?.user.name ?? "" : undefined,
-        title: type === "edit" ? undefined : data?.title ?? "",
+        title: type !== "create" ? data?.title ?? "" : undefined,
       },
       company: {
         city: data?.company.city ?? "",

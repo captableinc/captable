@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useForm } from "react-hook-form";
-import dayjs from "dayjs";
 import {
   Form,
   FormControl,
@@ -25,8 +25,6 @@ import {
   ZodOnboardingMutationSchema,
   type TypeZodOnboardingMutationSchema,
 } from "@/trpc/routers/onboarding-router/schema";
-import Image from "next/image";
-import type { User } from "next-auth";
 
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";
@@ -34,52 +32,50 @@ import { useRouter } from "next/navigation";
 import countries from "@/lib/countries";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
-import { type TGetCompany } from "@/server/company";
+import { type RouterOutputs } from "@/trpc/shared";
+import { dayjsExt } from "@/common/dayjs";
 
 const formSchema = ZodOnboardingMutationSchema;
 
-type CompanyFormProps = {
-  formType?: "onboarding" | "create-company" | "edit-company";
-  currentUser: User;
-  companyServerResponse?: TGetCompany;
-};
+type CompanyFormProps =
+  | {
+      type: "edit";
+      data: RouterOutputs["company"]["getCompany"];
+    }
+  | {
+      type: "create";
+      data?: never;
+    }
+  | {
+      type: "onboarding";
+      data?: never;
+    };
 
-const CompanyForm = ({
-  currentUser,
-  formType,
-  companyServerResponse,
-}: CompanyFormProps) => {
-  const { update } = useSession();
+export const CompanyForm = ({ type, data }: CompanyFormProps) => {
+  const { update, data: user } = useSession();
   const router = useRouter();
   const { toast } = useToast();
-
-  const company = companyServerResponse?.company;
-
-  const incorporationDate = company?.incorporationDate
-    ? dayjs(company?.incorporationDate).format("YYYY-MM-DD")
-    : dayjs().format("YYYY-MM-DD");
 
   const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       user: {
-        name: formType === "onboarding" ? currentUser.name ?? "" : undefined,
-        email: formType === "onboarding" ? currentUser.email ?? "" : undefined,
-        title:
-          formType === "edit-company"
-            ? undefined
-            : companyServerResponse?.title ?? "",
+        email: type === "onboarding" ? user?.user.name ?? "" : undefined,
+        name: type === "onboarding" ? user?.user.email ?? "" : undefined,,
+        title: type === "edit" ? undefined : data?.title ?? "",
       },
       company: {
-        name: company?.name,
-        incorporationType: company?.incorporationType,
-        incorporationDate,
-        incorporationCountry: company?.incorporationCountry,
-        incorporationState: company?.incorporationState,
-        streetAddress: company?.streetAddress,
-        city: company?.city,
-        state: company?.state,
-        zipcode: company?.zipcode,
+        city: data?.company.city ?? "",
+        incorporationCountry: data?.company.incorporationCountry ?? "",
+        incorporationDate: data?.company.incorporationDate
+          ? dayjsExt(data.company.incorporationDate).format("YYYY-MM-DD")
+          : "",
+        incorporationState: data?.company.incorporationState ?? "",
+        incorporationType: data?.company.incorporationType ?? "",
+        name: data?.company.name ?? "",
+        state: data?.company.state ?? "",
+        streetAddress: data?.company.streetAddress ?? "",
+        zipcode: data?.company.zipcode ?? "",
       },
     },
   });
@@ -103,27 +99,32 @@ const CompanyForm = ({
           : "Uh oh! Something went wrong.",
         description: message,
       });
+
+      router.refresh();
     },
   });
 
   async function onSubmit(values: TypeZodOnboardingMutationSchema) {
     try {
-      if (formType === "create-company" || formType === "onboarding") {
+      if (type === "create" || type === "onboarding") {
         await onBoardingMutation.mutateAsync(values);
-      } else if (formType === "edit-company") {
+      } else if (type === "edit") {
         await companySettingMutation.mutateAsync(values);
       }
     } catch (error) {}
   }
 
   const isSubmitting = form.formState.isSubmitting;
+
+  const isDirty = form.formState.isDirty;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="col-span-full flex items-center gap-x-8">
-          {currentUser.image ? (
-            <Image
-              src={currentUser.image}
+          {user?.user.image ? (
+            <img
+              src={user.user.image}
               alt="Company logo"
               width={50}
               height={50}
@@ -136,9 +137,7 @@ const CompanyForm = ({
           )}
           <div>
             <Button size="sm" variant={"outline"} type="button">
-              {formType === "edit-company"
-                ? "Change company logo"
-                : "Upload company logo"}
+              {type === "edit" ? "Change company logo" : "Upload company logo"}
             </Button>
             <p className="mt-2 text-xs text-gray-700">
               JPG, GIF or PNG. 1MB max.
@@ -147,7 +146,7 @@ const CompanyForm = ({
         </div>
         <div className="grid gap-2">
           <div className="grid gap-5">
-            {formType === "onboarding" && (
+            {type === "onboarding" && (
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -194,7 +193,7 @@ const CompanyForm = ({
                 )}
               />
 
-              {(formType === "onboarding" || formType === "create-company") && (
+              {(type === "onboarding" || type === "create") && (
                 <FormField
                   control={form.control}
                   name="user.title"
@@ -372,16 +371,15 @@ const CompanyForm = ({
 
           <div className="mt-8 flex justify-end">
             <Button
+              disabled={!isDirty}
               loading={isSubmitting}
               loadingText="Submitting..."
               type="submit"
               className={cn(
-                formType === "onboarding" || formType === "create-company"
-                  ? "w-full"
-                  : "",
+                type === "onboarding" || type === "create" ? "w-full" : "",
               )}
             >
-              {formType === "onboarding" || formType === "create-company" ? (
+              {type === "onboarding" || type === "create" ? (
                 <>
                   Complete Setup
                   <RiArrowRightLine className="ml-2 inline-block h-5 w-5" />
@@ -396,5 +394,3 @@ const CompanyForm = ({
     </Form>
   );
 };
-
-export default CompanyForm;

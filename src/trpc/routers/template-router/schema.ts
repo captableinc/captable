@@ -8,3 +8,8 @@ export const ZodCreateTemplateMutationSchema = z.object({
 export const ZodGetTemplateQuerySchema = z.object({
   publicId: z.string(),
 });
+
+export const ZodSignTemplateMutationSchema = z.object({
+  templatePublicId: z.string(),
+  data: z.record(z.string()),
+});

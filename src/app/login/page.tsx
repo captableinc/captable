@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import LoginForm from "@/components/onboarding/login";
-import { authOptions } from "@/server/auth";
-import { getServerSession } from "next-auth";
+import { getServerAuthSession } from "@/server/auth";
 
 import type { Metadata } from "next";
+import { IS_GOOGLE_AUTH_ENABLED } from "@/constants/auth";
 
 export const metadata: Metadata = {
   title: "OpenCap - Login",
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default async function AuthPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   if (session?.user?.companyPublicId) {
     return redirect(`/${session.user.companyPublicId}`);
   }
 
-  return <LoginForm />;
+  return <LoginForm isGoogleAuthEnabled={IS_GOOGLE_AUTH_ENABLED} />;
 }

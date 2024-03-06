@@ -78,8 +78,8 @@ const navigation = [
     activeIcon: RiSafeFill,
     subNav: [
       {
-        name: "Equity",
-        href: "/equity",
+        name: "Shares",
+        href: "/shares",
       },
       {
         name: "Options",

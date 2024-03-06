@@ -120,12 +120,6 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-
-    async signIn() {
-      const allowLogin: boolean = env.WAITLIST_MODE === "off";
-
-      return allowLogin || "/signup";
-    },
   },
   adapter: PrismaAdapter(db),
   secret: env.NEXTAUTH_SECRET ?? "secret",

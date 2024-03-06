@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
@@ -23,7 +22,11 @@ const loginSchema = z.object({
   email: z.string().email(),
 });
 
-const LoginForm = () => {
+interface LoginFormProps {
+  isGoogleAuthEnabled: boolean;
+}
+
+const LoginForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -48,9 +51,6 @@ const LoginForm = () => {
     await signIn("google", { callbackUrl: "/onboarding" });
   }
   const isSubmitting = form.formState.isSubmitting;
-  const isGoogleAuthEnabled = !!(
-    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-  );
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -128,16 +128,6 @@ const LoginForm = () => {
                 </Button>
               </>
             )}
-
-            <span className="text-center text-sm text-gray-500">
-              Don{`'`}t have an account?{" "}
-              <Link
-                href="/signup"
-                className="underline underline-offset-4 hover:text-primary "
-              >
-                Sign up
-              </Link>
-            </span>
           </>
         )}
       </div>

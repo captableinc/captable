@@ -6,18 +6,16 @@ type ProviderProps = {
   children: React.ReactNode;
 };
 
-const ProgressBarProvider = ({ children }: ProviderProps) => {
+export const ProgressBarProvider = ({ children }: ProviderProps) => {
   return (
     <>
       <ProgressBar
         height="2px"
         color="#18181b"
-        options={{ showSpinner: true }}
+        options={{ showSpinner: false }}
         shallowRouting={true}
       />
       {children}
     </>
   );
 };
-
-export default ProgressBarProvider;

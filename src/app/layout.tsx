@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
-import ProgressBarProvider from "./providers/progress-bar";
 import { constants } from "@/lib/constants";
 import { Toaster } from "@/components/ui/toaster";
 import { NextAuthProvider } from "@/providers/next-auth";
 import { getServerAuthSession } from "@/server/auth";
+import { ProgressBarProvider } from "@/providers/progress-bar";
 
 export const metadata: Metadata = {
   title: "OpenCap",

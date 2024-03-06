@@ -59,12 +59,6 @@ model User {
   companies Member[]
 }
 
-model WaitlistUser {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -97,6 +91,8 @@ model Company {
   templates    Template[]
   stakeholders Stakeholder[]
   investments  Investment[]
+  shares       Share[]
+  options      Option[]
 
   @@unique([publicId])
 }
@@ -172,6 +168,8 @@ model Stakeholder {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   investments Investment[]
+  shares      Share[]
+  options     Option[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -260,6 +258,7 @@ model ShareClass {
   company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
   equityPlans EquityPlan[]
   investments Investment[]
+  shares      Share[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -284,10 +283,13 @@ model EquityPlan {
   defaultCancellatonBehavior CancellationBehaviorEnum
   comments                   String?
 
-  companyId    String
-  company      Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
   shareClassId String
   shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
+
+  options Option[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -324,6 +326,12 @@ model Document {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  shareId String?
+  share   Share?  @relation(fields: [shareId], references: [id], onDelete: SetNull)
+
+  optionId String?
+  option   Option? @relation(fields: [optionId], references: [id], onDelete: SetNull)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -331,6 +339,8 @@ model Document {
   @@index([bucketId])
   @@index([uploaderId])
   @@index([companyId])
+  @@index([shareId])
+  @@index([optionId])
 }
 
 enum FieldTypes {
@@ -345,17 +355,20 @@ enum FieldTypes {
 }
 
 model TemplateField {
-  id          String     @id @default(cuid())
-  name        String
-  type        FieldTypes @default(TEXT)
-  placeholder String     @default("")
-  required    Boolean    @default(false)
-  top         Int
-  left        Int
-  width       Int
-  height      Int
-  template    Template   @relation(fields: [templateId], references: [id])
-  templateId  String
+  id             String     @id @default(cuid())
+  name           String
+  type           FieldTypes @default(TEXT)
+  placeholder    String     @default("")
+  required       Boolean    @default(false)
+  top            Int
+  left           Int
+  width          Int
+  height         Int
+  template       Template   @relation(fields: [templateId], references: [id])
+  templateId     String
+  viewportHeight Int
+  viewportWidth  Int
+  page           Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -411,4 +424,116 @@ model EsignRecipient {
   updatedAt DateTime @updatedAt
 
   @@index([memberId])
+}
+
+enum SecuritiesStatusEnum {
+  ACTIVE
+  DRAFT
+  SIGNED
+  PENDING
+}
+
+enum VestingScheduleEnum {
+  VESTING_0_0_0 // Immediate vesting
+  VESTING_0_0_1 // 1 year cliff with no vesting
+  VESTING_4_1_0 // 4 years vesting every month with no cliff
+  VESTING_4_1_1 // 4 years vesting every month with 1 year cliff
+  VESTING_4_3_1 // 4 years vesting every 3 months with 1 year cliff
+  VESTING_4_6_1 // 4 years vesting every 6 months with 1 year cliff
+  VESTING_4_12_1 // 4 years vesting every year with 1 year cliff
+}
+
+enum ShareLegendsEnum {
+  US_SECURITIES_ACT // US Securities Act of 1933
+  SALE_AND_ROFR // Sale and Right of first refusal
+  TRANSFER_RESTRICTIONS // Bylaw transfer restrictions
+}
+
+model Share {
+  id     String               @id @default(cuid())
+  status SecuritiesStatusEnum @default(DRAFT)
+  notes  String?
+
+  certificateId       String
+  quantity            Int // Number of shares
+  pricePerShare       Float?
+  capitalContribution Float? // Total amount of money contributed/invested
+  ipContribution      Float? // Value of the intellectual property contributed
+  debtCancelled       Float? // Amount of debt cancelled
+  otherContributions  Float? // Other contributions
+
+  vestingSchedule VestingScheduleEnum
+  companyLegends  ShareLegendsEnum[]
+
+  issueDate         DateTime
+  rule144Date       DateTime?
+  vestingStartDate  DateTime?
+  boardApprovalDate DateTime
+
+  stakeholderId String
+  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  shareClassId String
+  shareClass   ShareClass @relation(fields: [shareClassId], references: [id], onDelete: Cascade)
+
+  documents Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([shareClassId])
+  @@index([stakeholderId])
+}
+
+enum OptionTypeEnum {
+  ISO // Incentive Stock Options
+  NSO // Non-satutory Stock Options
+  RSU // Restricted Stock Units
+}
+
+enum OptionStatusEnum {
+  DRAFT
+  ACTIVE
+  EXERCISED
+  EXPIRED
+  CANCELLED
+}
+
+model Option {
+  id            String  @id @default(cuid())
+  notes         String?
+  quantity      Int
+  exercisePrice Float
+
+  type            OptionTypeEnum
+  status          OptionStatusEnum    @default(DRAFT)
+  vestingSchedule VestingScheduleEnum
+
+  issueDate         DateTime
+  expirationDate    DateTime
+  vestingStartDate  DateTime
+  boardApprovalDate DateTime
+  rule144Date       DateTime
+
+  documents Document[]
+
+  stakeholderId String
+  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  equityPlanId String
+  equityPlan   EquityPlan @relation(fields: [equityPlanId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([equityPlanId])
+  @@index([stakeholderId])
 }

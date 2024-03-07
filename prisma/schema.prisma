@@ -81,19 +81,20 @@ model Company {
   state         String
   zipcode       String
 
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  users        Member[]
-  audits       Audit[]
-  shareClasses ShareClass[]
-  equityPlans  EquityPlan[]
-  documents    Document[]
-  templates    Template[]
-  stakeholders Stakeholder[]
-  investments  Investment[]
-  shares       Share[]
-  options      Option[]
-  safes        Safe[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  users            Member[]
+  audits           Audit[]
+  shareClasses     ShareClass[]
+  equityPlans      EquityPlan[]
+  documents        Document[]
+  templates        Template[]
+  stakeholders     Stakeholder[]
+  investments      Investment[]
+  shares           Share[]
+  options          Option[]
+  safes            Safe[]
+  convertibleNotes ConvertibleNote[]
 
   @@unique([publicId])
 }
@@ -168,10 +169,11 @@ model Stakeholder {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  investments Investment[]
-  shares      Share[]
-  options     Option[]
-  safes       Safe[]
+  investments      Investment[]
+  shares           Share[]
+  options          Option[]
+  safes            Safe[]
+  convertibleNotes ConvertibleNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -310,7 +312,10 @@ model Document {
   option   Option? @relation(fields: [optionId], references: [id], onDelete: SetNull)
 
   safeId String?
-  safe   Safe? @relation(fields: [safeId], references: [id], onDelete: SetNull)
+  safe   Safe?   @relation(fields: [safeId], references: [id], onDelete: SetNull)
+
+  convertibleNoteId String?
+  convertibleNote   ConvertibleNote? @relation(fields: [convertibleNoteId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -322,6 +327,7 @@ model Document {
   @@index([shareId])
   @@index([optionId])
   @@index([safeId])
+  @@index([convertibleNoteId])
 }
 
 enum FieldTypes {
@@ -484,7 +490,7 @@ enum OptionStatusEnum {
 }
 
 model Option {
-  id            String  @id @default(cuid())
+  id            String @id @default(cuid())
   quantity      Int
   exercisePrice Float
 
@@ -557,16 +563,16 @@ enum SafeStatusEnum {
 }
 
 model Safe {
-  id       String @id @default(cuid())
+  id       String         @id @default(cuid())
   publicId String // eg. SAFE-01
   type     SafeTypeEnum
   status   SafeStatusEnum @default(DRAFT)
   capital  Float // Amount of money invested
 
-  valuationCap Float?
-  discountRate Float?
-  mfn          Boolean? // Most Favored Nation
-  proRata      Boolean? // Pro Rata Rights
+  valuationCap    Float?
+  discountRate    Float?
+  mfn             Boolean? // Most Favored Nation
+  proRata         Boolean? // Pro Rata Rights
   additionalTerms String?
 
   documents Document[]
@@ -579,15 +585,15 @@ model Safe {
 
   issueDate         DateTime
   boardApprovalDate DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@unique([publicId, companyId])
   @@index([companyId])
   @@index([stakeholderId])
 }
 
-enum ConvertibleNoteStatusEnum {
+enum ConvertibleStatusEnum {
   DRAFT
   ACTIVE
   PENDING
@@ -595,16 +601,47 @@ enum ConvertibleNoteStatusEnum {
   CANCELLED
 }
 
+enum ConvertibleTypeEnum {
+  CCD // Compulsory Convertible Debenture
+  OCD // Optionally Convertible Debenture
+  NOTE // Simple Convertible note
+}
+
+enum ConvertibleInterestMethodEnum {
+  SIMPLE
+  COMPOUND
+}
+
+enum ConvertibleInterestAccrualEnum {
+  DAILY
+  MONTHLY
+  SEMI_ANNUALLY
+  ANNUALLY
+  YEARLY
+  CONTINUOUSLY
+}
+
+enum ConvertibleInterestPaymentScheduleEnum {
+  DEFERRED
+  PAY_AT_MATURITY
+}
+
 model ConvertibleNote {
-  id       String @id @default(cuid())
+  id       String                @id @default(cuid())
   publicId String // eg. CN-01
-  status   ConvertibleNoteStatusEnum @default(DRAFT)
+  status   ConvertibleStatusEnum @default(DRAFT)
+  type     ConvertibleTypeEnum   @default(NOTE)
   capital  Float // Amount of money invested
 
-  discountRate Float?
-  mfn          Boolean? // Most Favored Nation
-  proRata      Boolean? // Pro Rata Rights
+  conversionCap   Float?
+  discountRate    Float?
+  mfn             Boolean? // Most Favored Nation
   additionalTerms String?
+
+  interestRate            Float?
+  interestMethod          ConvertibleInterestMethodEnum?
+  interestAccrual         ConvertibleInterestAccrualEnum?
+  interestPaymentSchedule ConvertibleInterestPaymentScheduleEnum?
 
   documents Document[]
 
@@ -616,8 +653,8 @@ model ConvertibleNote {
 
   issueDate         DateTime
   boardApprovalDate DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@unique([publicId, companyId])
   @@index([companyId])

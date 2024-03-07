@@ -103,7 +103,7 @@ export const signTemplateProcedure = withAuth
       size: 0,
     } as unknown as File;
 
-    const bucketData = await uploadFile(file, {
+    const { bucketUrl: _bucketUrl, ...bucketData } = await uploadFile(file, {
       identifier: user.companyPublicId,
       keyPrefix: "generic-document",
     });

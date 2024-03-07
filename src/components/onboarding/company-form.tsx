@@ -60,9 +60,9 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       user: {
-        email: type === "onboarding" ? user?.user.email ?? "" : undefined,
-        name: type === "onboarding" ? user?.user.name ?? "" : undefined,
-        title: type !== "create" ? data?.title ?? "" : undefined,
+        email: user?.user.email ?? "",
+        name: user?.user.name ?? "",
+        title: data?.title ?? "",
       },
       company: {
         city: data?.company.city ?? "",

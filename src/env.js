@@ -55,8 +55,8 @@ export const env = createEnv({
 
     UPLOAD_ENDPOINT: z.string(),
     UPLOAD_REGION: z.string(),
-    UPLOAD_BUCKET: z.string(),
-    PUBLIC_UPLOAD_BUCKET: z.string(),
+    UPLOAD_BUCKET_PUBLIC: z.string(),
+    UPLOAD_BUCKET_PRIVATE: z.string(),
     UPLOAD_ACCESS_KEY_ID: z.string().optional(),
     UPLOAD_SECRET_ACCESS_KEY: z.string().optional(),
     UPLOAD_PROVIDER: z.enum(["s3", "r2"]),
@@ -97,8 +97,8 @@ export const env = createEnv({
 
     UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT,
     UPLOAD_REGION: process.env.UPLOAD_REGION,
-    UPLOAD_BUCKET: process.env.UPLOAD_BUCKET,
-    PUBLIC_UPLOAD_BUCKET: process.env.PUBLIC_UPLOAD_BUCKET,
+    UPLOAD_BUCKET_PUBLIC: process.env.UPLOAD_BUCKET_PUBLIC,
+    UPLOAD_BUCKET_PRIVATE: process.env.UPLOAD_BUCKET_PRIVATE,
     UPLOAD_ACCESS_KEY_ID: process.env.UPLOAD_ACCESS_KEY_ID,
     UPLOAD_SECRET_ACCESS_KEY: process.env.UPLOAD_SECRET_ACCESS_KEY,
     UPLOAD_PROVIDER: process.env.UPLOAD_PROVIDER,

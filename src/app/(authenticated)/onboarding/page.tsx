@@ -1,14 +1,12 @@
 import { Navbar } from "@/components/navbar";
-import CompanyForm from "@/components/onboarding/company-form";
+import { CompanyForm } from "@/components/onboarding/company-form";
 import { withServerSession } from "@/server/auth";
 import { redirect } from "next/navigation";
 
 const OnboardingPage = async () => {
   const session = await withServerSession();
   const user = session.user;
-  console.log({
-    user,
-  });
+
   if (user.isOnboarded) {
     redirect("/dashboard");
   }
@@ -26,7 +24,7 @@ const OnboardingPage = async () => {
             You are almost there. Please complete the form below to continue
           </p>
         </div>
-        <CompanyForm formType="onboarding" currentUser={user} />
+        <CompanyForm type="onboarding" />
       </div>
     </div>
   );

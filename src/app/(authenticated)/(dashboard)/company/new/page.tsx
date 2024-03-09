@@ -1,11 +1,7 @@
 import { Navbar } from "@/components/navbar";
-import CompanyForm from "@/components/onboarding/company-form";
-import { withServerSession } from "@/server/auth";
+import { CompanyForm } from "@/components/onboarding/company-form";
 
 const OnboardingPage = async () => {
-  const session = await withServerSession();
-  const user = session.user;
-
   return (
     <div className="flex min-h-screen justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100 px-5 pb-5 pt-20">
       <Navbar />
@@ -19,7 +15,7 @@ const OnboardingPage = async () => {
             You are almost there. Please complete the form below to continue
           </p>
         </div>
-        <CompanyForm formType="create-company" currentUser={user} />
+        <CompanyForm type="create" />
       </div>
     </div>
   );

@@ -9,7 +9,16 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["randomuser.me", "avatars.githubusercontent.com"],
+    remotePatterns: [
+      {
+        hostname: "randomuser.me",
+        protocol: "https",
+      },
+      {
+        hostname: "avatars.githubusercontent.com",
+        protocol: "https",
+      },
+    ],
   },
   webpack: (config) => {
     /**
@@ -19,16 +28,6 @@ const config = {
     config.resolve.alias.canvas = false;
 
     return config;
-  },
-
-  async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/login",
-        permanent: true,
-      },
-    ];
   },
 };
 

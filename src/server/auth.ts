@@ -73,17 +73,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, trigger, session }) {
-      if (trigger === "update") {
-        const newToken = {
-          ...token,
-          ...session?.user,
-          picture: session?.user?.image || "",
-        };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return newToken;
-      }
-
+    async jwt({ token, trigger }) {
       if (trigger) {
         const member = await db.member.findFirst({
           where: {
@@ -102,6 +92,7 @@ export const authOptions: NextAuthOptions = {
             user: {
               select: {
                 name: true,
+                image: true,
               },
             },
             company: {
@@ -119,6 +110,7 @@ export const authOptions: NextAuthOptions = {
           token.companyId = member.companyId;
           token.isOnboarded = member.isOnboarded;
           token.companyPublicId = member.company.publicId;
+          token.picture = member.user?.image;
         } else {
           token.status = "";
           token.companyId = "";
@@ -129,12 +121,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       return token;
-    },
-
-    async signIn() {
-      const allowLogin: boolean = env.WAITLIST_MODE === "off";
-
-      return allowLogin || "/signup";
     },
   },
   adapter: PrismaAdapter(db),

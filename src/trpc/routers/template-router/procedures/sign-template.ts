@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
+
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodSignTemplateMutationSchema } from "../schema";
@@ -43,6 +45,11 @@ export const signTemplateProcedure = withAuth
       [],
     );
 
+    let cumulativePagesHeight = 0;
+    for (let i = 0; i < pages.length; i++) {
+      cumulativePagesHeight += pages[i]?.getHeight() ?? 0;
+    }
+
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
     for (const field of template.fields) {
@@ -63,11 +70,12 @@ export const signTemplateProcedure = withAuth
         const { width: pageWidth, height: pageHeight } = page.getSize();
 
         const textHeight = font.heightAtSize(fontSize);
-        const heightRatio = pageHeight / field.viewportHeight;
         const widthRatio = pageWidth / field.viewportWidth;
 
+        const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;
+
         const fieldX = field.left * widthRatio;
-        const fieldY = field.top * heightRatio;
+        const fieldY = totalHeightRatio * field.top;
 
         const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
 
@@ -75,18 +83,48 @@ export const signTemplateProcedure = withAuth
           const image = await pdfDoc.embedPng(value);
 
           const imageWidth = field.width * widthRatio;
-          const imageHeight = field.height * heightRatio;
+          const imageHeight = field.height * totalHeightRatio;
+
+          console.log({
+            imageHeight,
+            imageWidth,
+            imgWidth: widthRatio * image.width,
+            imgHeight: imageHeight * image.height,
+            imageheight: image.height,
+            imagewidth: image.width,
+            fieldHeight: field.height,
+            fieldWidth: field.width,
+
+            widthRatio,
+            pageHeight,
+            pageWidth,
+            w: field.width / image.width,
+            h: field.height / image.height,
+            field,
+            topMargin,
+            pagesRange,
+
+            cumulativePagesHeight,
+            x: fieldX,
+            y: pageHeight - fieldY * pages.length + topMargin - imageHeight,
+            fieldY,
+            fieldYLength: fieldY * pages.length,
+            bbbb: pageHeight - fieldY * pages.length,
+            totalHeightRatio,
+            ys: pageHeight * totalHeightRatio + imageHeight + field.top,
+            newY: pageHeight - fieldY + topMargin - imageHeight,
+          });
 
           page.drawImage(image, {
             x: fieldX,
-            y: pageHeight - fieldY * pages.length + topMargin - fontSize,
+            y: pageHeight - fieldY + topMargin - imageHeight,
             width: imageWidth,
             height: imageHeight,
           });
         } else {
           page.drawText(value, {
             x: fieldX,
-            y: pageHeight - fieldY * pages.length - textHeight + topMargin,
+            y: pageHeight - fieldY - textHeight + topMargin,
             font,
             size: fontSize,
           });

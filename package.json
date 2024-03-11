@@ -47,7 +47,7 @@
     "@sindresorhus/slugify": "^2.2.1",
     "@t3-oss/env-nextjs": "^0.9.2",
     "@tanstack/react-query": "^4.36.1",
-    "@tanstack/react-table": "^8.11.7",
+    "@tanstack/react-table": "^8.13.2",
     "@tremor/react": "^3.13.4",
     "@trpc/client": "^10.43.6",
     "@trpc/next": "^10.43.6",

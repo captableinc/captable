@@ -6,6 +6,7 @@ import { ZodSignTemplateMutationSchema } from "../schema";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
+import { generateRange } from "@/lib/pdf-positioning";
 
 export const signTemplateProcedure = withAuth
   .input(ZodSignTemplateMutationSchema)
@@ -31,23 +32,17 @@ export const signTemplateProcedure = withAuth
 
     const pages = pdfDoc.getPages();
 
-    const pageHeights = pages.map((item) => item.getHeight());
-
-    const pagesRange = pageHeights.reduce<[number, number][]>(
-      (prev, curr, index) => {
-        const prevRange = prev?.[index - 1]?.[1];
-        const startingRange = prevRange ? prevRange : 0;
-        const height = curr;
-
-        prev.push([startingRange, height + startingRange]);
-        return prev;
-      },
-      [],
-    );
-
     let cumulativePagesHeight = 0;
+    const measurements = [];
+
     for (let i = 0; i < pages.length; i++) {
-      cumulativePagesHeight += pages[i]?.getHeight() ?? 0;
+      const page = pages[i];
+      if (page) {
+        const height = page.getHeight();
+        const width = page.getWidth();
+        cumulativePagesHeight += height;
+        measurements.push({ height, width });
+      }
     }
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -67,7 +62,10 @@ export const signTemplateProcedure = withAuth
 
         const fontSize = field.type === "SIGNATURE" ? 15 : 8;
 
+        const pagesRange = generateRange(measurements, field.viewportWidth);
+
         const { width: pageWidth, height: pageHeight } = page.getSize();
+        const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
 
         const textHeight = font.heightAtSize(fontSize);
         const widthRatio = pageWidth / field.viewportWidth;
@@ -75,56 +73,27 @@ export const signTemplateProcedure = withAuth
         const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;
 
         const fieldX = field.left * widthRatio;
-        const fieldY = totalHeightRatio * field.top;
 
-        const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
+        const top = field.top - topMargin;
+        const fieldY = top * widthRatio;
 
         if (field.type === "SIGNATURE") {
           const image = await pdfDoc.embedPng(value);
 
           const imageWidth = field.width * widthRatio;
           const imageHeight = field.height * totalHeightRatio;
-
-          console.log({
-            imageHeight,
-            imageWidth,
-            imgWidth: widthRatio * image.width,
-            imgHeight: imageHeight * image.height,
-            imageheight: image.height,
-            imagewidth: image.width,
-            fieldHeight: field.height,
-            fieldWidth: field.width,
-
-            widthRatio,
-            pageHeight,
-            pageWidth,
-            w: field.width / image.width,
-            h: field.height / image.height,
-            field,
-            topMargin,
-            pagesRange,
-
-            cumulativePagesHeight,
-            x: fieldX,
-            y: pageHeight - fieldY * pages.length + topMargin - imageHeight,
-            fieldY,
-            fieldYLength: fieldY * pages.length,
-            bbbb: pageHeight - fieldY * pages.length,
-            totalHeightRatio,
-            ys: pageHeight * totalHeightRatio + imageHeight + field.top,
-            newY: pageHeight - fieldY + topMargin - imageHeight,
-          });
+          const updatedY = fieldY + imageHeight;
 
           page.drawImage(image, {
             x: fieldX,
-            y: pageHeight - fieldY + topMargin - imageHeight,
+            y: pageHeight - updatedY,
             width: imageWidth,
             height: imageHeight,
           });
         } else {
           page.drawText(value, {
             x: fieldX,
-            y: pageHeight - fieldY - textHeight + topMargin,
+            y: pageHeight - fieldY - textHeight,
             font,
             size: fontSize,
           });

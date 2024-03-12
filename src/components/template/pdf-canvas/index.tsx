@@ -16,20 +16,22 @@ const MemoPdfViewer = memo(PdfViewer);
 export function PdfCanvas({ url, mode = "edit" }: PdfCanvasProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const [pageHeights, setPageHeights] = useState<number[]>([]);
+  const [measurements, setPageHeights] = useState<
+    { height: number; width: number }[]
+  >([]);
 
   const onDocumentLoadSuccess = useCallback(async (e: PDFDocumentProxy) => {
-    const heights: number[] = [];
+    const measurements: { height: number; width: number }[] = [];
 
     for (let index = 0; index < e.numPages; index++) {
       const page = await e.getPage(index + 1);
 
-      const { height } = page.getViewport({ scale: 1 });
+      const { height, width } = page.getViewport({ scale: 1 });
 
-      heights.push(height);
+      measurements.push({ height, width });
     }
 
-    setPageHeights(heights);
+    setPageHeights(measurements);
 
     setIsLoaded(true);
   }, []);
@@ -40,7 +42,7 @@ export function PdfCanvas({ url, mode = "edit" }: PdfCanvasProps) {
 
       {isLoaded ? (
         mode === "edit" ? (
-          <FieldCanvas pageHeights={pageHeights} mode={mode} />
+          <FieldCanvas measurements={measurements} mode={mode} />
         ) : (
           <ReadOnlyFieldCanvas />
         )

@@ -7,40 +7,18 @@ import { DrawingField } from "./drawing-field";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
+import {
+  type PageMeasurement,
+  generateRange,
+  getPageNumber,
+} from "@/lib/pdf-positioning";
 
 interface FieldCanvasProp {
   mode?: "readonly" | "edit";
-  measurements: { height: number; width: number }[];
+  measurements: PageMeasurement;
 }
 
 const resizeObserverOptions = {};
-
-function getPageNumber(y: number, ranges: [number, number][]) {
-  for (let i = 0; i < ranges.length; i++) {
-    const range = ranges[i];
-    if (range && y >= Math.floor(range[0]) && y <= Math.floor(range[1])) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-function generateRange(
-  measurements: { height: number; width: number }[],
-  viewportWidth: number,
-) {
-  let startingRange = 0;
-  return measurements.map(({ width, height }) => {
-    const ratio = viewportWidth / width;
-    const calculatedHeight = ratio * height;
-    const range = [startingRange, startingRange + calculatedHeight] as [
-      number,
-      number,
-    ];
-    startingRange += calculatedHeight;
-    return range;
-  });
-}
 
 export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();

@@ -5,6 +5,7 @@ import { FieldCanvas } from "../field-canvas";
 import { memo, useCallback, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import { ReadOnlyFieldCanvas } from "../field-canvas/readonly-field-canvas";
+import { type PageMeasurement } from "@/lib/pdf-positioning";
 
 interface PdfCanvasProps {
   url: string;
@@ -16,12 +17,10 @@ const MemoPdfViewer = memo(PdfViewer);
 export function PdfCanvas({ url, mode = "edit" }: PdfCanvasProps) {
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const [measurements, setPageHeights] = useState<
-    { height: number; width: number }[]
-  >([]);
+  const [measurements, setPageHeights] = useState<PageMeasurement>([]);
 
   const onDocumentLoadSuccess = useCallback(async (e: PDFDocumentProxy) => {
-    const measurements: { height: number; width: number }[] = [];
+    const measurements: PageMeasurement = [];
 
     for (let index = 0; index < e.numPages; index++) {
       const page = await e.getPage(index + 1);

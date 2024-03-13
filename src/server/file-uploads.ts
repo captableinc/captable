@@ -63,6 +63,7 @@ export const getPresignedPutUrl = async ({
     Bucket: bucketMode === "privateBucket" ? PrivateBucket : PublicBucket,
     Key,
     ContentType: contentType,
+    ACL: bucketMode === "privateBucket" ? "private" : "public-read",
   });
 
   const url: string = await getSignedUrl(S3, putObjectCommand, {

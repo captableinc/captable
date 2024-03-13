@@ -6,7 +6,7 @@ import { ZodSignTemplateMutationSchema } from "../schema";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
-import { generateRange } from "@/lib/pdf-positioning";
+import { generateRange, type Range } from "@/lib/pdf-positioning";
 
 export const signTemplateProcedure = withAuth
   .input(ZodSignTemplateMutationSchema)
@@ -49,6 +49,8 @@ export const signTemplateProcedure = withAuth
     const fontSize = 8;
     const textHeight = font.heightAtSize(fontSize);
 
+    const pageRangeCache: Record<string, Range[]> = {};
+
     for (const field of template.fields) {
       const value = input?.data?.[field?.name];
 
@@ -62,7 +64,14 @@ export const signTemplateProcedure = withAuth
           throw new Error("page not found");
         }
 
-        const pagesRange = generateRange(measurements, field.viewportWidth);
+        const cacheKey = String(field.viewportHeight);
+        let pagesRange = pageRangeCache?.[cacheKey];
+
+        if (!pagesRange) {
+          const range = generateRange(measurements, field.viewportWidth);
+          pageRangeCache[cacheKey] = range;
+          pagesRange = range;
+        }
 
         const { width: pageWidth, height: pageHeight } = page.getSize();
         const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;

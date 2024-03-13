@@ -19,8 +19,8 @@ const endpoint = env.UPLOAD_ENDPOINT;
 const accessKeyId = env.UPLOAD_ACCESS_KEY_ID;
 const secretAccessKey = env.UPLOAD_SECRET_ACCESS_KEY;
 const hasCredentials = accessKeyId && secretAccessKey;
-const Bucket = env.UPLOAD_BUCKET;
-const PublicBucket = env.PUBLIC_UPLOAD_BUCKET;
+const PrivateBucket = env.UPLOAD_BUCKET_PRIVATE;
+const PublicBucket = env.UPLOAD_BUCKET_PUBLIC;
 
 const S3 = new S3Client({
   region,
@@ -60,9 +60,10 @@ export const getPresignedPutUrl = async ({
   )}${ext}`;
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket: bucketMode === "privateBucket" ? Bucket : PublicBucket,
+    Bucket: bucketMode === "privateBucket" ? PrivateBucket : PublicBucket,
     Key,
     ContentType: contentType,
+    ACL: bucketMode === "privateBucket" ? "private" : "public-read",
   });
 
   const url: string = await getSignedUrl(S3, putObjectCommand, {
@@ -77,7 +78,7 @@ export const getPresignedPutUrl = async ({
 
 export const getPresignedGetUrl = async (key: string) => {
   const getObjectCommand = new GetObjectCommand({
-    Bucket,
+    Bucket: PrivateBucket,
     Key: key,
     // ResponseContentDisposition: `attachment; filename="${key}"`,
     ResponseContentDisposition: `inline`,
@@ -93,7 +94,7 @@ export const getPresignedGetUrl = async (key: string) => {
 export const deleteBucketFile = (key: string) => {
   return S3.send(
     new DeleteObjectCommand({
-      Bucket: process.env.NEXT_PRIVATE_UPLOAD_BUCKET,
+      Bucket: process.env.UPLOAD_BUCKET_PRIVATE,
       Key: key,
     }),
   );

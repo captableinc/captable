@@ -46,6 +46,8 @@ export const signTemplateProcedure = withAuth
     }
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontSize = 8;
+    const textHeight = font.heightAtSize(fontSize);
 
     for (const field of template.fields) {
       const value = input?.data?.[field?.name];
@@ -60,14 +62,11 @@ export const signTemplateProcedure = withAuth
           throw new Error("page not found");
         }
 
-        const fontSize = field.type === "SIGNATURE" ? 15 : 8;
-
         const pagesRange = generateRange(measurements, field.viewportWidth);
 
         const { width: pageWidth, height: pageHeight } = page.getSize();
         const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
 
-        const textHeight = font.heightAtSize(fontSize);
         const widthRatio = pageWidth / field.viewportWidth;
 
         const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;

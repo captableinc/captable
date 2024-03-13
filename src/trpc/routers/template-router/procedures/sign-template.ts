@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
+
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodSignTemplateMutationSchema } from "../schema";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
+import { generateRange, type Range } from "@/lib/pdf-positioning";
 
 export const signTemplateProcedure = withAuth
   .input(ZodSignTemplateMutationSchema)
@@ -29,21 +32,24 @@ export const signTemplateProcedure = withAuth
 
     const pages = pdfDoc.getPages();
 
-    const pageHeights = pages.map((item) => item.getHeight());
+    let cumulativePagesHeight = 0;
+    const measurements = [];
 
-    const pagesRange = pageHeights.reduce<[number, number][]>(
-      (prev, curr, index) => {
-        const prevRange = prev?.[index - 1]?.[1];
-        const startingRange = prevRange ? prevRange : 0;
-        const height = curr;
-
-        prev.push([startingRange, height + startingRange]);
-        return prev;
-      },
-      [],
-    );
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
+      if (page) {
+        const height = page.getHeight();
+        const width = page.getWidth();
+        cumulativePagesHeight += height;
+        measurements.push({ height, width });
+      }
+    }
 
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontSize = 8;
+    const textHeight = font.heightAtSize(fontSize);
+
+    const pageRangeCache: Record<string, Range[]> = {};
 
     for (const field of template.fields) {
       const value = input?.data?.[field?.name];
@@ -58,35 +64,44 @@ export const signTemplateProcedure = withAuth
           throw new Error("page not found");
         }
 
-        const fontSize = field.type === "SIGNATURE" ? 15 : 8;
+        const cacheKey = String(field.viewportHeight);
+        let pagesRange = pageRangeCache?.[cacheKey];
+
+        if (!pagesRange) {
+          const range = generateRange(measurements, field.viewportWidth);
+          pageRangeCache[cacheKey] = range;
+          pagesRange = range;
+        }
 
         const { width: pageWidth, height: pageHeight } = page.getSize();
+        const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
 
-        const textHeight = font.heightAtSize(fontSize);
-        const heightRatio = pageHeight / field.viewportHeight;
         const widthRatio = pageWidth / field.viewportWidth;
 
-        const fieldX = field.left * widthRatio;
-        const fieldY = field.top * heightRatio;
+        const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;
 
-        const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
+        const fieldX = field.left * widthRatio;
+
+        const top = field.top - topMargin;
+        const fieldY = top * widthRatio;
 
         if (field.type === "SIGNATURE") {
           const image = await pdfDoc.embedPng(value);
 
           const imageWidth = field.width * widthRatio;
-          const imageHeight = field.height * heightRatio;
+          const imageHeight = field.height * totalHeightRatio;
+          const updatedY = fieldY + imageHeight;
 
           page.drawImage(image, {
             x: fieldX,
-            y: pageHeight - fieldY * pages.length + topMargin - fontSize,
+            y: pageHeight - updatedY,
             width: imageWidth,
             height: imageHeight,
           });
         } else {
           page.drawText(value, {
             x: fieldX,
-            y: pageHeight - fieldY * pages.length - textHeight + topMargin,
+            y: pageHeight - fieldY - textHeight,
             font,
             size: fontSize,
           });

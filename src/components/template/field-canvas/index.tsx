@@ -7,25 +7,20 @@ import { DrawingField } from "./drawing-field";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
+import {
+  type PageMeasurement,
+  generateRange,
+  getPageNumber,
+} from "@/lib/pdf-positioning";
 
 interface FieldCanvasProp {
   mode?: "readonly" | "edit";
-  pageHeights: number[];
+  measurements: PageMeasurement;
 }
 
 const resizeObserverOptions = {};
 
-function getPageNumber(y: number, ranges: [number, number][]) {
-  for (let i = 0; i < ranges.length; i++) {
-    const range = ranges[i];
-    if (range && y >= range[0] && y <= range[1]) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-export function FieldCanvas({ mode = "edit", pageHeights }: FieldCanvasProp) {
+export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
   const { append, fields, remove } = useFieldArray({
     name: "fields",
@@ -54,6 +49,8 @@ export function FieldCanvas({ mode = "edit", pageHeights }: FieldCanvasProp) {
       setFocusId(id);
     }
   };
+
+  const heightRange = generateRange(measurements, viewport.width);
 
   return (
     <>
@@ -102,31 +99,12 @@ export function FieldCanvas({ mode = "edit", pageHeights }: FieldCanvasProp) {
           if (startPos.x !== endPos.x && startPos.y !== endPos.y) {
             const id = nanoid();
 
-            const cumulativePageHeight = pageHeights.reduce(
-              (accumulator, currentValue) => accumulator + currentValue,
-              0,
-            );
-
-            const heightRatio = cumulativePageHeight / viewport.height;
-
             const top = Math.min(startPos.y, endPos.y);
             const left = Math.min(startPos.x, endPos.x);
             const width = Math.abs(endPos.x - startPos.x);
             const height = Math.abs(endPos.y - startPos.y);
 
-            const pagesRange = pageHeights.reduce<[number, number][]>(
-              (prev, curr, index) => {
-                const prevRange = prev?.[index - 1]?.[1];
-                const startingRange = prevRange ? prevRange + 1 : 0;
-                const height = curr;
-
-                prev.push([startingRange, height + startingRange]);
-                return prev;
-              },
-              [],
-            );
-
-            const pageNum = getPageNumber(top * heightRatio, pagesRange);
+            const pageNum = getPageNumber(top, heightRange);
 
             append({
               id,

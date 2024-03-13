@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Image from "next/image";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,6 @@ import React, { useRef } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import { uploadFile } from "@/common/uploads";
-import { env } from "@/env";
 import { useRouter } from "next/navigation";
 import {
   compareFormDataWithInitial,
@@ -121,13 +121,9 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
         keyPrefix: "profile-avatars",
         identifier: session.user.id,
       };
-      const { key } = await uploadFile(file, options, "publicBucket");
+      const { fileUrl } = await uploadFile(file, options, "publicBucket");
 
-      const s3BaseURL = `https://${env.PUBLIC_UPLOAD_BUCKET}.s3.amazonaws.com`;
-
-      const imageUrl = `${s3BaseURL}/${key}`;
-
-      return { imageUrl };
+      return { imageUrl: fileUrl };
     }
 
     return { imageUrl: "" };
@@ -218,13 +214,10 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-6">
           <div className="col-span-full flex items-center gap-x-8">
-            <Image
-              src={session?.user.image ?? "/avatar.svg"}
-              alt="User avatar"
-              width={50}
-              height={50}
-              className="h-20 w-20 flex-none rounded-full object-cover"
-            />
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={session?.user?.image || "/avatar.svg"} />
+            </Avatar>
+
             <div className="flex items-start space-x-3">
               <div>
                 <Button

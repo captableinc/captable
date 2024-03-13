@@ -29,6 +29,12 @@ export const getTemplateProcedure = withAuth
             required: true,
             placeholder: true,
             type: true,
+            viewportHeight: true,
+            viewportWidth: true,
+            page: true,
+          },
+          orderBy: {
+            top: "asc",
           },
         },
       },

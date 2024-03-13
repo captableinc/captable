@@ -48,7 +48,9 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
                 <span className="flex">{document.name}</span>
               </TableCell>
               <TableCell>{document.uploader.user.name}</TableCell>
-              <TableCell>{dayjsExt().to(document.createdAt)}</TableCell>
+              <TableCell suppressHydrationWarning>
+                {dayjsExt().to(document.createdAt)}
+              </TableCell>
               <TableCell>
                 <button
                   onClick={async () => {

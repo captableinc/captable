@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Input } from "@/components/ui/input";
@@ -129,16 +128,6 @@ const LoginForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                 </Button>
               </>
             )}
-
-            <span className="text-center text-sm text-gray-500">
-              Don{`'`}t have an account?{" "}
-              <Link
-                href="/signup"
-                className="underline underline-offset-4 hover:text-primary "
-              >
-                Sign up
-              </Link>
-            </span>
           </>
         )}
       </div>

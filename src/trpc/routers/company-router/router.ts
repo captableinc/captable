@@ -5,10 +5,32 @@ import { ZodSwitchCompanyMutationSchema } from "./schema";
 export const companyRouter = createTRPCRouter({
   getCompany: withAuth.query(async ({ ctx }) => {
     const user = ctx.session.user;
+    const userId = user.id;
+    const companyId = user.companyId;
 
-    const company = await ctx.db.company.findFirstOrThrow({
+    const company = await ctx.db.member.findFirstOrThrow({
       where: {
-        id: user.companyId,
+        userId,
+        companyId,
+      },
+      select: {
+        id: true,
+        title: true,
+        company: {
+          select: {
+            id: true,
+            publicId: true,
+            name: true,
+            incorporationDate: true,
+            incorporationType: true,
+            incorporationState: true,
+            incorporationCountry: true,
+            state: true,
+            city: true,
+            zipcode: true,
+            streetAddress: true,
+          },
+        },
       },
     });
     return company;

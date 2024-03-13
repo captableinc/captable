@@ -46,9 +46,12 @@ export function Uploader({
     try {
       setUploading(true);
       for (const file of acceptedFiles) {
-        const upload = await uploadFile(file, { identifier, keyPrefix });
+        const { key, mimeType, name, size } = await uploadFile(file, {
+          identifier,
+          keyPrefix,
+        });
 
-        const data = await mutateAsync({ ...upload });
+        const data = await mutateAsync({ key, mimeType, name, size });
 
         if (onSuccess) {
           await onSuccess(data);

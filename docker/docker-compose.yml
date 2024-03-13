@@ -32,7 +32,23 @@ services:
       - MINIO_ROOT_USER=opencap
       - MINIO_ROOT_PASSWORD=password
     entrypoint: sh
-    command: -c 'mkdir -p /data/opencap && minio server /data --console-address ":9001" --address ":9002"'
+    command: -c 'minio server /data --console-address ":9001" --address ":9002"'
+
+
+  mc:
+    image: minio/mc
+    container_name: opencap-minio-client
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config;
+      /usr/bin/mc config host add myminio http://minio:9002 opencap password;
+      /usr/bin/mc mb myminio/opencap-private-bucket;
+      /usr/bin/mc mb myminio/opencap-public-bucket;
+      /usr/bin/mc anonymous set public myminio/opencap-public-bucket;
+      exit 0;
+      "
+    depends_on:
+      - minio
 
 volumes:
   minio:

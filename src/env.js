@@ -50,14 +50,13 @@ export const env = createEnv({
     EMAIL_SERVER_PASSWORD: z.string().optional(),
 
     //flags
-    WAITLIST_MODE: z.enum(["on", "off"]).default("off"),
 
     // upload
 
     UPLOAD_ENDPOINT: z.string(),
     UPLOAD_REGION: z.string(),
-    UPLOAD_BUCKET: z.string(),
-    PUBLIC_UPLOAD_BUCKET: z.string(),
+    UPLOAD_BUCKET_PUBLIC: z.string(),
+    UPLOAD_BUCKET_PRIVATE: z.string(),
     UPLOAD_ACCESS_KEY_ID: z.string().optional(),
     UPLOAD_SECRET_ACCESS_KEY: z.string().optional(),
     UPLOAD_PROVIDER: z.enum(["s3", "r2"]),
@@ -75,6 +74,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_NODE_ENV: z.string().default("development"),
+    NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
   },
 
   /**
@@ -96,15 +96,14 @@ export const env = createEnv({
     EMAIL_SERVER_USERNAME: process.env.EMAIL_SERVER_USERNAME,
     EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
 
-    WAITLIST_MODE: process.env.WAITLIST_MODE,
-
     UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT,
     UPLOAD_REGION: process.env.UPLOAD_REGION,
-    UPLOAD_BUCKET: process.env.UPLOAD_BUCKET,
-    PUBLIC_UPLOAD_BUCKET: process.env.PUBLIC_UPLOAD_BUCKET,
+    UPLOAD_BUCKET_PUBLIC: process.env.UPLOAD_BUCKET_PUBLIC,
+    UPLOAD_BUCKET_PRIVATE: process.env.UPLOAD_BUCKET_PRIVATE,
     UPLOAD_ACCESS_KEY_ID: process.env.UPLOAD_ACCESS_KEY_ID,
     UPLOAD_SECRET_ACCESS_KEY: process.env.UPLOAD_SECRET_ACCESS_KEY,
     UPLOAD_PROVIDER: process.env.UPLOAD_PROVIDER,
+    NEXT_PUBLIC_UPLOAD_DOMAIN: process.env.NEXT_PUBLIC_UPLOAD_DOMAIN,
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,

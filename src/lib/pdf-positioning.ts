@@ -10,6 +10,8 @@ export function getPageNumber(y: number, ranges: [number, number][]) {
   return -1;
 }
 
+export type Range = [number, number];
+
 export function generateRange(
   measurements: PageMeasurement,
   viewportWidth: number,
@@ -18,10 +20,7 @@ export function generateRange(
   return measurements.map(({ width, height }) => {
     const ratio = viewportWidth / width;
     const calculatedHeight = ratio * height;
-    const range = [startingRange, startingRange + calculatedHeight] as [
-      number,
-      number,
-    ];
+    const range = [startingRange, startingRange + calculatedHeight] as Range;
     startingRange += calculatedHeight;
     return range;
   });

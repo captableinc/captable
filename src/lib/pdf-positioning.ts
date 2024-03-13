@@ -1,16 +1,35 @@
 export type PageMeasurement = { height: number; width: number }[];
 
-export function getPageNumber(y: number, ranges: [number, number][]) {
-  for (let i = 0; i < ranges.length; i++) {
-    const range = ranges[i];
-    if (range && y >= Math.floor(range[0]) && y <= Math.floor(range[1])) {
-      return i;
+export type Range = [number, number];
+
+export function getPageNumber(y: number, ranges: Range[]) {
+  let left = 0;
+  let right = ranges.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    const range = ranges?.[mid];
+
+    if (!range) {
+      throw new Error("range not found");
+    }
+
+    const [start, end] = range;
+
+    const floorStart = Math.floor(start);
+    const floorEnd = Math.floor(end);
+
+    if (y >= floorStart && y <= floorEnd) {
+      return mid;
+    } else if (y < floorStart) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
     }
   }
+
   return -1;
 }
-
-export type Range = [number, number];
 
 export function generateRange(
   measurements: PageMeasurement,

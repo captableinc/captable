@@ -27,7 +27,7 @@ import { type DialogProps } from "@radix-ui/react-dialog";
 
 type ModalProps = {
   title: string | React.ReactNode;
-  subtitle: string | React.ReactNode;
+  subtitle?: string | React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
   trigger: React.ReactNode;
   children: React.ReactNode;
@@ -64,9 +64,11 @@ const Modal = ({
                   <OpenCapLogo className="mb-3 h-10 w-10" />
                 </div>
                 <DialogTitle className="mb-4 text-center">{title}</DialogTitle>
-                <DialogDescription className="text-center">
-                  {subtitle}
-                </DialogDescription>
+                {subtitle && (
+                  <DialogDescription className="text-center">
+                    {subtitle}
+                  </DialogDescription>
+                )}
               </DialogHeader>
             </div>
           </header>

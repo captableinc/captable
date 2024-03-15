@@ -18,7 +18,8 @@
     "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" && npx prisma format",
     "email:dev": "mailpit",
     "email:preview": "email preview ./src/emails",
-    "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs"
+    "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",
+    "trigger": "npx @trigger.dev/cli@latest dev"
   },
   "dependencies": {
     "@ant-design/plots": "^2.1.12",
@@ -81,7 +82,10 @@
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "@trigger.dev/sdk": "^2.3.18",
+    "@trigger.dev/nextjs": "^2.3.18",
+    "@trigger.dev/react": "^2.3.18"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.0",
@@ -113,5 +117,8 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.25.1"
+  },
+  "trigger.dev": {
+    "endpointId": "captable-A0-I"
   }
 }

@@ -3,11 +3,30 @@ import { EquityPlanMutationSchema } from "./schema";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 
 export const equityPlanRouter = createTRPCRouter({
+  getPlans: withAuth.query(async ({ ctx }) => {
+    const {
+      db,
+      session: { user },
+    } = ctx;
+
+    const data = await db.equityPlan.findMany({
+      where: {
+        companyId: user.companyId,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return { data };
+  }),
+
   create: withAuth
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
       const { userAgent, requestIp } = ctx;
-
+      console.log("adding user and name inside securities fields");
       try {
         const companyId = ctx.session.user.companyId;
 

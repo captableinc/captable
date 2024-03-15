@@ -186,11 +186,11 @@ model Audit {
   companyId  String
   company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   summary    String?
-  action     String // AuditAction
+  action     String
   occurredAt DateTime @default(now())
-  actor      Json // AuditActor
-  target     Json[] // AuditTarget
-  context    Json // AuditContext
+  actor      Json
+  target     Json[]
+  context    Json
 
   @@index([companyId])
 }

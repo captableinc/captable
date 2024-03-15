@@ -50,3 +50,11 @@ export const AuditSchema = z.object({
 });
 
 export type AuditSchemaType = z.infer<typeof AuditSchema>;
+
+export const getActions = () => {
+  const actions = AuditSchema.shape.action.Values;
+  return Object.values(actions).map((action) => ({
+    label: action,
+    value: action,
+  }));
+};

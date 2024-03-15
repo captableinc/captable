@@ -66,7 +66,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string().optional(),
 
     // trigger.dev
-    TRIGGER_API_ID: z.string().optional(),
+    TRIGGER_API_ID: z.string(),
     TRIGGER_API_KEY: z.string().optional(),
     TRIGGER_API_URL: z.string().optional(),
   },

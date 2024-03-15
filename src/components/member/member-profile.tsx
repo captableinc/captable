@@ -214,7 +214,8 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
         <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-6">
           <div className="col-span-full flex items-center gap-x-8">
             <img
-              src={session?.user.image ?? "/avatar.svg"}
+              //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              src={session?.user.image || "/avatar.svg"}
               alt="User avatar"
               width={50}
               height={50}

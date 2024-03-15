@@ -492,6 +492,7 @@ enum OptionStatusEnum {
 
 model Option {
   id            String @id @default(cuid())
+  grantId       String
   quantity      Int
   exercisePrice Float
 
@@ -522,6 +523,7 @@ model Option {
   @@index([companyId])
   @@index([equityPlanId])
   @@index([stakeholderId])
+  @@unique([companyId,grantId])
 }
 
 model Investment {

@@ -28,6 +28,7 @@ export const getOptionsProcedure = withAuth.query(async ({ ctx }) => {
         },
         documents: {
           select: {
+            name: true,
             uploader: {
               select: {
                 user: {
@@ -39,7 +40,6 @@ export const getOptionsProcedure = withAuth.query(async ({ ctx }) => {
             },
             bucket: {
               select: {
-                name: true,
                 key: true,
                 mimeType: true,
                 size: true,

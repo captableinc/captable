@@ -1,10 +1,10 @@
 import { withAuth } from "@/trpc/api/trpc";
 import { Audit } from "@/server/audit";
-import { AddOptionMutationSchema } from "../schema";
+import { ZodAddOptionMutationSchema } from "../schema";
 import { generatePublicId } from "@/common/id";
 
 export const addOptionProcedure = withAuth
-  .input(AddOptionMutationSchema)
+  .input(ZodAddOptionMutationSchema)
   .mutation(async ({ ctx, input }) => {
     console.log({ input });
     const { userAgent, requestIp } = ctx;
@@ -63,12 +63,16 @@ export const addOptionProcedure = withAuth
         );
       });
 
-      return { success: true, message: "New option added successfully" };
+      return { success: true, message: "🎉 Successfully added an option" };
     } catch (error) {
       console.error("Error adding options:", error);
       return {
         success: false,
-        message: "Oops, something went wrong.",
+        //@ts-expect-error error-code-need-fix
+        message:
+          error?.code !== "P2002"
+            ? "Oops, something went wrong."
+            : "Please use unique grantId",
       };
     }
   });

@@ -6,6 +6,7 @@ import Modal from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import Uploader from "@/components/ui/uploader";
 import { RiAddFill } from "@remixicon/react";
+import CreateNewSafeModal from "./new/modal";
 
 import {
   DropdownMenu,
@@ -37,16 +38,14 @@ const SafeActions = ({ companyPublicId }: SafeActionsProps) => {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <ul>
           <li>
-            <Modal
-              title="Create a new SAFE agreement"
+            <CreateNewSafeModal
+              companyId={companyPublicId}
               trigger={
                 <Button variant="ghost" size="sm">
                   Create new SAFE
                 </Button>
               }
-            >
-              <span>Multi-step form</span>
-            </Modal>
+            />
           </li>
 
           <li>

@@ -30,6 +30,11 @@ export const AuditSchema = z.object({
 
     "option.created",
     "option.deleted",
+
+    "safe.created",
+    "safe.imported",
+    "safe.sent",
+    "safe.signed",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({

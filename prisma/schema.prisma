@@ -352,7 +352,7 @@ model TemplateField {
   left           Int
   width          Int
   height         Int
-  template       Template   @relation(fields: [templateId], references: [id])
+  template       Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
   templateId     String
   viewportHeight Int
   viewportWidth  Int
@@ -554,7 +554,6 @@ model Investment {
 enum SafeTypeEnum {
   PRE_MONEY
   POST_MONEY
-  UNCAPPED
 }
 
 enum SafeStatusEnum {
@@ -564,6 +563,16 @@ enum SafeStatusEnum {
   EXPIRED
   CANCELLED
 }
+// YC Standard Safe
+enum YCSafeEnum {
+  POST_MONEY_CAP @map("Valuation Cap, no Discount")
+  POST_MONEY_DISCOUNT @map("Discount, no Valuation Cap")
+  POST_MONEY_MFN @map("MFN, no Valuation Cap, no Discount")
+
+  POST_MONEY_CAP_WITH_PRO_RATA @map("Valuation Cap, no Discount, include Pro Rata Rights")
+  POST_MONEY_DISCOUNT_WITH_PRO_RATA @map("Discount, no Valuation Cap, include Pro Rata Rights")
+  POST_MONEY_MFN_WITH_PRO_RATA @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
+}
 
 model Safe {
   id       String         @id @default(cuid())
@@ -571,11 +580,12 @@ model Safe {
   type     SafeTypeEnum
   status   SafeStatusEnum @default(DRAFT)
   capital  Float // Amount of money invested
+  ycTemplate  YCSafeEnum?
 
   valuationCap    Float?
   discountRate    Float?
-  mfn             Boolean? // Most Favored Nation
-  proRata         Boolean? // Pro Rata Rights
+  mfn             Boolean @default(false) // Most Favored Nation
+  proRata         Boolean @default(false) // Pro Rata Rights
   additionalTerms String?
 
   documents Document[]

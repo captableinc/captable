@@ -28,7 +28,7 @@ import { type DialogProps } from "@radix-ui/react-dialog";
 type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   trigger: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;
@@ -54,6 +54,8 @@ const Modal = ({
           size === "xl" && "sm:max-w-xl",
           size === "2xl" && "sm:max-w-2xl",
           size === "3xl" && "sm:max-w-3xl",
+          size === "4xl" && "sm:max-w-4xl",
+          size === "5xl" && "sm:max-w-5xl",
         )}
       >
         <div className="no-scrollbar max-h-[80vh] overflow-scroll">

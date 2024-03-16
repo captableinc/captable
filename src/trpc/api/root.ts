@@ -11,6 +11,8 @@ import { templateRouter } from "../routers/template-router/router";
 import { templateFieldRouter } from "../routers/template-field-router/router";
 import { stakeholderRouter } from "../routers/stakeholder-router/router";
 import { securitiesRouter } from "../routers/securities-router/router";
+import { safeRouter } from "../routers/safe/router";
+
 /**
  * This is the primary router for your server.
  *
@@ -29,6 +31,7 @@ export const appRouter = createTRPCRouter({
   templateField: templateFieldRouter,
   stakeholder: stakeholderRouter,
   securities: securitiesRouter,
+  safe: safeRouter,
 });
 
 // export type definition of API

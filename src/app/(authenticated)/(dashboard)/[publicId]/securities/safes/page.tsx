@@ -20,7 +20,7 @@ const SafePage = async () => {
     // />
     <EmptyState
       icon={<RiSafeFill />}
-      title="Simple agreement for future equity (SAFE)"
+      title="SAFE"
       subtitle="Create and manage SAFE agreements for your company."
     >
       <SafeActions companyPublicId={user.companyPublicId} />

@@ -71,3 +71,23 @@ export function compareFormDataWithInitial<T extends Record<string, string>>(
 
   return isChanged;
 }
+
+export function getShortLetters(fullName: string): string | undefined {
+  if (!fullName || fullName.trim() === "") {
+    return undefined;
+  }
+
+  const names: string[] = fullName.split(" ");
+
+  if (names.length < 2) {
+    return "";
+  }
+
+  const firstNameLetter: string = names[0]?.[0]?.toUpperCase() ?? "";
+  const lastNameLetter: string =
+    names[names.length - 1]?.[0]?.toUpperCase() ?? "";
+
+  const result = `${firstNameLetter}${lastNameLetter}`;
+  console.log({ result });
+  return result;
+}

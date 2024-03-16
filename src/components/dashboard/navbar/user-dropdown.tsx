@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { getShortLetters } from "@/lib/utils";
 
 type UserDropdownProps = {
   companyPublicId: string;
@@ -32,7 +33,9 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
             <AvatarImage src={image ?? "/avatar.svg"} alt="avatar" />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarFallback>
+              {name ? getShortLetters(name) : "UK"}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

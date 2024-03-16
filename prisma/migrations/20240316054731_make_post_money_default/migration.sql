@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Safe" ALTER COLUMN "type" SET DEFAULT 'POST_MONEY';

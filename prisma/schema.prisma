@@ -564,7 +564,7 @@ enum SafeStatusEnum {
   CANCELLED
 }
 // YC Standard Safe
-enum YCSafeEnum {
+enum SafeTemplateEnum {
   POST_MONEY_CAP @map("Valuation Cap, no Discount")
   POST_MONEY_DISCOUNT @map("Discount, no Valuation Cap")
   POST_MONEY_MFN @map("MFN, no Valuation Cap, no Discount")
@@ -572,15 +572,17 @@ enum YCSafeEnum {
   POST_MONEY_CAP_WITH_PRO_RATA @map("Valuation Cap, no Discount, include Pro Rata Rights")
   POST_MONEY_DISCOUNT_WITH_PRO_RATA @map("Discount, no Valuation Cap, include Pro Rata Rights")
   POST_MONEY_MFN_WITH_PRO_RATA @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
+
+  CUSTOM @map("Custom")
 }
 
 model Safe {
   id       String         @id @default(cuid())
   publicId String // eg. SAFE-01
-  type     SafeTypeEnum
+  type     SafeTypeEnum   @default(POST_MONEY)
   status   SafeStatusEnum @default(DRAFT)
   capital  Float // Amount of money invested
-  ycTemplate  YCSafeEnum?
+  safeTemplate  SafeTemplateEnum?
 
   valuationCap    Float?
   discountRate    Float?

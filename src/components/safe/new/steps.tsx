@@ -17,7 +17,7 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
 
     {
       id: 2,
-      title: "Investor information",
+      title: "Additional information",
       fields: ["investorName", "investorEmail", "investorAddress"],
       component: () => {
         return <div>Investor info form</div>;
@@ -26,7 +26,16 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
 
     {
       id: 3,
-      title: "Review and send",
+      title: "Investor information",
+      fields: ["review"],
+      component: () => {
+        return <div>Review and send form</div>;
+      },
+    },
+
+    {
+      id: 4,
+      title: "Review, Sign and send",
       fields: ["review"],
       component: () => {
         return <div>Review and send form</div>;

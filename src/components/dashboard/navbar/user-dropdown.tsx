@@ -34,7 +34,8 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
           <Avatar className="h-9 w-9">
             <AvatarImage src={image ?? "/avatar.svg"} alt="avatar" />
             <AvatarFallback>
-              {name ? getShortLetters(name) : "UK"}
+              {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+              {(name && getShortLetters(name)) || name?.slice(0, 2)}
             </AvatarFallback>
           </Avatar>
         </Button>

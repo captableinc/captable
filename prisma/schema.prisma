@@ -345,7 +345,8 @@ model TemplateField {
   id             String     @id @default(cuid())
   name           String
   type           FieldTypes @default(TEXT)
-  placeholder    String     @default("")
+  defaultValue   String     @default("")
+  readOnly       Boolean    @default(false)
   required       Boolean    @default(false)
   top            Int
   left           Int

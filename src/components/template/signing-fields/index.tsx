@@ -24,6 +24,7 @@ export function SigningFields({
           key={item.id}
           type={item.type}
           required={item.required}
+          readOnly={item.readOnly}
         />
       ))}
 

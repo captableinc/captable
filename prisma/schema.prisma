@@ -165,6 +165,7 @@ model Stakeholder {
   city          String?
   state         String?
   zipcode       String?
+  country       String @default("US")
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)

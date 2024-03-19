@@ -8,8 +8,14 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
   const steps: Array<stepsType> = [
     {
       id: 1,
-      title: "General information",
-      fields: ["name", "company", "valuationCap", "discountRate"],
+      title: "General details",
+      fields: [
+        "safeId",
+        "safeTemplate",
+        "valuationCap",
+        "discountRate",
+        "proRata",
+      ],
       component: () => {
         return <div>General info form</div>;
       },
@@ -17,8 +23,16 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
 
     {
       id: 2,
-      title: "Additional information",
-      fields: ["investorName", "investorEmail", "investorAddress"],
+      title: "Investment details",
+      fields: [
+        "capital",
+        "issueDate",
+        "boardApprovalDate",
+        "stakeholderId",
+        "investorName",
+        "investorEmail",
+        "investorInstitutionName",
+      ],
       component: () => {
         return <div>Investor info form</div>;
       },
@@ -26,17 +40,8 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
 
     {
       id: 3,
-      title: "Investor information",
-      fields: ["review"],
-      component: () => {
-        return <div>Review and send form</div>;
-      },
-    },
-
-    {
-      id: 4,
-      title: "Review, Sign and send",
-      fields: ["review"],
+      title: "Sign & send documents",
+      fields: ["documents"],
       component: () => {
         return <div>Review and send form</div>;
       },

@@ -68,11 +68,7 @@ export const addOptionProcedure = withAuth
       console.error("Error adding options:", error);
       return {
         success: false,
-        //@ts-expect-error error-code-need-fix
-        message:
-          error?.code !== "P2002"
-            ? "Oops, something went wrong."
-            : "Please use unique grantId",
+        message: "Please use unique Grant Id.",
       };
     }
   });

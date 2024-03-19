@@ -30,7 +30,7 @@ export const RelevantDates = () => {
           name="issueDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Issue Date</FormLabel>
+              <FormLabel>Issue date</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -44,7 +44,7 @@ export const RelevantDates = () => {
           name="expirationDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Expiry Date</FormLabel>
+              <FormLabel>Expiry date</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -58,7 +58,7 @@ export const RelevantDates = () => {
           name="vestingStartDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Vesting Start Date</FormLabel>
+              <FormLabel>Vesting start date</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -72,7 +72,7 @@ export const RelevantDates = () => {
           name="boardApprovalDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Board Approval Date</FormLabel>
+              <FormLabel>Board approval date</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
@@ -86,7 +86,7 @@ export const RelevantDates = () => {
           name="rule144Date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rule 144 Date</FormLabel>
+              <FormLabel>Rule 144 date</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>

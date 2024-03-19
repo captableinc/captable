@@ -14,15 +14,14 @@ const OptionsPage = async () => {
     return (
       <EmptyState
         icon={<RiGroup2Fill />}
-        title="You do not have any options for stakeholders!"
+        title="You do not have any options yet."
         subtitle="Please click the button for adding new options."
       >
         <OptionModal
-          title="Collect options for Stakeholders"
+          title="Create an option"
           subtitle={
             <Tldr
-              message="Manage stock options by adding them. 
-            Add approval dates, notes, grantId for the stakeholders. "
+              message="Please fill in the details to create an option. If you need help, click the link below."
               cta={{
                 label: "Learn more",
                 href: "https://opencap.co/help/stakeholder-options",
@@ -32,7 +31,7 @@ const OptionsPage = async () => {
           trigger={
             <Button size="lg">
               <RiAddFill className="mr-2 h-5 w-5" />
-              Add Option
+              Add an option
             </Button>
           }
         />

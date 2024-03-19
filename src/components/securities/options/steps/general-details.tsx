@@ -52,7 +52,7 @@ export const GeneralDetails = () => {
         name="grantId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>GrantId</FormLabel>
+            <FormLabel>Grant ID</FormLabel>
             <FormControl>
               <Input type="text" {...field} />
             </FormControl>
@@ -66,7 +66,7 @@ export const GeneralDetails = () => {
         name="type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Grant Type</FormLabel>
+            <FormLabel>Grant type</FormLabel>
             {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>

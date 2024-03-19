@@ -49,19 +49,19 @@ const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
   const steps = [
     {
       id: 1,
-      title: "General Details",
+      title: "General details",
       component: GeneralDetails,
       fields: GeneralDetailsField,
     },
     {
       id: 2,
-      title: "Vesting Details",
+      title: "Vesting details",
       component: VestingDetails,
       fields: VestingDetailsFields,
     },
     {
       id: 3,
-      title: "Relevant Dates",
+      title: "Relevant dates",
       component: RelevantDates,
       fields: RelevantDatesFields,
     },

@@ -167,7 +167,7 @@ export default function MultiStepFormModal({
         <div className="col-span-7 space-y-6">
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <div className="w-full border p-2">
+              <div className="w-full border p-4">
                 <h5 className="text-lg font-semibold">
                   {steps[formStep - 1]?.title}
                 </h5>

@@ -48,7 +48,7 @@ export const VestingDetails = () => {
           name="vestingSchedule"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Vesting Schedule</FormLabel>
+              <FormLabel>Vesting schedule</FormLabel>
               {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
@@ -75,7 +75,7 @@ export const VestingDetails = () => {
           name="equityPlanId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Equity Plan</FormLabel>
+              <FormLabel>Equity plan</FormLabel>
               {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
@@ -108,7 +108,7 @@ export const VestingDetails = () => {
           name="exercisePrice"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Exercise Price</FormLabel>
+              <FormLabel>Exercise price</FormLabel>
               <FormControl>
                 <Input type="text" {...field} />
               </FormControl>

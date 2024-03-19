@@ -18,9 +18,9 @@ export const Documents = () => {
   return (
     <>
       <Uploader
+        multiple={true}
         identifier={"documenter"}
         keyPrefix="equity-doc"
-        allowMultiple={true}
         onSuccess={async (bucketData) => {
           form.setValue("documents", [
             //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -36,7 +36,7 @@ export const Documents = () => {
         }}
       />
       {documents?.length ? (
-        <Alert className="bg-teal-600" variant="default">
+        <Alert className="mt-5 bg-teal-100" variant="default">
           <AlertTitle>
             {documents.length > 1
               ? `${documents.length} documents uploaded`
@@ -47,8 +47,8 @@ export const Documents = () => {
           </AlertDescription>
         </Alert>
       ) : (
-        <Alert variant="destructive">
-          <AlertTitle> 0 document uploaded </AlertTitle>
+        <Alert variant="destructive" className="mt-5">
+          <AlertTitle>0 document uploaded</AlertTitle>
           <AlertDescription>
             Please upload necessary documents to continue.
           </AlertDescription>

@@ -1,10 +1,28 @@
+import { Input } from "@/components/ui/input";
+import { useFormContext } from "react-hook-form";
 import { type stepsType } from "@/components/shared/multistep-modal";
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type SafeStepsType = {
   companyId: string;
 };
 
 const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
+  const form = useFormContext();
   const steps: Array<stepsType> = [
     {
       id: 1,
@@ -17,7 +35,23 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
         "proRata",
       ],
       component: () => {
-        return <div>General info form</div>;
+        return (
+          <div>
+            <FormField
+              control={form.control}
+              name="safeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <FormLabel>SAFE ID</FormLabel>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+        );
       },
     },
 

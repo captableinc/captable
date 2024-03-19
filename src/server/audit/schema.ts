@@ -27,16 +27,19 @@ export const AuditSchema = z.object({
 
     "document.created",
     "document.deleted",
+
+    "option.created",
+    "option.deleted",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
-    type: z.enum(["user", "company", "document"]),
+    type: z.enum(["user", "company", "document", "option"]),
     id: z.string().optional().nullable(),
   }),
 
   target: z.array(
     z.object({
-      type: z.enum(["user", "company", "document"]),
+      type: z.enum(["user", "company", "document", "option"]),
       id: z.string().optional().nullable(),
     }),
   ),

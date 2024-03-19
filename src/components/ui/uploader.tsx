@@ -28,6 +28,8 @@ type Props = {
 
   keyPrefix: string;
 
+  multiple?: boolean;
+
   onSuccess?: (data: UploadReturn) => void | Promise<void>;
 } & DocumentUploadDropzone;
 
@@ -36,6 +38,7 @@ export function Uploader({
   identifier,
   keyPrefix,
   onSuccess,
+  multiple = false,
   ...rest
 }: Props) {
   const { toast } = useToast();
@@ -92,7 +95,7 @@ export function Uploader({
         className="flex w-full flex-col items-center justify-center  rounded-md border border-dashed border-border px-5 py-10"
       >
         {header}
-        <input {...getInputProps()} multiple={false} />
+        <input {...getInputProps()} multiple={multiple} />
         <p className="text-center text-neutral-500">
           Drop & drop, or select a file to upload
         </p>

@@ -31,7 +31,7 @@ export default function CreateNewSafe({
   const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = async (values: SafeMutationType) => {
-    await mutateAsync({ values });
+    // await mutateAsync({ values });
     setOpen(false);
   };
 

@@ -25,7 +25,7 @@ export const safeRouter = createTRPCRouter({
             issueDate: input.issueDate,
             boardApprovalDate: input.boardApprovalDate,
           };
-          await tx.safe.create({ data });
+          // await tx.safe.create({ data });
 
           await Audit.create(
             {

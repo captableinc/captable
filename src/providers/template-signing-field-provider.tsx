@@ -26,7 +26,7 @@ export const TemplateSigningFieldProvider = ({
       fields: fields ?? [],
       fieldValues: fields
         ? fields.reduce<Record<string, string>>((prev, curr) => {
-            prev[curr.name] = "";
+            prev[curr.name] = curr?.defaultValue ?? "";
             return prev;
           }, {})
         : {},

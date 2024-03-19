@@ -18,10 +18,15 @@ import { useFormContext } from "react-hook-form";
 
 type FieldRendererProps = Pick<
   TypeZodAddFieldMutationSchema["data"][number],
-  "type" | "name" | "required"
+  "type" | "name" | "required" | "readOnly"
 >;
 
-export function FieldRenderer({ type, name, required }: FieldRendererProps) {
+export function FieldRenderer({
+  type,
+  name,
+  required,
+  readOnly,
+}: FieldRendererProps) {
   const { control } = useFormContext<TemplateSigningFieldForm>();
 
   switch (type) {
@@ -40,7 +45,7 @@ export function FieldRenderer({ type, name, required }: FieldRendererProps) {
             <FormItem>
               <FormLabel>{name}</FormLabel>
               <FormControl>
-                <Input type="text" {...field} />
+                <Input disabled={readOnly} type="text" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

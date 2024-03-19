@@ -13,11 +13,12 @@ export const ZodAddFieldMutationSchema = z.object({
       top: z.number(),
       left: z.number(),
       required: z.boolean(),
-      placeholder: z.string(),
       type: z.nativeEnum(FieldTypes),
       viewportHeight: z.number(),
       viewportWidth: z.number(),
       page: z.number(),
+      defaultValue: z.string(),
+      readOnly: z.boolean(),
     }),
   ),
 });

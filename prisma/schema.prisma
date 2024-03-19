@@ -520,10 +520,10 @@ model Option {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, grantId])
   @@index([companyId])
   @@index([equityPlanId])
   @@index([stakeholderId])
-  @@unique([companyId,grantId])
 }
 
 model Investment {

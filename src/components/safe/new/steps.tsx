@@ -35,23 +35,7 @@ const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
         "proRata",
       ],
       component: () => {
-        return (
-          <div>
-            <FormField
-              control={form.control}
-              name="safeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FormLabel>SAFE ID</FormLabel>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
+        return <div>Inputs</div>;
       },
     },
 

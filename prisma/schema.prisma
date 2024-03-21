@@ -83,6 +83,7 @@ model Company {
 
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
+  updates          Updates[]
   users            Member[]
   audits           Audit[]
   shareClasses     ShareClass[]
@@ -124,6 +125,7 @@ model Member {
   documentReceived EsignRecipient[]
   documents        Document[]
   templates        Template[]
+  updates          Updates[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -175,6 +177,7 @@ model Stakeholder {
   options          Option[]
   safes            Safe[]
   convertibleNotes ConvertibleNote[]
+  updates          UpdateRecipient[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -674,5 +677,55 @@ model ConvertibleNote {
 
   @@unique([publicId, companyId])
   @@index([companyId])
+  @@index([stakeholderId])
+}
+
+model Updates {
+  id       String   @id @default(cuid())
+  publicId String
+  title    String
+  content  Json
+  public   Boolean  @default(false)
+  
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   Member @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  recipients UpdateRecipient[]
+
+  sharedAt  DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([publicId])
+  @@index([authorId])
+  @@index([companyId])
+}
+
+enum UpdateEmailStatusEnum {
+  SENT
+  PENDING
+  FAILED
+}
+
+model UpdateRecipient {
+  id       String   @id @default(cuid())
+  
+  stakeholderId String
+  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+
+  updateId String
+  update   Updates @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  status   UpdateEmailStatusEnum @default(PENDING)
+
+  sentAt   DateTime?
+  readAt   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([updateId])
   @@index([stakeholderId])
 }

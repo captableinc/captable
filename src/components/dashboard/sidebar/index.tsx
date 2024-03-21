@@ -21,6 +21,8 @@ import {
   RiFileTextFill,
   RiEqualizer2Line,
   RiEqualizer2Fill,
+  RiMailSendLine,
+  RiMailSendFill,
 } from "@remixicon/react";
 
 import {
@@ -100,6 +102,12 @@ const navigation = [
     href: "/documents",
     icon: RiFolder5Line,
     activeIcon: RiFolder5Fill,
+  },
+  {
+    name: "Updates",
+    href: "/updates",
+    icon: RiMailSendLine,
+    activeIcon: RiMailSendFill,
   },
   {
     name: "Reports",

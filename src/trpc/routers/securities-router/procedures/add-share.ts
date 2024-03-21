@@ -3,7 +3,7 @@ import { ZodAddShareMutationSchema } from "../schema";
 import { generatePublicId } from "@/common/id";
 import { Audit } from "@/server/audit";
 
-export const addOptionProcedure = withAuth
+export const addShareProcedure = withAuth
   .input(ZodAddShareMutationSchema)
   .mutation(async ({ ctx, input }) => {
     console.log(input);

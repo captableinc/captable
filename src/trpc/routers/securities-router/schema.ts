@@ -3,7 +3,47 @@ import {
   OptionTypeEnum,
   VestingScheduleEnum,
 } from "@/prisma/enums";
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@prisma/client";
 import { z } from "zod";
+
+export const ZodAddShareMutationSchema = z.object({
+  id: z.string().optional(),
+  status: z.nativeEnum(SecuritiesStatusEnum, {
+    errorMap: () => ({ message: "Invalid value for status type" }),
+  }),
+  certificateId: z.string(),
+  quantity: z.number().int(),
+  pricePerShare: z.number().optional(),
+  capitalContribution: z.number().optional(),
+  ipContribution: z.number().optional(),
+  debtCancelled: z.number().optional(),
+  otherContributions: z.number().optional(),
+  vestingSchedule: z.nativeEnum(VestingScheduleEnum, {
+    errorMap: () => ({ message: "Invalid value for vesting schedule" }),
+  }),
+  companyLegends: z
+    .nativeEnum(ShareLegendsEnum, {
+      errorMap: () => ({ message: "Invalid value for compnay legends" }),
+    })
+    .array(),
+  issueDate: z.coerce.date({
+    required_error: "Issue date is required",
+    invalid_type_error: "This is not valid date",
+  }),
+  rule144Date: z.coerce.date().optional(),
+  vestingStartDate: z.date().optional(),
+  boardApprovalDate: z.coerce.date({
+    required_error: "Board approval date is required",
+    invalid_type_error: "This is not valid date",
+  }),
+  shareClassId: z.string(),
+  documents: z.array(
+    z.object({
+      bucketId: z.string(),
+      name: z.string(),
+    }),
+  ),
+});
 
 export const ZodAddOptionMutationSchema = z.object({
   id: z.string().optional(),

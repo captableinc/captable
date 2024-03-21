@@ -83,7 +83,7 @@ model Company {
 
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
-  updates          Updates[]
+  updates          Update[]
   users            Member[]
   audits           Audit[]
   shareClasses     ShareClass[]
@@ -125,7 +125,7 @@ model Member {
   documentReceived EsignRecipient[]
   documents        Document[]
   templates        Template[]
-  updates          Updates[]
+  updates          Update[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -681,12 +681,13 @@ model ConvertibleNote {
   @@index([stakeholderId])
 }
 
-model Updates {
+model Update {
   id       String  @id @default(cuid())
   publicId String
   title    String
   content  Json
-  public   Boolean @default(false)
+  html     String
+  isPublic Boolean @default(false)
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -718,7 +719,7 @@ model UpdateRecipient {
   stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
 
   updateId String
-  update   Updates @relation(fields: [updateId], references: [id], onDelete: Cascade)
+  update   Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
 
   status UpdateEmailStatusEnum @default(PENDING)
 

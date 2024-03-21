@@ -31,20 +31,31 @@ export const ZodAddShareMutationSchema = z.object({
     required_error: "Issue date is required",
     invalid_type_error: "This is not valid date",
   }),
-  rule144Date: z.coerce.date().optional(),
-  vestingStartDate: z.date().optional(),
+  rule144Date: z.coerce.date({
+    required_error: "Rule 144 date is required",
+    invalid_type_error: "This is not a valid date",
+  }),
+  vestingStartDate: z.coerce.date({
+    required_error: "Vesting Start date is required",
+    invalid_type_error: "This is not a valid date",
+  }),
   boardApprovalDate: z.coerce.date({
     required_error: "Board approval date is required",
     invalid_type_error: "This is not valid date",
   }),
-  shareClassId: z.string(),
   documents: z.array(
     z.object({
       bucketId: z.string(),
       name: z.string(),
     }),
   ),
+  stakeholderId: z.string(),
+  shareClassId: z.string(),
 });
+
+export type typeZodAddShareMutationSchema = z.infer<
+  typeof ZodAddShareMutationSchema
+>;
 
 export const ZodAddOptionMutationSchema = z.object({
   id: z.string().optional(),

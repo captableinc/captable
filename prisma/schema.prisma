@@ -167,7 +167,7 @@ model Stakeholder {
   city          String?
   state         String?
   zipcode       String?
-  country       String @default("US")
+  country       String  @default("US")
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -567,26 +567,27 @@ enum SafeStatusEnum {
   EXPIRED
   CANCELLED
 }
+
 // YC Standard Safe
 enum SafeTemplateEnum {
-  POST_MONEY_CAP @map("Valuation Cap, no Discount")
+  POST_MONEY_CAP      @map("Valuation Cap, no Discount")
   POST_MONEY_DISCOUNT @map("Discount, no Valuation Cap")
-  POST_MONEY_MFN @map("MFN, no Valuation Cap, no Discount")
+  POST_MONEY_MFN      @map("MFN, no Valuation Cap, no Discount")
 
-  POST_MONEY_CAP_WITH_PRO_RATA @map("Valuation Cap, no Discount, include Pro Rata Rights")
+  POST_MONEY_CAP_WITH_PRO_RATA      @map("Valuation Cap, no Discount, include Pro Rata Rights")
   POST_MONEY_DISCOUNT_WITH_PRO_RATA @map("Discount, no Valuation Cap, include Pro Rata Rights")
-  POST_MONEY_MFN_WITH_PRO_RATA @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
+  POST_MONEY_MFN_WITH_PRO_RATA      @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
 
   CUSTOM @map("Custom")
 }
 
 model Safe {
-  id       String         @id @default(cuid())
-  publicId String // eg. SAFE-01
-  type     SafeTypeEnum   @default(POST_MONEY)
-  status   SafeStatusEnum @default(DRAFT)
-  capital  Float // Amount of money invested
-  safeTemplate  SafeTemplateEnum?
+  id           String            @id @default(cuid())
+  publicId     String // eg. SAFE-01
+  type         SafeTypeEnum      @default(POST_MONEY)
+  status       SafeStatusEnum    @default(DRAFT)
+  capital      Float // Amount of money invested
+  safeTemplate SafeTemplateEnum?
 
   valuationCap    Float?
   discountRate    Float?
@@ -681,12 +682,12 @@ model ConvertibleNote {
 }
 
 model Updates {
-  id       String   @id @default(cuid())
+  id       String  @id @default(cuid())
   publicId String
   title    String
   content  Json
-  public   Boolean  @default(false)
-  
+  public   Boolean @default(false)
+
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -696,8 +697,8 @@ model Updates {
   recipients UpdateRecipient[]
 
   sharedAt  DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([publicId])
   @@index([authorId])
@@ -711,20 +712,20 @@ enum UpdateEmailStatusEnum {
 }
 
 model UpdateRecipient {
-  id       String   @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   stakeholderId String
   stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
 
   updateId String
   update   Updates @relation(fields: [updateId], references: [id], onDelete: Cascade)
 
-  status   UpdateEmailStatusEnum @default(PENDING)
+  status UpdateEmailStatusEnum @default(PENDING)
 
-  sentAt   DateTime?
-  readAt   DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sentAt    DateTime?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([updateId])
   @@index([stakeholderId])

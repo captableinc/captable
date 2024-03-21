@@ -11,25 +11,21 @@ import { Button } from "@/components/ui/button";
 type DropDownButtonProps = {
   icon?: React.ReactNode;
   children: React.ReactNode;
-  buttonText: string;
+  buttonSlot: React.ReactNode | string;
 };
 
 const DropdownButton = ({
   icon,
   children,
-  buttonText,
+  buttonSlot,
 }: DropDownButtonProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button>
-          <span className="sr-only">Manage SAFE</span>
-          {icon ? icon : <RiAddFill className="mr-2 h-5 w-5" />}
-          {buttonText}
-        </Button>
+        <Button>{buttonSlot}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        {/* <DropdownMenuLabel>Actions</DropdownMenuLabel> */}
         {children}
       </DropdownMenuContent>
     </DropdownMenu>

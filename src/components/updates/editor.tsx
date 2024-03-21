@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { type Block } from "@blocknote/core";
 import { dayjsExt } from "@/common/dayjs";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { RiArrowDownSLine } from "@remixicon/react";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 
 import "@blocknote/react/style.css";
@@ -112,7 +113,15 @@ const UpdatesEditor = ({ publicId }: UpdatesEditorProps) => {
         </div>
 
         <div>
-          <DropdownButton buttonText="Save and continue">
+          <DropdownButton
+            buttonSlot={
+              <Fragment>
+                <span className="sr-only">Save and continue</span>
+                Save and continue
+                <RiArrowDownSLine className="ml-1 h-5 w-5" />
+              </Fragment>
+            }
+          >
             <ul>
               <li>
                 <Button variant="ghost" size="sm">

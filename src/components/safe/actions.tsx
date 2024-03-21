@@ -1,11 +1,13 @@
 "use client";
 
+import { Fragment } from "react";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import Modal from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import Uploader from "@/components/ui/uploader";
 import CreateNewSafeModal from "./new/modal";
+import { RiAddFill } from "@remixicon/react";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 
 interface SafeActionsProps {
@@ -18,7 +20,15 @@ const SafeActions = ({ companyPublicId }: SafeActionsProps) => {
   const { mutateAsync } = api.template.create.useMutation();
 
   return (
-    <DropdownButton buttonText="Manage SAFE">
+    <DropdownButton
+      buttonSlot={
+        <Fragment>
+          <span className="sr-only">Manage SAFE</span>
+          <RiAddFill className="mr-2 h-5 w-5" />
+          Manage SAFE
+        </Fragment>
+      }
+    >
       <ul>
         <li>
           <CreateNewSafeModal

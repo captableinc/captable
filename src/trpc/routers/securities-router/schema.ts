@@ -19,10 +19,18 @@ export const ZodAddShareMutationSchema = z.object({
   pricePerShare: z.coerce.number().min(0, {
     message: "Price per share is required",
   }),
-  capitalContribution: z.number().optional(),
-  ipContribution: z.number().optional(),
-  debtCancelled: z.number().optional(),
-  otherContributions: z.number().optional(),
+  capitalContribution: z.coerce.number().min(0, {
+    message: "Capital contribution is required",
+  }),
+  ipContribution: z.coerce.number().min(0, {
+    message: "Intellectual property is required",
+  }),
+  debtCancelled: z.coerce.number().min(0, {
+    message: "Debt cancelled is required",
+  }),
+  otherContributions: z.coerce.number().min(0, {
+    message: "Other contributions is required",
+  }),
   vestingSchedule: z.nativeEnum(VestingScheduleEnum, {
     errorMap: () => ({ message: "Invalid value for vesting schedule" }),
   }),

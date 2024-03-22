@@ -12,8 +12,12 @@ export const ZodAddShareMutationSchema = z.object({
     errorMap: () => ({ message: "Invalid value for status type" }),
   }),
   certificateId: z.string(),
-  quantity: z.number().int(),
-  pricePerShare: z.number().optional(),
+  quantity: z.coerce.number().min(0, {
+    message: "Quantity is required",
+  }),
+  pricePerShare: z.coerce.number().min(0, {
+    message: "Price per share is required",
+  }),
   capitalContribution: z.number().optional(),
   ipContribution: z.number().optional(),
   debtCancelled: z.number().optional(),

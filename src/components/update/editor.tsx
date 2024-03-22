@@ -260,9 +260,16 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
                   Save as draft
                 </Button>
               </li>
+
               <li>
                 <Button variant="ghost" size="sm">
-                  Send to stakeholders
+                  Share this update
+                </Button>
+              </li>
+
+              <li>
+                <Button variant="ghost" size="sm">
+                  Clone this update
                 </Button>
               </li>
             </ul>

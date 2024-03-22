@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { GeneralDetails, GeneraLDetailsField } from "./steps";
 import MultiStepFormModal from "@/components/shared/multistepFormModal";
 import { ZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
@@ -17,8 +16,6 @@ type ShareModalProps = {
 };
 
 const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
-  const [open, setOpen] = useState(false);
-
   const steps = [
     {
       id: 1,
@@ -51,12 +48,6 @@ const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
         title={title}
         subtitle={subtitle}
         trigger={trigger}
-        dialogProps={{
-          open,
-          onOpenChange: (val) => {
-            setOpen(val);
-          },
-        }}
         schema={ZodAddShareMutationSchema}
         onSubmit={onSubmit}
       />

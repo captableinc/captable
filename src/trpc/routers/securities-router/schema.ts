@@ -11,7 +11,9 @@ export const ZodAddShareMutationSchema = z.object({
   status: z.nativeEnum(SecuritiesStatusEnum, {
     errorMap: () => ({ message: "Invalid value for status type" }),
   }),
-  certificateId: z.string(),
+  certificateId: z.string().min(1, {
+    message: "Certificate ID is required",
+  }),
   quantity: z.coerce.number().min(0, {
     message: "Quantity is required",
   }),

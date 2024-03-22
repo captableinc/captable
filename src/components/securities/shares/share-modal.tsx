@@ -8,6 +8,7 @@ import {
   ContributionDetails,
   ContributionDetailsField,
 } from "./steps/contribution-details";
+import { RelevantDates, RelevantDatesFields } from "./steps/relevant-dates";
 
 type ShareModalProps = {
   title: string;
@@ -21,15 +22,21 @@ const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
   const steps = [
     {
       id: 1,
+      title: "General details",
+      component: GeneralDetails,
+      fields: GeneraLDetailsField,
+    },
+    {
+      id: 2,
       title: "Contribution details",
       component: ContributionDetails,
       fields: ContributionDetailsField,
     },
     {
-      id: 2,
-      title: "General details",
-      component: GeneralDetails,
-      fields: GeneraLDetailsField,
+      id: 3,
+      title: "Relevant dates",
+      component: RelevantDates,
+      fields: RelevantDatesFields,
     },
   ];
 

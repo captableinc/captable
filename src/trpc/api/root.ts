@@ -12,6 +12,7 @@ import { templateFieldRouter } from "../routers/template-field-router/router";
 import { stakeholderRouter } from "../routers/stakeholder-router/router";
 import { securitiesRouter } from "../routers/securities-router/router";
 import { safeRouter } from "../routers/safe/router";
+import { updateRouter } from "../routers/update/router";
 
 /**
  * This is the primary router for your server.
@@ -32,6 +33,7 @@ export const appRouter = createTRPCRouter({
   stakeholder: stakeholderRouter,
   securities: securitiesRouter,
   safe: safeRouter,
+  update: updateRouter,
 });
 
 // export type definition of API

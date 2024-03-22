@@ -83,19 +83,23 @@ body {
     @apply bg-background text-foreground;
   }
 
-  h1 {
-    @apply text-6xl sm:text-7xl;
+  h1,
+  .h1 {
+    @apply text-5xl sm:text-6xl;
   }
 
+  h2,
   h2 {
     @apply text-4xl sm:text-5xl;
   }
 
-  h3 {
+  h3,
+  .h3 {
     @apply text-2xl font-medium sm:text-3xl;
   }
 
-  h4 {
+  h4,
+  .h4 {
     @apply text-lg font-medium sm:text-xl;
   }
 }

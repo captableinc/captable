@@ -36,6 +36,8 @@ const config = {
       },
     ],
     "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/no-misused-promises": [
       "warn",
       {

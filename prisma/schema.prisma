@@ -701,6 +701,7 @@ model Update {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  @@unique([publicId])
   @@index([publicId])
   @@index([authorId])
   @@index([companyId])

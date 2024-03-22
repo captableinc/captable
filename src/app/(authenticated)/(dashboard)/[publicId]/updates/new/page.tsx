@@ -1,7 +1,13 @@
-import Editor from "@/components/updates/editor";
+"use server";
 
-const UpdatesEditorPage = () => {
-  return <Editor />;
+import Editor from "@/components/update/editor";
+
+const NewUpdatePage = async ({
+  params: { publicId },
+}: {
+  params: { publicId: string };
+}) => {
+  return <Editor companyPublicId={publicId} />;
 };
 
-export default UpdatesEditorPage;
+export default NewUpdatePage;

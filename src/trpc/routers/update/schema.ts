@@ -2,13 +2,13 @@ import { UpdateEmailStatusEnum } from "@/prisma-enums";
 
 import { z } from "zod";
 
-export const UpdatesMutationSchema = z.object({
+export const UpdateMutationSchema = z.object({
   id: z.string().optional(),
   publicId: z.string().optional(),
   title: z.string(),
-  content: z.string(),
+  content: z.any(),
   html: z.string(),
-  isPublic: z.boolean().optional().default(false),
+  isPublic: z.boolean().optional(),
   recipients: z.array(z.string()).optional(),
   emailStatus: z
     .nativeEnum(UpdateEmailStatusEnum, {
@@ -17,4 +17,4 @@ export const UpdatesMutationSchema = z.object({
     .optional(),
 });
 
-export type UpdatesMutationType = z.infer<typeof UpdatesMutationSchema>;
+export type UpdateMutationType = z.infer<typeof UpdateMutationSchema>;

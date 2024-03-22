@@ -8,17 +8,17 @@ const SharesPage = () => {
   return (
     <EmptyState
       icon={<RiGroup2Fill />}
-      title="You do not have any options yet."
-      subtitle="Please click the button for adding new options."
+      title="You do not have any shares yet."
+      subtitle="Please click the button for adding new shares."
     >
       <ShareModal
-        title="Create an option"
+        title="Create an share"
         subtitle={
           <Tldr
-            message="Please fill in the details to create an option. If you need help, click the link below."
+            message="Please fill in the details to create an share. If you need help, click the link below."
             cta={{
               label: "Learn more",
-              href: "https://opencap.co/help/stakeholder-options",
+              href: "https://opencap.co/help/stakeholder-shares",
             }}
           />
         }

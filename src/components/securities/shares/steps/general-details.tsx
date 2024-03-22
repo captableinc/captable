@@ -24,11 +24,11 @@ import {
 
 export const GeneraLDetailsField = [
   "certificateId",
+  "status",
   "quantity",
   "pricePerShare",
   "vestingSchedule",
   "companyLegends",
-  "status",
 ];
 
 export const GeneralDetails = () => {

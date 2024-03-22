@@ -4,6 +4,10 @@ import { useState } from "react";
 import { GeneralDetails, GeneraLDetailsField } from "./steps";
 import MultiStepFormModal from "@/components/shared/multistepFormModal";
 import { ZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
+import {
+  ContributionDetails,
+  ContributionDetailsField,
+} from "./steps/contribution-details";
 
 type ShareModalProps = {
   title: string;
@@ -17,14 +21,20 @@ const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
   const steps = [
     {
       id: 1,
+      title: "Contribution details",
+      component: ContributionDetails,
+      fields: ContributionDetailsField,
+    },
+    {
+      id: 2,
       title: "General details",
       component: GeneralDetails,
       fields: GeneraLDetailsField,
     },
   ];
 
-  const onSubmit = () => {
-    console.log("do something");
+  const onSubmit = (data: any) => {
+    console.log({ data });
   };
 
   return (

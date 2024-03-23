@@ -9,11 +9,12 @@ import { type z } from "zod";
 import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/trpc/react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import { uploadFile } from "@/common/uploads";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/shared/loading";
 import {
   compareFormDataWithInitial,
   isFileExists,
@@ -31,6 +32,7 @@ type ProfileType = {
 };
 
 export const ProfileSettings = ({ memberProfile }: ProfileType) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
   const router = useRouter();
   const { toast } = useToast();
@@ -102,7 +104,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
 
       toast({
         variant: "default",
-        title: "Profile changed successfully.",
+        title: "🎉 Successfully updated your profile",
       });
     },
     onError: () => {
@@ -140,6 +142,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
 
     if (isValid) {
       try {
+        setLoading(true);
         const { imageUrl } = await handleImageUpload(file);
 
         if (!imageUrl) {
@@ -163,6 +166,8 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           title: "Failed uploading image.",
           description: "Please try again later.",
         });
+      } finally {
+        setLoading(false);
       }
     } else {
       toast({
@@ -190,6 +195,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
     const { fullName, jobTitle, loginEmail, workEmail } = values;
 
     try {
+      setLoading(true);
       saveProfileMutation.mutate({
         type: PayloadType.PROFILE_DATA,
         payload: {
@@ -206,6 +212,8 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
         title: "Failed updating profile.",
         description: "Please try again later.",
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -214,8 +222,10 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-6">
           <div className="col-span-full flex items-center gap-x-8">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={session?.user?.image || "/avatar.svg"} />
+            <Avatar className="h-20 w-20 rounded-full">
+              <AvatarImage
+                src={session?.user?.image || "/placeholders/user.svg"}
+              />
             </Avatar>
 
             <div className="flex items-start space-x-3">
@@ -293,6 +303,8 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           </Button>
         </div>
       </form>
+
+      {loading && <Loading />}
     </Form>
   );
 };

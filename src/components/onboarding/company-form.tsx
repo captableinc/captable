@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
 import { type RouterOutputs } from "@/trpc/shared";
 import { dayjsExt } from "@/common/dayjs";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 const formSchema = ZodOnboardingMutationSchema;
 
@@ -122,19 +123,10 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="col-span-full flex items-center gap-x-8">
-          {user?.user.image ? (
-            <img
-              src={user.user.image}
-              alt="Company logo"
-              width={50}
-              height={50}
-              className="flex-none rounded-full object-cover"
-            />
-          ) : (
-            <div className="h-30 w-30 flex items-center rounded-lg bg-[#CCFBF1] p-2">
-              <RiImageCircleFill className="m-2 h-10 w-10 flex-none shrink-0 rounded-full object-cover text-[#14B8A6]" />
-            </div>
-          )}
+          <Avatar className="h-20 w-20 rounded">
+            <AvatarImage src={"/placeholders/company.svg"} />
+          </Avatar>
+
           <div>
             <Button size="sm" variant={"outline"} type="button">
               {type === "edit" ? "Change company logo" : "Upload company logo"}

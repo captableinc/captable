@@ -70,6 +70,7 @@ model VerificationToken {
 model Company {
   id                   String   @id @default(cuid())
   name                 String
+  logo                 String?
   publicId             String
   incorporationType    String
   incorporationDate    DateTime

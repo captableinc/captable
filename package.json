@@ -90,6 +90,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.0",
+    "@tailwindcss/typography": "^0.5.10",
     "@types/eslint": "^8.56.5",
     "@types/inquirer": "^9.0.7",
     "@types/lodash-es": "^4.17.12",

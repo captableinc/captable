@@ -8,7 +8,7 @@ export const updateRouter = createTRPCRouter({
     .input(UpdateMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const author = ctx.session.user;
+        const authorId = ctx.session.user.memberId;
         const companyId = ctx.session.user.companyId;
         const publicId = input.publicId ?? generatePublicId();
         const { title, content, html } = input;
@@ -21,7 +21,6 @@ export const updateRouter = createTRPCRouter({
         } else {
           await ctx.db.$transaction(async (tx) => {
             if (input.publicId) {
-              console.log("=============> Updating an existing update");
               await tx.update.update({
                 where: { publicId },
                 data: {
@@ -38,7 +37,7 @@ export const updateRouter = createTRPCRouter({
                   content,
                   publicId,
                   companyId,
-                  authorId: author.id,
+                  authorId,
                 },
               });
             }

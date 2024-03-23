@@ -110,8 +110,10 @@ export const columns: ColumnDef<Member[number]>[] = [
     accessorFn: (row) => row.user?.name,
     cell: ({ row }) => (
       <div className="flex">
-        <Avatar className="">
-          <AvatarImage src={row.original?.user?.image ?? "/avatar.svg"} />
+        <Avatar className="rounded-full">
+          <AvatarImage
+            src={row.original?.user?.image ?? "/placeholders/user.svg"}
+          />
         </Avatar>
 
         <div className=" ml-2">

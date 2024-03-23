@@ -31,7 +31,7 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9 rounded-full">
-            <AvatarImage src={image || "placeholders/user.svg"} />
+            <AvatarImage src={image || "/placeholders/user.svg"} />
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

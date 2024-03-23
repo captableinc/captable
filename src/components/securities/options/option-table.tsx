@@ -100,7 +100,7 @@ export const columns: ColumnDef<Option[number]>[] = [
     cell: ({ row }) => (
       <div className="flex">
         <Avatar className="rounded-full">
-          <AvatarImage src={"placeholders/user.svg"} />
+          <AvatarImage src={"/placeholders/user.svg"} />
         </Avatar>
         <div className=" ml-2 pt-2">
           <p>{row?.original?.stakeholder?.name}</p>

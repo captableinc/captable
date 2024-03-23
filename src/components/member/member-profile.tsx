@@ -224,7 +224,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           <div className="col-span-full flex items-center gap-x-8">
             <Avatar className="h-20 w-20 rounded-full">
               <AvatarImage
-                src={session?.user?.image || "placeholders/user.svg"}
+                src={session?.user?.image || "/placeholders/user.svg"}
               />
             </Avatar>
 

@@ -112,7 +112,7 @@ export const columns: ColumnDef<Member[number]>[] = [
       <div className="flex">
         <Avatar className="rounded-full">
           <AvatarImage
-            src={row.original?.user?.image ?? "placeholders/user.svg"}
+            src={row.original?.user?.image ?? "/placeholders/user.svg"}
           />
         </Avatar>
 

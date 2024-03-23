@@ -31,7 +31,7 @@ export function validateFile(file: File): {
 } {
   const maxSizeInBytes = 1024 * 1024; // 1 MB
 
-  const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+  const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
   if (file.size > maxSizeInBytes) {
     return {

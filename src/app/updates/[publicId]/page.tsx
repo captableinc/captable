@@ -1,10 +1,10 @@
 "use server";
 
+import Link from "next/link";
 import { db } from "@/server/db";
 import { render } from "jsx-email";
 import { dayjsExt } from "@/common/dayjs";
 import { Card } from "@/components/ui/card";
-import { renderToString } from "react-dom/server";
 import UpdateRenderer from "@/components/update/renderer";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
@@ -94,10 +94,26 @@ const PublicUpdatePage = async ({
           </div>
 
           <div className="mt-5">
-            {/* <UpdateRenderer html={update.html} /> */}
-            <div dangerouslySetInnerHTML={{ __html: html }} />
+            <article
+              className="prose"
+              dangerouslySetInnerHTML={{ __html: html }}
+            />
           </div>
         </Card>
+
+        <div className="my-10 text-center text-sm text-muted-foreground">
+          <p>
+            Powered by{" "}
+            <Link
+              href={`https://opencap.co?utm_source=${company.name}&utm_medium=updates&utm_campaign=powered_by`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-bold text-teal-500 hover:underline"
+            >
+              OpenCap
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

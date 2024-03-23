@@ -99,8 +99,8 @@ export const columns: ColumnDef<Option[number]>[] = [
     accessorFn: (row) => row?.stakeholder?.name,
     cell: ({ row }) => (
       <div className="flex">
-        <Avatar className="">
-          <AvatarImage src={"/avatar.svg"} />
+        <Avatar className="rounded-full">
+          <AvatarImage src={"placeholders/user.svg"} />
         </Avatar>
         <div className=" ml-2 pt-2">
           <p>{row?.original?.stakeholder?.name}</p>

@@ -222,8 +222,10 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-6">
           <div className="col-span-full flex items-center gap-x-8">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={session?.user?.image || "/avatar.svg"} />
+            <Avatar className="h-20 w-20 rounded-full">
+              <AvatarImage
+                src={session?.user?.image || "placeholders/user.svg"}
+              />
             </Avatar>
 
             <div className="flex items-start space-x-3">

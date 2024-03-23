@@ -1,8 +1,11 @@
 "use server";
 
 import { db } from "@/server/db";
+import { render } from "jsx-email";
 import { dayjsExt } from "@/common/dayjs";
 import { Card } from "@/components/ui/card";
+import { renderToString } from "react-dom/server";
+import UpdateRenderer from "@/components/update/renderer";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 const PublicUpdatePage = async ({
@@ -47,6 +50,7 @@ const PublicUpdatePage = async ({
 
   const company = update?.company;
   const author = update?.author;
+  const html = await render(<UpdateRenderer html={update.html} />);
 
   return (
     <div className="flex min-h-screen justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100 px-5 pb-5 pt-12">
@@ -89,10 +93,10 @@ const PublicUpdatePage = async ({
             </div>
           </div>
 
-          <div
-            className="mt-5"
-            dangerouslySetInnerHTML={{ __html: update.html }}
-          />
+          <div className="mt-5">
+            {/* <UpdateRenderer html={update.html} /> */}
+            <div dangerouslySetInnerHTML={{ __html: html }} />
+          </div>
         </Card>
       </div>
     </div>

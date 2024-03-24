@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { RiCloseCircleLine } from "@remixicon/react";
 import {
   Select,
   SelectContent,
@@ -62,6 +63,7 @@ export function TemplateField({
   viewportWidth,
 }: TemplateFieldProps) {
   const { control } = useFormContext<{ fields: Field[] }>();
+  const type = useWatch({ control: control, name: `fields.${index}.type` });
 
   return (
     <TemplateFieldContainer
@@ -83,19 +85,20 @@ export function TemplateField({
       <div
         style={{ bottom: height }}
         className={cn(
-          "absolute flex-col gap-y-2 border bg-white px-2 py-1",
+          "absolute min-w-[300px] flex-col gap-y-2 border bg-white p-3 shadow-md",
           focusId === id ? "flex" : " hidden",
         )}
       >
         <div className="flex items-center gap-x-2">
           <Button
+            className="mt-2"
             variant="ghost"
             size="sm"
             onClick={() => {
               handleDelete();
             }}
           >
-            X
+            <RiCloseCircleLine className="h-5 w-5" />
           </Button>
 
           <FormField
@@ -149,7 +152,7 @@ export function TemplateField({
           />
         </div>
 
-        <FieldDefaultValue index={index} />
+        {type === "TEXT" && <FieldDefaultValue index={index} />}
       </div>
     </TemplateFieldContainer>
   );
@@ -161,49 +164,47 @@ interface FieldDefaultValueProps {
 
 function FieldDefaultValue({ index }: FieldDefaultValueProps) {
   const { control } = useFormContext<{ fields: Field[] }>();
-
   const type = useWatch({ control: control, name: `fields.${index}.type` });
+
   return (
     <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
+      <AccordionItem value="item-1" className="border-b-0">
         <AccordionTrigger className="text-sm">
-          Additional Settings
+          Additional settings
         </AccordionTrigger>
 
         <AccordionContent>
-          {type === "TEXT" ? (
-            <div className="flex flex-col gap-y-2">
-              <FormField
-                control={control}
-                name={`fields.${index}.defaultValue`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Default Value</FormLabel>
-                    <FormControl>
-                      <Input className="h-8 min-w-16" type="text" {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name={`fields.${index}.readOnly`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="leading-none">
-                      <FormLabel>read-only</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-          ) : null}
+          <div className="flex flex-col gap-y-2">
+            <FormField
+              control={control}
+              name={`fields.${index}.defaultValue`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Default value</FormLabel>
+                  <FormControl>
+                    <Input className="h-8 min-w-16" type="text" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name={`fields.${index}.readOnly`}
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="leading-none">
+                    <FormLabel>Read only field</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

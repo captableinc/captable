@@ -21,7 +21,7 @@ export function CanvasToolbar() {
   return (
     <div className="relative z-30 col-span-12 mb-20">
       <Toolbar.Root
-        className="fixed flex w-full max-w-[74.4%] items-center justify-between rounded-md bg-white p-2 shadow-sm"
+        className="fixed top-14 flex w-full max-w-[74.4%] items-center justify-between rounded-b-md bg-white p-2 shadow-lg"
         aria-label="Formatting options"
       >
         <FormField

@@ -57,14 +57,7 @@ const PublicUpdatePage = async ({
       <div className="flex flex-col">
         <div className="mb-16 flex items-center gap-3">
           <Avatar className="h-12 w-12 rounded">
-            <AvatarImage
-              src={
-                "https://pbs.twimg.com/profile_images/1686033387482464257/Dk2qBvtc_400x400.jpg" ||
-                "/placeholders/company.svg"
-              }
-            />
-
-            {/* <AvatarImage src={company.logo || "/placeholders/company.svg"} /> */}
+            <AvatarImage src={company.logo || "/placeholders/company.svg"} />
           </Avatar>
 
           <span className="text-lg font-semibold">{company.name}</span>

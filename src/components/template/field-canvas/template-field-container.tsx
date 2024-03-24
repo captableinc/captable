@@ -37,7 +37,7 @@ export function TemplateFieldContainer({
   return (
     <div
       className={cn(
-        "group absolute z-20 flex cursor-pointer items-center overflow-hidden  border-2 border-red-600 bg-red-300/50",
+        "group absolute z-20 flex cursor-pointer items-center overflow-hidden border-2 border-red-600 bg-red-300/50",
         className,
       )}
       style={{

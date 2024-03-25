@@ -120,7 +120,11 @@ export const InvestorDetails = () => {
                                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
                                 {stakeholders?.data?.data?.map((sh) => (
                                     <SelectItem key={sh.id} value={sh.id}>
-                                        {sh.name}
+                                        {sh.institutionName ?
+                                            `${sh.institutionName} - ${sh.name}`
+                                            :
+                                            `${sh.name}`
+                                        }
                                     </SelectItem>
                                 ))}
                                 <SelectSeparator />

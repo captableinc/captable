@@ -3,7 +3,7 @@
 import { RiCheckLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
 import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,14 +31,33 @@ export default function MultiStepModal({
   title,
   subtitle,
   trigger,
-  steps,
+  steps: steppers,
   schema,
   onSubmit,
   dialogProps,
 }: MultiStepModalType) {
+
+  const [steps, setSteps] = useState(steppers);
+
   const [formStep, setFormStep] = useState(1);
 
   const methods = useForm<FormField>({ resolver: zodResolver(schema) });
+
+  //@ts-ignore
+  const safeTemplate = methods.watch("safeTemplate");
+
+  useEffect(() => {
+    if (steppers[0]?.fields?.includes("safeTemplate")) {
+      //@ts-ignore
+      if (safeTemplate !== undefined &&
+        safeTemplate !== 'CUSTOM') {
+        const data = steppers.filter((step, i) => i !== steppers.length - 1)
+        setSteps(data)
+      } else {
+        setSteps(steppers);
+      }
+    }
+  }, [safeTemplate]);
 
   type FormField = z.infer<typeof schema>;
   type FieldName = keyof FormField;
@@ -46,17 +65,21 @@ export default function MultiStepModal({
   const StepForm = steps[formStep - 1]!.component;
 
   const nextStep = async () => {
+
     const fields = steps[formStep - 1]?.fields ?? [];
 
     const output = await methods.trigger(fields as FieldName[] as string[], {
       shouldFocus: true,
     });
+    console.log({ output });
     if (!output) return;
 
     if (formStep < steps.length) {
       setFormStep(formStep + 1);
     } else {
       await methods.handleSubmit(onSubmit)();
+      console.log(methods.getValues())
+      console.log("called form submit");
       methods.reset();
       dialogProps.open = false;
     }

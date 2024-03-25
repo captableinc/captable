@@ -43,12 +43,10 @@ export default function MultiStepModal({
 
   const methods = useForm<FormField>({ resolver: zodResolver(schema) });
 
-  //@ts-ignore
   const safeTemplate = methods.watch("safeTemplate");
 
   useEffect(() => {
     if (steppers[0]?.fields?.includes("safeTemplate")) {
-      //@ts-ignore
       if (safeTemplate !== undefined &&
         safeTemplate !== 'CUSTOM') {
         const data = steppers.filter((step, i) => i !== steppers.length - 1)
@@ -71,15 +69,13 @@ export default function MultiStepModal({
     const output = await methods.trigger(fields as FieldName[] as string[], {
       shouldFocus: true,
     });
-    console.log({ output });
+    
     if (!output) return;
 
     if (formStep < steps.length) {
       setFormStep(formStep + 1);
     } else {
       await methods.handleSubmit(onSubmit)();
-      console.log(methods.getValues())
-      console.log("called form submit");
       methods.reset();
       dialogProps.open = false;
     }

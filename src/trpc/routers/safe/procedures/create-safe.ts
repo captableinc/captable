@@ -71,7 +71,7 @@ export const createSafeProcedure = withAuth
               actor: { type: "user", id: ctx.session.user.id },
               context: { requestIp, userAgent },
               target: [{ type: "company", id: user.companyId }],
-              summary: `${ctx.session.user.name} created a new SAFE agreement.`,
+              summary: `${ctx.session.user.name} created a new SAFE agreement with YC template.`,
             },
             txn,
           );
@@ -112,7 +112,7 @@ export const createSafeProcedure = withAuth
               actor: { type: "user", id: ctx.session.user.id },
               context: { requestIp, userAgent },
               target: [{ type: "company", id: user.companyId }],
-              summary: `${ctx.session.user.name} created a new SAFE agreement.`,
+              summary: `${ctx.session.user.name} created a new SAFE agreement with Custom template.`,
             },
             txn,
           );

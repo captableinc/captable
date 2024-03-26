@@ -408,7 +408,9 @@ enum EsignRecipientStatus {
 
 model EsignRecipient {
   id     String               @id @default(cuid())
-  email  String?
+  email  String
+  name   String?
+  group  String
   status EsignRecipientStatus @default(PENDING)
 
   memberId String?

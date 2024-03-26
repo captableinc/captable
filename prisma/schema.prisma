@@ -353,6 +353,7 @@ model TemplateField {
   defaultValue   String     @default("")
   readOnly       Boolean    @default(false)
   required       Boolean    @default(false)
+  group          String?
   top            Int
   left           Int
   width          Int

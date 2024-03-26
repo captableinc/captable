@@ -164,7 +164,6 @@ interface FieldDefaultValueProps {
 
 function FieldDefaultValue({ index }: FieldDefaultValueProps) {
   const { control } = useFormContext<{ fields: Field[] }>();
-  const type = useWatch({ control: control, name: `fields.${index}.type` });
 
   return (
     <Accordion type="single" collapsible>

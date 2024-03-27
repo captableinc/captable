@@ -1,15 +1,51 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
+
+import { env } from "@/env";
+import { SignJWT, jwtVerify } from "jose";
+import { z } from "zod";
+
+interface SendEmailOptions {
+  email: string;
+  token: string;
+}
+
+const emailTokenPayloadSchema = z.object({
+  id: z.string(),
+  rec: z.string(),
+  group: z.string(),
+});
+
+type TEmailTokenPayloadSchema = z.infer<typeof emailTokenPayloadSchema>;
+
+const secret = new TextEncoder().encode(env.NEXTAUTH_SECRET);
+
+function EncodeEmailToken(data: TEmailTokenPayloadSchema) {
+  return new SignJWT(data).setProtectedHeader({ alg: "HS256" }).sign(secret);
+}
+
+export async function DecodeEmailToken(jwt: string) {
+  const { payload } = await jwtVerify(jwt, secret);
+
+  return emailTokenPayloadSchema.parse(payload);
+}
+
+async function SendEmail({ email, token }: SendEmailOptions) {
+  console.log({ email, token });
+}
 
 export const addFieldProcedure = withAuth
   .input(ZodAddFieldMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
+    const { fields, orderedDelivery, recipients, templatePublicId } = input;
 
+    const mails: Promise<void>[] = [];
     await ctx.db.$transaction(async (tx) => {
       const template = await tx.template.findFirstOrThrow({
         where: {
-          publicId: input.templatePublicId,
+          publicId: templatePublicId,
           companyId: user.companyId,
         },
         select: {
@@ -22,13 +58,56 @@ export const addFieldProcedure = withAuth
         },
       });
 
-      const data = input.data.map((item) => ({
+      const data = fields.map((item) => ({
         ...item,
         templateId: template.id,
       }));
 
       await tx.templateField.createMany({ data });
-    });
 
+      await tx.template.update({
+        where: {
+          id: template.id,
+        },
+        data: {
+          status: "COMPLETE",
+        },
+      });
+
+      await tx.esignRecipient.createMany({
+        data: recipients.map((data) => ({ ...data, templateId: template.id })),
+        skipDuplicates: true,
+      });
+
+      const recipientList = await tx.esignRecipient.findMany({
+        where: {
+          templateId: template.id,
+        },
+        select: {
+          id: true,
+          email: true,
+          group: true,
+        },
+      });
+
+      for (let index = 0; index < recipientList.length; index++) {
+        const item = recipientList[index];
+
+        if (!item) {
+          throw new Error("item not found");
+        }
+
+        const encodeToken = {
+          rec: item.id,
+          id: template.id,
+          group: item.group,
+        };
+        const token = await EncodeEmailToken(encodeToken);
+        const email = item.email;
+
+        mails.push(SendEmail({ token, email }));
+      }
+    });
+    await Promise.all(mails);
     return {};
   });

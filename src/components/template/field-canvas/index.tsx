@@ -5,7 +5,10 @@ import { useCallback, useState } from "react";
 import { TemplateField } from "./template-field";
 import { DrawingField } from "./drawing-field";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import {
+  DEFAULT_GROUP,
+  type TemplateFieldForm,
+} from "@/providers/template-field-provider";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import {
   type PageMeasurement,
@@ -121,6 +124,7 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
               page: pageNum,
+              group: DEFAULT_GROUP[0]?.name ?? "",
             });
 
             setFocusId(id);

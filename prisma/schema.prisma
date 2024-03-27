@@ -393,7 +393,8 @@ model Template {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fields TemplateField[]
+  fields         TemplateField[]
+  eSignRecipient EsignRecipient[]
 
   @@index([bucketId])
   @@index([uploaderId])
@@ -407,10 +408,14 @@ enum EsignRecipientStatus {
 }
 
 model EsignRecipient {
-  id     String               @id @default(cuid())
-  email  String
-  name   String?
-  group  String
+  id    String  @id @default(cuid())
+  email String
+  name  String?
+  group String
+
+  templateId String
+  template   Template @relation(fields: [templateId], references: [id])
+
   status EsignRecipientStatus @default(PENDING)
 
   memberId String?
@@ -419,7 +424,9 @@ model EsignRecipient {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([templateId, email, group])
   @@index([memberId])
+  @@index([templateId])
 }
 
 enum SecuritiesStatusEnum {

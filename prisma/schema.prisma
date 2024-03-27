@@ -304,8 +304,8 @@ model Document {
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
-  uploaderId String
-  uploader   Member @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploaderId String?
+  uploader   Member? @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)

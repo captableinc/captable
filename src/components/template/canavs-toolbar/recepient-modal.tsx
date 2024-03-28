@@ -24,6 +24,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function RecepientGroupItems() {
   const { control } = useFormContext<TemplateFieldForm>();
@@ -167,6 +168,26 @@ export function RecepientModal({ templatePublicId }: RecepientModalProps) {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div>
+            <FormField
+              control={control}
+              name="orderedDelivery"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="leading-none">
+                    <FormLabel>Ordered delivery</FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
           </div>
 
           <div>

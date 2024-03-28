@@ -377,10 +377,11 @@ enum TemplateStatus {
 }
 
 model Template {
-  id       String         @id @default(cuid())
-  publicId String
-  name     String
-  status   TemplateStatus @default(DRAFT)
+  id              String         @id @default(cuid())
+  publicId        String
+  name            String
+  status          TemplateStatus @default(DRAFT)
+  orderedDelivery Boolean        @default(false)
 
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)

@@ -7,6 +7,10 @@ import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
+import {
+  EncodeEmailToken,
+  SendEsignEmail,
+} from "../../template-field-router/procedures/add-fields";
 
 export const signTemplateProcedure = publicProcedure
   .input(ZodSignTemplateMutationSchema)
@@ -112,6 +116,31 @@ export const signTemplateProcedure = publicProcedure
       });
     }
 
+    if (template.orderedDelivery) {
+      const nextDelivery = await db.esignRecipient.findFirst({
+        where: {
+          templateId: template.id,
+          status: "PENDING",
+        },
+        select: {
+          id: true,
+          email: true,
+
+          group: true,
+        },
+      });
+      if (nextDelivery) {
+        const token = await EncodeEmailToken({
+          group: nextDelivery.group,
+          recipientId: nextDelivery.id,
+          templateId: template.id,
+        });
+        const email = nextDelivery.email;
+
+        await SendEsignEmail({ token, email });
+      }
+    }
+
     return {};
   });
 
@@ -128,6 +157,7 @@ function getTemplate(id: string, db: CreateTRPCContextType["db"]) {
       companyId: true,
       id: true,
       name: true,
+      orderedDelivery: true,
     },
   });
 }

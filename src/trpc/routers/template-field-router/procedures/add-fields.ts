@@ -21,10 +21,28 @@ const emailTokenPayloadSchema = z.object({
 
 type TEmailTokenPayloadSchema = z.infer<typeof emailTokenPayloadSchema>;
 
+interface EncodeEmailTokenOption {
+  group: string;
+  templateId: string;
+  recipientId: string;
+}
+
 const secret = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
-function EncodeEmailToken(data: TEmailTokenPayloadSchema) {
-  return new SignJWT(data).setProtectedHeader({ alg: "HS256" }).sign(secret);
+export function EncodeEmailToken({
+  group,
+  recipientId,
+  templateId,
+}: EncodeEmailTokenOption) {
+  const encodeToken: TEmailTokenPayloadSchema = {
+    rec: recipientId,
+    id: templateId,
+    group,
+  };
+
+  return new SignJWT(encodeToken)
+    .setProtectedHeader({ alg: "HS256" })
+    .sign(secret);
 }
 
 export async function DecodeEmailToken(jwt: string) {
@@ -83,6 +101,7 @@ export const addFieldProcedure = withAuth
         },
         data: {
           status: "COMPLETE",
+          orderedDelivery,
         },
       });
 
@@ -109,15 +128,18 @@ export const addFieldProcedure = withAuth
           throw new Error("item not found");
         }
 
-        const encodeToken = {
-          rec: item.id,
-          id: template.id,
+        const token = await EncodeEmailToken({
           group: item.group,
-        };
-        const token = await EncodeEmailToken(encodeToken);
+          recipientId: item.id,
+          templateId: template.id,
+        });
         const email = item.email;
 
         mails.push(SendEsignEmail({ token, email }));
+
+        if (orderedDelivery) {
+          break;
+        }
       }
     });
     await Promise.all(mails);

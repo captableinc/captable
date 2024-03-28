@@ -11,6 +11,7 @@ export const getTemplateProcedure = withAuth
       where: {
         publicId: input.publicId,
         companyId: user.companyId,
+        status: "DRAFT",
       },
       select: {
         bucket: {

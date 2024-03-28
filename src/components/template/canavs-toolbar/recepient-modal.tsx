@@ -23,6 +23,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 function RecepientGroupItems() {
   const { control } = useFormContext<TemplateFieldForm>();
@@ -70,6 +71,7 @@ interface RecepientModalProps {
 }
 
 export function RecepientModal({ templatePublicId }: RecepientModalProps) {
+  const router = useRouter();
   const { control, handleSubmit } = useFormContext<TemplateFieldForm>();
   const { fields, append, remove } = useFieldArray({
     name: "recipients",
@@ -85,6 +87,7 @@ export function RecepientModal({ templatePublicId }: RecepientModalProps) {
         title: "🎉 Successfully created",
         description: "Your template fields has been created.",
       });
+      router.push("/");
     },
   });
 

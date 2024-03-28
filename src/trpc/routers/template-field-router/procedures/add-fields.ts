@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
-
+import { render } from "jsx-email";
 import { env } from "@/env";
 import { SignJWT, jwtVerify } from "jose";
 import { z } from "zod";
+import EsignEmail from "@/emails/EsignEmail";
+import { sendMail } from "@/server/mailer";
 
 interface SendEmailOptions {
   email: string;
@@ -31,8 +33,18 @@ export async function DecodeEmailToken(jwt: string) {
   return emailTokenPayloadSchema.parse(payload);
 }
 
-async function SendEmail({ email, token }: SendEmailOptions) {
-  console.log({ email, token });
+export async function SendEsignEmail({ email, token }: SendEmailOptions) {
+  const baseUrl = env.NEXTAUTH_URL;
+  const html = await render(
+    EsignEmail({
+      signingLink: `${baseUrl}/sign/${token}`,
+    }),
+  );
+  await sendMail({
+    to: email,
+    subject: "esign Link",
+    html,
+  });
 }
 
 export const addFieldProcedure = withAuth
@@ -105,7 +117,7 @@ export const addFieldProcedure = withAuth
         const token = await EncodeEmailToken(encodeToken);
         const email = item.email;
 
-        mails.push(SendEmail({ token, email }));
+        mails.push(SendEsignEmail({ token, email }));
       }
     });
     await Promise.all(mails);

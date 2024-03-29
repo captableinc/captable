@@ -29,16 +29,17 @@ export default function CreateNewSafe({
 
   const { mutateAsync } = api.safe.create.useMutation({
     onSuccess: (payload) => {
+      console.log({ payload });
       const isSuccess = payload?.success;
       const message = payload?.message;
       toast({
         variant: isSuccess ? "default" : "destructive",
-        title: isSuccess ? "🎉 Success" : "Failed creating safe",
+        title: isSuccess ? "🎉 Successfully created SAFEs." : "Failed creating safe",
         description: message,
       });
       if (isSuccess) {
         router.push(
-          `/${session?.user.companyPublicId}/templates/${payload?.document?.publicId}`,
+          `/${session?.user.companyPublicId}/templates/${payload?.template?.publicId}`,
         );
       }
       setOpen(false);

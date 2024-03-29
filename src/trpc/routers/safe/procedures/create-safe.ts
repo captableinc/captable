@@ -29,6 +29,7 @@ export const createSafeProcedure = withAuth
 
     try {
       if (safeTemplate !== "CUSTOM") {
+
         const pdfPath = path.join(
           process.cwd(),
           "public",
@@ -48,22 +49,22 @@ export const createSafeProcedure = withAuth
 
         const bucketPayload = { key, mimeType, name, size };
 
-        const { document } = await ctx.db.$transaction(async (txn) => {
+        const { template } = await ctx.db.$transaction(async (txn) => {
           const { id, name } = await txn.bucket.create({ data: bucketPayload });
 
           const newSafe = await txn.safe.create({ data });
+          console.log({ newSafe });
 
-          const document = await ctx.db.document.create({
+          const template = await ctx.db.template.create({
             data: {
               companyId: user.companyId,
               uploaderId: user.memberId,
               publicId: generatePublicId(),
               bucketId: id,
               name: name,
-              safeId: newSafe.id,
             },
           });
-
+          console.log({ template });
           await Audit.create(
             {
               action: "safe.created",
@@ -75,33 +76,36 @@ export const createSafeProcedure = withAuth
             },
             txn,
           );
-          return { document };
+          return { template };
         });
 
         return {
           success: true,
-          message: "🎉 Successfully created a new SAFE agreement",
-          document,
+          message: "Created SAFEs agreement with YC template.",
+          template,
         };
       }
 
       if (safeTemplate === "CUSTOM") {
+
         const documents = input.documents;
 
         if (documents?.length !== 1) return;
 
-        const { document } = await ctx.db.$transaction(async (txn) => {
+        const { template } = await ctx.db.$transaction(async (txn) => {
+
           const newSafe = await txn.safe.create({ data });
 
-          const document = await txn.document.create({
+          console.log({ newSafe });
+
+          const template = await txn.template.create({
             data: {
               companyId: user.companyId,
               uploaderId: user.memberId,
               publicId: generatePublicId(),
               bucketId: documents[0]?.bucketId,
-              //@ts-expect-error error
+              //@ts-ignore
               name: documents[0]?.name,
-              safeId: newSafe.id,
             },
           });
 
@@ -117,13 +121,13 @@ export const createSafeProcedure = withAuth
             txn,
           );
 
-          return { document };
+          return { template };
         });
 
         return {
           success: true,
-          message: "🎉 Successfully created a new SAFE",
-          document,
+          message: "Created SAFEs agreement with custom template.",
+          template,
         };
       }
     } catch (error) {

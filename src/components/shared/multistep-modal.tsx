@@ -3,7 +3,7 @@
 import { RiCheckLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/modal";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
 import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,12 +45,16 @@ export default function MultiStepModal({
 
   const safeTemplate = methods.watch("safeTemplate");
 
+  const memoizedSteppers = useMemo(
+    () => steppers.filter(
+      (step, i) => i !== steppers.length - 1),
+    []);
+
   useEffect(() => {
     if (steppers[0]?.fields?.includes("safeTemplate")) {
       if (safeTemplate !== undefined &&
         safeTemplate !== 'CUSTOM') {
-        const data = steppers.filter((step, i) => i !== steppers.length - 1)
-        setSteps(data)
+        setSteps(memoizedSteppers);
       } else {
         setSteps(steppers);
       }
@@ -69,7 +73,7 @@ export default function MultiStepModal({
     const output = await methods.trigger(fields as FieldName[] as string[], {
       shouldFocus: true,
     });
-    
+
     if (!output) return;
 
     if (formStep < steps.length) {

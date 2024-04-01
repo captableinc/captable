@@ -83,7 +83,10 @@ export const GeneralDetails = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value as string}
+                >
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select status" />
@@ -145,7 +148,10 @@ export const GeneralDetails = () => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Vesting schedule</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value as string}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Vesting" />
@@ -171,7 +177,10 @@ export const GeneralDetails = () => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Company legends</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value as string}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select company legends" />

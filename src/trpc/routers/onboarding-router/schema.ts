@@ -46,6 +46,7 @@ export const ZodCompanyMutationSchema = z.object({
     zipcode: z.string().min(1, {
       message: "Zipcode is required",
     }),
+    logo: z.string().min(1).optional(),
   }),
 });
 

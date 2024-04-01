@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,9 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RiArrowRightLine, RiImageCircleFill } from "@remixicon/react";
 import {
   Select,
   SelectContent,
@@ -20,21 +18,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ZodOnboardingMutationSchema,
   type TypeZodOnboardingMutationSchema,
 } from "@/trpc/routers/onboarding-router/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RiArrowRightLine } from "@remixicon/react";
+import { useForm } from "react-hook-form";
 
+import { dayjsExt } from "@/common/dayjs";
+import { uploadFile } from "@/common/uploads";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/components/ui/use-toast";
+import countries from "@/lib/countries";
+import { cn, isFileExists, validateFile } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import { type RouterOutputs } from "@/trpc/shared";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import countries from "@/lib/countries";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/use-toast";
-import { type RouterOutputs } from "@/trpc/shared";
-import { dayjsExt } from "@/common/dayjs";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useRef, useState } from "react";
+import Loading from "../shared/loading";
 
 const formSchema = ZodOnboardingMutationSchema;
 
@@ -53,9 +56,12 @@ type CompanyFormProps =
     };
 
 export const CompanyForm = ({ type, data }: CompanyFormProps) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const { update, data: user } = useSession();
   const router = useRouter();
   const { toast } = useToast();
+  const [imageUrl, setImageUrl] = useState<string>(data?.company.logo ?? "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<TypeZodOnboardingMutationSchema>({
     resolver: zodResolver(formSchema),
@@ -105,6 +111,82 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
     },
   });
 
+  async function handleLogoUpload(file: File): Promise<{ imageUrl: string }> {
+    if (user?.user.id) {
+      const options = {
+        expiresIn: 3600,
+        keyPrefix: "company-logo",
+        identifier: user.user.id,
+      };
+      const { fileUrl } = await uploadFile(file, options, "publicBucket");
+      setImageUrl(fileUrl);
+
+      return { imageUrl: fileUrl };
+    }
+
+    return { imageUrl: "" };
+  }
+
+  const handleLogoChangeAndUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { file } = isFileExists(event);
+
+    if (!file) return;
+
+    const { isValid, title, errorMessage } = validateFile(file);
+
+    if (isValid) {
+      try {
+        setLoading(true);
+        const { imageUrl } = await handleLogoUpload(file);
+
+        if (!imageUrl) {
+          return toast({
+            variant: "destructive",
+            title: "Failed uploading the logo.",
+            description: "Please try again later.",
+          });
+        }
+
+        const currentValues = form.getValues();
+
+        companySettingMutation.mutate({
+          user: {
+            name: currentValues.user.name,
+            email: currentValues.user.email,
+            title: currentValues.user.title,
+          },
+          company: {
+            ...currentValues.company,
+            logo: imageUrl,
+          },
+        });
+      } catch (error) {
+        console.error("Something went wrong", error);
+        toast({
+          variant: "destructive",
+          title: "Failed uploading logo.",
+          description: "Please try again later.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      toast({
+        variant: "destructive",
+        title: title,
+        description: errorMessage,
+      });
+    }
+  };
+
+  const handleLogoChange = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   async function onSubmit(values: TypeZodOnboardingMutationSchema) {
     try {
       if (type === "create" || type === "onboarding") {
@@ -124,18 +206,32 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="col-span-full flex items-center gap-x-8">
           <Avatar className="h-20 w-20 rounded">
-            <AvatarImage src={"/placeholders/company.svg"} />
+            <AvatarImage src={imageUrl || "/placeholders/company.svg"} />
           </Avatar>
 
-          <div>
-            <Button size="sm" variant={"outline"} type="button">
-              {type === "edit" ? "Change company logo" : "Upload company logo"}
-            </Button>
-            <p className="mt-2 text-xs text-gray-700">
-              JPG, GIF or PNG. 1MB max.
-            </p>
+          <div className="flex items-start space-x-3">
+            <div>
+              <Button
+                onClick={handleLogoChange}
+                size="sm"
+                variant={"outline"}
+                type="button"
+              >
+                Change company logo
+              </Button>
+              <Input
+                className="hidden"
+                type="file"
+                onChange={handleLogoChangeAndUpload}
+                ref={fileInputRef}
+              />
+              <p className="mt-2 text-xs text-gray-700">
+                JPG, GIF or PNG. 1MB max.
+              </p>
+            </div>
           </div>
         </div>
+
         <div className="grid gap-2">
           <div className="grid gap-5">
             {type === "onboarding" && (
@@ -383,6 +479,8 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
           </div>
         </div>
       </form>
+
+      {loading && <Loading />}
     </Form>
   );
 };

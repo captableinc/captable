@@ -14,17 +14,17 @@ import Tldr from "@/components/shared/tldr";
 import MultipleStakeholdersModal from "@/components/stakeholder/multiple-stakeholders-modal";
 import SingleStakeholdersModal from "@/components/stakeholder/single-stakeholder-modal";
 
-export default function Single() {
+export default function StakeholderDropdown() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button>
           <RiAddFill className="mr-2 h-5 w-5" />
           Add stakeholders
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem asChild>
           <SingleStakeholdersModal
             title="Add Stakeholder"
             subtitle={
@@ -39,7 +39,7 @@ export default function Single() {
               />
             }
             trigger={
-              <div className="flex items-center">
+              <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
                 <RiUserLine className="mr-2 h-5 w-5" />
                 Create one stakeholder
               </div>
@@ -47,7 +47,7 @@ export default function Single() {
           />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+        <DropdownMenuItem asChild>
           <MultipleStakeholdersModal
             title="Add or Import Stakeholders"
             subtitle={
@@ -62,7 +62,7 @@ export default function Single() {
               />
             }
             trigger={
-              <div className="flex items-center">
+              <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
                 <RiGroupLine className="mr-2 h-5 w-5" />
                 Import multiple stakeholders
               </div>

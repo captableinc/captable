@@ -165,7 +165,7 @@ model Stakeholder {
   city          String?
   state         String?
   zipcode       String?
-  country       String @default("US")
+  country       String  @default("US")
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -564,26 +564,27 @@ enum SafeStatusEnum {
   EXPIRED
   CANCELLED
 }
+
 // YC Standard Safe
 enum SafeTemplateEnum {
-  POST_MONEY_CAP @map("Valuation Cap, no Discount")
+  POST_MONEY_CAP      @map("Valuation Cap, no Discount")
   POST_MONEY_DISCOUNT @map("Discount, no Valuation Cap")
-  POST_MONEY_MFN @map("MFN, no Valuation Cap, no Discount")
+  POST_MONEY_MFN      @map("MFN, no Valuation Cap, no Discount")
 
-  POST_MONEY_CAP_WITH_PRO_RATA @map("Valuation Cap, no Discount, include Pro Rata Rights")
+  POST_MONEY_CAP_WITH_PRO_RATA      @map("Valuation Cap, no Discount, include Pro Rata Rights")
   POST_MONEY_DISCOUNT_WITH_PRO_RATA @map("Discount, no Valuation Cap, include Pro Rata Rights")
-  POST_MONEY_MFN_WITH_PRO_RATA @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
+  POST_MONEY_MFN_WITH_PRO_RATA      @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
 
   CUSTOM @map("Custom")
 }
 
 model Safe {
-  id       String         @id @default(cuid())
-  publicId String // eg. SAFE-01
-  type     SafeTypeEnum   @default(POST_MONEY)
-  status   SafeStatusEnum @default(DRAFT)
-  capital  Float // Amount of money invested
-  safeTemplate  SafeTemplateEnum?
+  id           String            @id @default(cuid())
+  publicId     String // eg. SAFE-01
+  type         SafeTypeEnum      @default(POST_MONEY)
+  status       SafeStatusEnum    @default(DRAFT)
+  capital      Float // Amount of money invested
+  safeTemplate SafeTemplateEnum?
 
   valuationCap    Float?
   discountRate    Float?

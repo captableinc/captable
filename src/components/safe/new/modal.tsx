@@ -34,7 +34,9 @@ export default function CreateNewSafe({
       const message = payload?.message;
       toast({
         variant: isSuccess ? "default" : "destructive",
-        title: isSuccess ? "🎉 Successfully created SAFEs." : "Failed creating safe",
+        title: isSuccess
+          ? "🎉 Successfully created SAFEs."
+          : "Failed creating safe",
         description: message,
       });
       if (isSuccess) {

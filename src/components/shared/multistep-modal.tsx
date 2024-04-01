@@ -36,24 +36,22 @@ export default function MultiStepModal({
   onSubmit,
   dialogProps,
 }: MultiStepModalType) {
-
   const [steps, setSteps] = useState(steppers);
 
   const [formStep, setFormStep] = useState(1);
 
   const methods = useForm<FormField>({ resolver: zodResolver(schema) });
 
-  const safeTemplate = methods.watch("safeTemplate");
+  const safeTemplate: string = methods.watch("safeTemplate") as string;
 
   const memoizedSteppers = useMemo(
-    () => steppers.filter(
-      (step, i) => i !== steppers.length - 1),
-    []);
+    () => steppers.filter((step, i) => i !== steppers.length - 1),
+    [],
+  );
 
   useEffect(() => {
     if (steppers[0]?.fields?.includes("safeTemplate")) {
-      if (safeTemplate !== undefined &&
-        safeTemplate !== 'CUSTOM') {
+      if (safeTemplate !== undefined && safeTemplate !== "CUSTOM") {
         setSteps(memoizedSteppers);
       } else {
         setSteps(steppers);
@@ -67,7 +65,6 @@ export default function MultiStepModal({
   const StepForm = steps[formStep - 1]!.component;
 
   const nextStep = async () => {
-
     const fields = steps[formStep - 1]?.fields ?? [];
 
     const output = await methods.trigger(fields as FieldName[] as string[], {

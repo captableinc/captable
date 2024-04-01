@@ -1,11 +1,10 @@
-import { withAuth } from "@/trpc/api/trpc";
+import fs from "fs";
+import path from "path";
 import { Audit } from "@/server/audit";
+import { withAuth } from "@/trpc/api/trpc";
 import { SafeMutationSchema } from "../schema";
 import { generatePublicId } from "@/common/id";
 import { uploadFile } from "@/common/uploads";
-import path from "path";
-import fs from "fs";
-import { TRPCError } from "@trpc/server";
 
 export const createSafeProcedure = withAuth
   .input(SafeMutationSchema)
@@ -29,7 +28,6 @@ export const createSafeProcedure = withAuth
 
     try {
       if (safeTemplate !== "CUSTOM") {
-
         const pdfPath = path.join(
           process.cwd(),
           "public",
@@ -87,25 +85,20 @@ export const createSafeProcedure = withAuth
       }
 
       if (safeTemplate === "CUSTOM") {
-
         const documents = input.documents;
 
         if (documents?.length !== 1) return;
 
         const { template } = await ctx.db.$transaction(async (txn) => {
-
-          const newSafe = await txn.safe.create({ data });
-
-          console.log({ newSafe });
+          await txn.safe.create({ data });
 
           const template = await txn.template.create({
             data: {
               companyId: user.companyId,
               uploaderId: user.memberId,
               publicId: generatePublicId(),
-              bucketId: documents[0]?.bucketId,
-              //@ts-ignore
-              name: documents[0]?.name,
+              bucketId: documents[0]!.bucketId,
+              name: documents[0]!.name,
             },
           });
 

@@ -63,7 +63,13 @@ Follow the steps below to stand the app up locally.
 npm i
 ```
 
-**2. Run docker to setup**
+**2. Copy `.env.example`**
+
+```sh
+cp .env.example .env
+```
+
+**3. Run docker to setup**
 > If you prefer to run the app without docker, you can skip this step and configure the following services manually:
 
   * Postgres database
@@ -87,19 +93,19 @@ npm run db:studio
 
 ```
 
-**3. Seed some data (For dev environment)**
+**4. Seed some data (For dev environment)**
 
 ```sh
 npm run db:seed
 ```
 
-**4. Run the web app**
+**5. Run the web app**
 
 ```sh
 npm run dev
 ```
 
-**5. Install and run SMTP server**
+**6. Install and run SMTP server**
 
 > If you have setup database using docker, this step is optional.
 

@@ -1,5 +1,7 @@
+import { DocumentOTPForm } from "@/components/document/share/document-otp-form";
+
 const DocumentDetailPage = async () => {
-  return <div>document detail page</div>;
+  return <DocumentOTPForm />;
 };
 
 export default DocumentDetailPage;

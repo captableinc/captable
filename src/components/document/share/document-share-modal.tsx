@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { TagsInput } from "@ark-ui/react";
 import { RiClipboardLine, RiCloseLine } from "@remixicon/react";
 import { useForm } from "react-hook-form";
@@ -25,11 +26,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/react";
 import { OpenCapLogo } from "@/components/shared/logo";
 import {
   DocumentShareMutationSchema,
   type TypeDocumentShareMutation,
 } from "@/trpc/routers/document-share-router/schema";
+import { useToast } from "@/components/ui/use-toast";
 
 type DocumentShareModalProps = {
   title: string | React.ReactNode;
@@ -57,9 +60,31 @@ const DocumentShareModal = ({
       documentId: "id will be here",
     },
   });
+  const { toast } = useToast();
 
-  const onSubmit = (values: TypeDocumentShareMutation) => {
-    console.log(values);
+  const { mutateAsync } = api.documentShare.create.useMutation({
+    onSuccess: async ({ success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully created"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      form.reset();
+      setOpen(false);
+      router.refresh();
+    },
+  });
+  const router = useRouter();
+
+  const onSubmit = async (values: TypeDocumentShareMutation) => {
+    await mutateAsync(values);
+
+    form.reset();
+    router.refresh();
+    setOpen(false);
   };
 
   return (

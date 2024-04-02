@@ -6,7 +6,7 @@ export const DocumentShareMutationSchema = z.object({
     message: "Link is required",
   }),
   linkExpiresAt: z.coerce.date({
-    required_error: "Board approval date is required",
+    required_error: "Link expiry date is required",
     invalid_type_error: "This is not a valid date",
   }),
   recipients: z.string().optional(),

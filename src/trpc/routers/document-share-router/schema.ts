@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const DocumentShareMutationSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, {
-    message: "Name is required",
+  link: z.string().min(1, {
+    message: "Link is required",
   }),
   linkExpiresAt: z.coerce.date({
     required_error: "Board approval date is required",
@@ -11,8 +11,11 @@ export const DocumentShareMutationSchema = z.object({
   }),
   recipients: z.string().optional(),
   emailProtected: z.boolean().default(true),
+  documentId: z.string().min(1, {
+    message: "Document Id is required",
+  }),
 });
 
-export type DocumentShareMutationType = z.infer<
+export type TypeDocumentShareMutation = z.infer<
   typeof DocumentShareMutationSchema
 >;

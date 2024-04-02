@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 import { OpenCapLogo } from "@/components/shared/logo";
 import {
   DocumentShareMutationSchema,
-  type DocumentShareMutationType,
+  type TypeDocumentShareMutation,
 } from "@/trpc/routers/document-share-router/schema";
 
 type DocumentShareModalProps = {
@@ -48,15 +48,17 @@ const DocumentShareModal = ({
   title,
   subtitle,
 }: DocumentShareModalProps) => {
-  const form = useForm<DocumentShareMutationType>({
+  const form = useForm<TypeDocumentShareMutation>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       linkExpiresAt: new Date(),
+      link: "https://opencap.co/a-unique-link", // TODO: generate a link
       emailProtected: true,
+      documentId: "id will be here",
     },
   });
 
-  const onSubmit = (values: DocumentShareMutationType) => {
+  const onSubmit = (values: TypeDocumentShareMutation) => {
     console.log(values);
   };
 
@@ -95,7 +97,7 @@ const DocumentShareModal = ({
                     <div className="w-full">
                       <FormField
                         control={form.control}
-                        name="name"
+                        name="link"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Link</FormLabel>

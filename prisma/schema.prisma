@@ -341,8 +341,8 @@ model DocumentShare {
   id       String @id @default(cuid())
   link     String
 
-  expiresAt DateTime
-  recipients Json?
+  linkExpiresAt DateTime
+  recipients String[] @default([])
 
   emailProtected Boolean @default(false)
 

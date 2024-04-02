@@ -218,7 +218,7 @@ enum ConversionRightsEnum {
 // Based on OCF format
 // https://open-cap-table-coalition.github.io/Open-Cap-Format-OCF/schema_markdown/schema/objects/StockClass/
 model ShareClass {
-  id                      String          @id @default(cuid())
+  id                      String          @id @default(cuid()) 
   idx                     Int // auto-generated, auto-incremented based on company
   name                    String
   classType               ShareTypeEnum   @default(COMMON)
@@ -322,6 +322,8 @@ model Document {
   convertibleNoteId String?
   convertibleNote   ConvertibleNote? @relation(fields: [convertibleNoteId], references: [id], onDelete: SetNull)
 
+  documentShares DocumentShare[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -333,6 +335,22 @@ model Document {
   @@index([optionId])
   @@index([safeId])
   @@index([convertibleNoteId])
+}
+
+model DocumentShare {
+  id       String @id @default(cuid())
+  link     String
+
+  expiresAt DateTime
+  recipients Json?
+
+  emailProtected Boolean @default(false)
+
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum FieldTypes {

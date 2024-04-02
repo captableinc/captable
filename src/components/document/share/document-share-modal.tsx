@@ -4,7 +4,6 @@ import { TagsInput } from "@ark-ui/react";
 import { RiClipboardLine, RiCloseLine } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,19 +26,10 @@ import {
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { OpenCapLogo } from "@/components/shared/logo";
-
-const ShareDocumentMutationSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, {
-    message: "Name is required",
-  }),
-  linkExpiresAt: z.coerce.date({
-    required_error: "Board approval date is required",
-    invalid_type_error: "This is not a valid date",
-  }),
-  recipients: z.string().optional(),
-  requireEmailProtection: z.boolean().default(true),
-});
+import {
+  DocumentShareMutationSchema,
+  type DocumentShareMutationType,
+} from "@/trpc/routers/document-share-router/schema";
 
 type DocumentShareModalProps = {
   title: string | React.ReactNode;
@@ -49,11 +39,7 @@ type DocumentShareModalProps = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export type ShareDocumentMutationType = z.infer<
-  typeof ShareDocumentMutationSchema
->;
-
-const formSchema = ShareDocumentMutationSchema;
+const formSchema = DocumentShareMutationSchema;
 
 const DocumentShareModal = ({
   open,
@@ -62,15 +48,15 @@ const DocumentShareModal = ({
   title,
   subtitle,
 }: DocumentShareModalProps) => {
-  const form = useForm<ShareDocumentMutationType>({
+  const form = useForm<DocumentShareMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       linkExpiresAt: new Date(),
-      requireEmailProtection: true,
+      emailProtected: true,
     },
   });
 
-  const onSubmit = (values) => {
+  const onSubmit = (values: DocumentShareMutationType) => {
     console.log(values);
   };
 
@@ -131,22 +117,6 @@ const DocumentShareModal = ({
                         <RiClipboardLine />
                       </button>
                     </div>
-                  </div>
-
-                  <div className="sm:col-span-full">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Document Name</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage className="text-xs font-light" />
-                        </FormItem>
-                      )}
-                    />
                   </div>
 
                   <div className="sm:col-span-full">
@@ -216,7 +186,7 @@ const DocumentShareModal = ({
                 <div className="mt-8 flex justify-between">
                   <FormField
                     control={form.control}
-                    name="requireEmailProtection"
+                    name="emailProtected"
                     render={({ field }) => (
                       <FormItem>
                         <div className="flex items-center gap-2">

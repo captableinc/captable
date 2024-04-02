@@ -9,6 +9,7 @@ import Uploader from "@/components/ui/uploader";
 import CreateNewSafeModal from "./new/modal";
 import { RiAddFill } from "@remixicon/react";
 import { DropdownButton } from "@/components/ui/dropdown-button";
+import CreateExistingSafe from "./existing/modal";
 
 interface SafeActionsProps {
   companyPublicId: string;
@@ -42,32 +43,16 @@ const SafeActions = ({ companyPublicId }: SafeActionsProps) => {
         </li>
 
         <li>
-          <Modal
-            title="Add an existing SAFE agreement"
+          <CreateExistingSafe
+            title="Create an existing SAFE agreement"
+            subtitle="Create and send a new SAFE agreement to your investors."
+            companyId={companyPublicId}
             trigger={
               <Button variant="ghost" size="sm">
                 Add existing SAFE
               </Button>
             }
-          >
-            <Uploader
-              identifier={companyPublicId}
-              keyPrefix="safe-agreement"
-              onSuccess={async (bucketData) => {
-                const equityTemplate = await mutateAsync({
-                  bucketId: bucketData.id,
-                  name: bucketData.name,
-                });
-
-                router.push(
-                  `/${companyPublicId}/templates/${equityTemplate.publicId}`,
-                );
-              }}
-              accept={{
-                "application/pdf": [".pdf"],
-              }}
-            />
-          </Modal>
+          />
         </li>
       </ul>
     </DropdownButton>

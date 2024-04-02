@@ -178,7 +178,9 @@ const MemberModal = ({
 
           <Button
             loading={isSubmitting}
-            loadingText="Sending invite..."
+            loadingText={
+              rest.isEditMode === true ? "Updating..." : "Sending invite..."
+            }
             className="mt-5"
           >
             {rest.isEditMode === true ? "Update team member" : "Send an invite"}

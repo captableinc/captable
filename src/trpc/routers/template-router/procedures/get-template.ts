@@ -1,6 +1,6 @@
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodGetTemplateQuerySchema } from "../schema";
-import { getPresignedGetUrl } from "@/server/file-uploads";
 
 export const getTemplateProcedure = withAuth
   .input(ZodGetTemplateQuerySchema)
@@ -13,6 +13,8 @@ export const getTemplateProcedure = withAuth
         companyId: user.companyId,
       },
       select: {
+        name: true,
+        status: true,
         bucket: {
           select: {
             key: true,
@@ -47,5 +49,7 @@ export const getTemplateProcedure = withAuth
       fields: template.fields,
       key,
       url,
+      name: template.name,
+      status: template.status,
     };
   });

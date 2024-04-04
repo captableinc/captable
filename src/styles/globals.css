@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-instrument-sans);
+  font-family: var(--font-satoshi);
 }
 
 .font-mono {

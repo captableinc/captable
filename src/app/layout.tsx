@@ -1,4 +1,4 @@
-import { instrumentSans, robotoMono } from "@/styles/fonts";
+import { satoshi, robotoMono } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { cookies } from "next/headers";
@@ -26,10 +26,7 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
 
   return (
-    <html
-      lang="en"
-      className={cn(instrumentSans.variable, robotoMono.variable)}
-    >
+    <html lang="en" className={cn(satoshi.variable, robotoMono.variable)}>
       <body className="min-h-screen">
         <ProgressBarProvider>
           <NextAuthProvider session={session}>

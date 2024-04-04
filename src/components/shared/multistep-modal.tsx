@@ -98,7 +98,10 @@ export default function MultiStepModal({
       dialogProps={dialogProps}
     >
       <div className="grid grid-cols-10">
-        <nav aria-label="Progress" className="red col-span-3 max-w-64">
+        <nav
+          aria-label="Progress"
+          className="red col-span-3 hidden max-w-64 md:block"
+        >
           <ol role="list" className="overflow-hidden">
             {steps.map((step, stepIdx) => (
               <li
@@ -185,7 +188,8 @@ export default function MultiStepModal({
             ))}
           </ol>
         </nav>
-        <div className="col-span-7 space-y-6">
+
+        <div className="col-span-12 space-y-6 md:col-span-7">
           <Card className="p-6">
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(onSubmit)}>

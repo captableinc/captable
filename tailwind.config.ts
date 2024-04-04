@@ -19,7 +19,7 @@ const config = {
     extend: {
       fontFamily: {
         mono: ["var(--font-roboto-mono)", "monospace"],
-        sans: ["var(--font-instrument-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-satoshi)", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

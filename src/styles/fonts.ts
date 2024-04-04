@@ -1,10 +1,12 @@
-import { Instrument_Sans, Roboto_Mono } from "next/font/google";
+import { Roboto_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
-export const instrumentSans = Instrument_Sans({
-  variable: "--font-instrument-sans",
-  subsets: ["latin"],
+export const satoshi = localFont({
+  src: "./fonts/Satoshi-Variable.woff2",
+  variable: "--font-satoshi",
+  weight: "300 900",
   display: "swap",
-  adjustFontFallback: false,
+  style: "normal",
 });
 
 export const robotoMono = Roboto_Mono({

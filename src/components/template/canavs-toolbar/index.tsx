@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import * as Toolbar from "@radix-ui/react-toolbar";
 import { type FieldTypes } from "@/prisma-enums";
+import * as Toolbar from "@radix-ui/react-toolbar";
 import { FieldTypeData } from "../field-type-data";
 
-import { useFormContext, useFormState } from "react-hook-form";
 import { FormField } from "@/components/ui/form";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { useFormContext, useFormState } from "react-hook-form";
 
 export function CanvasToolbar() {
   const { control } = useFormContext<TemplateFieldForm>();
@@ -19,9 +19,9 @@ export function CanvasToolbar() {
   const isDisabled = !isDirty;
 
   return (
-    <div className="relative z-30 col-span-12 mb-20">
+    <div className="sticky inset-x-0 top-14 z-30 col-span-12 mt-5 ">
       <Toolbar.Root
-        className="fixed top-14 flex w-full max-w-[74.4%] items-center justify-between rounded-b-md bg-white p-2 shadow-lg"
+        className="flex w-full items-center justify-between rounded bg-white/50 p-2 shadow backdrop-blur-lg"
         aria-label="Formatting options"
       >
         <FormField

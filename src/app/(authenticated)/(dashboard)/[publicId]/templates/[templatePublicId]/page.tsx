@@ -18,7 +18,6 @@ const TemplateDetailPage = async ({
     <TemplateFieldProvider fields={fields}>
       <TemplateFieldForm templatePublicId={templatePublicId}>
         <div className="grid grid-cols-12">
-          <CanvasToolbar />
           <div className="col-span-12 flex align-middle">
             <Badge
               variant={status === "DRAFT" ? "warning" : "success"}
@@ -30,6 +29,7 @@ const TemplateDetailPage = async ({
               {name}
             </span>
           </div>
+          <CanvasToolbar />
           <PdfCanvas url={url} />
         </div>
       </TemplateFieldForm>

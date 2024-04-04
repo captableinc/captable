@@ -1,10 +1,11 @@
 "use client";
 
-import { pdfjs, Document, Page } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
+import { Card } from "@/components/ui/card";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { useCallback, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
@@ -34,7 +35,7 @@ export const PdfViewer = ({
     const [entry] = entries;
 
     if (entry) {
-      setContainerWidth(entry.contentRect.width);
+      setContainerWidth(entry.contentRect.width - 38);
     }
   }, []);
 
@@ -59,13 +60,14 @@ export const PdfViewer = ({
         className="w-full overflow-hidden rounded"
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Page
-            key={`page_${index + 1}`}
-            pageNumber={index + 1}
-            renderAnnotationLayer={false}
-            renderTextLayer={false}
-            width={containerWidth}
-          />
+          <Card className="my-5 p-3" key={`page_${index + 1}`}>
+            <Page
+              pageNumber={index + 1}
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
+              width={containerWidth}
+            />
+          </Card>
         ))}
       </Document>
     </div>

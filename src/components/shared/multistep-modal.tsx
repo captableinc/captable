@@ -1,13 +1,14 @@
 "use client";
 
-import { RiCheckLine } from "@remixicon/react";
-import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/modal";
-import { useEffect, useMemo, useState } from "react";
-import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
-import { type z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type DialogProps } from "@radix-ui/react-dialog";
+import { RiCheckLine } from "@remixicon/react";
+import { useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
+import { type z } from "zod";
 
 export type stepsType = {
   id: number;
@@ -185,29 +186,31 @@ export default function MultiStepModal({
           </ol>
         </nav>
         <div className="col-span-7 space-y-6">
-          <FormProvider {...methods}>
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <div className="mt-2 min-h-96 w-full rounded border p-3">
-                <h5 className="text-lg font-medium">
-                  {steps[formStep - 1]?.title}
-                </h5>
-                <StepForm />
-              </div>
-            </form>
-          </FormProvider>
-          <div className="flex justify-end">
-            <div className="space-x-4">
-              {formStep > 1 && (
-                <Button variant={"outline"} onClick={prevStep}>
-                  Back
-                </Button>
-              )}
+          <Card className="p-6">
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <div className="mt-2 min-h-96 w-full">
+                  <h5 className="text-lg font-medium">
+                    {steps[formStep - 1]?.title}
+                  </h5>
+                  <StepForm />
+                </div>
+              </form>
+            </FormProvider>
+            <div className="mt-6 flex justify-end">
+              <div className="space-x-4">
+                {formStep > 1 && (
+                  <Button variant={"outline"} onClick={prevStep}>
+                    Back
+                  </Button>
+                )}
 
-              <Button type="submit" onClick={nextStep}>
-                {formStep < steps.length ? "Continue" : "Submit"}
-              </Button>
+                <Button type="submit" onClick={nextStep}>
+                  {formStep < steps.length ? "Continue" : "Submit"}
+                </Button>
+              </div>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </Modal>

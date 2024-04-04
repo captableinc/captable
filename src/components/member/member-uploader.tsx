@@ -1,12 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { type TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
 import Link from "next/link";
 import { RiUploadLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
-import { parseCSV } from "@/lib/csv-parser";
+import { parseInviteMembersCSV } from "@/lib/invite-team-members-csv-parser";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { api } from "@/trpc/react";
 
 type TeamMemberUploaderType = {
   setOpen: (val: boolean) => void;
@@ -17,6 +19,25 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
+
+  const inviteMember = api.member.inviteMember.useMutation({
+    onSuccess: () => {
+      setOpen(false);
+      toast({
+        variant: "default",
+        title: "🎉 Invited!",
+        description: "You have successfully invited the stakeholder.",
+      });
+      router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: error.message,
+        description: "",
+      });
+    },
+  });
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.currentTarget.files ?? []);
@@ -29,8 +50,14 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
         return;
       }
 
-      const parsedData = await parseCSV(csvFile[0]);
-
+      const parsedData = (await parseInviteMembersCSV(
+        csvFile[0],
+      )) as TypeZodInviteMemberArrayMutationSchema;
+      await Promise.all(
+        parsedData.map(async (data) => {
+          await inviteMember.mutateAsync(data);
+        }),
+      );
       setOpen(false);
     } catch (error) {
       console.error((error as Error).message);

@@ -12,6 +12,14 @@ export type TypeZodInviteMemberMutationSchema = z.infer<
   typeof ZodInviteMemberMutationSchema
 >;
 
+export const ZodInviteMemberArrayMutationSchema = z.array(
+  ZodInviteMemberMutationSchema,
+);
+
+export type TypeZodInviteMemberArrayMutationSchema = z.infer<
+  typeof ZodInviteMemberArrayMutationSchema
+>;
+
 export const ZodAcceptMemberMutationSchema = z.object({
   memberId: z.string().min(1),
   name: z.string().min(1, "This field is required"),

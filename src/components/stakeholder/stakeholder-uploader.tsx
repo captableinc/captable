@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { parseCSV } from "@/lib/csv-parser";
+import { parseStrakeholdersCSV } from "@/lib/stakeholders-csv-parser";
 import { api } from "@/trpc/react";
 import { type TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
 import { RiUploadLine } from "@remixicon/react";
@@ -46,7 +46,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
         return;
       }
 
-      const parsedData = await parseCSV(csvFile[0]);
+      const parsedData = await parseStrakeholdersCSV(csvFile[0]);
       await mutateAsync(parsedData as TypeStakeholderArray);
 
       setOpen(false);

@@ -1,15 +1,13 @@
 "use client";
 
-import { Fragment } from "react";
-import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
-import Modal from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
-import Uploader from "@/components/ui/uploader";
-import CreateNewSafeModal from "./new/modal";
-import { RiAddFill } from "@remixicon/react";
 import { DropdownButton } from "@/components/ui/dropdown-button";
+import { api } from "@/trpc/react";
+import { RiAddFill } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { Fragment } from "react";
 import CreateExistingSafe from "./existing/modal";
+import CreateNewSafeModal from "./new/modal";
 
 interface SafeActionsProps {
   companyPublicId: string;
@@ -45,7 +43,7 @@ const SafeActions = ({ companyPublicId }: SafeActionsProps) => {
         <li>
           <CreateExistingSafe
             title="Create an existing SAFE agreement"
-            subtitle="Create and send a new SAFE agreement to your investors."
+            subtitle="Record an existing SAFE agreement to keep track of it in your captable."
             companyId={companyPublicId}
             trigger={
               <Button variant="ghost" size="sm">

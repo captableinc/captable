@@ -5,6 +5,11 @@ import { Card } from "@/components/ui/card";
 
 import { api } from "@/trpc/server";
 import { RiAddLine } from "@remixicon/react";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Team",
+};
 
 const TeamMembersPage = async () => {
   const members = await api.member.getMembers.query();

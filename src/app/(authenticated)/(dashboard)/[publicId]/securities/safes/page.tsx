@@ -3,6 +3,11 @@ import { PageLayout } from "@/components/dashboard/page-layout";
 import SafeActions from "@/components/safe/actions";
 import EmptyState from "@/components/shared/empty-state";
 import { RiSafeFill } from "@remixicon/react";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "SAFEs",
+};
 
 const SafePage = async () => {
   const session = await withServerSession();

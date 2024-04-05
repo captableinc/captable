@@ -6,6 +6,11 @@ import EmptyState from "@/components/shared/empty-state";
 import { RiAddFill, RiGroup2Fill } from "@remixicon/react";
 import StakeholderModal from "@/components/stakeholder/stakeholder-modal";
 import StakeholderTable from "@/components/stakeholder/stakeholder-table";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Stakeholders",
+};
 
 const StakeholdersPage = async () => {
   const stakeholders = await api.stakeholder.getStakeholders.query();

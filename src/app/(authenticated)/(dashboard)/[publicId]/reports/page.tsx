@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/shared/empty-state";
 import { RiFilePdf2Fill } from "@remixicon/react";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Reports",
+};
 
 const ReportsPage = () => {
   return (

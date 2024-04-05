@@ -5,7 +5,7 @@ import SummaryTable from "@/components/dashboard/overview/summary-table";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Opencap",
+  title: "Overview",
 };
 
 const OverviewPage = ({

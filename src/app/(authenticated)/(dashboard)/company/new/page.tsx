@@ -1,5 +1,10 @@
 import { Navbar } from "@/components/navbar";
 import { CompanyForm } from "@/components/onboarding/company-form";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "New",
+};
 
 const OnboardingPage = async () => {
   return (

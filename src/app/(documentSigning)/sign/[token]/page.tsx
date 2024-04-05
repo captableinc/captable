@@ -3,6 +3,11 @@ import { SigningFields } from "@/components/template/signing-fields";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Document signing",
+};
 
 interface SigningPageProps {
   params: {

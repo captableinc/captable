@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { IS_GOOGLE_AUTH_ENABLED } from "@/constants/auth";
 
 export const metadata: Metadata = {
-  title: "OpenCap - Login",
+  title: "Login | OpenCap",
   description: "Login to OpenCap",
 };
 

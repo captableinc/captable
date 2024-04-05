@@ -29,6 +29,7 @@ export const companyRouter = createTRPCRouter({
             city: true,
             zipcode: true,
             streetAddress: true,
+            logo: true,
           },
         },
       },

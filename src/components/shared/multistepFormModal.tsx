@@ -3,7 +3,7 @@
 import { RiCheckLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
 import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

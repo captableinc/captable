@@ -48,3 +48,4 @@ pnpm-lock.yaml
 
 #local
 /local
+.vscode/

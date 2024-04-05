@@ -682,23 +682,28 @@ model ConvertibleNote {
   @@index([stakeholderId])
 }
 
-model Update {
-  id       String  @id @default(cuid())
-  publicId String
-  title    String
-  content  Json
-  html     String
-  isPublic Boolean @default(false)
+enum UpdateStatusEnum {
+  DRAFT
+  PUBLIC
+  PRIVATE
+}
 
+model Update {
+  id        String           @id @default(cuid())
+  publicId  String
+  title     String
+  content   Json
+  html      String
+  status    UpdateStatusEnum @default(DRAFT)
   companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company   Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   authorId String
   author   Member @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   recipients UpdateRecipient[]
 
-  sharedAt  DateTime?
+  sentAt    DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

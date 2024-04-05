@@ -1,11 +1,11 @@
 "use client";
 
 import { PdfViewer } from "@/components/ui/pdf-viewer";
-import { FieldCanvas } from "../field-canvas";
-import { memo, useCallback, useState } from "react";
-import type { PDFDocumentProxy } from "pdfjs-dist";
-import { ReadOnlyFieldCanvas } from "../field-canvas/readonly-field-canvas";
 import { type PageMeasurement } from "@/lib/pdf-positioning";
+import type { PDFDocumentProxy } from "pdfjs-dist";
+import { memo, useCallback, useState } from "react";
+import { FieldCanvas } from "../field-canvas";
+import { ReadOnlyFieldCanvas } from "../field-canvas/readonly-field-canvas";
 
 interface PdfCanvasProps {
   url: string;

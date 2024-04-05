@@ -39,6 +39,7 @@ type DocumentShareModalProps = {
   subtitle: string | React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
   open: boolean;
+  documentId: string | null;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -50,6 +51,7 @@ const DocumentShareModal = ({
   size,
   title,
   subtitle,
+  documentId,
 }: DocumentShareModalProps) => {
   const form = useForm<TypeDocumentShareMutation>({
     resolver: zodResolver(formSchema),
@@ -57,7 +59,7 @@ const DocumentShareModal = ({
       linkExpiresAt: new Date(),
       link: "https://opencap.co/a-unique-link", // TODO: generate a link
       emailProtected: true,
-      documentId: "id will be here",
+      documentId: documentId ? documentId : "",
     },
   });
   const { toast } = useToast();

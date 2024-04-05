@@ -39,6 +39,9 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
   };
 
   const [openShareModal, setOpenShareModal] = useState(false);
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(
+    null,
+  );
 
   return (
     <>
@@ -85,7 +88,12 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
                         <DropdownMenuSeparator />
 
                         <DropdownMenuItem
-                          onClick={() => setOpenShareModal(true)}
+                          onClick={() => {
+                            if (document) {
+                              setSelectedDocumentId(document.id);
+                            }
+                            setOpenShareModal(true);
+                          }}
                         >
                           Share document
                         </DropdownMenuItem>
@@ -105,6 +113,7 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
         subtitle="Create a link to share this document."
         open={openShareModal}
         setOpen={setOpenShareModal}
+        documentId={selectedDocumentId}
       />
     </>
   );

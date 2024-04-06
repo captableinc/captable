@@ -1,6 +1,11 @@
 import { AuditTable } from "@/components/audit/audit-table";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Audits",
+};
 
 const AuditsPage = async () => {
   const audits = await api.audit.getAudits.query({});

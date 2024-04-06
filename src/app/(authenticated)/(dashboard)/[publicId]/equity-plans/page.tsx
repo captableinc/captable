@@ -9,6 +9,11 @@ import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Equity plans",
+};
 
 const getEquityPlans = async (companyId: string) => {
   return await db.equityPlan.findMany({

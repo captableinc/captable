@@ -2,6 +2,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/shared/empty-state";
 import { RiMailSendLine, RiAddFill } from "@remixicon/react";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Updates",
+};
 
 const UpdatesPage = ({
   params: { publicId },

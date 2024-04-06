@@ -7,6 +7,11 @@ import EmptyState from "@/components/shared/empty-state";
 import { RiUploadCloudLine, RiAddFill } from "@remixicon/react";
 import { api } from "@/trpc/server";
 import { withServerSession } from "@/server/auth";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Documents",
+};
 
 const DocumentsPage = async () => {
   const documents = await api.document.getAll.query();

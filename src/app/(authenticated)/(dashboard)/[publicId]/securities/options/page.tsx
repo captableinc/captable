@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiGroup2Fill } from "@remixicon/react";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Options",
+};
 
 const OptionsPage = async () => {
   const options = await api.securities.getOptions.query();

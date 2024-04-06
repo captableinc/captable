@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  RiAccountCircleFill,
   RiPieChart2Fill,
   RiSparklingFill,
   RiUploadCloud2Fill,
-  RiAccountCircleFill,
 } from "@remixicon/react";
 
 import {
@@ -16,11 +16,11 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { RiSearchLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 
 const Pages = [
   {

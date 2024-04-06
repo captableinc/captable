@@ -2,6 +2,11 @@ import { Navbar } from "@/components/navbar";
 import { CompanyForm } from "@/components/onboarding/company-form";
 import { withServerSession } from "@/server/auth";
 import { redirect } from "next/navigation";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Onboarding",
+};
 
 const OnboardingPage = async () => {
   const session = await withServerSession();

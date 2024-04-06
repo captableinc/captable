@@ -8,6 +8,11 @@ import { withServerSession } from "@/server/auth";
 import EmptyState from "@/components/shared/empty-state";
 import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Share classes",
+};
 
 const getShareClasses = async (companyId: string) => {
   return await db.shareClass.findMany({

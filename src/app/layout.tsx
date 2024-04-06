@@ -11,7 +11,10 @@ import { getServerAuthSession } from "@/server/auth";
 import { ProgressBarProvider } from "@/providers/progress-bar";
 
 export const metadata: Metadata = {
-  title: "OpenCap",
+  title: {
+    template: "%s | OpenCap",
+    default: "OpenCap",
+  },
   description:
     "OpenCap is an open source cap table management tool that does not sell your data.",
   icons: [{ rel: "icon", url: "/favicon.svg" }],

@@ -33,6 +33,7 @@ import {
   type TypeDocumentShareMutation,
 } from "@/trpc/routers/document-share-router/schema";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 
 type DocumentShareModalProps = {
   title: string | React.ReactNode;
@@ -57,12 +58,17 @@ const DocumentShareModal = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       linkExpiresAt: new Date(),
-      link: "https://opencap.co/a-unique-link", // TODO: generate a link
+      link: "http://localhost:3000/document/a-unique-link", // TODO: generate a link
       emailProtected: true,
-      documentId: documentId ? documentId : "",
     },
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (documentId) {
+      form.setValue("documentId", documentId);
+    }
+  }, [documentId, form]);
 
   const { mutateAsync } = api.documentShare.create.useMutation({
     onSuccess: async ({ success, message }) => {

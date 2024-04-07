@@ -62,7 +62,10 @@ const DocumentsPage = async () => {
 
       <Card className="mt-3">
         <div className="p-6">
-          <DocumentsTable documents={documents} />
+          <DocumentsTable
+            companyPublicId={session.user.companyPublicId}
+            documents={documents}
+          />
         </div>
       </Card>
     </div>

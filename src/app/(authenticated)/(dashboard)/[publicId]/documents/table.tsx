@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { dayjsExt } from "@/common/dayjs";
 import { Card } from "@/components/ui/card";
 import FileIcon from "@/components/shared/file-icon";
@@ -30,9 +31,11 @@ type DocumentType = RouterOutputs["document"]["getAll"];
 
 type DocumentTableProps = {
   documents: DocumentType;
+  companyPublicId: string;
 };
 
-const DocumentsTable = ({ documents }: DocumentTableProps) => {
+const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
+  const router = useRouter();
   const openFileOnTab = async (key: string) => {
     const fileUrl = await getPresignedGetUrl(key);
     window.open(fileUrl.url, "_blank");
@@ -98,6 +101,15 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
                           Share document
                         </DropdownMenuItem>
                         <DropdownMenuItem>E-sign document</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            router.push(
+                              `/${companyPublicId}/documents/${document.id}/analytics`,
+                            );
+                          }}
+                        >
+                          Analytics
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

@@ -34,6 +34,7 @@ import {
 } from "@/trpc/routers/document-share-router/schema";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
+import { generatePublicId } from "@/common/id";
 
 type DocumentShareModalProps = {
   title: string | React.ReactNode;
@@ -45,6 +46,7 @@ type DocumentShareModalProps = {
 };
 
 const formSchema = DocumentShareMutationSchema;
+const publicId = generatePublicId();
 
 const DocumentShareModal = ({
   open,
@@ -58,8 +60,9 @@ const DocumentShareModal = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       linkExpiresAt: new Date(),
-      link: "http://localhost:3000/document/a-unique-link", // TODO: generate a link
+      link: `http://localhost:3000/document/${publicId}`, // TODO: generate a link
       emailProtected: true,
+      publicId,
     },
   });
   const { toast } = useToast();

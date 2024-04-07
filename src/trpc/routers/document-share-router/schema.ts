@@ -14,6 +14,7 @@ export const DocumentShareMutationSchema = z.object({
   documentId: z.string().min(1, {
     message: "Document Id is required",
   }),
+  publicId: z.string().min(1, "PublicId is required"),
 });
 
 export type TypeDocumentShareMutation = z.infer<

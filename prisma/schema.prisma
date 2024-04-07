@@ -340,6 +340,7 @@ model Document {
 model DocumentShare {
   id       String @id @default(cuid())
   link     String
+  publicId String
 
   linkExpiresAt DateTime
   recipients String[] @default([])

@@ -5,13 +5,13 @@ import { DocumentSharePdfViewer } from "./document-share-pdf-viewer";
 import { notFound } from "next/navigation";
 
 const DocumentSharePublicPage = async ({
-  params: { documentId },
+  params: { publicId },
 }: {
-  params: { documentId: string };
+  params: { publicId: string };
 }) => {
   const documentShare = await db.documentShare.findFirst({
     where: {
-      id: documentId,
+      publicId,
     },
   });
 
@@ -21,7 +21,7 @@ const DocumentSharePublicPage = async ({
 
   if (documentShare.emailProtected) {
     return (
-      <div className="grid h-screen w-full bg-gray-100">
+      <div className="grid h-screen w-full place-items-center bg-gray-100">
         <AccessRequestForm />
       </div>
     );

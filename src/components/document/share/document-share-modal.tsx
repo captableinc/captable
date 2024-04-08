@@ -46,7 +46,6 @@ type DocumentShareModalProps = {
 };
 
 const formSchema = DocumentShareMutationSchema;
-const publicId = generatePublicId();
 
 const DocumentShareModal = ({
   open,
@@ -56,6 +55,7 @@ const DocumentShareModal = ({
   subtitle,
   documentId,
 }: DocumentShareModalProps) => {
+  const publicId = generatePublicId();
   const form = useForm<TypeDocumentShareMutation>({
     resolver: zodResolver(formSchema),
     defaultValues: {

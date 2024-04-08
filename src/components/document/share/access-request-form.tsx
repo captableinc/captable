@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { RiShieldCheckLine } from "@remixicon/react";
+import { RiFileLockLine } from "@remixicon/react";
 import {
   Form,
   FormControl,
@@ -50,17 +50,17 @@ export const AccessRequestForm = () => {
 
   return (
     <Form {...form}>
-      <Card className="flex w-full max-w-lg flex-col items-center justify-center py-4">
+      <Card className="flex w-full max-w-md flex-col items-center justify-center py-4">
         <CardHeader className="flex items-center justify-center">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-400">
-            <RiShieldCheckLine className="h-12 w-12 text-gray-600" />
+            <RiFileLockLine className="h-12 w-12 text-neutral-800" />
           </div>
           <CardTitle>Request Document Access</CardTitle>
 
           <CardDescription>This document is email protected.</CardDescription>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="w-full">
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col items-center justify-center space-y-6"
@@ -69,11 +69,12 @@ export const AccessRequestForm = () => {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Your Email</FormLabel>
                   <FormControl>
                     <Input
                       disabled={form.formState.isSubmitting}
+                      className="w-full"
                       type="email"
                       {...field}
                     />

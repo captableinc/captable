@@ -1,17 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { RiFileLockLine } from "@remixicon/react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,75 +11,43 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import { Label } from "@radix-ui/react-label";
+import { provideRequestAccess } from "@/app/(documentShare)/document/[publicId]/actions";
 
-const FormSchema = z.object({
-  email: z.string().email().min(1, {
-    message: "Email is required",
-  }),
-});
-
-export const AccessRequestForm = () => {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      email: "",
-    },
+export const AccessRequestForm = ({ publicId }: { publicId: string }) => {
+  const [state, formAction] = useFormState(provideRequestAccess, {
+    emailError: "",
   });
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const { pending } = useFormStatus();
 
   return (
-    <Form {...form}>
-      <Card className="flex w-full max-w-md flex-col items-center justify-center py-4">
-        <CardHeader className="flex items-center justify-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-400">
-            <RiFileLockLine className="h-12 w-12 text-neutral-800" />
+    <Card className="flex w-full max-w-md flex-col items-center justify-center py-4">
+      <CardHeader className="flex items-center justify-center">
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-400">
+          <RiFileLockLine className="h-12 w-12 text-neutral-800" />
+        </div>
+        <CardTitle>Request Document Access</CardTitle>
+
+        <CardDescription>This document is email protected.</CardDescription>
+      </CardHeader>
+
+      <CardContent className="w-full">
+        <form
+          action={formAction}
+          className="flex flex-col items-center justify-center space-y-6"
+        >
+          <input type="hidden" name="publicId" value={publicId} />
+          <div className="w-full">
+            <Label htmlFor="email">Your Email</Label>
+            <Input className="w-full" id="email" name="email" type="email" />
+            <div>{state?.emailError}</div>
           </div>
-          <CardTitle>Request Document Access</CardTitle>
 
-          <CardDescription>This document is email protected.</CardDescription>
-        </CardHeader>
-
-        <CardContent className="w-full">
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col items-center justify-center space-y-6"
-          >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Your Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={form.formState.isSubmitting}
-                      className="w-full"
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button size="sm" className="w-full" type="submit">
-              Submit
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </Form>
+          <Button size="sm" className="w-full" type="submit" disabled={pending}>
+            Submit
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };

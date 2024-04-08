@@ -22,7 +22,7 @@ const DocumentSharePublicPage = async ({
   if (documentShare.emailProtected) {
     return (
       <div className="grid h-screen w-full place-items-center bg-gray-100">
-        <AccessRequestForm />
+        <AccessRequestForm publicId={publicId} />
       </div>
     );
   }

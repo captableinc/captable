@@ -1,4 +1,4 @@
-import { UpdateEmailStatusEnum } from "@/prisma-enums";
+import { UpdateEmailStatusEnum } from "@/prisma/enums";
 
 import { z } from "zod";
 

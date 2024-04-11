@@ -1,4 +1,4 @@
-import React from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -7,8 +7,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useFormContext } from "react-hook-form";
-import { SafeTemplateEnum } from "@/prisma-enums";
 import {
   Select,
   SelectContent,
@@ -16,7 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { SafeTemplateEnum } from "@/prisma/enums";
+import { useFormContext } from "react-hook-form";
 
 export const GeneralDetailsFields = [
   "safeId",

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { FieldTypes } from "@/prisma-enums";
+import { FieldTypes } from "@/prisma/enums";
 
 export const ZodAddFieldMutationSchema = z.object({
   templatePublicId: z.string(),

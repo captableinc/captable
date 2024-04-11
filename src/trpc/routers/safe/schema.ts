@@ -1,4 +1,4 @@
-import { SafeTypeEnum, SafeStatusEnum, SafeTemplateEnum } from "@/prisma-enums";
+import { SafeStatusEnum, SafeTemplateEnum, SafeTypeEnum } from "@/prisma/enums";
 import { z } from "zod";
 
 export const SafeMutationSchema = z.object({

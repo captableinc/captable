@@ -114,23 +114,47 @@ const navigation = [
       {
         name: "Investments",
         href: "/investments",
-        icon: RiFolder5Line,
-        activeIcon: RiFolder5Fill,
       },
     ],
   },
+
+  {
+    name: "Documents",
+    href: "/documents",
+    icon: RiFolder5Line,
+    activeIcon: RiFolder5Fill,
+    subNav: [
+      {
+        name: "eSign documents",
+        href: "/esign",
+      },
+
+      {
+        name: "Share documents",
+        href: "/share",
+      },
+
+      {
+        name: "Repository",
+        href: "/repository",
+      },
+    ],
+  },
+
   {
     name: "Updates",
     href: "/updates",
     icon: RiMailSendLine,
     activeIcon: RiMailSendFill,
   },
+
   {
     name: "Reports",
     href: "/reports",
     icon: RiFolderChartLine,
     activeIcon: RiFolderChartFill,
   },
+
   {
     name: "Audits",
     href: "/audits",

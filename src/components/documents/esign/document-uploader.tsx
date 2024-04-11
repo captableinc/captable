@@ -1,20 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import Modal from "../shared/modal";
-import { Button } from "../ui/button";
+import Modal from "@/components/shared/modal";
+import { Button } from "@/components/ui/button";
+import Uploader from "@/components/ui/uploader";
 import { api } from "@/trpc/react";
-import Uploader from "../ui/uploader";
+import { useRouter } from "next/navigation";
 
-interface EquityDocumentUploadProps {
+interface EsignDocumentUploadProps {
   companyPublicId: string;
 }
 
-export function EquityDocumentUpload({
-  companyPublicId,
-}: EquityDocumentUploadProps) {
+const EsignDocumentUpload = ({ companyPublicId }: EsignDocumentUploadProps) => {
   const router = useRouter();
-
   const { mutateAsync } = api.template.create.useMutation();
 
   return (
@@ -42,4 +39,6 @@ export function EquityDocumentUpload({
       />
     </Modal>
   );
-}
+};
+
+export default EsignDocumentUpload;

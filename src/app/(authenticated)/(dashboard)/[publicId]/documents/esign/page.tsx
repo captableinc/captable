@@ -1,5 +1,5 @@
 import { PageLayout } from "@/components/dashboard/page-layout";
-import { EquityDocumentUpload } from "@/components/equity/equity-document-upload";
+import EsignDocumentUpload from "@/components/documents/esign/document-uploader";
 import { withServerSession } from "@/server/auth";
 import { type Metadata } from "next";
 
@@ -12,8 +12,8 @@ const DocSign = async () => {
 
   return (
     <PageLayout
-      title="Equity"
-      action={<EquityDocumentUpload companyPublicId={user.companyPublicId} />}
+      title="eSign documents"
+      action={<EsignDocumentUpload companyPublicId={user.companyPublicId} />}
     />
   );
 };

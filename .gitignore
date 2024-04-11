@@ -44,8 +44,6 @@ yarn-error.log*
 yarn.lock
 pnpm-lock.yaml
 
-/prisma/enums
-
 #local
 /local
 .vscode/

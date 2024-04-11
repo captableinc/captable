@@ -89,6 +89,10 @@ const navigation = [
         name: "Stock options",
         href: "/options",
       },
+      {
+        name: "Transactions",
+        href: "/transactions",
+      },
     ],
   },
   {
@@ -194,15 +198,12 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                   <li key={item.name}>
                     {item.subNav ? (
                       <Accordion type="single" collapsible>
-                        <AccordionItem
-                          value="item-1"
-                          className="-my-1 border-none"
-                        >
+                        <AccordionItem value="item-1" className="border-none">
                           <div className="flex">
                             {isActive ? (
                               <item.activeIcon
                                 className={cn(
-                                  "ml-1 mr-1 mt-2 inline-block",
+                                  "ml-1 mr-1 mt-1 inline-block",
                                   "text-primary",
                                   "h-6 w-6 shrink-0",
                                 )}
@@ -211,7 +212,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                             ) : (
                               <item.icon
                                 className={cn(
-                                  "ml-1 mr-1 mt-2 inline-block",
+                                  "ml-1 mr-1 mt-1 inline-block",
                                   "text-gray-400 group-hover:text-primary",
                                   "h-6 w-6 shrink-0",
                                 )}
@@ -224,7 +225,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                                 isActive
                                   ? "bg-gray-50 font-semibold text-primary"
                                   : "text-gray-700 hover:bg-gray-50 hover:text-primary",
-                                "group flex gap-x-3 rounded-md p-2 text-sm leading-6 hover:no-underline",
+                                "group flex gap-x-3 rounded-md px-2 py-1 text-sm leading-6 hover:no-underline",
                               )}
                             >
                               {item.name}

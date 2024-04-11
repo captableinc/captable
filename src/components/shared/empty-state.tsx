@@ -37,7 +37,7 @@ const EmptyState = ({
             "border bg-white px-6 shadow-sm",
           )}
         >
-          <div className="mx-auto w-full max-w-lg py-16 text-center">
+          <div className="mx-auto w-full max-w-2xl py-16 text-center">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
               <span className="text-teal-500">{icon}</span>
             </div>

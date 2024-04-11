@@ -19,8 +19,8 @@ const OptionsPage = async () => {
     return (
       <EmptyState
         icon={<RiGroup2Fill />}
-        title="You do not have any options yet."
-        subtitle="Please click the button for adding new options."
+        title="You have not issued any stock options yet."
+        subtitle="Please click the button below to start issueing options."
       >
         <OptionModal
           title="Create an option"
@@ -36,7 +36,7 @@ const OptionsPage = async () => {
           trigger={
             <Button size="lg">
               <RiAddFill className="mr-2 h-5 w-5" />
-              Add an option
+              Issue a stock option
             </Button>
           }
         />

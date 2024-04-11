@@ -1,28 +1,30 @@
 "use client";
 
 import {
-  RiHome2Line,
-  RiHome2Fill,
-  RiPieChartLine,
-  RiPieChartFill,
-  RiSafeLine,
-  RiSafeFill,
-  RiFolder5Line,
-  RiFolder5Fill,
-  RiFolderChartLine,
-  RiFolderChartFill,
-  RiListIndefinite,
-  RiListCheck3,
-  RiGroup2Line,
-  RiGroup2Fill,
-  RiFolderChart2Line,
-  RiFolderChart2Fill,
-  RiFileTextLine,
-  RiFileTextFill,
-  RiEqualizer2Line,
   RiEqualizer2Fill,
-  RiMailSendLine,
+  RiEqualizer2Line,
+  RiFileTextFill,
+  RiFileTextLine,
+  RiFolder5Fill,
+  RiFolder5Line,
+  RiFolderChart2Fill,
+  RiFolderChart2Line,
+  RiFolderChartFill,
+  RiFolderChartLine,
+  RiGroup2Fill,
+  RiGroup2Line,
+  RiHome2Fill,
+  RiHome2Line,
+  RiListCheck3,
+  RiListIndefinite,
   RiMailSendFill,
+  RiMailSendLine,
+  RiMoneyDollarCircleFill,
+  RiMoneyDollarCircleLine,
+  RiPieChartFill,
+  RiPieChartLine,
+  RiSafeFill,
+  RiSafeLine,
 } from "@remixicon/react";
 
 import {
@@ -32,12 +34,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { usePathname } from "next/navigation";
 import { OpenCapLogo } from "@/components/shared/logo";
+import { usePathname } from "next/navigation";
 
-import { NavLink } from "./nav-link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { NavLink } from "./nav-link";
 
 import { type TGetCompanyList } from "@/server/company";
 import { CompanySwitcher } from "./company-switcher";
@@ -84,24 +86,34 @@ const navigation = [
         href: "/shares",
       },
       {
-        name: "Options",
+        name: "Stock options",
         href: "/options",
-      },
-      {
-        name: "SAFEs",
-        href: "/safes",
-      },
-      {
-        name: "Convertible notes",
-        href: "/convertible-notes",
       },
     ],
   },
   {
-    name: "Documents",
-    href: "/documents",
-    icon: RiFolder5Line,
-    activeIcon: RiFolder5Fill,
+    name: "Fundraise",
+    href: "/fundraise",
+    icon: RiMoneyDollarCircleLine,
+    activeIcon: RiMoneyDollarCircleFill,
+    subNav: [
+      {
+        name: "SAFEs",
+        href: "/safes",
+      },
+
+      {
+        name: "Convertible notes",
+        href: "/convertible-notes",
+      },
+
+      {
+        name: "Investments",
+        href: "/investments",
+        icon: RiFolder5Line,
+        activeIcon: RiFolder5Fill,
+      },
+    ],
   },
   {
     name: "Updates",

@@ -1,14 +1,15 @@
-import { satoshi, robotoMono } from "@/styles/fonts";
-import "@/styles/globals.css";
+import ScreenSize from "@/components/screen-size";
+import { Toaster } from "@/components/ui/toaster";
+import { constants } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { cookies } from "next/headers";
+import { NextAuthProvider } from "@/providers/next-auth";
+import { ProgressBarProvider } from "@/providers/progress-bar";
+import { getServerAuthSession } from "@/server/auth";
+import { robotoMono, satoshi } from "@/styles/fonts";
+import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
-import { constants } from "@/lib/constants";
-import { Toaster } from "@/components/ui/toaster";
-import { NextAuthProvider } from "@/providers/next-auth";
-import { getServerAuthSession } from "@/server/auth";
-import { ProgressBarProvider } from "@/providers/progress-bar";
+import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: {
@@ -36,6 +37,9 @@ export default async function RootLayout({
             <TRPCReactProvider cookies={cookies().toString()}>
               <main>{children}</main>
               <Toaster />
+              {process.env.NEXT_PUBLIC_NODE_ENV === "development" && (
+                <ScreenSize />
+              )}
             </TRPCReactProvider>
           </NextAuthProvider>
         </ProgressBarProvider>

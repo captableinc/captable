@@ -4,7 +4,7 @@ import {
   type TemplateFieldContainerProps,
 } from "./template-field-container";
 
-import { type FieldTypes } from "@/prisma-enums";
+import { type FieldTypes } from "@/prisma/enums";
 import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 
 interface ReadOnlyTemplateFieldProps

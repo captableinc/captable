@@ -1,4 +1,4 @@
-import { type FieldTypes } from "@/prisma-enums";
+import { type FieldTypes } from "@/prisma/enums";
 import { RiSketching, RiText } from "@remixicon/react";
 
 interface OptionsItems {

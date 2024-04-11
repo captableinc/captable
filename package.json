@@ -19,7 +19,8 @@
     "email:dev": "mailpit",
     "email:preview": "email preview ./src/emails",
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",
-    "trigger": "npx @trigger.dev/cli@latest dev"
+    "trigger": "npx @trigger.dev/cli@latest dev",
+    "deploy:fly": "fly deploy"
   },
   "dependencies": {
     "@ant-design/plots": "^2.1.15",
@@ -90,6 +91,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.0",
+    "@flydotio/dockerfile": "^0.5.4",
     "@tailwindcss/typography": "^0.5.12",
     "@types/eslint": "^8.56.5",
     "@types/inquirer": "^9.0.7",

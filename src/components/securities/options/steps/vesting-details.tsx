@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { SpinnerIcon } from "@/components/shared/icons";
 import {
   FormControl,
   FormField,
@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,11 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useMemo } from "react";
-import { VestingScheduleEnum } from "@/prisma-enums";
-import { Input } from "@/components/ui/input";
+import { VestingScheduleEnum } from "@/prisma/enums";
 import { api } from "@/trpc/react";
-import { SpinnerIcon } from "@/components/shared/icons";
+import { useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 export const VestingDetailsFields = [
   "vestingSchedule",

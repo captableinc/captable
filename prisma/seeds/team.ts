@@ -1,6 +1,6 @@
-import type { MemberStatusEnum } from "@/prisma-enums";
-import { faker } from "@faker-js/faker";
+import type { MemberStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
+import { faker } from "@faker-js/faker";
 import colors from "colors";
 colors.enable();
 

@@ -137,6 +137,11 @@ const navigation = [
         name: "Share documents",
         href: "/share",
       },
+
+      {
+        name: "Data room",
+        href: "/data-room",
+      },
     ],
   },
 

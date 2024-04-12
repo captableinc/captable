@@ -1,4 +1,7 @@
+"use client";
+
 import { EsignFormProvider } from "@/providers/esign-form-provider";
+import { RiAddFill } from "@remixicon/react";
 import { Button } from "../../ui/button";
 import { StepperModal } from "../../ui/stepper";
 import { AddRecipientStep } from "./steps/add-recepients-step";
@@ -11,9 +14,13 @@ interface AddEsignModalProps {
 export function AddEsignModal({ companyPublicId }: AddEsignModalProps) {
   return (
     <StepperModal
-      title="Upload equity document"
+      title="E-sign document document"
       subtitle=""
-      trigger={<Button variant="ghost">Upload E-Sign Document</Button>}
+      trigger={
+        <Button>
+          <RiAddFill className="mr-2 h-5 w-5" /> Upload a E-Sign Document
+        </Button>
+      }
     >
       <EsignFormProvider>
         <UploadDocumentStep />

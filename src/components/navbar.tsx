@@ -4,7 +4,7 @@ import { constants } from "@/lib/constants";
 import { RiDiscordFill, RiGithubFill, RiTwitterFill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { CaptableLogo } from "./shared/logo";
+import { CaptableLogo } from "./common/logo";
 import { buttonVariants } from "./ui/button";
 
 export const Navbar = () => {

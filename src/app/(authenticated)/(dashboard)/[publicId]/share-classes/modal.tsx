@@ -1,9 +1,9 @@
 "use client";
 
+import Modal from "@/components/common/modal";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { useState } from "react";
 import ShareClassForm from "./form";
-import Modal from "@/components/shared/modal";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 
 type ShareClassType = {
   type: string;

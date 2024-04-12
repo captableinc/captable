@@ -1,21 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { dayjsExt } from "@/common/dayjs";
+import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
-import FileIcon from "@/components/shared/file-icon";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import {
-  Table,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-} from "@/components/ui/table";
+import DocumentShareModal from "@/components/document/share/document-share-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DocumentShareModal from "@/components/document/share/document-share-modal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { type RouterOutputs } from "@/trpc/shared";
 
 type DocumentType = RouterOutputs["document"]["getAll"];

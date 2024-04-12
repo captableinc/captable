@@ -1,9 +1,9 @@
-import { api } from "@/trpc/server";
-import { Card } from "@/components/ui/card";
-import EmptyState from "@/components/shared/empty-state";
-import { RiGroup2Fill } from "@remixicon/react";
-import StakeholderTable from "@/components/stakeholder/stakeholder-table";
+import EmptyState from "@/components/common/empty-state";
 import StakeholderDropdown from "@/components/stakeholder/stakeholder-dropdown";
+import StakeholderTable from "@/components/stakeholder/stakeholder-table";
+import { Card } from "@/components/ui/card";
+import { api } from "@/trpc/server";
+import { RiGroup2Fill } from "@remixicon/react";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {

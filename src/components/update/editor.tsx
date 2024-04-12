@@ -1,7 +1,7 @@
 "use client";
 
 import { dayjsExt } from "@/common/dayjs";
-import Loading from "@/components/shared/loading";
+import Loading from "@/components/common/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

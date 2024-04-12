@@ -1,4 +1,4 @@
-import { LogoIcon } from "@/components/shared/icons";
+import { LogoIcon } from "@/components/common/icons";
 
 const Loading = () => {
   return (

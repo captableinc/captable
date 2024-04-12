@@ -1,6 +1,6 @@
 "use client";
 
-import MultiStepModal from "@/components/shared/multistep-modal";
+import MultiStepModal from "@/components/common/multistep-modal";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import {

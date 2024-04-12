@@ -1,4 +1,4 @@
-import { type stepsType } from "@/components/shared/multistep-modal";
+import { type stepsType } from "@/components/common/multistep-modal";
 
 const ExistingDocuments = () => {
   return (
@@ -44,7 +44,7 @@ const useDataRoomSteps = ({ companyId: string }: DataRoomStepsType) => {
     },
     {
       id: 3,
-      title: "Share this data room",
+      title: "Share the data room",
       component: SelectRecipients,
       fields: [],
     },

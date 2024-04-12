@@ -1,6 +1,6 @@
 "use client";
 
-import Modal from "@/components/shared/modal";
+import Modal from "@/components/common/modal";
 import { Button } from "@/components/ui/button";
 import Uploader from "@/components/ui/uploader";
 import { api } from "@/trpc/react";

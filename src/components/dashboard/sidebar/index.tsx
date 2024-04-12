@@ -34,7 +34,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { CaptableLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/common/logo";
 import { usePathname } from "next/navigation";
 
 import { ScrollArea } from "@/components/ui/scroll-area";

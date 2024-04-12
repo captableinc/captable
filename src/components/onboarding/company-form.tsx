@@ -37,7 +37,7 @@ import { type RouterOutputs } from "@/trpc/shared";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import Loading from "../shared/loading";
+import Loading from "../common/loading";
 
 const formSchema = ZodOnboardingMutationSchema;
 

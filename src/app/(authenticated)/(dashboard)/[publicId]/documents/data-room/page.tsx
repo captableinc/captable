@@ -1,6 +1,6 @@
 "use server";
 
-import EmptyState from "@/components/shared/empty-state";
+import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";

@@ -1,18 +1,18 @@
 "use client";
 
-import { RiFileLockLine } from "@remixicon/react";
-import { useFormState, useFormStatus } from "react-dom";
+import { provideRequestAccess } from "@/app/documents/share/[publicId]/actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import { provideRequestAccess } from "@/app/(documentShare)/document/[publicId]/actions";
+import { RiFileLockLine } from "@remixicon/react";
+import { useFormState, useFormStatus } from "react-dom";
 
 export const AccessRequestForm = ({ publicId }: { publicId: string }) => {
   const [state, formAction] = useFormState(provideRequestAccess, {

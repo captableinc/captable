@@ -1,12 +1,12 @@
-import DocumentsTable from "./table";
-import DocumentUploadModal from "./modal";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import DocumentUploadModal from "./modal";
+import DocumentsTable from "./table";
 
 import EmptyState from "@/components/shared/empty-state";
-import { RiUploadCloudLine, RiAddFill } from "@remixicon/react";
-import { api } from "@/trpc/server";
 import { withServerSession } from "@/server/auth";
+import { api } from "@/trpc/server";
+import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {

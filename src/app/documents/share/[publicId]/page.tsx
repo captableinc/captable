@@ -1,8 +1,9 @@
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { db } from "@/server/db";
 import { AccessRequestForm } from "@/components/document/share/access-request-form";
-import { DocumentSharePdfViewer } from "./document-share-pdf-viewer";
+import { DocumentOTPForm } from "@/components/document/share/document-otp-form";
+import { db } from "@/server/db";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import { notFound } from "next/navigation";
+import { DocumentSharePdfViewer } from "./document-share-pdf-viewer";
 
 const DocumentSharePublicPage = async ({
   params: { publicId },
@@ -23,6 +24,7 @@ const DocumentSharePublicPage = async ({
     return (
       <div className="grid h-screen w-full place-items-center bg-gray-100">
         <AccessRequestForm publicId={publicId} />
+        <DocumentOTPForm />
       </div>
     );
   }

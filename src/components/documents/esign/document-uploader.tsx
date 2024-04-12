@@ -4,6 +4,7 @@ import Modal from "@/components/shared/modal";
 import { Button } from "@/components/ui/button";
 import Uploader from "@/components/ui/uploader";
 import { api } from "@/trpc/react";
+import { RiAddFill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 
 interface EsignDocumentUploadProps {
@@ -18,7 +19,12 @@ const EsignDocumentUpload = ({ companyPublicId }: EsignDocumentUploadProps) => {
     <Modal
       title="Upload equity document"
       subtitle=""
-      trigger={<Button>Upload Document</Button>}
+      trigger={
+        <Button>
+          <RiAddFill className="mr-2 h-5 w-5" />
+          Document
+        </Button>
+      }
     >
       <Uploader
         identifier={companyPublicId}

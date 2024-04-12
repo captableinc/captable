@@ -14,7 +14,7 @@ interface AddEsignModalProps {
 export function AddEsignModal({ companyPublicId }: AddEsignModalProps) {
   return (
     <StepperModal
-      title="E-sign document document"
+      title="E-sign document"
       subtitle=""
       trigger={
         <Button>

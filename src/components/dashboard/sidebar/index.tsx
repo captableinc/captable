@@ -125,6 +125,10 @@ const navigation = [
     activeIcon: RiFolder5Fill,
     subNav: [
       {
+        name: "All documents",
+        href: "/",
+      },
+      {
         name: "eSign documents",
         href: "/esign",
       },
@@ -132,11 +136,6 @@ const navigation = [
       {
         name: "Share documents",
         href: "/share",
-      },
-
-      {
-        name: "Repository",
-        href: "/repository",
       },
     ],
   },
@@ -261,9 +260,12 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                               {item.subNav.map((subItem) => {
                                 const href =
                                   basePath + item.href + subItem.href;
-                                const isActive = currentPath.includes(
-                                  item.href + subItem.href,
-                                );
+                                const isActive =
+                                  (subItem.href != "/" &&
+                                    currentPath.includes(
+                                      item.href + subItem.href,
+                                    )) ||
+                                  href === `${currentPath}/`;
 
                                 return (
                                   <li key={subItem.name}>

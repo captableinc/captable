@@ -6,8 +6,8 @@ import { withServerSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
 import { type Metadata } from "next";
-import DocumentUploadModal from "../components/modal";
-import DocumentsTable from "../components/table";
+import DocumentUploadModal from "./components/modal";
+import DocumentsTable from "./components/table";
 
 export const metadata: Metadata = {
   title: "Documents",
@@ -40,8 +40,8 @@ const DocumentsPage = async () => {
   return (
     <div className="flex flex-col gap-y-3">
       <PageLayout
-        title="Share documents"
-        description="Share pitch decks, financials, and any other important documents."
+        title="All documents"
+        description="Uplod documents to your company's document library."
         action={
           <DocumentUploadModal
             companyPublicId={session.user.companyPublicId}

@@ -1,22 +1,22 @@
 "use client";
 
-import { api } from "@/trpc/react";
 import { dayjsExt } from "@/common/dayjs";
-import { Fragment, useState } from "react";
-import { useRouter } from "next/navigation";
-import { type Block } from "@blocknote/core";
-import { Card } from "@/components/ui/card";
-import type { Update } from "@prisma/client";
+import Loading from "@/components/shared/loading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Loading from "@/components/shared/loading";
-import { RiArrowDownSLine } from "@remixicon/react";
-import { useToast } from "@/components/ui/use-toast";
+import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { type Block } from "@blocknote/core";
+import type { Update } from "@prisma/client";
+import { RiArrowDownSLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { Fragment, useState } from "react";
 
-import "@blocknote/react/style.css";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
+import "@blocknote/react/style.css";
 
 type UpdatesEditorProps = {
   update?: Update;
@@ -263,7 +263,13 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
 
               <li>
                 <Button variant="ghost" size="sm">
-                  Share this update
+                  Send this update
+                </Button>
+              </li>
+
+              <li>
+                <Button variant="ghost" size="sm">
+                  Make it public
                 </Button>
               </li>
 

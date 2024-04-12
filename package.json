@@ -23,7 +23,6 @@
     "deploy:fly": "fly deploy"
   },
   "dependencies": {
-    "@ant-design/plots": "^2.1.15",
     "@ark-ui/react": "^2.2.3",
     "@aws-sdk/client-s3": "^3.525.0",
     "@aws-sdk/s3-request-presigner": "^3.540.0",

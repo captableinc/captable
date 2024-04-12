@@ -1,11 +1,12 @@
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import DocumentUploadModal from "./modal";
 import DocumentsTable from "./table";
 
-import { AddDocumentsDropdown } from "@/components/documents/add-documents-dropdown";
 import EmptyState from "@/components/shared/empty-state";
 import { withServerSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { RiUploadCloudLine } from "@remixicon/react";
+import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,7 +24,15 @@ const DocumentsPage = async () => {
         title="You do not have any documents!"
         subtitle="Please click the button below to upload a new document."
       >
-        <AddDocumentsDropdown companyPublicId={session.user.companyPublicId} />
+        <DocumentUploadModal
+          companyPublicId={session.user.companyPublicId}
+          trigger={
+            <Button size="lg">
+              <RiAddFill className="mr-2 h-5 w-5" />
+              Upload a document
+            </Button>
+          }
+        />
       </EmptyState>
     );
   }
@@ -39,8 +48,14 @@ const DocumentsPage = async () => {
         </div>
 
         <div>
-          <AddDocumentsDropdown
+          <DocumentUploadModal
             companyPublicId={session.user.companyPublicId}
+            trigger={
+              <Button>
+                <RiAddFill className="mr-2 h-5 w-5" />
+                Upload a document
+              </Button>
+            }
           />
         </div>
       </div>

@@ -1,21 +1,64 @@
+"use server";
+
 import EmptyState from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
-import { RiPieChartFill } from "@remixicon/react";
-import { type Metadata } from "next";
+import { getServerAuthSession } from "@/server/auth";
+import { db } from "@/server/db";
+import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
+import { Fragment } from "react";
 
-export const metadata: Metadata = {
-  title: "Cap table",
+const getDataRooms = async (companyId: string) => {
+  return db.dataRoom.findMany({
+    where: {
+      companyId,
+    },
+
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      updatedAt: true,
+      documents: true,
+      recipients: true,
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    take: 10,
+  });
 };
 
-const DataRoomPage = () => {
+const DataRoomPage = async () => {
+  const session = await getServerAuthSession();
+  const companyId = session?.user.companyId;
+
+  if (!companyId) {
+    return null;
+  }
+
+  const dataRooms = await getDataRooms(companyId);
+
+  console.log({ dataRooms });
+
   return (
-    <EmptyState
-      icon={<RiPieChartFill />}
-      title="Work in progress."
-      subtitle="This page is not yet available."
-    >
-      <Button size="lg">Coming soon...</Button>
-    </EmptyState>
+    <Fragment>
+      {dataRooms.length > 0 ? (
+        <>Data</>
+      ) : (
+        <EmptyState
+          icon={<RiFolderCheckFill />}
+          title="You have no data rooms."
+          subtitle="Get started by creating a new data room."
+        >
+          <Button size="lg">
+            <RiAddFill className="mr-2 h-5 w-5" />
+            Create a data room
+          </Button>
+        </EmptyState>
+      )}
+    </Fragment>
   );
 };
 

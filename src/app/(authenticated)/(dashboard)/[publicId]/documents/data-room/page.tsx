@@ -6,6 +6,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
 import { Fragment } from "react";
+import DataRoomModal from "./modal";
 
 const getDataRooms = async (companyId: string) => {
   return db.dataRoom.findMany({
@@ -32,11 +33,12 @@ const getDataRooms = async (companyId: string) => {
 
 const DataRoomPage = async () => {
   const session = await getServerAuthSession();
-  const companyId = session?.user.companyId;
 
-  if (!companyId) {
+  if (!session || !session.user) {
     return null;
   }
+
+  const { companyId, companyPublicId } = session?.user;
 
   const dataRooms = await getDataRooms(companyId);
 
@@ -52,10 +54,15 @@ const DataRoomPage = async () => {
           title="You have no data rooms."
           subtitle="Get started by creating a new data room."
         >
-          <Button size="lg">
-            <RiAddFill className="mr-2 h-5 w-5" />
-            Create a data room
-          </Button>
+          <DataRoomModal
+            companyId={companyPublicId}
+            trigger={
+              <Button size="lg">
+                <RiAddFill className="mr-2 h-5 w-5" />
+                Create a data room
+              </Button>
+            }
+          />
         </EmptyState>
       )}
     </Fragment>

@@ -1,9 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import React, { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
-import { OptionStatusEnum, OptionTypeEnum } from "@/prisma-enums";
 import {
   FormControl,
   FormField,
@@ -11,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,6 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
+import { useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 export const GeneralDetailsField = [
   "grantId",

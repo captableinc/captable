@@ -1,9 +1,9 @@
-import { z } from "zod";
 import {
-  VestingScheduleEnum,
-  OptionTypeEnum,
   OptionStatusEnum,
-} from "@/prisma-enums";
+  OptionTypeEnum,
+  VestingScheduleEnum,
+} from "@/prisma/enums";
+import { z } from "zod";
 
 export const ZodAddOptionMutationSchema = z.object({
   id: z.string().optional(),

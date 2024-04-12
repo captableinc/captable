@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { type FieldTypes } from "@/prisma-enums";
+import { type FieldTypes } from "@/prisma/enums";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { FieldTypeData } from "../field-type-data";
 

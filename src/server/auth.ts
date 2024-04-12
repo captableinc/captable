@@ -11,11 +11,11 @@ import {
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 
-import { db } from "@/server/db";
-import { env } from "@/env";
-import { sendMail } from "./mailer";
 import MagicLinkEmail from "@/emails/MagicLinkEmail";
-import { type MemberStatusEnum } from "@/prisma-enums";
+import { env } from "@/env";
+import { type MemberStatusEnum } from "@/prisma/enums";
+import { db } from "@/server/db";
+import { sendMail } from "./mailer";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;

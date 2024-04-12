@@ -1,13 +1,13 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -19,12 +19,12 @@ import {
 
 import {
   Select,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-  SelectValue,
-  SelectTrigger,
   SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
 import {
@@ -260,8 +260,9 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
+                        allowedDecimalSeparators={["%"]}
+                        decimalScale={2}
                         {...rest}
-                        decimalScale={0}
                         customInput={Input}
                         onValueChange={(values) => {
                           const { floatValue } = values;
@@ -288,8 +289,10 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
+                        allowedDecimalSeparators={["%"]}
+                        decimalScale={2}
+                        prefix={"$  "}
                         {...rest}
-                        decimalScale={0}
                         customInput={Input}
                         onValueChange={(values) => {
                           const { floatValue } = values;
@@ -316,6 +319,9 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
+                        allowedDecimalSeparators={["%"]}
+                        decimalScale={2}
+                        prefix={"$  "}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
@@ -371,6 +377,8 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
+                        allowedDecimalSeparators={["%"]}
+                        decimalScale={2}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
@@ -398,6 +406,8 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
+                        allowedDecimalSeparators={["%"]}
+                        decimalScale={2}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {

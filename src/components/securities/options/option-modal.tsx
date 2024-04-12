@@ -1,23 +1,23 @@
 "use client";
 
+import MultiStepModal from "@/components/shared/multistep-modal";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import {
+  ZodAddOptionMutationSchema,
+  type TypeZodAddOptionMutationSchema,
+} from "@/trpc/routers/securities-router/schema";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import {
+  Documents,
   GeneralDetails,
   GeneralDetailsField,
-  VestingDetails,
-  VestingDetailsFields,
   RelevantDates,
   RelevantDatesFields,
-  Documents,
+  VestingDetails,
+  VestingDetailsFields,
 } from "./steps";
-import {
-  type TypeZodAddOptionMutationSchema,
-  ZodAddOptionMutationSchema,
-} from "@/trpc/routers/securities-router/schema";
-import { api } from "@/trpc/react";
-import MultiStepFormModal from "@/components/shared/multistepFormModal";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
 
 type OptionModalProps = {
   title: string;
@@ -86,7 +86,7 @@ const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
   };
   return (
     <div>
-      <MultiStepFormModal
+      <MultiStepModal
         steps={steps}
         title={title}
         subtitle={subtitle}

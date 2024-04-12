@@ -1,3 +1,4 @@
+import logo from "@/assets/logo.svg";
 import ScreenSize from "@/components/screen-size";
 import { Toaster } from "@/components/ui/toaster";
 import { constants } from "@/lib/constants";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   },
   description:
     "OpenCap is an open source cap table management tool that does not sell your data.",
-  icons: [{ rel: "icon", url: "/favicon.svg" }],
+  icons: [{ rel: "icon", url: logo.src }],
   metadataBase: new URL(constants.url),
 };
 

@@ -16,8 +16,8 @@
   <a href="https://twitter.com/opencapco">
     <img src="https://img.shields.io/twitter/follow/opencapco?style=flat&label=%40opencapco&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
   </a>
-  <a href="https://github.com/opencapco/opencap.co/actions/workflows/production.yml">
-    <img src="https://github.com/opencapco/opencap.co/actions/workflows/production.yml/badge.svg?branch=main&title=CI" alt="CI" />
+  <a href="https://github.com/opencapco/opencap.co/actions/workflows/deploy.yml">
+    <img src="https://github.com/opencapco/opencap.co/actions/workflows/deploy.yml/badge.svg?branch=main&title=CI" alt="CI" />
   </a>
   <a href="https://github.com/opencapco/opencap.co/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/opencapco/opencap.co?label=license&logo=github&color=f80&logoColor=fff" alt="License" />

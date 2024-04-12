@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   DescendantProvider,
   createDescendantContext,
@@ -7,6 +8,7 @@ import {
   useDescendants,
   useDescendantsInit,
 } from "@/providers/descendants";
+import { RiCheckLine } from "@remixicon/react";
 import {
   createContext,
   useCallback,
@@ -121,7 +123,60 @@ type StepperModalProps = ModalProps;
 
 function StepList() {
   const steps = useDescendants(StepperDescendantContext);
-  return steps.map((step) => <li key={step.data.title}>{step.data.title}</li>);
+  const { activeIndex: currentStep } = useStepper();
+
+  return steps.map((step, stepId) => (
+    <li
+      key={step.data.title}
+      className="group relative pb-5"
+      {...(currentStep === stepId && { "aria-current": "step" })}
+    >
+      <div
+        className={cn(
+          "absolute left-4 top-4 -ml-1 mt-0.5 h-full w-0.5 group-last:hidden",
+          stepId < currentStep ? "bg-teal-500" : "bg-gray-300",
+        )}
+        aria-hidden="true"
+      />
+      <span className="group relative flex items-center">
+        <span className="flex h-9 items-center" aria-hidden="true">
+          <span
+            className={cn(
+              "relative z-10 flex h-6 w-6 items-center justify-center rounded-full ",
+              currentStep === stepId && "border-2 border-teal-500 bg-white",
+              stepId > currentStep &&
+                "border-2 border-gray-300 bg-white group-hover:border-gray-400",
+              stepId < currentStep && "bg-teal-500 group-hover:bg-teal-600",
+            )}
+          >
+            {stepId < currentStep ? (
+              <RiCheckLine className="h-4 w-4 text-white" aria-hidden="true" />
+            ) : (
+              <span
+                className={cn(
+                  "h-2.5 w-2.5 rounded-full",
+                  currentStep === stepId && "bg-teal-500",
+                  stepId > currentStep &&
+                    "bg-transparent group-hover:bg-gray-300",
+                )}
+              />
+            )}
+          </span>
+        </span>
+        <span className="ml-4 flex min-w-0 flex-col">
+          <span
+            className={cn(
+              "text-sm font-medium",
+              currentStep === stepId && "text-teal-500",
+              stepId > currentStep && "text-gray-500",
+            )}
+          >
+            {step.data.title}
+          </span>
+        </span>
+      </span>
+    </li>
+  ));
 }
 
 export function StepperModal({
@@ -137,7 +192,9 @@ export function StepperModal({
             aria-label="Progress"
             className="red col-span-3 hidden max-w-64 md:block"
           >
-            <StepList />
+            <ol role="list" className="overflow-hidden">
+              <StepList />
+            </ol>
           </nav>
           <div className="col-span-12 space-y-6 md:col-span-7">
             <Card className="p-6">{children}</Card>

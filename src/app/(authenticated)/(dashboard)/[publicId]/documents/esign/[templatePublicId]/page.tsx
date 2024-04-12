@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { TemplateFieldProvider } from "@/providers/template-field-provider";
 import { api } from "@/trpc/server";
 
-const TemplateDetailPage = async ({
+const EsignTemplateDetailPage = async ({
   params: { templatePublicId },
 }: {
   params: { templatePublicId: string };
@@ -37,4 +37,4 @@ const TemplateDetailPage = async ({
   );
 };
 
-export default TemplateDetailPage;
+export default EsignTemplateDetailPage;

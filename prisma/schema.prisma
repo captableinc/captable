@@ -322,6 +322,8 @@ model Document {
   convertibleNoteId String?
   convertibleNote   ConvertibleNote? @relation(fields: [convertibleNoteId], references: [id], onDelete: SetNull)
 
+  documentShares DocumentShare[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -333,6 +335,25 @@ model Document {
   @@index([optionId])
   @@index([safeId])
   @@index([convertibleNoteId])
+}
+
+model DocumentShare {
+  id       String @id @default(cuid())
+  link     String
+  publicId String
+
+  linkExpiresAt DateTime
+  recipients    String[] @default([])
+
+  emailProtected Boolean @default(false)
+
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([documentId])
 }
 
 enum FieldTypes {

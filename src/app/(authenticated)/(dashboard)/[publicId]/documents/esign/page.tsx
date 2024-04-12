@@ -13,6 +13,7 @@ const DocSign = async () => {
   return (
     <PageLayout
       title="eSign documents"
+      description="Upload, sign and send documents for electronic signatures."
       action={<EsignDocumentUpload companyPublicId={user.companyPublicId} />}
     />
   );

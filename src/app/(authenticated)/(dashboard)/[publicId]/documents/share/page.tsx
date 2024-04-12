@@ -1,13 +1,13 @@
-import DocumentsTable from "./table";
-import DocumentUploadModal from "./modal";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-
+import { PageLayout } from "@/components/dashboard/page-layout";
 import EmptyState from "@/components/shared/empty-state";
-import { RiUploadCloudLine, RiAddFill } from "@remixicon/react";
-import { api } from "@/trpc/server";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
+import { api } from "@/trpc/server";
+import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
 import { type Metadata } from "next";
+import DocumentUploadModal from "./modal";
+import DocumentsTable from "./table";
 
 export const metadata: Metadata = {
   title: "Documents",
@@ -39,30 +39,28 @@ const DocumentsPage = async () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <div className="flex items-center justify-between gap-y-3 ">
-        <div className="gap-y-3">
-          <h3 className="font-medium">Documents</h3>
-          <p className="text-sm text-muted-foreground">
-            Templates, agreements, and other important documents
-          </p>
-        </div>
-
-        <div>
+      <PageLayout
+        title="Share documents"
+        description="Share pitch decks, financials, and any other important documents."
+        action={
           <DocumentUploadModal
             companyPublicId={session.user.companyPublicId}
             trigger={
               <Button>
                 <RiAddFill className="mr-2 h-5 w-5" />
-                Upload a document
+                Document
               </Button>
             }
           />
-        </div>
-      </div>
+        }
+      />
 
       <Card className="mt-3">
         <div className="p-6">
-          <DocumentsTable documents={documents} />
+          <DocumentsTable
+            companyPublicId={session.user.companyPublicId}
+            documents={documents}
+          />
         </div>
       </Card>
     </div>

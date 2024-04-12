@@ -1,6 +1,6 @@
+import { generatePublicId } from "@/common/id";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodCreateTemplateMutationSchema } from "../schema";
-import { generatePublicId } from "@/common/id";
 
 export const createTemplateProcedure = withAuth
   .input(ZodCreateTemplateMutationSchema)
@@ -8,13 +8,15 @@ export const createTemplateProcedure = withAuth
     const publicId = generatePublicId();
     const user = ctx.session.user;
 
+    const { orderedDelivery, recipients, ...rest } = input;
+
     return ctx.db.template.create({
       data: {
         status: "DRAFT",
         publicId,
         companyId: user.companyId,
         uploaderId: user.memberId,
-        ...input,
+        ...rest,
       },
       select: {
         publicId: true,

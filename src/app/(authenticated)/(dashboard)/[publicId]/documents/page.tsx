@@ -41,7 +41,7 @@ const DocumentsPage = async () => {
     <div className="flex flex-col gap-y-3">
       <PageLayout
         title="All documents"
-        description="Uplod documents to your company's document library."
+        description="Upload documents to your company's document library."
         action={
           <DocumentUploadModal
             companyPublicId={session.user.companyPublicId}

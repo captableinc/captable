@@ -6,6 +6,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
 import { Fragment } from "react";
+import Folders from "./folders";
 import DataRoomModal from "./modal";
 
 const getDataRooms = async (companyId: string) => {
@@ -47,23 +48,25 @@ const DataRoomPage = async () => {
   return (
     <Fragment>
       {dataRooms.length > 0 ? (
-        <>Data</>
+        <Folders companyPublicId={companyPublicId} />
       ) : (
-        <EmptyState
-          icon={<RiFolderCheckFill />}
-          title="You have no data rooms."
-          subtitle="Get started by creating a new data room."
-        >
-          <DataRoomModal
-            companyId={companyPublicId}
-            trigger={
-              <Button size="lg">
-                <RiAddFill className="mr-2 h-5 w-5" />
-                Create a data room
-              </Button>
-            }
-          />
-        </EmptyState>
+        <Fragment>
+          <EmptyState
+            icon={<RiFolderCheckFill />}
+            title="No data rooms found 🙈"
+            subtitle="A secure spaces to share multiple documents with investors, stakeholders and external parties."
+          >
+            <DataRoomModal
+              companyId={companyPublicId}
+              trigger={
+                <Button size="lg">
+                  <RiAddFill className="mr-2 h-5 w-5" />
+                  Create a data room
+                </Button>
+              }
+            />
+          </EmptyState>
+        </Fragment>
       )}
     </Fragment>
   );

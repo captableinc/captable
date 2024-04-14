@@ -7,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -14,15 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { useMemo } from "react";
 import {
   SecuritiesStatusEnum,
   ShareLegendsEnum,
   VestingScheduleEnum,
 } from "@/prisma-enums";
+import { useMemo } from "react";
 
-export const GeneraLDetailsField = [
+export const GeneralDetailsField = [
   "certificateId",
   "status",
   "quantity",

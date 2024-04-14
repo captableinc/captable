@@ -2,9 +2,12 @@ import { LogoIcon } from "@/components/common/icons";
 
 const Loading = () => {
   return (
-    <div className="fixed left-0 top-0 z-50 h-full w-full bg-white/80 opacity-75">
-      <div className="mt-[50vh] flex items-center justify-center">
-        <LogoIcon className="h-7 w-7 animate-ping text-gray-500" />
+    <div className="absolute inset-0 flex items-center justify-center bg-white/50">
+      <div className="flex h-screen items-center justify-center">
+        <div className="relative inline-flex">
+          <LogoIcon className="h-8 w-8 animate-pulse" />
+          <div className="absolute left-0 top-0 h-8 w-8 animate-ping rounded-full bg-primary"></div>
+        </div>
       </div>
     </div>
   );

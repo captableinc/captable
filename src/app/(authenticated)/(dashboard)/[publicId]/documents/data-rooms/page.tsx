@@ -6,8 +6,8 @@ import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
 import { Fragment } from "react";
-import Folders from "./folders";
-import DataRoomModal from "./modal";
+import DataRoomPopover from "./components/data-room-popover";
+import Folders from "./components/dataroom-folders";
 
 const getDataRooms = async (companyId: string) => {
   return db.dataRoom.findMany({
@@ -27,8 +27,6 @@ const getDataRooms = async (companyId: string) => {
     orderBy: {
       createdAt: "desc",
     },
-
-    take: 10,
   });
 };
 
@@ -47,7 +45,7 @@ const DataRoomPage = async () => {
 
   return (
     <Fragment>
-      {dataRooms.length > 0 ? (
+      {dataRooms.length === 0 ? (
         <Folders companyPublicId={companyPublicId} />
       ) : (
         <Fragment>
@@ -56,8 +54,7 @@ const DataRoomPage = async () => {
             title="No data rooms found 🙈"
             subtitle="A secure spaces to share multiple documents with investors, stakeholders and external parties."
           >
-            <DataRoomModal
-              companyId={companyPublicId}
+            <DataRoomPopover
               trigger={
                 <Button size="lg">
                   <RiAddFill className="mr-2 h-5 w-5" />

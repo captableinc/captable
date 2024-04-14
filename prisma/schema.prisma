@@ -129,6 +129,7 @@ model Member {
   documents        Document[]
   templates        Template[]
   updates          Update[]
+  dataRooms        DataRoomRecipient[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -376,6 +377,9 @@ model DataRoomRecipient {
   dataRoomId String
   dataRoom   DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
 
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
   stakeholderId String?
   stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
 
@@ -383,6 +387,7 @@ model DataRoomRecipient {
   updatedAt DateTime @updatedAt
   expiresAt DateTime
 
+  @@index([memberId])
   @@index([dataRoomId])
   @@index([stakeholderId])
 }

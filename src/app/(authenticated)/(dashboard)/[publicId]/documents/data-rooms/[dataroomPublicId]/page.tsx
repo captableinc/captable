@@ -1,6 +1,6 @@
 "use server";
 
-import DataRoomSettings from "../settings";
+import DataRoomSettings from "../components/data-room-settings";
 
 const DataRoomSettinsPage = async ({
   params: { publicId },

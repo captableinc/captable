@@ -7,7 +7,7 @@ import {
   RiMore2Line as MoreIcon,
   RiAddFill,
 } from "@remixicon/react";
-import DataRoomModal from "./modal";
+import DataRoomPopover from "./data-room-popover";
 
 const projects = [
   { name: "Graph API", href: "#", files: 16, bgColor: "bg-pink-600" },
@@ -27,8 +27,7 @@ const Folders = ({ companyPublicId }: FolderProps) => {
         title="Data room"
         description="A secure spaces to share multiple documents with investors, stakeholders and external parties."
         action={
-          <DataRoomModal
-            companyId={companyPublicId}
+          <DataRoomPopover
             trigger={
               <Button>
                 <RiAddFill className="mr-2 h-5 w-5" />

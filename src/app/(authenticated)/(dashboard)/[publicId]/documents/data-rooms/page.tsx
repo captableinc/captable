@@ -15,13 +15,10 @@ const getDataRooms = async (companyId: string) => {
       companyId,
     },
 
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      updatedAt: true,
-      documents: true,
-      recipients: true,
+    include: {
+      _count: {
+        select: { documents: true },
+      },
     },
 
     orderBy: {
@@ -38,15 +35,12 @@ const DataRoomPage = async () => {
   }
 
   const { companyId, companyPublicId } = session?.user;
-
   const dataRooms = await getDataRooms(companyId);
-
-  console.log({ dataRooms });
 
   return (
     <Fragment>
-      {dataRooms.length === 0 ? (
-        <Folders companyPublicId={companyPublicId} />
+      {dataRooms.length > 0 ? (
+        <Folders companyPublicId={companyPublicId} folders={dataRooms} />
       ) : (
         <Fragment>
           <EmptyState

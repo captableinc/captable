@@ -14,12 +14,12 @@ import {
 } from "@remixicon/react";
 import { Command as CommandPrimitive } from "cmdk";
 import React, {
-  type KeyboardEvent,
   createContext,
   forwardRef,
   useCallback,
   useContext,
   useState,
+  type KeyboardEvent,
 } from "react";
 
 type MultiSelectorProps = {
@@ -30,7 +30,7 @@ type MultiSelectorProps = {
 
 interface MultiSelectContextProps {
   value: string[];
-  onValueChange: (value: string | number | boolean) => void;
+  onValueChange: (value: string) => void;
   open: boolean;
   setOpen: (value: boolean) => void;
   inputValue: string;

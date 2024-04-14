@@ -10,8 +10,9 @@ import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { type Block } from "@blocknote/core";
-import type { Update } from "@prisma/client";
+import type { DataRoom, Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
@@ -21,11 +22,13 @@ import "@blocknote/react/style.css";
 
 type DataRoomSettingsProps = {
   update?: Update;
-  companyPublicId?: string;
+  dataRoom: DataRoom;
+  companyPublicId: string;
 };
 
 const DataRoomSettings = ({
   update,
+  dataRoom,
   companyPublicId,
 }: DataRoomSettingsProps) => {
   const router = useRouter();
@@ -183,7 +186,7 @@ const DataRoomSettings = ({
       if (update) {
         router.refresh();
       } else {
-        router.push(`/${companyPublicId}/updates/${publicId}`);
+        // router.push(`/${dataRoomPublicId}/updates/${publicId}`);
       }
     },
 
@@ -219,17 +222,23 @@ const DataRoomSettings = ({
         <div className="gap-y-3">
           <div className="flex w-full font-medium">
             <FolderIcon
-              className="mr-3 h-6 w-6 text-primary/70"
+              className="mr-3 h-6 w-6 text-primary/60"
               aria-hidden="true"
             />
-            <span className="h4">Data room / </span>
+            <Link
+              href={`/${companyPublicId}/documents/data-rooms`}
+              className="h4 text-primary/70 hover:underline"
+            >
+              Data room
+            </Link>
+            <span className="h4 ml-2 text-primary/70">/</span>
             <input
               name="title"
               required
               type="text"
               className="h4 min-w-[300px] bg-transparent px-2 text-gray-800 outline-none focus:ring-0	focus:ring-offset-0"
               placeholder={`Investor update - ${formattedDate}`}
-              defaultValue={title}
+              defaultValue={dataRoom.name}
               onChange={(e) => {
                 console.log("Updating title", e.target.value);
                 setTitle(e.target.value);

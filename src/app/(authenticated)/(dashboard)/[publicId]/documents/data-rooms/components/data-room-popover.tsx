@@ -52,6 +52,7 @@ const DataRoomPopover = ({ trigger }: DataRoomPopoverType) => {
 
     onSettled: () => {
       setLoading(false);
+      router.refresh();
     },
   });
 

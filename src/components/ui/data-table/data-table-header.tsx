@@ -11,7 +11,11 @@ export function DataTableHeader() {
         <TableRow key={headerGroup.id}>
           {headerGroup.headers.map((header) => {
             return (
-              <TableHead key={header.id} colSpan={header.colSpan}>
+              <TableHead
+                key={header.id}
+                colSpan={header.colSpan}
+                style={{ backgroundColor: "#f2f2f2", color: "#535353" }}
+              >
                 {header.isPlaceholder
                   ? null
                   : flexRender(

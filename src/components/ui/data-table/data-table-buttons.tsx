@@ -1,5 +1,5 @@
-import { RiCloseLine, RiExpandUpDownLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
+import { RiCloseLine, RiExpandUpDownLine } from "@remixicon/react";
 import { Button, type ButtonProps } from "../button";
 
 interface SortButtonProps
@@ -9,9 +9,28 @@ interface SortButtonProps
 
 export function SortButton({ label, className, ...rest }: SortButtonProps) {
   return (
-    <button {...rest} className={cn("flex cursor-pointer", className)}>
+    <button
+      {...rest}
+      className={cn("flex cursor-pointer items-center", className)}
+    >
       {label}
-      <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
+      <RiExpandUpDownLine aria-hidden className="ml-2 mr-2 h-4 w-4" />
+    </button>
+  );
+}
+
+export function SortButtonBefore({
+  label,
+  className,
+  ...rest
+}: SortButtonProps) {
+  return (
+    <button
+      {...rest}
+      className={cn("flex cursor-pointer items-center", className)}
+    >
+      <RiExpandUpDownLine aria-hidden className="ml-2 mr-2 h-4 w-4" />
+      {label}
     </button>
   );
 }

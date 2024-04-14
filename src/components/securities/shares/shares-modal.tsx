@@ -1,8 +1,14 @@
 "use client";
 
-import { GeneralDetails, GeneraLDetailsField } from "./steps";
 import MultiStepFormModal from "@/components/shared/multistepFormModal";
 import { ZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
+import { type Share } from "@prisma/client";
+import {
+  DocumentUpload,
+  DocumentUploadFields,
+  GeneralDetails,
+  GeneralDetailsField,
+} from "./steps";
 import {
   ContributionDetails,
   ContributionDetailsField,
@@ -13,15 +19,21 @@ type ShareModalProps = {
   title: string;
   subtitle: string | React.ReactNode;
   trigger: string | React.ReactNode;
+  initialValues?: Share;
 };
 
-const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
+const ShareModal = ({
+  title,
+  subtitle,
+  trigger,
+  initialValues,
+}: ShareModalProps) => {
   const steps = [
     {
       id: 1,
       title: "General details",
       component: GeneralDetails,
-      fields: GeneraLDetailsField,
+      fields: GeneralDetailsField,
     },
     {
       id: 2,
@@ -35,9 +47,15 @@ const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
       component: RelevantDates,
       fields: RelevantDatesFields,
     },
+    {
+      id: 4,
+      title: "Upload Documents",
+      component: DocumentUpload,
+      fields: DocumentUploadFields,
+    },
   ];
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: Share) => {
     console.log({ data });
   };
 
@@ -50,6 +68,7 @@ const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
         trigger={trigger}
         schema={ZodAddShareMutationSchema}
         onSubmit={onSubmit}
+        initialValues={initialValues} // Add the 'initialValues' property here
       />
     </div>
   );

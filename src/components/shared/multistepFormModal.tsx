@@ -1,12 +1,12 @@
 "use client";
 
-import { RiCheckLine } from "@remixicon/react";
-import { Button } from "@/components/ui/button";
 import Modal from "@/components/shared/modal";
-import { useEffect, useState } from "react";
-import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
-import { type z } from "zod";
+import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RiCheckLine } from "@remixicon/react";
+import { useState } from "react";
+import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
+import { type z } from "zod";
 
 export type stepsType = {
   id: number;
@@ -23,6 +23,7 @@ type MultiStepFormModalType = {
   schema: z.AnyZodObject;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit: SubmitHandler<any>;
+  initialValues?: Record<string, unknown>;
 };
 
 export default function MultiStepFormModal({

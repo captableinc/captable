@@ -140,7 +140,7 @@ const navigation = [
 
       {
         name: "Data room",
-        href: "/data-room",
+        href: "/data-rooms",
       },
     ],
   },

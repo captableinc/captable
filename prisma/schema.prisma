@@ -72,6 +72,7 @@ model Company {
   name                 String
   logo                 String?
   publicId             String
+  website              String?
   incorporationType    String
   incorporationDate    DateTime
   incorporationCountry String
@@ -353,6 +354,7 @@ model DataRoom {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([companyId, name])
   @@unique([publicId])
   @@index([companyId])
 }

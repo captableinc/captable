@@ -80,6 +80,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         incorporationState: data?.company.incorporationState ?? "",
         incorporationType: data?.company.incorporationType ?? "",
         name: data?.company.name ?? "",
+        website: data?.company.website ?? "",
         state: data?.company.state ?? "",
         streetAddress: data?.company.streetAddress ?? "",
         zipcode: data?.company.zipcode ?? "",
@@ -266,7 +267,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="company.name"
@@ -281,21 +282,35 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                 )}
               />
 
-              {(type === "onboarding" || type === "create") && (
-                <FormField
-                  control={form.control}
-                  name="user.title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Job title</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage className="text-xs font-light" />
-                    </FormItem>
-                  )}
-                />
-              )}
+              <FormField
+                control={form.control}
+                name="company.website"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Website</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="url" />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+
+              {/* {(type === "onboarding" || type === "create") && ( */}
+              <FormField
+                control={form.control}
+                name="user.title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your job title</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+              {/* )} */}
             </div>
 
             <hr />

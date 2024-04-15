@@ -25,7 +25,7 @@
   "dependencies": {
     "@ark-ui/react": "^2.2.3",
     "@aws-sdk/client-s3": "^3.525.0",
-    "@aws-sdk/s3-request-presigner": "^3.540.0",
+    "@aws-sdk/s3-request-presigner": "^3.554.0",
     "@blocknote/react": "^0.12.2",
     "@hookform/resolvers": "^3.3.4",
     "@next-auth/prisma-adapter": "^1.0.7",

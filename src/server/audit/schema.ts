@@ -36,6 +36,12 @@ export const AuditSchema = z.object({
     "safe.sent",
     "safe.signed",
     "safe.deleted",
+
+    "update.saved.and.shared",
+    "update.shared",
+    "update.deleted",
+
+    "status.toggled",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({

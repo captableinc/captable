@@ -132,11 +132,9 @@ export const columns: ColumnDef<Update[number]>[] = [
     },
     cell: ({ row }) => {
       if (row.getValue("sentAt")) {
-        const date = new Date(row.getValue("sentAt"));
-        const formattedDate = dayjsExt(date).format("lll");
-        return <time dateTime={date.toISOString()}>{formattedDate}</time>;
+        return <div>{dayjsExt().to(row.original.sentAt)}</div>;
       } else {
-        return <div>Unsent</div>;
+        return <div>Pending</div>;
       }
     },
   },

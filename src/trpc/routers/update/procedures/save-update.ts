@@ -2,7 +2,7 @@ import { generatePublicId } from "@/common/id";
 import { UpdateMutationSchema } from "../schema";
 import { withAuth } from "@/trpc/api/trpc";
 
-export const saveUpdatesProcedure = withAuth
+export const saveUpdateProcedure = withAuth
   .input(UpdateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     try {

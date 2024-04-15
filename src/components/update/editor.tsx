@@ -196,6 +196,34 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     },
   });
 
+  const cloneMutation = api.update.clone.useMutation({
+    onSuccess: async ({ publicId, success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully cloned"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      if (!success) return;
+
+      router.push(`/${companyPublicId}/updates/${publicId}`);
+    },
+
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.message,
+      });
+    },
+
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
+
   const saveAsDraft = async () => {
     setLoading(true);
 
@@ -207,6 +235,17 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     };
 
     draftMutation.mutate(data);
+  };
+
+  const cloneUpdate = async () => {
+    setLoading(true);
+
+    const data = {
+      title,
+      html,
+      content,
+    };
+    cloneMutation.mutate(data);
   };
 
   return (
@@ -272,11 +311,18 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
                 </Button>
               </li>
 
-              <li>
-                <Button variant="ghost" size="sm">
-                  Clone this update
-                </Button>
-              </li>
+              {update && (
+                <li>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    type="submit"
+                    onClick={cloneUpdate}
+                  >
+                    Clone this update
+                  </Button>
+                </li>
+              )}
             </ul>
           </DropdownButton>
         </div>

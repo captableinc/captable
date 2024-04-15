@@ -8,7 +8,7 @@ import {
   type TypeZodAddOptionMutationSchema,
 } from "@/trpc/routers/securities-router/schema";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import {
   Documents,
   GeneralDetails,
@@ -26,7 +26,6 @@ type OptionModalProps = {
 };
 
 const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
-  const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -39,7 +38,6 @@ const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
           ? "A new stakeholder option has been created."
           : "Failed adding an option. Please try again.",
       });
-      setOpen(false);
       if (success) {
         router.refresh();
       }
@@ -91,12 +89,6 @@ const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
         title={title}
         subtitle={subtitle}
         trigger={trigger}
-        dialogProps={{
-          open,
-          onOpenChange: (val) => {
-            setOpen(val);
-          },
-        }}
         schema={ZodAddOptionMutationSchema}
         onSubmit={onSubmit}
       />

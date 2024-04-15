@@ -1,3 +1,4 @@
+import { type UpdateEmailStatusEnum } from "@/prisma-enums";
 import { type PayloadType } from "./constants";
 
 type ProfilePayload = {
@@ -25,4 +26,19 @@ export type MemberProfile = {
   loginEmail: string;
   workEmail: string;
   avatarUrl: string;
+};
+
+export type Recipient = {
+  stakeholder: {
+    name: string;
+  };
+  status: UpdateEmailStatusEnum;
+  stakeholderId: string;
+  sentAt: Date | null;
+};
+
+export type Stakeholder = {
+  id: string;
+  name: string;
+  email: string;
 };

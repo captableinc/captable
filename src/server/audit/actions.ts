@@ -15,4 +15,5 @@ export const AUDIT_ACTIONS = {
   equityPlan: ["created", "updated", "deleted"],
   option: ["created", "updated", "deleted"],
   document: ["created", "deleted"],
+  update: ["saved", "sent", "deleted", "updated"],
 } as const;

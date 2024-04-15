@@ -1,4 +1,3 @@
-import { constants } from "../lib/constants";
 import {
   Body,
   Button,
@@ -10,9 +9,10 @@ import {
   Link,
   Preview,
   Section,
-  Text,
   Tailwind,
+  Text,
 } from "jsx-email";
+import { constants } from "../lib/constants";
 
 interface MemberInviteEmailProps {
   invitedBy: string;
@@ -43,7 +43,7 @@ export const MemberInviteEmail = ({
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
               <strong>{invitedBy}</strong> has invited you to join{" "}
-              <strong>{companyName}</strong> on <strong>OpenCap</strong>.
+              <strong>{companyName}</strong> on <strong>Captable, Inc.</strong>.
             </Text>
 
             <Section className="mb-[32px] mt-[32px]">
@@ -82,7 +82,7 @@ MemberInviteEmail.PreviewProps = {
   invitedBy: "joker",
   companyName: "Batmobile",
   inviteLink:
-    "https://opencap.co/teams/invite/foo/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com",
+    "https://captable.inc/teams/invite/foo/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com",
 } as MemberInviteEmailProps;
 
 export default MemberInviteEmail;

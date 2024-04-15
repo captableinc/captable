@@ -1,26 +1,28 @@
-<img alt="OpenCap cover image" src=".github/images/cover.png">
+<a href="https://captable.inc" alt="Captable, Inc.">
+  <img alt="Captable, Inc. cover image" src=".github/images/cover.png?v=0">
+</a>
 
 
-<h1 align="center">OpenCap</h1>
+<h1 align="center">Captable, Inc.</h1>
 <p align="center">
-  An open source alternative to <strong>Carta</strong> and <strong>Pulley</strong>
+  An open source alternative to <strong>Carta</strong>, <strong>Pulley</strong>, <strong>Angelist</strong> and others.
 </p>
 <p align="center">
-  <a href="https://opencap.co"><strong>Learn more »</strong></a>
+  <a href="https://captable.inc"><strong>Learn more »</strong></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/opencapco/opencap.co/stargazers">
-    <img src="https://img.shields.io/github/stars/opencapco/opencap.co??style=flat&label=opencap.co&logo=github&color=2dd4bf&logoColor=fff" alt="Github" />
+  <a href="https://github.com/captableinc/captable/stargazers">
+    <img src="https://img.shields.io/github/stars/captableinc/captable??style=flat&label=captable&logo=github&color=2dd4bf&logoColor=fff" alt="Github" />
   </a>
-  <a href="https://twitter.com/opencapco">
-    <img src="https://img.shields.io/twitter/follow/opencapco?style=flat&label=%40opencapco&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
+  <a href="https://twitter.com/captableinc">
+    <img src="https://img.shields.io/twitter/follow/captableinc?style=flat&label=%40Captable, Inc.&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
   </a>
-  <a href="https://github.com/opencapco/opencap.co/actions/workflows/deploy.yml">
-    <img src="https://github.com/opencapco/opencap.co/actions/workflows/deploy.yml/badge.svg?branch=main&title=CI" alt="CI" />
+  <a href="https://github.com/captableinc/captable/actions/workflows/deploy.yml">
+    <img src="https://github.com/captableinc/captable/actions/workflows/deploy.yml/badge.svg?branch=main&title=CI" alt="CI" />
   </a>
-  <a href="https://github.com/opencapco/opencap.co/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/opencapco/opencap.co?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
+  <a href="https://github.com/captableinc/captable/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/captableinc/captable?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
   </a>
   <a href="https://discord.gg/rCpqnD6G6p">
     <img src="https://img.shields.io/badge/Discord-Join%20us%20on%20Discord-blue" alt="Join us on Discord" />
@@ -28,7 +30,7 @@
 </p>
 
 
-OpenCap will follow the [Open Cap Table Coalition](https://www.opencaptablecoalition.com/format) format, an open source standard to prevent lock-in and keep lawyer fees low. No promises.
+<strong>Captable, Inc.</strong> will follow the [Open Cap Table Coalition](https://www.opencaptablecoalition.com/format) format, an open source standard to prevent lock-in and keep lawyer fees low. No promises.
 
 <h2 id="contributors">✨ Contributors</h2>
 
@@ -38,9 +40,9 @@ OpenCap will follow the [Open Cap Table Coalition](https://www.opencaptablecoali
 - Let's continue contributing to keep the community active and growing.
 - Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
 
-<a href="https://github.com/opencapco/opencap.co/graphs/contributors">
+<a href="https://github.com/captableinc/captable/graphs/contributors">
   <p>
-    <img src="https://contrib.rocks/image?repo=opencapco/opencap.co" alt="A table of avatars from the project's contributors" />
+    <img src="https://contrib.rocks/image?repo=captableinc/captable" alt="A table of avatars from the project's contributors" />
   </p>
 </a>
 
@@ -121,7 +123,7 @@ Open your browser to the URLs given by the web app and studio processes. You're 
 
 - Click the button below to open this project in Gitpod.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/opencapco/opencap.co)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/captableinc/captable)
 
 ### One-click deploy
 
@@ -129,11 +131,11 @@ _Coming soon to a PaaS near you:_
 
 ### Vercel
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/opencapco/opencap.co)
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/captableinc/captable)
 
 ### Render
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/opencapco/opencap.co)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/captableinc/captable)
 
 ### Railway
 
@@ -141,4 +143,4 @@ _Coming soon to a PaaS near you:_
 
 ### Netlify
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/opencapco/opencap.co)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/captableinc/captable)

@@ -1,12 +1,13 @@
 export const constants = {
-  title: "OpenCap",
-  url: "https://opencap.co",
-  description: "OpenCap is the Open Source alternative to Carta and Pulley.",
+  title: "Captable, Inc.",
+  url: "https://captable.inc",
+  description:
+    "Captable, Inc. is the Open Source alternative to Carta and Pulley.",
   twitter: {
-    url: "https://twitter.com/opencapco",
+    url: "https://twitter.com/captableinc",
   },
   github: {
-    url: "https://github.com/opencapco/opencap.co",
+    url: "https://github.com/captableinc/captable",
   },
   discord: {
     url: "https://discord.gg/xs8Qu4yrTT",

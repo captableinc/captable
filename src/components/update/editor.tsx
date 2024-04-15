@@ -71,7 +71,7 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
       },
       content: [
         {
-          text: "Here's a quick update on what's been happening at OpenCap this month. We're excited to share that we've hit a major milestone! Our team has been hard at work and we're proud to announce that we've successfully launched our new product feature.",
+          text: "Here's a quick update on what's been happening at Captable, Inc. this month. We're excited to share that we've hit a major milestone! Our team has been hard at work and we're proud to announce that we've successfully launched our new product feature.",
           type: "text",
           styles: {},
         },
@@ -144,7 +144,7 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
       },
       content: [
         {
-          text: "The OpenCap Team",
+          text: "The Captable, Inc. Team",
           type: "text",
           styles: {},
         },

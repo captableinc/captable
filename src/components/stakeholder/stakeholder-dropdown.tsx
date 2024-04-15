@@ -1,4 +1,8 @@
 "use client";
+import Tldr from "@/components/shared/tldr";
+import MultipleStakeholdersModal from "@/components/stakeholder/multiple-stakeholders-modal";
+import SingleStakeholdersModal from "@/components/stakeholder/single-stakeholder-modal";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,13 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { RiAddFill } from "@remixicon/react";
-import { RiGroupLine } from "@remixicon/react";
-import { RiUserLine } from "@remixicon/react";
-import Tldr from "@/components/shared/tldr";
-import MultipleStakeholdersModal from "@/components/stakeholder/multiple-stakeholders-modal";
-import SingleStakeholdersModal from "@/components/stakeholder/single-stakeholder-modal";
+import { RiAddFill, RiGroupLine, RiUserLine } from "@remixicon/react";
 
 export default function StakeholderDropdown() {
   return (
@@ -34,7 +32,7 @@ export default function StakeholderDropdown() {
                 cta={{
                   label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: "https://opencap.co/help",
+                  href: "https://captable.inc/help",
                 }}
               />
             }
@@ -57,7 +55,7 @@ export default function StakeholderDropdown() {
                 cta={{
                   label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: "https://opencap.co/help",
+                  href: "https://captable.inc/help",
                 }}
               />
             }

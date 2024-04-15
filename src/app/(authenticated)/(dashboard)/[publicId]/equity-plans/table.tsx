@@ -7,13 +7,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import EquityPlanModal from "./modal";
 import Tldr from "@/components/shared/tldr";
 import { Card } from "@/components/ui/card";
-const formatter = new Intl.NumberFormat("en-US");
-import { RiEqualizer2Line } from "@remixicon/react";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { RiEqualizer2Line } from "@remixicon/react";
+import EquityPlanModal from "./modal";
+const formatter = new Intl.NumberFormat("en-US");
 
 type EquityPlanTableProps = {
   equityPlans: EquityPlanMutationType[];
@@ -85,7 +85,7 @@ const EquityPlanTable = ({
                       cta={{
                         label: "Learn more",
                         // TODO - this link should be updated to the correct URL
-                        href: "https://opencap.co/help",
+                        href: "https://captable.inc/help",
                       }}
                     />
                   }

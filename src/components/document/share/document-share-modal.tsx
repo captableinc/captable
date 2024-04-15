@@ -1,15 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { TagsInput } from "@ark-ui/react";
-import { RiClipboardLine, RiCloseLine } from "@remixicon/react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RiClipboardLine, RiCloseLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
+import { generatePublicId } from "@/common/id";
+import { CaptableLogo } from "@/components/shared/logo";
 import {
   Dialog,
   DialogContent,
@@ -25,16 +27,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { OpenCapLogo } from "@/components/shared/logo";
 import {
   DocumentShareMutationSchema,
   type TypeDocumentShareMutation,
 } from "@/trpc/routers/document-share-router/schema";
-import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
-import { generatePublicId } from "@/common/id";
 
 type DocumentShareModalProps = {
   title: string | React.ReactNode;
@@ -115,7 +115,7 @@ const DocumentShareModal = ({
             <div className="">
               <DialogHeader>
                 <div className="flex justify-center">
-                  <OpenCapLogo className="mb-3 h-10 w-10" />
+                  <CaptableLogo className="mb-3 h-10 w-10" />
                 </div>
                 <DialogTitle className="mb-4 text-center">{title}</DialogTitle>
                 <DialogDescription className="text-center">

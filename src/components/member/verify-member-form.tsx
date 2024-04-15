@@ -3,23 +3,23 @@ import {
   ZodAcceptMemberMutationSchema,
   type TypeZodAcceptMemberMutationSchema,
 } from "@/trpc/routers/member-router/schema";
+import { RiArrowRightLine } from "@remixicon/react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { RiArrowRightLine } from "@remixicon/react";
 
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
   FormLabel,
+  FormMessage,
 } from "../ui/form";
-import { api } from "@/trpc/react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 interface VerifyMemberFormProps {
   memberId: string;
@@ -54,7 +54,9 @@ export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
     <div className="flex min-h-screen w-full items-center justify-center">
       <div className="flex flex-col gap-y-4">
         <div className="flex flex-col gap-y-2 text-center">
-          <h1 className="text-3xl font-semibold">Welcome to our OpenCap! 👋</h1>
+          <h1 className="text-3xl font-semibold">
+            Welcome to our Captable, Inc.! 👋
+          </h1>
           <p className="text-muted-foreground">
             Enter your information to complete onboarding
           </p>

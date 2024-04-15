@@ -143,7 +143,7 @@ export const authOptions: NextAuthOptions = {
 
         await sendMail({
           to: identifier,
-          subject: "Your OpenCap Login Link",
+          subject: "Your Captable, Inc. Login Link",
           html,
         });
       },

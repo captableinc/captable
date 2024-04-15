@@ -6,7 +6,7 @@ export function LoginFormHeader({ email }: LoginFormHeaderProps) {
   return (
     <div className="mb-5 flex flex-col gap-y-2 text-center">
       <h1 className="text-2xl font-semibold tracking-tight">
-        {email ? "Check your email" : "Login to OpenCap"}
+        {email ? "Check your email" : "Login to Captable, Inc."}
       </h1>
       <p className="text-sm text-muted-foreground">
         {email ? (

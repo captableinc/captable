@@ -14,11 +14,11 @@ import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | OpenCap",
-    default: "OpenCap",
+    template: "%s | Captable, Inc.",
+    default: "Captable, Inc.",
   },
   description:
-    "OpenCap is an open source cap table management tool that does not sell your data.",
+    "Captable, Inc. is an open source cap table management tool that does not sell your data.",
   icons: [{ rel: "icon", url: logo.src }],
   metadataBase: new URL(constants.url),
 };

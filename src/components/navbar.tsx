@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import { constants } from "@/lib/constants";
-import { OpenCapLogo } from "./shared/logo";
-import { RiTwitterFill, RiGithubFill, RiDiscordFill } from "@remixicon/react";
+import { RiDiscordFill, RiGithubFill, RiTwitterFill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { CaptableLogo } from "./shared/logo";
 import { buttonVariants } from "./ui/button";
 
 export const Navbar = () => {
@@ -17,7 +16,7 @@ export const Navbar = () => {
         href="/#"
         className="flex items-center gap-2 text-2xl hover:no-underline"
       >
-        <OpenCapLogo className="h-9 w-9" />
+        <CaptableLogo className="h-9 w-9" />
       </Link>
       <div className="grow" />
       <div className="flex items-center gap-4 text-sm">

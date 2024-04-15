@@ -22,7 +22,6 @@ const countries = [
   { name: "Indonesia", code: "ID" },
   { name: "Switzerland", code: "CH" },
   { name: "Italy", code: "IT" },
-
   { name: "Afghanistan", code: "AF" },
   { name: "Åland Islands", code: "AX" },
   { name: "Albania", code: "AL" },

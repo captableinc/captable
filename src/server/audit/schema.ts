@@ -37,11 +37,14 @@ export const AuditSchema = z.object({
     "safe.signed",
     "safe.deleted",
 
+
     "update.saved.and.shared",
     "update.shared",
     "update.deleted",
 
-    "status.toggled",
+     "status.toggled",
+    
+    "documentShare.created",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -51,7 +54,7 @@ export const AuditSchema = z.object({
 
   target: z.array(
     z.object({
-      type: z.enum(["user", "company", "document", "option"]),
+      type: z.enum(["user", "company", "document", "option", "documentShare"]),
       id: z.string().optional().nullable(),
     }),
   ),

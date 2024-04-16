@@ -1,4 +1,5 @@
 import { type UpdateEmailStatusEnum } from "@/prisma-enums";
+import { type RouterOutputs } from "@/trpc/shared";
 import { type PayloadType } from "./constants";
 
 type ProfilePayload = {
@@ -42,3 +43,6 @@ export type Stakeholder = {
   name: string;
   email: string;
 };
+
+export type Stakeholders =
+  RouterOutputs["stakeholder"]["getStakeholders"]["data"];

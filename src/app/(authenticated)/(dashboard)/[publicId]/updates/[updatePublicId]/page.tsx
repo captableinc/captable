@@ -1,11 +1,14 @@
 "use server";
 
-import { db } from "@/server/db";
 import Editor from "@/components/update/editor";
+import { db } from "@/server/db";
 
 const getUpdate = async (publicId: string) => {
   return await db.update.findFirstOrThrow({
     where: { publicId },
+    include: {
+      recipients: true,
+    },
   });
 };
 

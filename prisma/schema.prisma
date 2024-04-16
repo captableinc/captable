@@ -304,8 +304,8 @@ model Document {
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
-  uploaderId String
-  uploader   Member @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploaderId String?
+  uploader   Member? @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -353,6 +353,8 @@ model TemplateField {
   defaultValue   String     @default("")
   readOnly       Boolean    @default(false)
   required       Boolean    @default(false)
+  group          String
+  prefilledValue String?
   top            Int
   left           Int
   width          Int
@@ -375,10 +377,11 @@ enum TemplateStatus {
 }
 
 model Template {
-  id       String         @id @default(cuid())
-  publicId String
-  name     String
-  status   TemplateStatus @default(DRAFT)
+  id              String         @id @default(cuid())
+  publicId        String
+  name            String
+  status          TemplateStatus @default(DRAFT)
+  orderedDelivery Boolean        @default(false)
 
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
@@ -392,7 +395,8 @@ model Template {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fields TemplateField[]
+  fields         TemplateField[]
+  eSignRecipient EsignRecipient[]
 
   @@index([bucketId])
   @@index([uploaderId])
@@ -406,8 +410,14 @@ enum EsignRecipientStatus {
 }
 
 model EsignRecipient {
-  id     String               @id @default(cuid())
-  email  String?
+  id    String  @id @default(cuid())
+  email String
+  name  String?
+  group String
+
+  templateId String
+  template   Template @relation(fields: [templateId], references: [id])
+
   status EsignRecipientStatus @default(PENDING)
 
   memberId String?
@@ -417,6 +427,7 @@ model EsignRecipient {
   updatedAt DateTime @updatedAt
 
   @@index([memberId])
+  @@index([templateId])
 }
 
 enum SecuritiesStatusEnum {
@@ -682,28 +693,23 @@ model ConvertibleNote {
   @@index([stakeholderId])
 }
 
-enum UpdateStatusEnum {
-  DRAFT
-  PUBLIC
-  PRIVATE
-}
-
 model Update {
-  id        String           @id @default(cuid())
-  publicId  String
-  title     String
-  content   Json
-  html      String
-  status    UpdateStatusEnum @default(DRAFT)
+  id       String  @id @default(cuid())
+  publicId String
+  title    String
+  content  Json
+  html     String
+  isPublic Boolean @default(false)
+
   companyId String
-  company   Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   authorId String
   author   Member @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   recipients UpdateRecipient[]
 
-  sentAt    DateTime?
+  sharedAt  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

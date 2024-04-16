@@ -3,7 +3,7 @@ export const MemberStatusEnum = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
   PENDING: "PENDING",
-} as const;
+} as const; 
 
 export type MemberStatusEnum = (typeof MemberStatusEnum)[keyof typeof MemberStatusEnum];
 
@@ -208,14 +208,6 @@ export const ConvertibleInterestPaymentScheduleEnum = {
 } as const;
 
 export type ConvertibleInterestPaymentScheduleEnum = (typeof ConvertibleInterestPaymentScheduleEnum)[keyof typeof ConvertibleInterestPaymentScheduleEnum];
-
-export const UpdateStatusEnum = {
-  DRAFT: "DRAFT",
-  PUBLIC: "PUBLIC",
-  PRIVATE: "PRIVATE",
-} as const;
-
-export type UpdateStatusEnum = (typeof UpdateStatusEnum)[keyof typeof UpdateStatusEnum];
 
 export const UpdateEmailStatusEnum = {
   SENT: "SENT",

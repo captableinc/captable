@@ -1,5 +1,19 @@
 "use client";
 
+import {
+  privateToggleWarning,
+  publicToggleWarning,
+  UpdateType,
+} from "@/lib/constants";
+import {
+  BadgeColorProvider,
+  BadgeStatusProvider,
+  getShareableUpdateLink,
+  isEditingPlaygorund,
+  onCopyClipboard,
+  StatusActionProvider,
+} from "@/lib/utils";
+
 import { dayjsExt } from "@/common/dayjs";
 import Loading from "@/components/shared/loading";
 import { Badge } from "@/components/ui/badge";
@@ -7,162 +21,89 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
+import { type Recipient } from "@/lib/types";
+import { UpdateStatusEnum } from "@/prisma-enums";
+import "@/styles/editor.css";
 import { api } from "@/trpc/react";
 import { type Block } from "@blocknote/core";
-import type { Update } from "@prisma/client";
-import { RiArrowDownSLine } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
-
-import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
+import type { Update } from "@prisma/client";
+import { RiArrowDownSLine } from "@remixicon/react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { Fragment, useEffect, useState } from "react";
+import { CopyToClipboard } from "./copy-to-clipboard";
+import { defaultContent } from "./data";
+import InvestorUpdateModal from "./investor-update-modal";
+import { ToggleStatusAlertDialog } from "./toggle-status-alert";
+
+const companyLogo = `
+https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSByNdl13RmMtZBskJJp1ZU6zY1a_oGqv_7shJQzveLraz2H-7VmteLWeohoRySB-jwUNo&usqp=CAU
+`;
+const avatar = `
+https://media.istockphoto.com/id/1399565382/photo/young-happy-mixed-race-businessman-standing-with-his-arms-crossed-working-alone-in-an-office.webp?b=1&s=170667a&w=0&k=20&c=ZAXJYLesh6gSd9huAgpy6rjpR4z-IFVH9MpxrKIXCrs=
+`;
+
+interface EnrichUpdate extends Update {
+  recipients: Recipient[];
+}
 
 type UpdatesEditorProps = {
-  update?: Update;
+  update?: EnrichUpdate;
   companyPublicId?: string;
 };
 
 const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
   const router = useRouter();
   const { toast } = useToast();
+  const pathname = usePathname();
+  const [showClipboard, setShowClipBoard] = useState<boolean>(false);
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");
-
-  const defaultContent: Block[] = [
-    {
-      id: "1",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [
-        {
-          text: "Hello, investors! 👋",
-          type: "text",
-          styles: {
-            bold: true,
-          },
-        },
-      ],
-      children: [],
-    },
-    {
-      id: "2",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [],
-      children: [],
-    },
-    {
-      id: "3",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [
-        {
-          text: "Here's a quick update on what's been happening at Captable, Inc. this month. We're excited to share that we've hit a major milestone! Our team has been hard at work and we're proud to announce that we've successfully launched our new product feature.",
-          type: "text",
-          styles: {},
-        },
-      ],
-      children: [],
-    },
-    {
-      id: "4",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [],
-      children: [],
-    },
-    {
-      id: "5",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [
-        {
-          text: "We're grateful for your continued support and we're looking forward to sharing more updates with you soon.",
-          type: "text",
-          styles: {},
-        },
-      ],
-      children: [],
-    },
-    {
-      id: "6",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [],
-      children: [],
-    },
-    {
-      id: "7",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [
-        {
-          text: "Best,",
-          type: "text",
-          styles: {},
-        },
-      ],
-      children: [],
-    },
-    {
-      id: "8",
-      type: "paragraph",
-      props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
-      },
-      content: [
-        {
-          text: "The Captable, Inc. Team",
-          type: "text",
-          styles: {},
-        },
-      ],
-      children: [],
-    },
-  ];
-
-  const [title, setTitle] = useState<string>(update?.title ?? "");
+  const [title, setTitle] = useState<string>(
+    update?.title ?? "Cash-Dividend-2024",
+  );
   const [content, setContent] = useState<Block[]>(
     (update?.content as Block[]) ?? defaultContent,
   );
-  const [html, setHtml] = useState<string>(update?.html ?? "");
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [html, setHtml] = useState<string>(update?.html ?? "<p></p>");
   const [loading, setLoading] = useState<boolean>(false);
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+  const authorProfile = api.member.getProfile.useQuery();
+
+  const author = authorProfile?.data;
+  const status = update?.status;
+  const publicId = update?.publicId;
+  const emailSentAt = update?.sentAt || update?.recipients?.length;
+  const isDraft = status === UpdateStatusEnum.DRAFT;
+  //@ts-expect-error error
+  const isUpdatePage = isEditingPlaygorund(pathname, publicId);
+  const isDisabled = !isDraft && isUpdatePage;
+  const isTogglingAllowed = status && status !== UpdateStatusEnum.DRAFT;
+  const canEdit = !!emailSentAt || !!update?.recipients?.length;
 
   const editor = useCreateBlockNote({
     initialContent: content,
   });
+
+  useEffect(() => {
+    // check content editing permission
+    if (pathname) {
+      canEdit ? setIsEditable(false) : setIsEditable(true);
+    }
+  }, [emailSentAt, pathname, update?.recipients]);
+
+  useEffect(() => {
+    // check clipboard visibility
+    if (status) {
+      status === UpdateStatusEnum.PUBLIC
+        ? setShowClipBoard(true)
+        : setShowClipBoard(false);
+    }
+  }, [status]);
 
   const draftMutation = api.update.save.useMutation({
     onSuccess: async ({ publicId, success, message }) => {
@@ -173,16 +114,13 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
           : "Uh oh! Something went wrong.",
         description: message,
       });
-
       if (!success) return;
-
       if (update) {
         router.refresh();
       } else {
         router.push(`/${companyPublicId}/updates/${publicId}`);
       }
     },
-
     onError: (error) => {
       toast({
         variant: "destructive",
@@ -190,23 +128,149 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
         description: error.message,
       });
     },
-
     onSettled: () => {
       setLoading(false);
     },
   });
 
+  const statusMutation = api.update.toggleStatus.useMutation({
+    onSuccess: async ({ success, message, updatedStatus }) => {
+      if (!success || !message || !updatedStatus) return;
+      toast({
+        variant: "default",
+        title: "🎉 Success",
+        description: message,
+      });
+      if (
+        updatedStatus === UpdateStatusEnum.PUBLIC ||
+        updatedStatus === UpdateStatusEnum.PRIVATE
+      ) {
+        router.refresh();
+      }
+    },
+    onError: async () => {
+      toast({
+        variant: "destructive",
+        title: "Toggle failed.",
+        description: "Uh oh! Something went wrong.",
+      });
+    },
+  });
+
+  const sendMutation = api.update.share.useMutation({
+    //@ts-expect-error error
+    onSuccess: async ({ publicId, success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully shared."
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+      if (!success) return;
+      if (update) {
+        setOpen(false);
+        setIsEditable(false);
+        router.refresh();
+      } else {
+        router.push(`/${companyPublicId}/updates/${publicId}`);
+      }
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.message,
+      });
+    },
+  });
+
   const saveAsDraft = async () => {
     setLoading(true);
-
     const data = {
       title,
       html,
       content,
       publicId: update?.publicId,
     };
-
     draftMutation.mutate(data);
+  };
+
+  type sendThisUpdateProps = {
+    stakeholders: {
+      id: string;
+      email: string;
+    };
+  };
+  const sendThisUpdate = async (data: sendThisUpdateProps) => {
+    const { stakeholders } = data;
+    if (update) {
+      const _data = {
+        publicId: update.publicId,
+        updateId: update.id,
+        newStakeholders: stakeholders,
+        html,
+        title,
+        content,
+        isDraft,
+        authorName: author?.fullName,
+        authorImage: author?.avatarUrl ?? avatar,
+        authorTitle: author?.jobTitle ?? "Co-founder & Ceo",
+        authorWorkEmail: author?.workEmail,
+        companyName: author?.companyName,
+        companyLogo: author?.companyLogo ?? companyLogo,
+        isFirstEmailSent: !!update?.sentAt,
+      };
+      await sendMutation.mutateAsync({
+        type: UpdateType.SEND_ONLY,
+        //@ts-expect-error error
+        payload: _data,
+      });
+    } else {
+      const _data = {
+        html,
+        title,
+        content,
+        stakeholders,
+        authorName: author?.fullName,
+        authorImage: author?.avatarUrl ?? avatar,
+        authorTitle: author?.jobTitle ?? "Founder & Ceo",
+        authorWorkEmail: author?.workEmail,
+        companyName: author?.companyName,
+        companyLogo: author?.companyLogo ?? companyLogo,
+        isFirstEmailSent: false,
+      };
+      await sendMutation.mutateAsync({
+        type: UpdateType.SAVE_AND_SEND,
+        //@ts-expect-error error
+        payload: _data,
+      });
+    }
+  };
+
+  async function makeStatusPublic(publicId: string) {
+    await statusMutation.mutateAsync({
+      currentStatus: UpdateStatusEnum.PRIVATE,
+      desireStatus: UpdateStatusEnum.PUBLIC,
+      publicId,
+    });
+  }
+
+  async function makeStatusPrivate(publicId: string) {
+    await statusMutation.mutateAsync({
+      currentStatus: UpdateStatusEnum.PUBLIC,
+      desireStatus: UpdateStatusEnum.PRIVATE,
+      publicId,
+    });
+  }
+
+  const onContinue = async () => {
+    if (publicId) {
+      const currentStatus = status;
+      currentStatus === UpdateStatusEnum.PUBLIC
+        ? await makeStatusPrivate(publicId)
+        : await makeStatusPublic(publicId);
+    }
   };
 
   return (
@@ -214,8 +278,11 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
       <form className="flex items-center justify-between gap-y-2">
         <div className="gap-y-3">
           <div className="flex w-full font-medium">
-            <Badge variant="warning" className="mr-2">
-              Draft
+            <Badge
+              variant={BadgeColorProvider(status ?? UpdateStatusEnum.DRAFT)}
+              className="mr-2"
+            >
+              {BadgeStatusProvider(status ?? UpdateStatusEnum.DRAFT)}
             </Badge>
             <span className="h4">Updates / </span>
             <input
@@ -226,20 +293,33 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
               placeholder={`Investor update - ${formattedDate}`}
               defaultValue={title}
               onChange={(e) => {
-                console.log("Updating title", e.target.value);
                 setTitle(e.target.value);
               }}
             />
           </div>
-
           {update && (
             <p className="ml-[60px] min-h-5 text-sm text-muted-foreground">
               Last saved {dayjsExt().to(update.updatedAt)}
             </p>
           )}
         </div>
-
-        <div>
+        <div className="flex items-center space-x-2">
+          <CopyToClipboard
+            open={showClipboard}
+            status={status}
+            onCopy={async (e: React.MouseEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              if (companyPublicId && update) {
+                await onCopyClipboard(
+                  getShareableUpdateLink(companyPublicId, update?.publicId),
+                );
+                toast({
+                  title: "Copied to clipboard",
+                  description: "🎉 Enjoy sharing the links.",
+                });
+              }
+            }}
+          />
           <DropdownButton
             buttonSlot={
               <Fragment>
@@ -252,6 +332,7 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
             <ul>
               <li>
                 <Button
+                  disabled={isDisabled}
                   variant="ghost"
                   size="sm"
                   type="submit"
@@ -260,19 +341,43 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
                   Save as draft
                 </Button>
               </li>
-
               <li>
-                <Button variant="ghost" size="sm">
-                  Send this update
-                </Button>
+                <InvestorUpdateModal
+                  size="3xl"
+                  title="Email updates to stakeholders"
+                  subtitle="Tip: You can allow public access and create shareable link for updates."
+                  callback={sendThisUpdate}
+                  dialogProps={{
+                    open,
+                    onOpenChange: (val) => {
+                      setOpen(val);
+                    },
+                  }}
+                  trigger={
+                    <Button variant="ghost" size="sm">
+                      Send this update
+                    </Button>
+                  }
+                />
               </li>
-
-              <li>
-                <Button variant="ghost" size="sm">
-                  Make it public
-                </Button>
-              </li>
-
+              {isTogglingAllowed ? (
+                <li>
+                  <ToggleStatusAlertDialog
+                    status={status}
+                    privateToggleWarning={privateToggleWarning}
+                    publicToggleWarning={publicToggleWarning}
+                    onContinue={onContinue}
+                    trigger={
+                      <Button
+                        className="border-none outline-none"
+                        variant="outline"
+                      >
+                        {StatusActionProvider(status)}
+                      </Button>
+                    }
+                  />
+                </li>
+              ) : null}
               <li>
                 <Button variant="ghost" size="sm">
                   Clone this update
@@ -282,12 +387,12 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
           </DropdownButton>
         </div>
       </form>
-
       <Card className="mx-auto mt-3 min-h-[80vh] w-[28rem] sm:w-[38rem] md:w-full	">
         <BlockNoteView
           className="py-5"
           editor={editor}
           theme="light"
+          editable={isEditable}
           onChange={async () => {
             setContent(editor.document);
             const html = await editor.blocksToHTMLLossy(editor.document);
@@ -295,7 +400,6 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
           }}
         />
       </Card>
-
       {loading && <Loading />}
     </div>
   );

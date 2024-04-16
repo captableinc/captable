@@ -21,6 +21,12 @@ export const getProfileProcedure = withAuth.query(async ({ ctx }) => {
           image: true,
         },
       },
+      company: {
+        select: {
+          name: true,
+          logo: true,
+        },
+      },
     },
   });
 
@@ -41,6 +47,8 @@ export const getProfileProcedure = withAuth.query(async ({ ctx }) => {
     loginEmail: email ?? "",
     workEmail: workEmail ?? "",
     avatarUrl: image ?? "",
+    companyName: memberData.company.name,
+    companyLogo: memberData.company.logo,
   };
 
   return payload;

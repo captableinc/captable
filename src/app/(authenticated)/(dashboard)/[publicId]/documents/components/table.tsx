@@ -8,7 +8,7 @@ import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import DocumentShareModal from "@/components/document/share/document-share-modal";
+import DocumentShareModal from "@/components/documents/share/document-share-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,

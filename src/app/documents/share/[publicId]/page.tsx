@@ -1,5 +1,5 @@
-import { AccessRequestForm } from "@/components/document/share/access-request-form";
-import { DocumentOTPForm } from "@/components/document/share/document-otp-form";
+import { AccessRequestForm } from "@/components/documents/share/access-request-form";
+import { DocumentOTPForm } from "@/components/documents/share/document-otp-form";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { notFound } from "next/navigation";

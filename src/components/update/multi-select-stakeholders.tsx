@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/multi-select";
 import {
   checkEmailUnsending,
-  extractPublicIdFromPath,
   extractStakeholderIds,
   getFormattedRecipients,
   getFormattedStakeholders,
@@ -38,23 +37,26 @@ type Stakeholders = {
 type dataProps = { stakeholders: Stakeholders[] | [] };
 interface MultiSelectStakeholderProps {
   callback: (data: dataProps) => void;
+  publicId: string | undefined;
 }
 const MultiSelectStakeholder: React.FC<MultiSelectStakeholderProps> = ({
   callback,
+  publicId,
 }) => {
   const { toast } = useToast();
   const pathname = usePathname();
-  const publicId = extractPublicIdFromPath(pathname);
 
-  //@ts-expect-error tofix
-  const updates = api.update.getRecipients.useQuery({ publicId });
+  const updates = api.update.getRecipients.useQuery(
+    { publicId },
+    { enabled: true },
+  );
   const _stakeholders = api.stakeholder.getStakeholders.useQuery();
 
   const [smellAllSelection, setSmell] = useState<boolean>(false);
   const [canSend, setcanSend] = useState<boolean>(false);
   const [loading, _setLoading] = useState<boolean>(false);
   const [selectedRecpients, setSelectedRecpients] = useState<string[] | []>([]);
-  //@ts-expect-error error
+
   const dbRecipients = updates?.data?.data[0]?.recipients ?? [];
   const stakeholders = _stakeholders?.data?.data ?? [];
   const dbPublicId = updates?.data?.data[0]?.publicId ?? ("" as string);
@@ -74,7 +76,7 @@ const MultiSelectStakeholder: React.FC<MultiSelectStakeholderProps> = ({
   useEffect(() => {
     const onSelectAllStakeholders = () => {
       if (stakeholders?.length) {
-        const formatted = getFormattedStakeholders(stakeholders) as string[];
+        const formatted = getFormattedStakeholders(stakeholders);
         setSelectedRecpients(formatted);
         setcanSend(true);
       }

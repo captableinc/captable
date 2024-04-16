@@ -1,3 +1,5 @@
+"use client";
+
 import Modal from "@/components/shared/modal";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import React from "react";
@@ -11,6 +13,7 @@ interface InvestorUpdateModalProps {
   callback: any;
   trigger: string | React.ReactNode;
   dialogProps: DialogProps;
+  publicId: string | undefined;
 }
 
 const InvestorUpdateModal = ({
@@ -20,6 +23,7 @@ const InvestorUpdateModal = ({
   callback,
   trigger,
   dialogProps,
+  publicId,
 }: InvestorUpdateModalProps) => {
   return (
     <Modal
@@ -29,7 +33,7 @@ const InvestorUpdateModal = ({
       trigger={trigger}
       dialogProps={dialogProps}
     >
-      <MultiSelectStakeholder callback={callback} />
+      <MultiSelectStakeholder publicId={publicId} callback={callback} />
     </Modal>
   );
 };

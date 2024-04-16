@@ -36,6 +36,7 @@ export const shareUpdateProcedure = withAuth
               status: UpdateStatusEnum.PRIVATE,
             },
           });
+          // @TODO(Update it in background after email sent only, not sure)
           const recipients = stakeholders.map((sh) => ({
             stakeholderId: sh.id,
             updateId: update.id,
@@ -84,6 +85,7 @@ export const shareUpdateProcedure = withAuth
             updateId,
             stakeholderId: sh.id,
           }));
+          // @TODO(Update it in background after email sent only, not sure)
           await txn.updateRecipient.createMany({
             data: newRecipients,
             skipDuplicates: true,
@@ -113,6 +115,12 @@ export const shareUpdateProcedure = withAuth
           publicId,
         };
       }
+
+      return {
+        success: false,
+        message: "",
+        publicId: "",
+      };
     } catch (error) {
       console.error("Error handling investor updates", error);
       return {

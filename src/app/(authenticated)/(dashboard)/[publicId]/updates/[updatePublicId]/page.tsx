@@ -7,7 +7,11 @@ const getUpdate = async (publicId: string) => {
   return await db.update.findFirstOrThrow({
     where: { publicId },
     include: {
-      recipients: true,
+      _count: {
+        select: {
+          recipients: true,
+        },
+      },
     },
   });
 };

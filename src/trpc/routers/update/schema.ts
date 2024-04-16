@@ -83,7 +83,7 @@ export const ZodGetUpdateProcedure = z.object({
 export type TypeZodGetUpdateProcedure = z.infer<typeof ZodGetUpdateProcedure>;
 
 export const ZodGetRecipientsProcedure = z.object({
-  publicId: z.string(),
+  publicId: z.string().optional(),
 });
 
 export type TypeZodGetRecipientsProcedure = z.infer<

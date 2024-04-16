@@ -4,6 +4,14 @@ import { ZodGetRecipientsProcedure } from "../schema";
 export const getRecipientsProcedure = withAuth
   .input(ZodGetRecipientsProcedure)
   .query(async ({ ctx, input }) => {
+    if (!input.publicId) {
+      return {
+        data: [],
+        success: false,
+        message: "Please provide public id.",
+      };
+    }
+
     try {
       const companyId = ctx.session.user.companyId;
       const publicId = input.publicId;

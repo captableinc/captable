@@ -10,6 +10,7 @@ import {
   BadgeStatusProvider,
   getShareableUpdateLink,
   isEditingPlaygorund,
+  isNewPlayground,
   onCopyClipboard,
   StatusActionProvider,
 } from "@/lib/utils";
@@ -21,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
-import { type Recipient } from "@/lib/types";
 import { UpdateStatusEnum } from "@/prisma-enums";
 import "@/styles/editor.css";
 import { api } from "@/trpc/react";
@@ -44,20 +44,22 @@ const avatar = `
 https://media.istockphoto.com/id/1399565382/photo/young-happy-mixed-race-businessman-standing-with-his-arms-crossed-working-alone-in-an-office.webp?b=1&s=170667a&w=0&k=20&c=ZAXJYLesh6gSd9huAgpy6rjpR4z-IFVH9MpxrKIXCrs=
 `;
 
-interface EnrichUpdate extends Update {
-  recipients: Recipient[];
+interface EnrichedUpdate extends Update {
+  _count: {
+    recipients: number;
+  };
 }
 
 type UpdatesEditorProps = {
-  update?: EnrichUpdate;
+  update?: EnrichedUpdate;
   companyPublicId?: string;
 };
 
 const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
+  console.log({ update });
   const router = useRouter();
   const { toast } = useToast();
   const pathname = usePathname();
-  const [showClipboard, setShowClipBoard] = useState<boolean>(false);
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");
@@ -68,22 +70,36 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     (update?.content as Block[]) ?? defaultContent,
   );
 
+  const [showClipboard, setShowClipBoard] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [html, setHtml] = useState<string>(update?.html ?? "<p></p>");
   const [loading, setLoading] = useState<boolean>(false);
   const [isEditable, setIsEditable] = useState<boolean>(false);
+
   const authorProfile = api.member.getProfile.useQuery();
 
   const author = authorProfile?.data;
   const status = update?.status;
   const publicId = update?.publicId;
-  const emailSentAt = update?.sentAt || update?.recipients?.length;
+  const recipientsCount = update?._count?.recipients;
+  const emailSentAt = update?.sentAt;
+  const hasRecipientsCount = !!recipientsCount;
+  const hasFirstEmailSent = !!emailSentAt;
+  const canEdit =
+    (!hasRecipientsCount && !hasFirstEmailSent) || !hasRecipientsCount; // @TODO(some concerns here)
   const isDraft = status === UpdateStatusEnum.DRAFT;
-  //@ts-expect-error error
   const isUpdatePage = isEditingPlaygorund(pathname, publicId);
+  const isNewPage = isNewPlayground(pathname, "/updates/new");
   const isDisabled = !isDraft && isUpdatePage;
   const isTogglingAllowed = status && status !== UpdateStatusEnum.DRAFT;
-  const canEdit = !!emailSentAt || !!update?.recipients?.length;
+
+  console.log({
+    hasRecipientsCount,
+    hasFirstEmailSent,
+    canEdit,
+    isNewPage,
+    isUpdatePage,
+  });
 
   const editor = useCreateBlockNote({
     initialContent: content,
@@ -91,10 +107,12 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
 
   useEffect(() => {
     // check content editing permission
-    if (pathname) {
-      canEdit ? setIsEditable(false) : setIsEditable(true);
+    if (pathname && isNewPage) {
+      setIsEditable(true);
+    } else {
+      isUpdatePage && canEdit ? setIsEditable(true) : setIsEditable(false);
     }
-  }, [emailSentAt, pathname, update?.recipients]);
+  }, [update, pathname]);
 
   useEffect(() => {
     // check clipboard visibility
@@ -158,7 +176,6 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
   });
 
   const sendMutation = api.update.share.useMutation({
-    //@ts-expect-error error
     onSuccess: async ({ publicId, success, message }) => {
       toast({
         variant: success ? "default" : "destructive",
@@ -197,12 +214,16 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
   };
 
   type sendThisUpdateProps = {
-    stakeholders: {
-      id: string;
-      email: string;
-    };
+    stakeholders:
+      | {
+          id: string;
+          email: string;
+        }[]
+      | [];
   };
   const sendThisUpdate = async (data: sendThisUpdateProps) => {
+    if (!data.stakeholders.length) return;
+    if (!author) return;
     const { stakeholders } = data;
     if (update) {
       const _data = {
@@ -213,17 +234,16 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
         title,
         content,
         isDraft,
-        authorName: author?.fullName,
-        authorImage: author?.avatarUrl ?? avatar,
-        authorTitle: author?.jobTitle ?? "Co-founder & Ceo",
-        authorWorkEmail: author?.workEmail,
-        companyName: author?.companyName,
-        companyLogo: author?.companyLogo ?? companyLogo,
+        authorName: author.fullName,
+        authorImage: author.avatarUrl || avatar,
+        authorTitle: author.jobTitle ?? "Co-founder & Ceo",
+        authorWorkEmail: author.workEmail,
+        companyName: author.companyName,
+        companyLogo: author.companyLogo ?? companyLogo,
         isFirstEmailSent: !!update?.sentAt,
       };
       await sendMutation.mutateAsync({
         type: UpdateType.SEND_ONLY,
-        //@ts-expect-error error
         payload: _data,
       });
     } else {
@@ -232,17 +252,16 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
         title,
         content,
         stakeholders,
-        authorName: author?.fullName,
-        authorImage: author?.avatarUrl ?? avatar,
-        authorTitle: author?.jobTitle ?? "Founder & Ceo",
-        authorWorkEmail: author?.workEmail,
-        companyName: author?.companyName,
-        companyLogo: author?.companyLogo ?? companyLogo,
-        isFirstEmailSent: false,
+        authorName: author.fullName,
+        authorImage: author.avatarUrl || avatar,
+        authorTitle: author.jobTitle ?? "Founder & Ceo",
+        authorWorkEmail: author.workEmail ?? author.loginEmail,
+        companyName: author.companyName,
+        companyLogo: author.companyLogo ?? companyLogo,
+        isFirstEmailSent: false, // content not saved yet (impossible to be true)
       };
       await sendMutation.mutateAsync({
         type: UpdateType.SAVE_AND_SEND,
-        //@ts-expect-error error
         payload: _data,
       });
     }
@@ -287,6 +306,7 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
             <span className="h4">Updates / </span>
             <input
               name="title"
+              disabled={!canEdit}
               required
               type="text"
               className="h4 min-w-[300px] bg-transparent px-2 text-gray-800 outline-none focus:ring-0	focus:ring-offset-0"
@@ -344,9 +364,10 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
               <li>
                 <InvestorUpdateModal
                   size="3xl"
-                  title="Email updates to stakeholders"
+                  title="Email updates to fellow stakeholders"
                   subtitle="Tip: You can allow public access and create shareable link for updates."
                   callback={sendThisUpdate}
+                  publicId={publicId}
                   dialogProps={{
                     open,
                     onOpenChange: (val) => {

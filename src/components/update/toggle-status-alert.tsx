@@ -44,7 +44,7 @@ export function ToggleStatusAlertDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction>
-            <Button disabled={!!status} onClick={onContinue}>
+            <Button disabled={!status} onClick={onContinue}>
               Continue
             </Button>
           </AlertDialogAction>

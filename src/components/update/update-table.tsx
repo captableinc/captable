@@ -304,7 +304,7 @@ export const columns: ColumnDef<Update[number]>[] = [
       });
 
       const deleteUpdateMutation = api.update.delete.useMutation({
-        onSuccess: () => {
+        onSuccess: async () => {
           toast({
             variant: "default",
             title: "🎉 Successfully deleted",
@@ -392,7 +392,7 @@ export const columns: ColumnDef<Update[number]>[] = [
               onContinue={onContinue}
               trigger={
                 <p
-                  className={`px-2 text-[14px] hover:cursor-pointer hover:bg-slate-50 ${isTogglingAllowed ? null : "invisible"}`}
+                  className={`mb-2 px-2 py-1 text-[14px] hover:cursor-pointer hover:bg-slate-50 ${isTogglingAllowed ? null : "invisible"}`}
                 >
                   {StatusActionProvider(status)}
                 </p>

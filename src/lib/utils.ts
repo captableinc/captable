@@ -166,7 +166,11 @@ export function isNewPlayground(pathname: string, slug: string) {
   return pathname.includes(slug);
 }
 
-export function isEditingPlaygorund(pathname: string, dbPublicId: string) {
+export function isEditingPlaygorund(
+  pathname: string,
+  dbPublicId: string | undefined,
+) {
+  if (!dbPublicId) return false;
   const splitted = splitBySlash(pathname);
   const _publicId = getLastPart(splitted);
   return dbPublicId === _publicId;

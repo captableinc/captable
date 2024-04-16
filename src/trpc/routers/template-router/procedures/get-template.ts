@@ -11,6 +11,7 @@ export const getTemplateProcedure = withAuth
       where: {
         publicId: input.publicId,
         companyId: user.companyId,
+        status: "DRAFT",
       },
       select: {
         name: true,
@@ -35,9 +36,16 @@ export const getTemplateProcedure = withAuth
             viewportHeight: true,
             viewportWidth: true,
             page: true,
+            group: true,
           },
           orderBy: {
             top: "asc",
+          },
+        },
+        eSignRecipient: {
+          select: {
+            email: true,
+            id: true,
           },
         },
       },
@@ -51,5 +59,6 @@ export const getTemplateProcedure = withAuth
       url,
       name: template.name,
       status: template.status,
+      recipients: template.eSignRecipient,
     };
   });

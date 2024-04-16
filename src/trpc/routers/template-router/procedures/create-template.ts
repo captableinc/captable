@@ -8,19 +8,34 @@ export const createTemplateProcedure = withAuth
     const publicId = generatePublicId();
     const user = ctx.session.user;
 
-    const { orderedDelivery, recipients, ...rest } = input;
+    const { recipients, ...rest } = input;
 
-    return ctx.db.template.create({
-      data: {
-        status: "DRAFT",
-        publicId,
-        companyId: user.companyId,
-        uploaderId: user.memberId,
-        ...rest,
-      },
-      select: {
-        publicId: true,
-        name: true,
-      },
+    const data = await ctx.db.$transaction(async (tx) => {
+      const template = await tx.template.create({
+        data: {
+          status: "DRAFT",
+          publicId,
+          companyId: user.companyId,
+          uploaderId: user.memberId,
+          ...rest,
+        },
+        select: {
+          id: true,
+          publicId: true,
+          name: true,
+        },
+      });
+
+      await tx.esignRecipient.createMany({
+        data: recipients.map((recipient) => ({
+          ...recipient,
+          templateId: template.id,
+          group: "",
+        })),
+      });
+
+      return template;
     });
+
+    return data;
   });

@@ -1,30 +1,39 @@
 "use client";
 
-import { nanoid } from "nanoid";
-import { useCallback, useState } from "react";
-import { TemplateField } from "./template-field";
-import { DrawingField } from "./drawing-field";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import {
-  type PageMeasurement,
   generateRange,
   getPageNumber,
+  type PageMeasurement,
 } from "@/lib/pdf-positioning";
+import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { type RouterOutputs } from "@/trpc/shared";
+import { useResizeObserver } from "@wojtekmaj/react-hooks";
+import { nanoid } from "nanoid";
+import { useCallback, useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { DrawingField } from "./drawing-field";
+import { TemplateField } from "./template-field";
+
+type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface FieldCanvasProp {
   mode?: "readonly" | "edit";
   measurements: PageMeasurement;
+  recipients: Recipients;
 }
 
 const resizeObserverOptions = {};
 
-export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
+export function FieldCanvas({
+  mode = "edit",
+  measurements,
+  recipients,
+}: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
   const { append, fields, remove } = useFieldArray({
     name: "fields",
     control,
+    keyName: "_id",
   });
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
@@ -120,6 +129,7 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
               page: pageNum,
+              group: "",
             });
 
             setFocusId(id);
@@ -137,11 +147,12 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
 
       {fields.map((field, index) => (
         <TemplateField
+          recipients={recipients}
           viewportWidth={field.viewportWidth}
           viewportHeight={field.viewportHeight}
           currentViewportWidth={viewport.width}
           currentViewportHeight={viewport.height}
-          key={field.id}
+          key={field._id}
           focusId={focusId}
           height={field.height}
           left={field.left}

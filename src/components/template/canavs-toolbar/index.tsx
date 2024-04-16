@@ -5,11 +5,31 @@ import { type FieldTypes } from "@/prisma/enums";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { FieldTypeData } from "../field-type-data";
 
-import { FormField } from "@/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useFormState } from "react-hook-form";
 
-export function CanvasToolbar() {
+type Recipients = RouterOutputs["template"]["get"]["recipients"];
+
+interface CanvasToolbarProps {
+  recipients: Recipients;
+}
+
+export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
   const { control } = useFormContext<TemplateFieldForm>();
   const { isDirty } = useFormState({
     control,
@@ -54,11 +74,39 @@ export function CanvasToolbar() {
           )}
         />
 
-        <Toolbar.Button asChild>
-          <Button disabled={isDisabled} type="submit">
-            Save
-          </Button>
-        </Toolbar.Button>
+        <div className="flex items-end gap-x-2">
+          <FormField
+            name="recipient"
+            control={control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="sr-only">Recipient</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Recipient" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {recipients.map((recipient) => (
+                      <SelectItem key={recipient.id} value={recipient.id}>
+                        {recipient.email}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="all-recipient">All recipient</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Toolbar.Button asChild>
+            <Button disabled={isDisabled} type="submit">
+              Save
+            </Button>
+          </Toolbar.Button>
+        </div>
       </Toolbar.Root>
     </div>
   );

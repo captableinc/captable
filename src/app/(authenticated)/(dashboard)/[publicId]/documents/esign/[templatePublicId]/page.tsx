@@ -10,9 +10,10 @@ const EsignTemplateDetailPage = async ({
 }: {
   params: { templatePublicId: string };
 }) => {
-  const { name, status, url, fields } = await api.template.get.query({
-    publicId: templatePublicId,
-  });
+  const { name, status, url, fields, recipients } =
+    await api.template.get.query({
+      publicId: templatePublicId,
+    });
 
   return (
     <TemplateFieldProvider fields={fields}>
@@ -29,8 +30,8 @@ const EsignTemplateDetailPage = async ({
               {name}
             </span>
           </div>
-          <CanvasToolbar />
-          <PdfCanvas url={url} />
+          <CanvasToolbar recipients={recipients} />
+          <PdfCanvas mode="edit" recipients={recipients} url={url} />
         </div>
       </TemplateFieldForm>
     </TemplateFieldProvider>

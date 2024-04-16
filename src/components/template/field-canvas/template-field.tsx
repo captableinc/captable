@@ -1,6 +1,5 @@
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RiCloseCircleLine } from "@remixicon/react";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -9,27 +8,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { RiCloseCircleLine } from "@remixicon/react";
 
 import { FieldTypeData } from "../field-type-data";
 
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
-import { useFormContext, useWatch } from "react-hook-form";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { TemplateFieldContainer } from "./template-field-container";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { type RouterOutputs } from "@/trpc/shared";
+import { useFormContext, useWatch } from "react-hook-form";
+import { TemplateFieldContainer } from "./template-field-container";
 
-type Field = TypeZodAddFieldMutationSchema["data"][number];
+type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface TemplateFieldProps {
   left: number;
@@ -45,6 +47,7 @@ interface TemplateFieldProps {
   viewportHeight: number;
   currentViewportWidth: number;
   currentViewportHeight: number;
+  recipients: Recipients;
 }
 
 export function TemplateField({
@@ -61,8 +64,9 @@ export function TemplateField({
   currentViewportWidth,
   viewportHeight,
   viewportWidth,
+  recipients,
 }: TemplateFieldProps) {
-  const { control } = useFormContext<{ fields: Field[] }>();
+  const { control } = useFormContext<TemplateFieldForm>();
   const type = useWatch({ control: control, name: `fields.${index}.type` });
 
   return (
@@ -152,6 +156,35 @@ export function TemplateField({
           />
         </div>
 
+        <FormField
+          control={control}
+          name={`fields.${index}.group`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Recipient</FormLabel>
+              <Select
+                required
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {recipients.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {type === "TEXT" && <FieldDefaultValue index={index} />}
       </div>
     </TemplateFieldContainer>
@@ -163,8 +196,7 @@ interface FieldDefaultValueProps {
 }
 
 function FieldDefaultValue({ index }: FieldDefaultValueProps) {
-  const { control } = useFormContext<{ fields: Field[] }>();
-  const type = useWatch({ control: control, name: `fields.${index}.type` });
+  const { control } = useFormContext<TemplateFieldForm>();
 
   return (
     <Accordion type="single" collapsible>

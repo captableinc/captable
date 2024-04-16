@@ -2,7 +2,7 @@
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import DataRoomSettings from "../components/data-room-settings";
+import DataRoomFiles from "../components/data-room-files";
 
 const DataRoomSettinsPage = async ({
   params: { publicId, dataRoomPublicId },
@@ -17,9 +17,17 @@ const DataRoomSettinsPage = async ({
       publicId: dataRoomPublicId,
       companyId,
     },
+
+    include: {
+      documents: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
   });
 
-  return <DataRoomSettings dataRoom={dataRoom} companyPublicId={publicId} />;
+  return <DataRoomFiles dataRoom={dataRoom} companyPublicId={publicId} />;
 };
 
 export default DataRoomSettinsPage;

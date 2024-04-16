@@ -1,35 +1,62 @@
 import { generatePublicId } from "@/common/id";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import type { DataRoom } from "@prisma/client";
 import { DataRoomSchema } from "./schema";
 
 export const dataRoomRouter = createTRPCRouter({
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {
     try {
+      let room = {} as DataRoom;
       const { db, session } = ctx;
       const user = session.user;
       const { publicId } = input;
 
       if (!publicId) {
-        const room = await db.dataRoom.create({
+        room = await db.dataRoom.create({
           data: {
             name: input.name,
             companyId: user.companyId,
             publicId: generatePublicId(),
           },
         });
+      } else {
+        room = await db.dataRoom.update({
+          where: {
+            publicId,
+          },
+          data: {
+            name: input.name,
+          },
+        });
 
-        return {
-          success: true,
-          message: "Successfully created a data room",
-          data: room,
-        };
+        const { documents, recipients } = input;
+
+        if (documents) {
+          await db.dataRoomDocument.createMany({
+            data: documents.map((document) => ({
+              dataRoomId: room.id,
+              documentId: document.documentId,
+            })),
+          });
+        }
+
+        if (recipients) {
+          await db.dataRoomRecipient.createMany({
+            data: recipients.map((recipient) => ({
+              dataRoomId: room.id,
+              email: recipient.email,
+              memberId: recipient.memberId,
+              stakeholderId: recipient.stakeholderId,
+              expiresAt: recipient.expiresAt,
+            })),
+          });
+        }
       }
 
-      console.log("Trying to save data room");
-      console.log({ input });
       return {
         success: true,
-        message: "successfully updated company",
+        message: "Successfully updated data room",
+        data: room,
       };
     } catch (error) {
       console.error("Error saving dataroom:", error);

@@ -10,7 +10,6 @@ export const DataRoomSchema = z.object({
   documents: z
     .array(
       z.object({
-        id: z.string().optional(),
         documentId: z.string(),
       }),
     )
@@ -21,6 +20,7 @@ export const DataRoomSchema = z.object({
         email: z.string(),
         memberId: z.string().optional(),
         stakeholderId: z.string().optional(),
+        expiresAt: z.date().optional(),
       }),
     )
     .optional(),

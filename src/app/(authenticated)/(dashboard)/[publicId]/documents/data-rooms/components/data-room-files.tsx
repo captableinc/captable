@@ -2,11 +2,15 @@
 
 import EmptyState from "@/components/common/empty-state";
 import Loading from "@/components/common/loading";
+import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { DropdownButton } from "@/components/ui/dropdown-button";
-import DataRoomUploader from "./data-room-uploader";
-// import { useToast } from "@/components/ui/use-toast";
-import type { DataRoom } from "@prisma/client";
+import { api } from "@/trpc/react";
+import type {
+  DataRoom,
+  DataRoomDocument,
+  DataRoomRecipient,
+} from "@prisma/client";
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
@@ -14,8 +18,8 @@ import {
   RiUploadCloudLine,
 } from "@remixicon/react";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
+import DataRoomUploader from "./data-room-uploader";
 
 interface DataRoomType extends DataRoom {
   documents: {
@@ -29,12 +33,17 @@ interface DataRoomType extends DataRoom {
 type DataRoomFilesProps = {
   dataRoom: DataRoomType;
   companyPublicId: string;
+  documents: DataRoomDocument[];
+  recipients: DataRoomRecipient[];
 };
 
-const DataRoomFiles = ({ dataRoom, companyPublicId }: DataRoomFilesProps) => {
-  // const router = useRouter();
-  // const { toast } = useToast();
-
+const DataRoomFiles = ({
+  dataRoom,
+  documents,
+  recipients,
+  companyPublicId,
+}: DataRoomFilesProps) => {
+  const { mutateAsync } = api.dataRoom.save.useMutation();
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
@@ -60,14 +69,20 @@ const DataRoomFiles = ({ dataRoom, companyPublicId }: DataRoomFilesProps) => {
               className="h4 min-w-[300px] bg-transparent px-2 text-gray-800 outline-none focus:ring-0	focus:ring-offset-0"
               placeholder={`Data room's folder name`}
               defaultValue={dataRoom.name}
-              onChange={(e) => {
-                console.log("TODO: save with debounce", e.target.value);
+              onChange={async (e) => {
+                // TODO - debounce this
+
+                const name = e.target.value;
+                await mutateAsync({
+                  name,
+                  publicId: dataRoom.publicId,
+                });
               }}
             />
           </div>
         </div>
 
-        {dataRoom?.documents.length > 0 && (
+        {documents.length > 0 && (
           <div>
             <DropdownButton
               buttonSlot={
@@ -109,22 +124,26 @@ const DataRoomFiles = ({ dataRoom, companyPublicId }: DataRoomFilesProps) => {
       </form>
 
       <div>
-        <EmptyState
-          icon={<RiUploadCloudLine />}
-          title="Data room is empty!"
-          subtitle="Upload one or many documents to get started."
-        >
-          <DataRoomUploader
-            dataRoom={dataRoom}
-            companyPublicId={companyPublicId}
-            trigger={
-              <Button size="lg">
-                <RiAddFill className="mr-2 h-5 w-5" />
-                Upload documents
-              </Button>
-            }
-          />
-        </EmptyState>
+        {documents.length > 0 ? (
+          <DataRoomFileExplorer documents={documents} />
+        ) : (
+          <EmptyState
+            icon={<RiUploadCloudLine />}
+            title="Data room is empty!"
+            subtitle="Upload one or many documents to get started."
+          >
+            <DataRoomUploader
+              dataRoom={dataRoom}
+              companyPublicId={companyPublicId}
+              trigger={
+                <Button size="lg">
+                  <RiAddFill className="mr-2 h-5 w-5" />
+                  Upload documents
+                </Button>
+              }
+            />
+          </EmptyState>
+        )}
       </div>
 
       {loading && <Loading />}

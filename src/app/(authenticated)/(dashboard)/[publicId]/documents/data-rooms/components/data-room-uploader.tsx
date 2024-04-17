@@ -21,7 +21,8 @@ const DataRoomUploader = ({
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const { mutateAsync } = api.dataRoom.save.useMutation();
+  const dataRoomMutation = api.dataRoom.save.useMutation();
+  const documentMutation = api.document.create.useMutation();
 
   return (
     <Modal
@@ -39,13 +40,18 @@ const DataRoomUploader = ({
         multiple={true}
         identifier={companyPublicId}
         keyPrefix={`data-room/${dataRoom.publicId}/file`}
-        onSuccess={async (document: UploadReturn) => {
-          await mutateAsync({
+        onSuccess={async (upload: UploadReturn) => {
+          const document = await documentMutation.mutateAsync({
+            name: upload.name,
+            bucketId: upload.id,
+          });
+
+          await dataRoomMutation.mutateAsync({
             name: dataRoom.name,
             publicId: dataRoom.publicId,
             documents: [
               {
-                documentId: document.key,
+                documentId: document.id,
               },
             ],
           });

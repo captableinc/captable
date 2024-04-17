@@ -1,7 +1,8 @@
 "use server";
 
 import { getServerAuthSession } from "@/server/auth";
-import { db } from "@/server/db";
+import { api } from "@/trpc/server";
+import { notFound } from "next/navigation";
 import DataRoomFiles from "../components/data-room-files";
 
 const DataRoomSettinsPage = async ({
@@ -10,24 +11,24 @@ const DataRoomSettinsPage = async ({
   params: { publicId: string; dataRoomPublicId: string };
 }) => {
   const session = await getServerAuthSession();
-  const companyId = session?.user.companyId;
+  const { dataRoom, documents, recipients } =
+    await api.dataRoom.getDataRoom.query({
+      dataRoomPublicId,
+      getRecipients: true,
+    });
 
-  const dataRoom = await db.dataRoom.findFirstOrThrow({
-    where: {
-      publicId: dataRoomPublicId,
-      companyId,
-    },
+  if (!dataRoom) {
+    return notFound();
+  }
 
-    include: {
-      documents: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-  });
-
-  return <DataRoomFiles dataRoom={dataRoom} companyPublicId={publicId} />;
+  return (
+    <DataRoomFiles
+      dataRoom={dataRoom}
+      documents={documents}
+      recipients={recipients}
+      companyPublicId={publicId}
+    />
+  );
 };
 
 export default DataRoomSettinsPage;

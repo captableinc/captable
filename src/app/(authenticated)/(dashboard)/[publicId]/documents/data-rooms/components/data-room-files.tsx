@@ -86,34 +86,28 @@ const DataRoomFiles = ({
               buttonSlot={
                 <Fragment>
                   <span className="sr-only">Save and continue</span>
-                  Save and continue
+                  Actions
                   <RiArrowDownSLine className="ml-1 h-5 w-5" />
                 </Fragment>
               }
             >
               <ul>
-                <li>
+                <li className="w-full">
                   <Button variant="ghost" size="sm" type="submit">
-                    Save as draft
+                    Share data room
                   </Button>
                 </li>
 
                 <li>
-                  <Button variant="ghost" size="sm">
-                    Send this update
-                  </Button>
-                </li>
-
-                <li>
-                  <Button variant="ghost" size="sm">
-                    Make it public
-                  </Button>
-                </li>
-
-                <li>
-                  <Button variant="ghost" size="sm">
-                    Clone this update
-                  </Button>
+                  <DataRoomUploader
+                    dataRoom={dataRoom}
+                    companyPublicId={companyPublicId}
+                    trigger={
+                      <Button variant="ghost" size="sm">
+                        Upload more documents
+                      </Button>
+                    }
+                  />
                 </li>
               </ul>
             </DropdownButton>

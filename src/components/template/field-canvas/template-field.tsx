@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { RiCloseCircleLine } from "@remixicon/react";
 
 import { FieldTypeData } from "../field-type-data";
@@ -38,10 +37,7 @@ interface TemplateFieldProps {
   top: number;
   width: number;
   height: number;
-  id: string;
-  focusId: string;
   index: number;
-  handleFocus: (id: string) => void;
   handleDelete: () => void;
   viewportWidth: number;
   viewportHeight: number;
@@ -55,9 +51,6 @@ export function TemplateField({
   left,
   top,
   width,
-  id,
-  focusId,
-  handleFocus,
   index,
   handleDelete,
   currentViewportHeight,
@@ -71,7 +64,6 @@ export function TemplateField({
 
   return (
     <TemplateFieldContainer
-      className="overflow-visible"
       viewportWidth={viewportWidth}
       viewportHeight={viewportHeight}
       currentViewportWidth={currentViewportWidth}
@@ -80,113 +72,97 @@ export function TemplateField({
       top={top}
       left={left}
       height={height}
-      onClick={() => {
-        handleFocus(id);
-      }}
-      role="button"
-      tabIndex={0}
     >
-      <div
-        style={{ bottom: height }}
-        className={cn(
-          "absolute min-w-[300px] flex-col gap-y-2 border bg-white p-3 shadow-md",
-          focusId === id ? "flex" : " hidden",
-        )}
-      >
-        <div className="flex items-center gap-x-2">
-          <Button
-            className="mt-2"
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              handleDelete();
-            }}
-          >
-            <RiCloseCircleLine className="h-5 w-5" />
-          </Button>
-
-          <FormField
-            control={control}
-            name={`fields.${index}.type`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="sr-only">Field type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="trigger group h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {FieldTypeData.map((item) => (
-                      <SelectItem key={item.label} value={item.value}>
-                        <span className="flex items-center gap-x-2">
-                          <item.icon className="h-4 w-4" aria-hidden />
-                          <span className="group-[.trigger]:hidden">
-                            {item.label}
-                          </span>
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name={`fields.${index}.name`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="sr-only">Field Name</FormLabel>
-                <FormControl>
-                  <Input
-                    className="h-8 min-w-16"
-                    type="text"
-                    required
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
+      <div className="flex items-center gap-x-2">
+        <Button
+          className="mt-2"
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            handleDelete();
+          }}
+        >
+          <RiCloseCircleLine className="h-5 w-5" />
+        </Button>
 
         <FormField
           control={control}
-          name={`fields.${index}.group`}
+          name={`fields.${index}.type`}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Recipient</FormLabel>
-              <Select
-                required
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-              >
+              <FormLabel className="sr-only">Field type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="trigger group h-8">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {recipients.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.email}
+                  {FieldTypeData.map((item) => (
+                    <SelectItem key={item.label} value={item.value}>
+                      <span className="flex items-center gap-x-2">
+                        <item.icon className="h-4 w-4" aria-hidden />
+                        <span className="group-[.trigger]:hidden">
+                          {item.label}
+                        </span>
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
             </FormItem>
           )}
         />
 
-        {type === "TEXT" && <FieldDefaultValue index={index} />}
+        <FormField
+          control={control}
+          name={`fields.${index}.name`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Field Name</FormLabel>
+              <FormControl>
+                <Input
+                  className="h-8 min-w-16"
+                  type="text"
+                  required
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
       </div>
+
+      <FormField
+        control={control}
+        name={`fields.${index}.group`}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Recipient</FormLabel>
+            <Select
+              required
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {recipients.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {type === "TEXT" && <FieldDefaultValue index={index} />}
     </TemplateFieldContainer>
   );
 }

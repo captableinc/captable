@@ -1,7 +1,12 @@
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { type ComponentProps, type ReactNode } from "react";
 
-export interface TemplateFieldContainerProps extends ComponentProps<"div"> {
+export interface TemplateFieldContainerProps extends ComponentProps<"button"> {
   currentViewportHeight: number;
   viewportHeight: number;
   currentViewportWidth: number;
@@ -35,20 +40,23 @@ export function TemplateFieldContainer({
   const newWidth = widthRatio * width;
 
   return (
-    <div
-      className={cn(
-        "group absolute z-20 flex cursor-pointer items-center overflow-hidden border-2 border-red-600 bg-red-300/50",
-        className,
-      )}
-      style={{
-        left: newLeft,
-        top: newTop,
-        width: newWidth,
-        height: newHeight,
-      }}
-      {...rest}
-    >
-      {children}
-    </div>
+    <Popover defaultOpen>
+      <PopoverTrigger asChild>
+        <button
+          className={cn(
+            "group absolute z-20 cursor-pointer border-2 border-red-600 bg-red-300/50",
+            className,
+          )}
+          style={{
+            left: newLeft,
+            top: newTop,
+            width: newWidth,
+            height: newHeight,
+          }}
+          {...rest}
+        />
+      </PopoverTrigger>
+      <PopoverContent>{children}</PopoverContent>
+    </Popover>
   );
 }

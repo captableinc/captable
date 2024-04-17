@@ -38,7 +38,6 @@ export function FieldCanvas({
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [endPos, setEndPos] = useState({ x: 0, y: 0 });
-  const [focusId, setFocusId] = useState("");
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
 
@@ -52,12 +51,6 @@ export function FieldCanvas({
   }, []);
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
-
-  const handleFocus = (id: string) => {
-    if (mode === "edit") {
-      setFocusId(id);
-    }
-  };
 
   const heightRange = generateRange(measurements, viewport.width);
 
@@ -131,8 +124,6 @@ export function FieldCanvas({
               page: pageNum,
               group: "",
             });
-
-            setFocusId(id);
           }
         }}
       />
@@ -153,13 +144,10 @@ export function FieldCanvas({
           currentViewportWidth={viewport.width}
           currentViewportHeight={viewport.height}
           key={field._id}
-          focusId={focusId}
           height={field.height}
           left={field.left}
           top={field.top}
-          id={field.id}
           width={field.width}
-          handleFocus={handleFocus}
           index={index}
           handleDelete={() => {
             remove(index);

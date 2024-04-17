@@ -12,10 +12,7 @@ const DataRoomSettinsPage = async ({
 }) => {
   const session = await getServerAuthSession();
   const { dataRoom, documents, recipients } =
-    await api.dataRoom.getDataRoom.query({
-      dataRoomPublicId,
-      getRecipients: true,
-    });
+    await api.dataRoom.getDataRoom.query({ dataRoomPublicId });
 
   if (!dataRoom) {
     return notFound();

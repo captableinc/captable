@@ -1,26 +1,26 @@
 import { generatePublicId } from "@/common/id";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import type {
-  DataRoom,
-  DataRoomDocument,
-  DataRoomRecipient,
-} from "@prisma/client";
+import type { Bucket, DataRoom, DataRoomDocument } from "@prisma/client";
 import { z } from "zod";
 import { DataRoomSchema } from "./schema";
 
+import { type DataRoomRecipientType } from "@/types/documents/data-room";
+
+interface DataRoomDocumentType extends DataRoomDocument {
+  document: {
+    id: string;
+    bucket: Bucket;
+  };
+}
+
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
-    .input(
-      z.object({
-        dataRoomPublicId: z.string(),
-        getRecipients: z.boolean().optional().default(false),
-      }),
-    )
+    .input(z.object({ dataRoomPublicId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { db, session } = ctx;
       const user = session.user;
       const companyId = user.companyId;
-      const { dataRoomPublicId, getRecipients } = input;
+      const { dataRoomPublicId } = input;
 
       const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
@@ -30,68 +30,94 @@ export const dataRoomRouter = createTRPCRouter({
 
         include: {
           documents: true,
-
-          ...(getRecipients && { recipients: true }),
+          recipients: true,
         },
       });
 
       const documentIds = dataRoom.documents.map((doc) => doc.id);
 
-      const documents: DataRoomDocument[] = await db.dataRoomDocument.findMany({
+      const dataRoomDocument: DataRoomDocumentType[] =
+        await db.dataRoomDocument.findMany({
+          where: {
+            id: { in: documentIds },
+          },
+
+          include: {
+            document: {
+              select: {
+                id: true,
+                bucket: true,
+              },
+            },
+          },
+        });
+
+      const documents: Bucket[] = dataRoomDocument.map((doc) => ({
+        id: doc.document.bucket.id,
+        name: doc.document.bucket.name,
+        key: doc.document.bucket.key,
+        mimeType: doc.document.bucket.mimeType,
+        size: doc.document.bucket.size,
+        createdAt: doc.document.bucket.createdAt,
+        updatedAt: doc.document.bucket.updatedAt,
+      }));
+
+      const recipientIds = dataRoom.recipients.map((recipient) => recipient.id);
+
+      const dataRoomRecipient = await db.dataRoomRecipient.findMany({
         where: {
-          id: { in: documentIds },
+          id: { in: recipientIds },
         },
 
         include: {
-          document: {
+          member: {
             select: {
               id: true,
-              bucket: true,
+              user: {
+                select: {
+                  email: true,
+                  name: true,
+                },
+              },
             },
           },
+          stakeholder: true,
         },
       });
 
-      if (getRecipients) {
-        const recipientIds = dataRoom.recipients.map(
-          (recipient) => recipient.id,
-        );
+      const recipients: DataRoomRecipientType[] = dataRoomRecipient.map(
+        (recipient) => {
+          const r = {
+            id: recipient.id,
+            email: recipient.email,
+          } as DataRoomRecipientType;
 
-        const recipients: DataRoomRecipient[] =
-          await db.dataRoomRecipient.findMany({
-            where: {
-              id: { in: recipientIds },
-            },
+          if (recipient.member && recipient.member.user) {
+            r.member = {
+              id: recipient.member.id,
+              email: recipient.member.user.email ?? "",
+              name: recipient.member.user.name ?? "",
+            };
+          }
 
-            include: {
-              member: {
-                select: {
-                  id: true,
-                  workEmail: true,
-                },
-              },
+          if (recipient.stakeholder) {
+            r.stakeholder = {
+              id: recipient.stakeholder.id,
+              email: recipient.stakeholder.email,
+              name: recipient.stakeholder.name,
+              institutionName: recipient.stakeholder.institutionName ?? "",
+            };
+          }
 
-              stakeholder: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                },
-              },
-            },
-          });
+          return r;
+        },
+      );
 
-        return {
-          dataRoom,
-          documents,
-          recipients,
-        };
-      } else {
-        return {
-          dataRoom,
-          documents,
-        };
-      }
+      return {
+        dataRoom,
+        documents,
+        recipients,
+      };
     }),
 
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {

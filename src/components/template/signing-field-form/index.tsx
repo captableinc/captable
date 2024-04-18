@@ -10,13 +10,15 @@ import { useFormContext } from "react-hook-form";
 interface SigningFieldFormProps extends ComponentProps<"form"> {
   companyPublicId?: string;
   children: ReactNode;
-  token: string;
+  recipientId: string;
+  templateId: string;
 }
 
 export function SigningFieldForm({
   companyPublicId,
   children,
-  token,
+  recipientId,
+  templateId,
   ...rest
 }: SigningFieldFormProps) {
   const { handleSubmit } = useFormContext<TemplateSigningFieldForm>();
@@ -38,7 +40,11 @@ export function SigningFieldForm({
     },
   });
   const onSubmit = async (values: TemplateSigningFieldForm) => {
-    await mutateAsync({ data: values.fieldValues, templatePublicId: token });
+    await mutateAsync({
+      data: values.fieldValues,
+      recipientId,
+      templateId,
+    });
   };
 
   return (

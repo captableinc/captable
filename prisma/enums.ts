@@ -3,7 +3,7 @@ export const MemberStatusEnum = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
   PENDING: "PENDING",
-} as const; 
+} as const;
 
 export type MemberStatusEnum = (typeof MemberStatusEnum)[keyof typeof MemberStatusEnum];
 

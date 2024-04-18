@@ -63,7 +63,9 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
             {documents.map((document) => (
               <TableRow key={document.id}>
                 <TableCell className="flex items-center ">
-                  <FileIcon type={document.bucket.mimeType} />
+                  <div className="mr-3">
+                    <FileIcon type={document.bucket.mimeType} />
+                  </div>
                   <span className="flex">{document.name}</span>
                 </TableCell>
                 <TableCell>{document.uploader.user.name}</TableCell>

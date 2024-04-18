@@ -2,12 +2,12 @@
 
 import EmptyState from "@/components/common/empty-state";
 import Loading from "@/components/common/loading";
+import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { api } from "@/trpc/react";
-import type { Bucket, DataRoom } from "@prisma/client";
-
 import { type DataRoomRecipientType } from "@/types/documents/data-room";
+import type { Bucket, DataRoom } from "@prisma/client";
 
 import {
   RiFolder3Fill as FolderIcon,
@@ -115,10 +115,11 @@ const DataRoomFiles = ({
         )}
       </form>
 
+      <hr />
+
       <div>
         {documents.length > 0 ? (
-          // <DataRoomFileExplorer documents={documents} />
-          <pre>{JSON.stringify(documents, null, 2)}</pre>
+          <DataRoomFileExplorer documents={documents} />
         ) : (
           <EmptyState
             icon={<RiUploadCloudLine />}

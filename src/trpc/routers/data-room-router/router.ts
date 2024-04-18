@@ -52,7 +52,7 @@ export const dataRoomRouter = createTRPCRouter({
           },
         });
 
-      const documents: Bucket[] = dataRoomDocument.map((doc) => ({
+      const documents = dataRoomDocument.map((doc) => ({
         id: doc.document.bucket.id,
         name: doc.document.bucket.name,
         key: doc.document.bucket.key,
@@ -61,6 +61,8 @@ export const dataRoomRouter = createTRPCRouter({
         createdAt: doc.document.bucket.createdAt,
         updatedAt: doc.document.bucket.updatedAt,
       }));
+
+      console.log("TYpe of documents", typeof documents);
 
       const recipientIds = dataRoom.recipients.map((recipient) => recipient.id);
 

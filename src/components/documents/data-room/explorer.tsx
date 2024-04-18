@@ -1,15 +1,20 @@
+import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Bucket } from "@prisma/client";
-
-import FileIcon from "@/components/common/file-icon";
 import Link from "next/link";
 
 type DocumentExplorerProps = {
+  companyPublicId: string;
+  dataRoomPublicId: string;
   documents: Bucket[];
 };
 
-const DataRoomFileExplorer = ({ documents }: DocumentExplorerProps) => {
+const DataRoomFileExplorer = ({
+  documents,
+  companyPublicId,
+  dataRoomPublicId,
+}: DocumentExplorerProps) => {
   return (
     <Card className="border-none bg-transparent shadow-none">
       <ul
@@ -19,7 +24,7 @@ const DataRoomFileExplorer = ({ documents }: DocumentExplorerProps) => {
         {documents.map((document) => (
           <li key={document.id}>
             <Link
-              href={`#`}
+              href={`/${companyPublicId}/documents/${document.id}`}
               className="col-span-1 flex cursor-pointer rounded-md shadow-sm hover:shadow-lg"
             >
               <div

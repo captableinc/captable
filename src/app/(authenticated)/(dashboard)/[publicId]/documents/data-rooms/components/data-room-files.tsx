@@ -119,7 +119,11 @@ const DataRoomFiles = ({
 
       <div>
         {documents.length > 0 ? (
-          <DataRoomFileExplorer documents={documents} />
+          <DataRoomFileExplorer
+            documents={documents}
+            companyPublicId={companyPublicId}
+            dataRoomPublicId={dataRoom.publicId}
+          />
         ) : (
           <EmptyState
             icon={<RiUploadCloudLine />}

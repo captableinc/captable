@@ -19,6 +19,7 @@ export const ZodAddFieldMutationSchema = z.object({
       page: z.number(),
       defaultValue: z.string(),
       readOnly: z.boolean(),
+      group: z.string(),
     }),
   ),
 });

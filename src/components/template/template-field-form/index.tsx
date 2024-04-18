@@ -1,23 +1,15 @@
 "use client";
 
 import { useToast } from "@/components/ui/use-toast";
-import { type FieldTypes } from "@/prisma/enums";
+import { type TemplateFieldForm as TTemplateFieldForm } from "@/providers/template-field-provider";
 import { api } from "@/trpc/react";
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
 import { type ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
-
-type Field = TypeZodAddFieldMutationSchema["data"][number];
 
 interface TemplateFieldFormProps {
   children: ReactNode;
   templatePublicId: string;
 }
-
-export type TemplateFieldForm = {
-  fields: Field[];
-  fieldType: FieldTypes | undefined;
-};
 
 export const TemplateFieldForm = ({
   children,
@@ -25,7 +17,7 @@ export const TemplateFieldForm = ({
 }: TemplateFieldFormProps) => {
   const { toast } = useToast();
 
-  const { handleSubmit } = useFormContext<TemplateFieldForm>();
+  const { handleSubmit } = useFormContext<TTemplateFieldForm>();
 
   const { mutateAsync } = api.templateField.add.useMutation({
     onSuccess: () => {
@@ -37,8 +29,11 @@ export const TemplateFieldForm = ({
     },
   });
 
-  const onSubmit = async (values: TemplateFieldForm) => {
-    await mutateAsync({ templatePublicId, data: values.fields });
+  const onSubmit = async (values: TTemplateFieldForm) => {
+    await mutateAsync({
+      templatePublicId,
+      data: values.fields,
+    });
   };
 
   return (

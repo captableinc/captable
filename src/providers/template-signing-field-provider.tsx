@@ -1,11 +1,11 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
+import { type RouterOutputs } from "@/trpc/shared";
 import { type ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
 
-type Field = TypeZodAddFieldMutationSchema["data"][number];
+type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
 
 interface TemplateSigningFieldProviderProps {
   children: ReactNode;
@@ -26,7 +26,7 @@ export const TemplateSigningFieldProvider = ({
       fields: fields ?? [],
       fieldValues: fields
         ? fields.reduce<Record<string, string>>((prev, curr) => {
-            prev[curr.name] = curr?.defaultValue ?? "";
+            prev[curr.name] = curr?.prefilledValue || curr?.defaultValue || "";
             return prev;
           }, {})
         : {},

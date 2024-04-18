@@ -1,18 +1,18 @@
 "use client";
 
 import { dayjsExt } from "@/common/dayjs";
-import { Card } from "@/components/ui/card";
 import FileIcon from "@/components/shared/file-icon";
-import { RiFileDownloadLine } from "@remixicon/react";
+import { Card } from "@/components/ui/card";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { RiFileDownloadLine } from "@remixicon/react";
 
 import {
   Table,
-  TableRow,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { type RouterOutputs } from "@/trpc/shared";
 
@@ -47,7 +47,9 @@ const DocumentsTable = ({ documents }: DocumentTableProps) => {
                 <FileIcon type={document.bucket.mimeType} />
                 <span className="flex">{document.name}</span>
               </TableCell>
-              <TableCell>{document.uploader.user.name}</TableCell>
+              <TableCell>
+                {document?.uploader?.user.name ?? "Open cap"}
+              </TableCell>
               <TableCell suppressHydrationWarning>
                 {dayjsExt().to(document.createdAt)}
               </TableCell>

@@ -1,7 +1,8 @@
 "use client";
 
-import { type MouseEvent, forwardRef, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { toPng } from "html-to-image";
+import { forwardRef, useRef, useState, type MouseEvent } from "react";
 
 interface Point {
   x: number;
@@ -45,10 +46,11 @@ function DrawingLine({ line }: { line: [Point] }) {
 
 interface SignaturePadProps {
   onChange?: (value: string) => void;
+  disabled: boolean;
 }
 
 export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
-  ({ onChange }) => {
+  ({ onChange, disabled }, ref) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [lines, setLines] = useState<[Point][]>([]);
@@ -83,9 +85,16 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
 
     return (
       <div
-        className="h-64 w-full cursor-crosshair border"
+        className={cn(
+          "h-64 w-full border",
+          disabled ? "cursor-not-allowed" : "cursor-crosshair",
+        )}
         ref={canvasRef}
         onMouseUp={async () => {
+          if (disabled) {
+            return;
+          }
+
           setIsDrawing(false);
 
           if (onChange) {
@@ -101,6 +110,10 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
           }
         }}
         onMouseDown={(e) => {
+          if (disabled) {
+            return;
+          }
+
           if (e.button !== 0) {
             return;
           }
@@ -111,6 +124,10 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
           setIsDrawing(true);
         }}
         onMouseMove={(e) => {
+          if (disabled) {
+            return;
+          }
+
           if (!isDrawing) {
             return;
           }

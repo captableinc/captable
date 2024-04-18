@@ -17,6 +17,11 @@ export const ZodGetTemplateQuerySchema = z.object({
 });
 
 export const ZodSignTemplateMutationSchema = z.object({
-  templatePublicId: z.string(),
+  templateId: z.string(),
   data: z.record(z.string()),
+  recipientId: z.string(),
+});
+
+export const ZodGetSigningFieldsSchema = z.object({
+  token: z.string(),
 });

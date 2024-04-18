@@ -94,6 +94,7 @@ export function FieldCanvas({
           e.preventDefault();
 
           const fieldType = getValues("fieldType");
+          const recipient = getValues("recipient");
 
           if (!fieldType) return;
           if (!isDrawing) return;
@@ -122,7 +123,7 @@ export function FieldCanvas({
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
               page: pageNum,
-              group: "",
+              group: recipient,
             });
           }
         }}

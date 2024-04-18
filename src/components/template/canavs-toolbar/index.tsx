@@ -22,6 +22,7 @@ import {
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useFormState } from "react-hook-form";
+import { ALL_RECIPIENT_VALUE } from "@/constants/esign";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
@@ -93,7 +94,9 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
                         {recipient.email}
                       </SelectItem>
                     ))}
-                    <SelectItem value="all-recipient">All recipient</SelectItem>
+                    <SelectItem value={ALL_RECIPIENT_VALUE}>
+                      All recipients
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

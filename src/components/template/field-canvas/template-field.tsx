@@ -25,6 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ALL_RECIPIENT_VALUE } from "@/constants/esign";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -155,6 +156,9 @@ export function TemplateField({
                     {item.email}
                   </SelectItem>
                 ))}
+                <SelectItem value={ALL_RECIPIENT_VALUE}>
+                  All recipients
+                </SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

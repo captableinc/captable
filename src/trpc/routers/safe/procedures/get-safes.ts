@@ -28,6 +28,7 @@ export const getSafesProcedure = withAuth.query(async ({ ctx }) => {
       },
       documents: {
         select: {
+          id: true,
           name: true,
           uploader: {
             select: {

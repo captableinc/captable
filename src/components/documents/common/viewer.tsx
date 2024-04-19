@@ -1,33 +1,26 @@
 "use client";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import type { Bucket } from "@prisma/client";
-import * as url from "url";
 
 type DocumentViewerProps = {
-  link: string;
-  file: Bucket;
+  uri: string;
+  type: string;
 };
 
-const DocumentViewer = ({ link, file }: DocumentViewerProps) => {
-  const files = [{ uri: link }];
-
-  const fileUrl = url.parse(link);
-  const { protocol, host, pathname, search, query } = fileUrl;
-
-  console.log({ link, protocol, host, pathname, search, query });
-
+const DocumentViewer = ({ uri, type }: DocumentViewerProps) => {
+  const files = [{ fileName: "bla", uri, type }];
   return (
     <div className="h-screen">
       <DocViewer
-        prefetchMethod="GET"
+        // prefetchMethod="GET"
+        // requestHeaders={headers}
         className="rounded-lg bg-white shadow-md"
         documents={files}
         pluginRenderers={DocViewerRenderers}
         config={{
           header: {
-            disableHeader: true,
-            disableFileName: true,
-            retainURLParams: true,
+            disableHeader: false,
+            disableFileName: false,
+            retainURLParams: false,
           },
         }}
       />

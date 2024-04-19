@@ -26,8 +26,17 @@ const DocumentPreview = async ({
 
   const file = document.bucket;
   const remoteFile = await getPresignedGetUrl(file.key);
+  const buffer = await fetch(remoteFile.url).then((res) => res.arrayBuffer());
+  const blob = new Blob([buffer], { type: file.mimeType });
+  const blobText = URL.createObjectURL(blob);
 
-  return <DocumentViewer file={file} link={remoteFile.url} />;
+  // console.log({ blobText })
+
+  // return (
+  //   <>File</>
+  // )
+
+  return <DocumentViewer uri={blobText} type={file.mimeType} />;
 };
 
 export default DocumentPreview;

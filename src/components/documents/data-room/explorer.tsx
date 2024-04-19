@@ -25,7 +25,7 @@ const DataRoomFileExplorer = ({
           <li key={document.id}>
             <Link
               href={`/${companyPublicId}/documents/${document.id}`}
-              className="col-span-1 flex cursor-pointer rounded-md shadow-sm hover:shadow-lg"
+              className="col-span-1 flex cursor-pointer rounded-md transition duration-150 ease-in-out hover:shadow-md"
             >
               <div
                 className={cn(

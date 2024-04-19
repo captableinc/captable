@@ -19,8 +19,8 @@ const FileIcon = ({ type }: FileIconProps) => {
     case "image/svg+xml":
     case "image/gif":
       return (
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-purple-100">
-          <RiFileImageLine className="h-5 w-5 text-purple-500" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-pink-100">
+          <RiFileImageLine className="h-5 w-5 text-pink-500" />
         </div>
       );
 
@@ -44,8 +44,8 @@ const FileIcon = ({ type }: FileIconProps) => {
     case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
     case "text/csv":
       return (
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-green-100">
-          <RiFileExcelLine className="h-5 w-5 text-green-500" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald-100">
+          <RiFileExcelLine className="h-5 w-5 text-emerald-500" />
         </div>
       );
 

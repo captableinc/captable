@@ -4,7 +4,6 @@ import EmptyState from "@/components/common/empty-state";
 import Loading from "@/components/common/loading";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
-import { DropdownButton } from "@/components/ui/dropdown-button";
 import { api } from "@/trpc/react";
 import { type DataRoomRecipientType } from "@/types/documents/data-room";
 import type { Bucket, DataRoom } from "@prisma/client";
@@ -12,11 +11,11 @@ import type { Bucket, DataRoom } from "@prisma/client";
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
-  RiArrowDownSLine,
+  RiShareLine,
   RiUploadCloudLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import DataRoomUploader from "./data-room-uploader";
 
 interface DataRoomType extends DataRoom {
@@ -68,8 +67,6 @@ const DataRoomFiles = ({
               placeholder={`Data room's folder name`}
               defaultValue={dataRoom.name}
               onChange={async (e) => {
-                // TODO - debounce this
-
                 const name = e.target.value;
                 await mutateAsync({
                   name,
@@ -81,36 +78,22 @@ const DataRoomFiles = ({
         </div>
 
         {documents.length > 0 && (
-          <div>
-            <DropdownButton
-              buttonSlot={
-                <Fragment>
-                  <span className="sr-only">Save and continue</span>
-                  Actions
-                  <RiArrowDownSLine className="ml-1 h-5 w-5" />
-                </Fragment>
-              }
-            >
-              <ul>
-                <li className="w-full">
-                  <Button variant="ghost" size="sm" type="submit">
-                    Share data room
-                  </Button>
-                </li>
+          <div className="flex gap-3">
+            <Button variant={"outline"}>
+              <RiShareLine className="mr-2 h-5 w-5" />
+              Share
+            </Button>
 
-                <li>
-                  <DataRoomUploader
-                    dataRoom={dataRoom}
-                    companyPublicId={companyPublicId}
-                    trigger={
-                      <Button variant="ghost" size="sm">
-                        Upload more documents
-                      </Button>
-                    }
-                  />
-                </li>
-              </ul>
-            </DropdownButton>
+            <DataRoomUploader
+              dataRoom={dataRoom}
+              companyPublicId={companyPublicId}
+              trigger={
+                <Button size="lg">
+                  <RiAddFill className="mr-2 h-5 w-5" />
+                  Upload
+                </Button>
+              }
+            />
           </div>
         )}
       </form>

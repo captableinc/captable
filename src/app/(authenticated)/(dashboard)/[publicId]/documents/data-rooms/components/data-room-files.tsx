@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { type DataRoomRecipientType } from "@/types/documents/data-room";
 import type { Bucket, DataRoom } from "@prisma/client";
+import { useDebounceCallback } from "usehooks-ts";
 
 import {
   RiFolder3Fill as FolderIcon,
@@ -43,6 +44,12 @@ const DataRoomFiles = ({
 }: DataRoomFilesProps) => {
   const { mutateAsync } = api.dataRoom.save.useMutation();
   const [loading, setLoading] = useState<boolean>(false);
+  const debounced = useDebounceCallback(async (name) => {
+    await mutateAsync({
+      name,
+      publicId: dataRoom.publicId,
+    });
+  }, 500);
 
   return (
     <div className="mt-2">
@@ -70,10 +77,7 @@ const DataRoomFiles = ({
                 defaultValue={dataRoom.name}
                 onChange={async (e) => {
                   const name = e.target.value;
-                  await mutateAsync({
-                    name,
-                    publicId: dataRoom.publicId,
-                  });
+                  await debounced(name);
                 }}
               />
             </div>

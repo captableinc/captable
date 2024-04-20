@@ -20,9 +20,9 @@ export default function EmailVerificationWithoutTokenPage() {
             your password please follow the link in your email.
           </p>
 
-          <Button className="mt-4">
-            <Link href="/">Go back home</Link>
-          </Button>
+          <Link href="/" className="mt-4">
+            <Button size="lg">Go back home</Button>
+          </Link>
         </div>
       </div>
     </div>

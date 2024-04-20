@@ -24,7 +24,7 @@ export const AccountVerificationEmail = ({
 }: AccountVerificationEmailProps) => (
   <Html>
     <Head />
-    <Preview>Your verification email link for {constants.title}</Preview>
+    <Preview>Your email verification link for {constants.title}</Preview>
     <Tailwind>
       <Body className="mx-auto my-auto bg-white font-sans">
         <Container className="mx-auto my-[40px] w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">

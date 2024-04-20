@@ -22,7 +22,7 @@ const CheckEmailComponent = () => {
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: "Invalid Email!",
+        description: "Email not found!",
       });
     },
   });

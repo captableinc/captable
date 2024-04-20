@@ -12,13 +12,13 @@ const EmailSent = () => {
           <RiMailLine className="mb-1 h-10 w-auto" />
           <h1 className="text-2xl font-semibold tracking-tight">Email sent!</h1>
         </div>
-        <div className="mb-2 text-center">
+        <div className="text-center">
           A password reset email has been sent, if you have an account you
           should see it in your inbox shortly.
         </div>
-        <Button>
-          <Link href="/signin">Back to Sign in</Link>
-        </Button>
+        <Link href="/" className="mt-4 text-center">
+          <Button size="lg">Back to sign in</Button>
+        </Link>
       </div>
     </div>
   );

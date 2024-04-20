@@ -13,7 +13,7 @@ export const resendEmailProcedure = publicProcedure
     if (!oldVerificationToken) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Invalid Email!",
+        message: "Email not found!",
       });
     }
     const verificationToken = await generateVerificationToken(input);

@@ -20,3 +20,8 @@ export const ZSignUpMutationSchema = z.object({
   email: z.string().email(),
   password: ZPasswordSchema,
 });
+
+export const ZNewPasswordProcedureSchema = z.object({
+  token: z.string(),
+  password: z.string(),
+});

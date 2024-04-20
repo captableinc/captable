@@ -5,6 +5,9 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { api } from "@/trpc/react";
 import Link from "next/link";
 import {
   Form,
@@ -25,9 +28,27 @@ const ForgotPassword = () => {
   });
 
   const isSubmitting = form.formState.isSubmitting;
+  const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof inputSchema>) => {
-    console.log(values);
+  const { mutateAsync } = api.auth.forgotPassword.useMutation({
+    onSuccess: async ({ message }) => {
+      toast({
+        variant: "default",
+        title: "Reset email sent",
+        description: message,
+      });
+      router.replace("/email-sent");
+    },
+    onError: ({ message }) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: message,
+      });
+    },
+  });
+  const onSubmit = async (values: z.infer<typeof inputSchema>) => {
+    await mutateAsync(values.email);
   };
 
   return (
@@ -46,36 +67,38 @@ const ForgotPassword = () => {
         <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="grid gap-4">
-                      <FormLabel htmlFor="email">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="email"
-                          type="email"
-                          autoCapitalize="none"
-                          autoComplete="email"
-                          autoCorrect="off"
-                          autoFocus
-                          required
-                          disabled={isSubmitting}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage className="text-xs font-light" />
-                    </div>
-                  </FormItem>
-                )}
-              />
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="grid gap-4">
+                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            id="email"
+                            type="email"
+                            autoCapitalize="none"
+                            autoComplete="email"
+                            autoCorrect="off"
+                            autoFocus
+                            required
+                            disabled={isSubmitting}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-xs font-light" />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <Button loading={isSubmitting} type="submit">
+                  Reset Password
+                </Button>
+              </div>
             </form>
           </Form>
-          <Button loading={isSubmitting} type="submit">
-            Reset Password
-          </Button>
           <span className="text-center text-sm text-gray-500">
             Remembered your password?{" "}
             <Link

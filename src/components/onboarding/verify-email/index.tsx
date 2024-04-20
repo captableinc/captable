@@ -45,10 +45,10 @@ const VerifyEmail = ({ token }: { token: string }) => {
             <>
               <RiMailCheckLine className="mb-1 h-10 w-auto" />
               <h1 className="text-2xl font-semibold tracking-tight">
-                Email verified successfully
+                {success}
               </h1>
               <div className="mb-2 text-center text-sm text-muted-foreground">
-                {success}
+                Email verified successfully
               </div>
             </>
           ) : (
@@ -62,10 +62,10 @@ const VerifyEmail = ({ token }: { token: string }) => {
               </div>
             </>
           )}
+          <Link href="/" className="mt-4">
+            <Button size="lg">Go back home</Button>
+          </Link>
         </div>
-        <Button className="mt-4" asChild>
-          <Link href="/">Go back home</Link>
-        </Button>
       </div>
     </div>
   );

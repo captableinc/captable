@@ -14,6 +14,7 @@ import { stakeholderRouter } from "../routers/stakeholder-router/router";
 import { securitiesRouter } from "../routers/securities-router/router";
 import { safeRouter } from "../routers/safe/router";
 import { updateRouter } from "../routers/update/router";
+import { authRouter } from "../routers/auth/router";
 
 /**
  * This is the primary router for your server.
@@ -36,6 +37,7 @@ export const appRouter = createTRPCRouter({
   securities: securitiesRouter,
   safe: safeRouter,
   update: updateRouter,
+  auth: authRouter,
 });
 
 // export type definition of API

@@ -13,6 +13,7 @@ const DataRoomSettinsPage = async ({
   const session = await getServerAuthSession();
   const { dataRoom, documents, recipients } =
     await api.dataRoom.getDataRoom.query({ dataRoomPublicId });
+  const contacts = await api.dataRoom.getContacts.query();
 
   if (!dataRoom) {
     return notFound();
@@ -21,6 +22,7 @@ const DataRoomSettinsPage = async ({
   return (
     <DataRoomFiles
       dataRoom={dataRoom}
+      contacts={contacts}
       documents={documents}
       recipients={recipients}
       companyPublicId={publicId}

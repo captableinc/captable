@@ -1,23 +1,22 @@
 "use client";
 
 import EmptyState from "@/components/common/empty-state";
-import Loading from "@/components/common/loading";
 import ShareModal from "@/components/common/share";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
-import { type DataRoomRecipientType } from "@/types/documents/data-room";
+import { type ContactsType } from "@/types/contacts";
 import type { Bucket, DataRoom } from "@prisma/client";
+import { RiShareLine } from "@remixicon/react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
-  RiShareLine,
+  // RiShareLine,
   RiUploadCloudLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { useState } from "react";
 import DataRoomUploader from "./data-room-uploader";
 
 interface DataRoomType extends DataRoom {
@@ -33,17 +32,16 @@ type DataRoomFilesProps = {
   dataRoom: DataRoom;
   documents: Bucket[];
   companyPublicId: string;
-  recipients: DataRoomRecipientType[];
+  contacts: ContactsType;
 };
 
 const DataRoomFiles = ({
   dataRoom,
   documents,
-  recipients,
+  contacts,
   companyPublicId,
 }: DataRoomFilesProps) => {
   const { mutateAsync } = api.dataRoom.save.useMutation();
-  const [loading, setLoading] = useState<boolean>(false);
   const debounced = useDebounceCallback(async (name) => {
     await mutateAsync({
       name,
@@ -86,6 +84,7 @@ const DataRoomFiles = ({
           {documents.length > 0 && (
             <div className="flex gap-3">
               <ShareModal
+                contacts={contacts}
                 title={`Share data room - "${dataRoom.name}"`}
                 subtitle="Share this data room with others."
                 trigger={
@@ -138,8 +137,6 @@ const DataRoomFiles = ({
             </EmptyState>
           )}
         </div>
-
-        {loading && <Loading />}
       </div>
     </div>
   );

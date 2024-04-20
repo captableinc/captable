@@ -1,10 +1,9 @@
 import { generatePublicId } from "@/common/id";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { type ContactsType } from "@/types/contacts";
 import type { Bucket, DataRoom, DataRoomDocument } from "@prisma/client";
 import { z } from "zod";
 import { DataRoomSchema } from "./schema";
-
-import { type DataRoomRecipientType } from "@/types/documents/data-room";
 
 interface DataRoomDocumentType extends DataRoomDocument {
   document: {
@@ -30,7 +29,6 @@ export const dataRoomRouter = createTRPCRouter({
 
         include: {
           documents: true,
-          recipients: true,
         },
       });
 
@@ -62,63 +60,9 @@ export const dataRoomRouter = createTRPCRouter({
         updatedAt: doc.document.bucket.updatedAt,
       }));
 
-      console.log("TYpe of documents", typeof documents);
-
-      const recipientIds = dataRoom.recipients.map((recipient) => recipient.id);
-
-      const dataRoomRecipient = await db.dataRoomRecipient.findMany({
-        where: {
-          id: { in: recipientIds },
-        },
-
-        include: {
-          member: {
-            select: {
-              id: true,
-              user: {
-                select: {
-                  email: true,
-                  name: true,
-                },
-              },
-            },
-          },
-          stakeholder: true,
-        },
-      });
-
-      const recipients: DataRoomRecipientType[] = dataRoomRecipient.map(
-        (recipient) => {
-          const r = {
-            id: recipient.id,
-            email: recipient.email,
-          } as DataRoomRecipientType;
-
-          if (recipient.member && recipient.member.user) {
-            r.member = {
-              id: recipient.member.id,
-              email: recipient.member.user.email ?? "",
-              name: recipient.member.user.name ?? "",
-            };
-          }
-
-          if (recipient.stakeholder) {
-            r.stakeholder = {
-              id: recipient.stakeholder.id,
-              email: recipient.stakeholder.email,
-              name: recipient.stakeholder.name,
-              institutionName: recipient.stakeholder.institutionName ?? "",
-            };
-          }
-
-          return r;
-        },
-      );
-
       return {
         dataRoom,
         documents,
-        recipients,
       };
     }),
 
@@ -184,5 +128,49 @@ export const dataRoomRouter = createTRPCRouter({
           "Oops, something went wrong while saving data room. Please try again.",
       };
     }
+  }),
+
+  getContacts: withAuth.query(async ({ ctx }) => {
+    const { db, session } = ctx;
+    const user = session.user;
+    const companyId = user.companyId;
+
+    const members = await db.member.findMany({
+      where: {
+        companyId,
+      },
+
+      include: {
+        user: {
+          select: {
+            email: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    const stakeholders = await db.stakeholder.findMany({
+      where: {
+        companyId,
+      },
+    });
+
+    console.log("Members", members);
+    console.log("Stakeholders", stakeholders);
+
+    return {
+      members: (members || []).map((member) => ({
+        id: member.id,
+        email: member.user.email,
+        name: member.user.name,
+      })),
+      stakeholders: (stakeholders || []).map((stakeholder) => ({
+        id: stakeholder.id,
+        email: stakeholder.email,
+        name: stakeholder.name,
+        institutionName: stakeholder.institutionName,
+      })),
+    } as ContactsType;
   }),
 });

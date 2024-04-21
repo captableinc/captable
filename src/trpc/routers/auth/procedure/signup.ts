@@ -34,7 +34,7 @@ export const signupProcedure = publicProcedure
     });
     const verificationToken = await generateVerificationToken(email);
     await sendVerificationEmail(
-      verificationToken.email,
+      verificationToken.identifier,
       verificationToken.token,
     );
 

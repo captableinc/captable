@@ -48,7 +48,6 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       email,
       password,
       callbackUrl: "/onboarding",
-      redirect: false,
     });
     if (result?.error) {
       toast({

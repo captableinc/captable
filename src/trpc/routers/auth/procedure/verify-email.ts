@@ -23,7 +23,7 @@ export const verifyEmailProcedure = publicProcedure
       });
     }
 
-    const existingUser = await getUserByEmail(existingToken.email);
+    const existingUser = await getUserByEmail(existingToken.identifier);
 
     if (!existingUser) {
       throw new TRPCError({
@@ -36,7 +36,7 @@ export const verifyEmailProcedure = publicProcedure
       where: { id: existingUser.id },
       data: {
         emailVerified: new Date(),
-        email: existingToken.email,
+        email: existingToken.identifier,
       },
     });
 

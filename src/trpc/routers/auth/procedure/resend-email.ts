@@ -18,7 +18,7 @@ export const resendEmailProcedure = publicProcedure
     }
     const verificationToken = await generateVerificationToken(input);
     await sendVerificationEmail(
-      verificationToken.email,
+      verificationToken.identifier,
       verificationToken.token,
     );
     return {

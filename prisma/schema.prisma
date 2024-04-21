@@ -61,12 +61,12 @@ model User {
 }
 
 model VerificationToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-  @@unique([email, token])
+  @@unique([identifier, token])
 }
 
 model PasswordResetToken {

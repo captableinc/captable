@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider     = "postgresql"
-  url          = env("DATABASE_URL")
+  url          = "postgres://captable:password@database:5432/captable"
   relationMode = "prisma"
 }
 
@@ -759,3 +759,5 @@ model UpdateRecipient {
   @@index([updateId])
   @@index([stakeholderId])
 }
+
+

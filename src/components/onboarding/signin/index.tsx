@@ -8,6 +8,7 @@ import { AuthFormHeader } from "../auth-form-header";
 import { Button } from "@/components/ui/button";
 import { RiGoogleFill } from "@remixicon/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
+import { PasswordInput } from "@/components/ui/password-input";
 import * as z from "zod";
 import {
   Form,
@@ -109,10 +110,9 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                           Password
                         </FormLabel>
                         <FormControl>
-                          <Input
+                          <PasswordInput
                             id="password"
                             placeholder="*******"
-                            type="password"
                             autoCapitalize="none"
                             autoComplete="password"
                             autoCorrect="off"

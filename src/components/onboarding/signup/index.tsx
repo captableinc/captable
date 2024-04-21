@@ -11,6 +11,7 @@ import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
 import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/ui/password-input";
 import * as z from "zod";
 import {
   Form,
@@ -147,10 +148,9 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
                           Password
                         </FormLabel>
                         <FormControl>
-                          <Input
+                          <PasswordInput
                             id="password"
                             placeholder="*******"
-                            type="password"
                             autoCapitalize="none"
                             autoComplete="password"
                             autoCorrect="off"

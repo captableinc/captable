@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
 import { z } from "zod";
 import { api } from "@/trpc/react";
+import { PasswordInput } from "@/components/ui/password-input";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -96,9 +97,8 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                     <div className="grid gap-3">
                       <FormLabel htmlFor="password">Passowrd</FormLabel>
                       <FormControl>
-                        <Input
+                        <PasswordInput
                           id="password"
-                          type="password"
                           autoCapitalize="none"
                           autoCorrect="off"
                           autoFocus

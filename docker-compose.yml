@@ -1,0 +1,82 @@
+version: "3.8"
+
+volumes:
+  minio:
+  postgres_data:
+  data:
+
+services:
+  mailpit:
+    image: axllent/mailpit
+    container_name: captable-mailserver
+    restart: always
+    volumes:
+      - data:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATA_FILE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  app:
+    build:
+      context: .
+      args:
+        - NODE_VERSION=20.11.0
+      dockerfile: Dockerfile
+    container_name: captable-app
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+      - 5555:5555
+    depends_on:
+      - database
+      - minio
+      - mailpit
+
+  database:
+    image: postgres:15
+    container_name: captable-database
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio
+    container_name: captable-minio
+    ports:
+      - 9002:9002
+      - 9001:9001
+    volumes:
+      - minio:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    entrypoint: sh
+    command: -c 'minio server /data --console-address ":9001" --address ":9002"'
+
+  mc:
+    image: minio/mc
+    container_name: captable-mc
+    env_file:
+      - .env
+    entrypoint: sh
+    depends_on:
+      - minio
+    command: -c "
+      mc alias set myminio http://minio:9002 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
+      mc mb myminio/${UPLOAD_BUCKET_PRIVATE};
+      mc mb myminio/${UPLOAD_BUCKET_PUBLIC};
+      mc policy set public myminio/${UPLOAD_BUCKET_PUBLIC};
+      exit 0;
+      "

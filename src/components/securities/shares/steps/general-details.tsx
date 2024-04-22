@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 
+import { SpinnerIcon } from "@/components/shared/icons";
 import {
   FormControl,
   FormField,
@@ -20,7 +21,9 @@ import {
   ShareLegendsEnum,
   VestingScheduleEnum,
 } from "@/prisma-enums";
+import { api } from "@/trpc/react";
 import { useMemo } from "react";
+import ReactSelect from "react-select";
 
 export const GeneralDetailsField = [
   "certificateId",
@@ -28,11 +31,13 @@ export const GeneralDetailsField = [
   "quantity",
   "pricePerShare",
   "vestingSchedule",
+  "shareClassId",
   "companyLegends",
 ];
 
 export const GeneralDetails = () => {
   const form = useFormContext();
+  const shareClasses = api.shareClass.get.useQuery();
 
   const status = useMemo(
     () =>
@@ -60,17 +65,51 @@ export const GeneralDetails = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex-1">
+        <FormField
+          control={form.control}
+          name="certificateId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Certificate ID</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} />
+              </FormControl>
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          )}
+        />
+      </div>
       <div className="flex items-center gap-4">
         <div className="flex-1">
           <FormField
             control={form.control}
-            name="certificateId"
+            name="shareClassId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Certificate ID</FormLabel>
-                <FormControl>
-                  <Input type="text" {...field} />
-                </FormControl>
+                <FormLabel>Share class</FormLabel>
+                {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select stakeholder" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {shareClasses?.data?.data?.length ? (
+                      shareClasses?.data?.data?.map((sc) => (
+                        <SelectItem key={sc.id} value={sc.id}>
+                          {sc.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SpinnerIcon
+                        className="mx-auto my-4 w-full"
+                        color="black"
+                      />
+                    )}
+                  </SelectContent>
+                </Select>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}
@@ -177,24 +216,22 @@ export const GeneralDetails = () => {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Company legends</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              value={field.value as string}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select company legends" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {companyLegends?.length &&
-                  companyLegends.map((cl, index) => (
-                    <SelectItem key={index} value={cl}>
-                      {cl}
-                    </SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
+            <ReactSelect
+              isMulti
+              options={companyLegends.map((cl) => ({ label: cl, value: cl }))}
+              value={
+                field.value
+                  ? (field.value as string[]).map((v) => ({
+                      label: v,
+                      value: v,
+                    }))
+                  : []
+              }
+              onChange={(selectedOptions) => {
+                const values = selectedOptions.map((option) => option.value);
+                field.onChange(values);
+              }}
+            />
             <FormMessage className="text-xs font-light" />
           </FormItem>
         )}

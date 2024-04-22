@@ -1,21 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { dayjsExt } from "@/common/dayjs";
-import { Card } from "@/components/ui/card";
 import FileIcon from "@/components/shared/file-icon";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { Card } from "@/components/ui/card";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import {
-  Table,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-} from "@/components/ui/table";
+import DocumentShareModal from "@/components/document/share/document-share-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DocumentShareModal from "@/components/document/share/document-share-modal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { type RouterOutputs } from "@/trpc/shared";
 
 type DocumentType = RouterOutputs["document"]["getAll"];
@@ -66,7 +66,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                   <FileIcon type={document.bucket.mimeType} />
                   <span className="flex">{document.name}</span>
                 </TableCell>
-                <TableCell>{document.uploader.user.name}</TableCell>
+                <TableCell>{document?.uploader?.user?.name}</TableCell>
                 <TableCell suppressHydrationWarning>
                   {dayjsExt().to(document.createdAt)}
                 </TableCell>

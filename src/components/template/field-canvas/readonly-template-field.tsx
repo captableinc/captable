@@ -1,17 +1,19 @@
 import { useWatch } from "react-hook-form";
 import {
-  TemplateFieldContainer,
-  type TemplateFieldContainerProps,
+  ReadOnlyTemplateFieldContainer,
+  type ReadOnlyTemplateFieldContainerProps,
 } from "./template-field-container";
 
 import { type FieldTypes } from "@/prisma/enums";
 import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 
-interface ReadOnlyTemplateFieldProps
-  extends Omit<TemplateFieldContainerProps, "children"> {
+type ReadOnlyTemplateFieldProps = Omit<
+  ReadOnlyTemplateFieldContainerProps,
+  "children"
+> & {
   name: string;
   type: FieldTypes;
-}
+};
 
 export const ReadOnlyTemplateField = ({
   name,
@@ -23,8 +25,8 @@ export const ReadOnlyTemplateField = ({
     disabled: type === "SIGNATURE",
   }) as string;
   return (
-    <TemplateFieldContainer {...rest}>
+    <ReadOnlyTemplateFieldContainer {...rest}>
       <p>{type === "SIGNATURE" ? name : value}</p>
-    </TemplateFieldContainer>
+    </ReadOnlyTemplateFieldContainer>
   );
 };

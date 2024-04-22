@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 
+import { SpinnerIcon } from "@/components/shared/icons";
 import {
   FormControl,
   FormField,
@@ -8,25 +9,58 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMemo } from "react";
 import {
-  SecuritiesStatusEnum,
-  ShareLegendsEnum,
-  VestingScheduleEnum,
-} from "@/prisma-enums";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { api } from "@/trpc/react";
 
 export const ContributionDetailsField = [
   "capitalContribution",
   "ipContribution",
   "debtCancelled",
   "otherContributions",
+  "stakeholderId",
 ];
 
 export const ContributionDetails = () => {
   const form = useFormContext();
+  const stakeholders = api.stakeholder.getStakeholders.useQuery();
 
   return (
     <div className="space-y-4">
+      <FormField
+        control={form.control}
+        name="stakeholderId"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Stakeholder</FormLabel>
+            {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select stakeholder" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {stakeholders?.data?.data?.length ? (
+                  stakeholders?.data?.data?.map((sh) => (
+                    <SelectItem key={sh.id} value={sh.id}>
+                      {sh.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SpinnerIcon className="mx-auto my-4 w-full" color="black" />
+                )}
+              </SelectContent>
+            </Select>
+            <FormMessage className="text-xs font-light" />
+          </FormItem>
+        )}
+      />
       <div className="flex items-center gap-4">
         <div className="flex-1">
           <FormField

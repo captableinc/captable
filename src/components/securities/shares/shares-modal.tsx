@@ -1,14 +1,15 @@
 "use client";
 
 import MultiStepFormModal from "@/components/shared/multistepFormModal";
-import { ZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
-import { type Share } from "@prisma/client";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
 import {
-  DocumentUpload,
-  DocumentUploadFields,
-  GeneralDetails,
-  GeneralDetailsField,
-} from "./steps";
+  ZodAddShareMutationSchema,
+  type TypeZodAddShareMutationSchema,
+} from "@/trpc/routers/securities-router/schema";
+import { type Share } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { Documents, GeneralDetails, GeneralDetailsField } from "./steps";
 import {
   ContributionDetails,
   ContributionDetailsField,
@@ -28,6 +29,23 @@ const ShareModal = ({
   trigger,
   initialValues,
 }: ShareModalProps) => {
+  const { toast } = useToast();
+  const router = useRouter();
+  const addShareMutation = api.securities.addShares.useMutation({
+    onSuccess: async ({ message, success }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: message,
+        description: success
+          ? "A new share has been created."
+          : "Failed adding a share. Please try again.",
+      });
+      if (success) {
+        router.refresh();
+      }
+    },
+  });
+
   const steps = [
     {
       id: 1,
@@ -50,13 +68,13 @@ const ShareModal = ({
     {
       id: 4,
       title: "Upload Documents",
-      component: DocumentUpload,
-      fields: DocumentUploadFields,
+      component: Documents,
+      fields: ["documents"],
     },
   ];
 
-  const onSubmit = (data: Share) => {
-    console.log({ data });
+  const onSubmit = async (data: TypeZodAddShareMutationSchema) => {
+    await addShareMutation.mutateAsync(data);
   };
 
   return (
@@ -68,7 +86,7 @@ const ShareModal = ({
         trigger={trigger}
         schema={ZodAddShareMutationSchema}
         onSubmit={onSubmit}
-        initialValues={initialValues} // Add the 'initialValues' property here
+        initialValues={initialValues}
       />
     </div>
   );

@@ -17,21 +17,13 @@ export const ZodAddShareMutationSchema = z.object({
   quantity: z.coerce.number().min(0, {
     message: "Quantity is required",
   }),
-  pricePerShare: z.coerce.number().min(0, {
-    message: "Price per share is required",
-  }),
+  pricePerShare: z.coerce.number().optional(),
   capitalContribution: z.coerce.number().min(0, {
     message: "Capital contribution is required",
   }),
-  ipContribution: z.coerce.number().min(0, {
-    message: "Intellectual property is required",
-  }),
-  debtCancelled: z.coerce.number().min(0, {
-    message: "Debt cancelled is required",
-  }),
-  otherContributions: z.coerce.number().min(0, {
-    message: "Other contributions is required",
-  }),
+  ipContribution: z.coerce.number().optional(),
+  debtCancelled: z.coerce.number().optional(),
+  otherContributions: z.coerce.number().optional(),
   vestingSchedule: z.nativeEnum(VestingScheduleEnum, {
     errorMap: () => ({ message: "Invalid value for vesting schedule" }),
   }),
@@ -45,11 +37,9 @@ export const ZodAddShareMutationSchema = z.object({
     invalid_type_error: "This is not valid date",
   }),
   rule144Date: z.coerce.date({
-    required_error: "Rule 144 date is required",
     invalid_type_error: "This is not a valid date",
   }),
   vestingStartDate: z.coerce.date({
-    required_error: "Vesting Start date is required",
     invalid_type_error: "This is not a valid date",
   }),
   boardApprovalDate: z.coerce.date({
@@ -62,11 +52,15 @@ export const ZodAddShareMutationSchema = z.object({
       name: z.string(),
     }),
   ),
-  stakeholderId: z.string(),
-  shareClassId: z.string(),
+  stakeholderId: z.string().min(1, {
+    message: "Stakeholder is required",
+  }),
+  shareClassId: z.string().min(1, {
+    message: "Share Class is required",
+  }),
 });
 
-export type typeZodAddShareMutationSchema = z.infer<
+export type TypeZodAddShareMutationSchema = z.infer<
   typeof ZodAddShareMutationSchema
 >;
 

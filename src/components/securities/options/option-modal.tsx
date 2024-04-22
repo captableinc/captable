@@ -91,6 +91,7 @@ const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
         trigger={trigger}
         schema={ZodAddOptionMutationSchema}
         onSubmit={onSubmit}
+        dialogProps={{}}
       />
     </div>
   );

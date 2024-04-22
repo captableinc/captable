@@ -1,12 +1,12 @@
-name: opencap
+name: captable
 services:
   database:
     image: postgres:15
-    container_name: opencap-database
+    container_name: captable-database
     environment:
-      - POSTGRES_USER=opencap
+      - POSTGRES_USER=captable
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=opencap
+      - POSTGRES_DB=captable
     ports:
       - 54321:5432
     volumes:
@@ -14,7 +14,7 @@ services:
 
   inbucket:
     image: inbucket/inbucket
-    container_name: opencap-mailserver
+    container_name: captable-mailserver
     ports:
       - 9000:9000
       - 2500:2500
@@ -22,14 +22,14 @@ services:
   
   minio:
     image: minio/minio
-    container_name: opencap-minio
+    container_name: captable-minio
     ports:
       - 9002:9002
       - 9001:9001
     volumes:
       - minio:/data
     environment:
-      - MINIO_ROOT_USER=opencap
+      - MINIO_ROOT_USER=captable
       - MINIO_ROOT_PASSWORD=password
     entrypoint: sh
     command: -c 'minio server /data --console-address ":9001" --address ":9002"'
@@ -37,13 +37,13 @@ services:
 
   mc:
     image: minio/mc
-    container_name: opencap-minio-client
+    container_name: captable-minio-client
     entrypoint: sh
     command: -c "
-      mc alias set myminio http://minio:9002 opencap password;
-      mc mb myminio/opencap-private-bucket;
-      mc mb myminio/opencap-public-bucket;
-      mc policy set public myminio/opencap-public-bucket;
+      mc alias set myminio http://minio:9002 captable password;
+      mc mb myminio/captable-private-bucket;
+      mc mb myminio/captable-public-bucket;
+      mc policy set public myminio/captable-public-bucket;
       exit 0;
      "
     depends_on:

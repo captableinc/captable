@@ -34,7 +34,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { OpenCapLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/shared/logo";
 import { usePathname } from "next/navigation";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -125,6 +125,10 @@ const navigation = [
     activeIcon: RiFolder5Fill,
     subNav: [
       {
+        name: "All documents",
+        href: "/",
+      },
+      {
         name: "eSign documents",
         href: "/esign",
       },
@@ -132,11 +136,6 @@ const navigation = [
       {
         name: "Share documents",
         href: "/share",
-      },
-
-      {
-        name: "Repository",
-        href: "/repository",
       },
     ],
   },
@@ -204,7 +203,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
       <div className={cn("pb-12", className)}>
         <div className="fixed gap-y-4 py-4">
           <div className="flex items-center px-1 py-2">
-            <OpenCapLogo className="h-7 w-auto" />
+            <CaptableLogo className="h-7 w-auto" />
 
             <CompanySwitcher companies={companies} publicId={publicId} />
           </div>
@@ -261,9 +260,12 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                               {item.subNav.map((subItem) => {
                                 const href =
                                   basePath + item.href + subItem.href;
-                                const isActive = currentPath.includes(
-                                  item.href + subItem.href,
-                                );
+                                const isActive =
+                                  (subItem.href != "/" &&
+                                    currentPath.includes(
+                                      item.href + subItem.href,
+                                    )) ||
+                                  href === `${currentPath}/`;
 
                                 return (
                                   <li key={subItem.name}>

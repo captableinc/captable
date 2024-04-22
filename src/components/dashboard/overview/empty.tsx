@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/shared/empty-state";
-import { RiPieChartFill, RiArrowRightLine } from "@remixicon/react";
+import { Button } from "@/components/ui/button";
+import { RiArrowRightLine, RiPieChartFill } from "@remixicon/react";
+import Link from "next/link";
 
 type EmptyOverviewProps = {
   firstName: string | undefined;
@@ -12,7 +12,7 @@ const EmptyOverview = ({ firstName, publicCompanyId }: EmptyOverviewProps) => {
   return (
     <EmptyState
       icon={<RiPieChartFill />}
-      title={`Welcome to OpenCap${firstName && `, ${firstName}`} 👋`}
+      title={`Welcome to Captable, Inc.${firstName && `, ${firstName}`} 👋`}
       subtitle={
         <span className="text-muted-foreground">
           We will get you setup with your Captable in no time.

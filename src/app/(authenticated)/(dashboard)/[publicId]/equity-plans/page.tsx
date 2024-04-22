@@ -1,15 +1,15 @@
-import { db } from "@/server/db";
-import EquityPlanModal from "./modal";
-import EquityPlanTable from "./table";
-import { Card } from "@/components/ui/card";
+import EmptyState from "@/components/shared/empty-state";
 import Tldr from "@/components/shared/tldr";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
-import EmptyState from "@/components/shared/empty-state";
-import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
+import { db } from "@/server/db";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { RiAddFill, RiPieChart2Line } from "@remixicon/react";
 import { type Metadata } from "next";
+import EquityPlanModal from "./modal";
+import EquityPlanTable from "./table";
 
 export const metadata: Metadata = {
   title: "Equity plans",
@@ -59,7 +59,7 @@ const EquityPlanPage = async () => {
               cta={{
                 label: "Learn more",
                 // TODO - this link should be updated to the correct URL
-                href: "https://opencap.co/help",
+                href: "https://captable.inc/help",
               }}
             />
           }
@@ -95,7 +95,7 @@ const EquityPlanPage = async () => {
                 cta={{
                   label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: "https://opencap.co/help",
+                  href: "https://captable.inc/help",
                 }}
               />
             }

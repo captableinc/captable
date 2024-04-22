@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { OpenCapLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/shared/logo";
 import { cn } from "@/lib/utils";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
@@ -63,7 +63,7 @@ const Modal = ({
             <div className="">
               <DialogHeader>
                 <div className="flex justify-center">
-                  <OpenCapLogo className="mb-3 h-10 w-10" />
+                  <CaptableLogo className="mb-3 h-10 w-10" />
                 </div>
                 <DialogTitle className="mb-4 text-center">{title}</DialogTitle>
                 {subtitle && (

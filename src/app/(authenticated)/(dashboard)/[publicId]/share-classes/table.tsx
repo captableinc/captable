@@ -7,12 +7,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import ShareClassModal from "./modal";
 import Tldr from "@/components/shared/tldr";
 import { Card } from "@/components/ui/card";
-const formatter = new Intl.NumberFormat("en-US");
-import { RiEqualizer2Line } from "@remixicon/react";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { RiEqualizer2Line } from "@remixicon/react";
+import ShareClassModal from "./modal";
+const formatter = new Intl.NumberFormat("en-US");
 
 type ShareClassTableProps = {
   shareClasses: ShareClassMutationType[];
@@ -57,7 +57,7 @@ const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
                       cta={{
                         label: "Learn more",
                         // TODO - this link should be updated to the correct URL
-                        href: "https://opencap.co/help",
+                        href: "https://captable.inc/help",
                       }}
                     />
                   }

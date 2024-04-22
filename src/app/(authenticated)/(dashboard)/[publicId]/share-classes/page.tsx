@@ -1,14 +1,14 @@
-import { db } from "@/server/db";
-import ShareClassTable from "./table";
-import ShareClassModal from "./modal";
-import { Card } from "@/components/ui/card";
+import EmptyState from "@/components/shared/empty-state";
 import Tldr from "@/components/shared/tldr";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
-import EmptyState from "@/components/shared/empty-state";
-import { RiPieChart2Line, RiAddFill } from "@remixicon/react";
+import { db } from "@/server/db";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { RiAddFill, RiPieChart2Line } from "@remixicon/react";
 import { type Metadata } from "next";
+import ShareClassModal from "./modal";
+import ShareClassTable from "./table";
 
 export const metadata: Metadata = {
   title: "Share classes",
@@ -47,7 +47,7 @@ const SharesPage = async () => {
               cta={{
                 label: "Learn more",
                 // TODO - this link should be updated to the correct URL
-                href: "https://opencap.co/help",
+                href: "https://captable.inc/help",
               }}
             />
           }
@@ -83,7 +83,7 @@ const SharesPage = async () => {
                 cta={{
                   label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: "https://opencap.co/help",
+                  href: "https://captable.inc/help",
                 }}
               />
             }

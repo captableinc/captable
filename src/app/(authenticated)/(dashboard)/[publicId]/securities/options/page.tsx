@@ -29,7 +29,7 @@ const OptionsPage = async () => {
               message="Please fill in the details to create an option. If you need help, click the link below."
               cta={{
                 label: "Learn more",
-                href: "https://opencap.co/help/stakeholder-options",
+                href: "https://captable.inc/help/stakeholder-options",
               }}
             />
           }
@@ -62,7 +62,7 @@ const OptionsPage = async () => {
                Add approval dates, notes, grantId for the stakeholders. "
                 cta={{
                   label: "Learn more",
-                  href: "https://opencap.co/help/stakeholder-options",
+                  href: "https://captable.inc/help/stakeholder-options",
                 }}
               />
             }

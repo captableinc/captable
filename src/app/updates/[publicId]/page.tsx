@@ -1,12 +1,12 @@
 "use server";
 
-import Link from "next/link";
-import { db } from "@/server/db";
-import { render } from "jsx-email";
 import { dayjsExt } from "@/common/dayjs";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import UpdateRenderer from "@/components/update/renderer";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { db } from "@/server/db";
+import { render } from "jsx-email";
+import Link from "next/link";
 
 const PublicUpdatePage = async ({
   params: { publicId },
@@ -98,12 +98,12 @@ const PublicUpdatePage = async ({
           <p>
             Powered by{" "}
             <Link
-              href={`https://opencap.co?utm_source=${company.name}&utm_medium=updates&utm_campaign=powered_by`}
+              href={`https://captable.inc?utm_source=${company.name}&utm_medium=updates&utm_campaign=powered_by`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-bold text-teal-500 hover:underline"
             >
-              OpenCap
+              Captable, Inc.
             </Link>
           </p>
         </div>

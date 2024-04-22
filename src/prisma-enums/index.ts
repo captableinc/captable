@@ -5,14 +5,16 @@ export const MemberStatusEnum = {
   PENDING: "PENDING",
 } as const;
 
-export type MemberStatusEnum = (typeof MemberStatusEnum)[keyof typeof MemberStatusEnum];
+export type MemberStatusEnum =
+  (typeof MemberStatusEnum)[keyof typeof MemberStatusEnum];
 
 export const StakeholderTypeEnum = {
   INDIVIDUAL: "INDIVIDUAL",
   INSTITUTION: "INSTITUTION",
 } as const;
 
-export type StakeholderTypeEnum = (typeof StakeholderTypeEnum)[keyof typeof StakeholderTypeEnum];
+export type StakeholderTypeEnum =
+  (typeof StakeholderTypeEnum)[keyof typeof StakeholderTypeEnum];
 
 export const StakeholderRelationshipEnum = {
   ADVISOR: "ADVISOR",
@@ -30,7 +32,8 @@ export const StakeholderRelationshipEnum = {
   OTHER: "OTHER",
 } as const;
 
-export type StakeholderRelationshipEnum = (typeof StakeholderRelationshipEnum)[keyof typeof StakeholderRelationshipEnum];
+export type StakeholderRelationshipEnum =
+  (typeof StakeholderRelationshipEnum)[keyof typeof StakeholderRelationshipEnum];
 
 export const ShareTypeEnum = {
   COMMON: "COMMON",
@@ -44,14 +47,16 @@ export const SharePrefixEnum = {
   PS: "PS",
 } as const;
 
-export type SharePrefixEnum = (typeof SharePrefixEnum)[keyof typeof SharePrefixEnum];
+export type SharePrefixEnum =
+  (typeof SharePrefixEnum)[keyof typeof SharePrefixEnum];
 
 export const ConversionRightsEnum = {
   CONVERTS_TO_FUTURE_ROUND: "CONVERTS_TO_FUTURE_ROUND",
   CONVERTS_TO_SHARE_CLASS_ID: "CONVERTS_TO_SHARE_CLASS_ID",
 } as const;
 
-export type ConversionRightsEnum = (typeof ConversionRightsEnum)[keyof typeof ConversionRightsEnum];
+export type ConversionRightsEnum =
+  (typeof ConversionRightsEnum)[keyof typeof ConversionRightsEnum];
 
 export const CancellationBehaviorEnum = {
   RETIRE: "RETIRE",
@@ -60,7 +65,8 @@ export const CancellationBehaviorEnum = {
   DEFINED_PER_PLAN_SECURITY: "DEFINED_PER_PLAN_SECURITY",
 } as const;
 
-export type CancellationBehaviorEnum = (typeof CancellationBehaviorEnum)[keyof typeof CancellationBehaviorEnum];
+export type CancellationBehaviorEnum =
+  (typeof CancellationBehaviorEnum)[keyof typeof CancellationBehaviorEnum];
 
 export const FieldTypes = {
   TEXT: "TEXT",
@@ -80,7 +86,8 @@ export const TemplateStatus = {
   COMPLETE: "COMPLETE",
 } as const;
 
-export type TemplateStatus = (typeof TemplateStatus)[keyof typeof TemplateStatus];
+export type TemplateStatus =
+  (typeof TemplateStatus)[keyof typeof TemplateStatus];
 
 export const EsignRecipientStatus = {
   SENT: "SENT",
@@ -88,7 +95,8 @@ export const EsignRecipientStatus = {
   PENDING: "PENDING",
 } as const;
 
-export type EsignRecipientStatus = (typeof EsignRecipientStatus)[keyof typeof EsignRecipientStatus];
+export type EsignRecipientStatus =
+  (typeof EsignRecipientStatus)[keyof typeof EsignRecipientStatus];
 
 export const SecuritiesStatusEnum = {
   ACTIVE: "ACTIVE",
@@ -97,7 +105,8 @@ export const SecuritiesStatusEnum = {
   PENDING: "PENDING",
 } as const;
 
-export type SecuritiesStatusEnum = (typeof SecuritiesStatusEnum)[keyof typeof SecuritiesStatusEnum];
+export type SecuritiesStatusEnum =
+  (typeof SecuritiesStatusEnum)[keyof typeof SecuritiesStatusEnum];
 
 export const VestingScheduleEnum = {
   VESTING_0_0_0: "VESTING_0_0_0",
@@ -109,7 +118,8 @@ export const VestingScheduleEnum = {
   VESTING_4_12_1: "VESTING_4_12_1",
 } as const;
 
-export type VestingScheduleEnum = (typeof VestingScheduleEnum)[keyof typeof VestingScheduleEnum];
+export type VestingScheduleEnum =
+  (typeof VestingScheduleEnum)[keyof typeof VestingScheduleEnum];
 
 export const ShareLegendsEnum = {
   US_SECURITIES_ACT: "US_SECURITIES_ACT",
@@ -117,7 +127,8 @@ export const ShareLegendsEnum = {
   TRANSFER_RESTRICTIONS: "TRANSFER_RESTRICTIONS",
 } as const;
 
-export type ShareLegendsEnum = (typeof ShareLegendsEnum)[keyof typeof ShareLegendsEnum];
+export type ShareLegendsEnum =
+  (typeof ShareLegendsEnum)[keyof typeof ShareLegendsEnum];
 
 export const OptionTypeEnum = {
   ISO: "ISO",
@@ -125,7 +136,8 @@ export const OptionTypeEnum = {
   RSU: "RSU",
 } as const;
 
-export type OptionTypeEnum = (typeof OptionTypeEnum)[keyof typeof OptionTypeEnum];
+export type OptionTypeEnum =
+  (typeof OptionTypeEnum)[keyof typeof OptionTypeEnum];
 
 export const OptionStatusEnum = {
   DRAFT: "DRAFT",
@@ -135,7 +147,8 @@ export const OptionStatusEnum = {
   CANCELLED: "CANCELLED",
 } as const;
 
-export type OptionStatusEnum = (typeof OptionStatusEnum)[keyof typeof OptionStatusEnum];
+export type OptionStatusEnum =
+  (typeof OptionStatusEnum)[keyof typeof OptionStatusEnum];
 
 export const SafeTypeEnum = {
   PRE_MONEY: "PRE_MONEY",
@@ -152,7 +165,8 @@ export const SafeStatusEnum = {
   CANCELLED: "CANCELLED",
 } as const;
 
-export type SafeStatusEnum = (typeof SafeStatusEnum)[keyof typeof SafeStatusEnum];
+export type SafeStatusEnum =
+  (typeof SafeStatusEnum)[keyof typeof SafeStatusEnum];
 
 export const SafeTemplateEnum = {
   POST_MONEY_CAP: "POST_MONEY_CAP",
@@ -164,7 +178,8 @@ export const SafeTemplateEnum = {
   CUSTOM: "CUSTOM",
 } as const;
 
-export type SafeTemplateEnum = (typeof SafeTemplateEnum)[keyof typeof SafeTemplateEnum];
+export type SafeTemplateEnum =
+  (typeof SafeTemplateEnum)[keyof typeof SafeTemplateEnum];
 
 export const ConvertibleStatusEnum = {
   DRAFT: "DRAFT",
@@ -174,7 +189,8 @@ export const ConvertibleStatusEnum = {
   CANCELLED: "CANCELLED",
 } as const;
 
-export type ConvertibleStatusEnum = (typeof ConvertibleStatusEnum)[keyof typeof ConvertibleStatusEnum];
+export type ConvertibleStatusEnum =
+  (typeof ConvertibleStatusEnum)[keyof typeof ConvertibleStatusEnum];
 
 export const ConvertibleTypeEnum = {
   CCD: "CCD",
@@ -182,14 +198,16 @@ export const ConvertibleTypeEnum = {
   NOTE: "NOTE",
 } as const;
 
-export type ConvertibleTypeEnum = (typeof ConvertibleTypeEnum)[keyof typeof ConvertibleTypeEnum];
+export type ConvertibleTypeEnum =
+  (typeof ConvertibleTypeEnum)[keyof typeof ConvertibleTypeEnum];
 
 export const ConvertibleInterestMethodEnum = {
   SIMPLE: "SIMPLE",
   COMPOUND: "COMPOUND",
 } as const;
 
-export type ConvertibleInterestMethodEnum = (typeof ConvertibleInterestMethodEnum)[keyof typeof ConvertibleInterestMethodEnum];
+export type ConvertibleInterestMethodEnum =
+  (typeof ConvertibleInterestMethodEnum)[keyof typeof ConvertibleInterestMethodEnum];
 
 export const ConvertibleInterestAccrualEnum = {
   DAILY: "DAILY",
@@ -200,14 +218,16 @@ export const ConvertibleInterestAccrualEnum = {
   CONTINUOUSLY: "CONTINUOUSLY",
 } as const;
 
-export type ConvertibleInterestAccrualEnum = (typeof ConvertibleInterestAccrualEnum)[keyof typeof ConvertibleInterestAccrualEnum];
+export type ConvertibleInterestAccrualEnum =
+  (typeof ConvertibleInterestAccrualEnum)[keyof typeof ConvertibleInterestAccrualEnum];
 
 export const ConvertibleInterestPaymentScheduleEnum = {
   DEFERRED: "DEFERRED",
   PAY_AT_MATURITY: "PAY_AT_MATURITY",
 } as const;
 
-export type ConvertibleInterestPaymentScheduleEnum = (typeof ConvertibleInterestPaymentScheduleEnum)[keyof typeof ConvertibleInterestPaymentScheduleEnum];
+export type ConvertibleInterestPaymentScheduleEnum =
+  (typeof ConvertibleInterestPaymentScheduleEnum)[keyof typeof ConvertibleInterestPaymentScheduleEnum];
 
 export const UpdateStatusEnum = {
   DRAFT: "DRAFT",
@@ -215,7 +235,8 @@ export const UpdateStatusEnum = {
   PRIVATE: "PRIVATE",
 } as const;
 
-export type UpdateStatusEnum = (typeof UpdateStatusEnum)[keyof typeof UpdateStatusEnum];
+export type UpdateStatusEnum =
+  (typeof UpdateStatusEnum)[keyof typeof UpdateStatusEnum];
 
 export const UpdateEmailStatusEnum = {
   SENT: "SENT",
@@ -223,4 +244,5 @@ export const UpdateEmailStatusEnum = {
   FAILED: "FAILED",
 } as const;
 
-export type UpdateEmailStatusEnum = (typeof UpdateEmailStatusEnum)[keyof typeof UpdateEmailStatusEnum];
+export type UpdateEmailStatusEnum =
+  (typeof UpdateEmailStatusEnum)[keyof typeof UpdateEmailStatusEnum];

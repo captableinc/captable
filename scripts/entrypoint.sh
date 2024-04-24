@@ -9,18 +9,19 @@ npm run db:migrate
 echo "yes" | npx tsx prisma/seeds/index.ts
 
 if [ $? -eq 0 ]; then
-    echo "#### Database seeding is succeeded. ####"
+    echo "############################# Database seeding is succeeded. #################################"
 else
-    echo "#### Seed command failed. ####"
+    echo "################################## Seed command failed. #######################################"
 fi
 
 npm run db:studio &
+
 db_studio_exit_status=$?
 
 if [ $db_studio_exit_status -eq 0 ]; then
-    echo "#### Prisma studio is starting... ####"
+    echo "####################################### Prisma studio is starting... #############################################"
 else
-    echo "#### Prisma studio failed with exit status $db_studio_exit_status. ####"
+    echo "########################### Prisma studio failed with exit status $db_studio_exit_status. #########################"
 fi
 
-npm run start
+npm run dev

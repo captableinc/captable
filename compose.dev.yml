@@ -1,0 +1,104 @@
+version: "3.8"
+
+x-template: &template # restart: "always"
+  networks:
+    - captable_net
+
+volumes:
+  minio:
+  postgres_rawww:
+  data:
+
+networks:
+  captable_net:
+
+services:
+  postgres:
+    <<: *template
+    image: postgres:15
+    hostname: captable-postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: captable
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: captable
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_rawww:/var/lib/postgresql/data
+
+  mailpit:
+    <<: *template
+    image: axllent/mailpit
+    hostname: captable-mailserver
+    container_name: mailpit
+    volumes:
+      - data:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATA_FILE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+  app:
+    <<: *template
+    hostname: captable-app
+    container_name: app
+    working_dir: /app
+    command: npm run dev:combo
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: dev
+      args:
+        SKIP_ENV_VALIDATION: ${SKIP_ENV_VALIDATION:-true}
+        NODE_VERSION: ${NODE_VERSION:-20.11.0}
+        NODE_ENV: ${NODE_ENV:-development}
+        # WATCHPACK_POLLING: true
+        # WDS_SOCKET_HOST: 127.0.0.1
+        # CHOKIDAR_USEPOLLING: true
+    env_file: .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - 3000:3000
+      - 5555:5555
+    depends_on:
+      - postgres
+      - minio
+      - mailpit
+
+  minio:
+    <<: *template
+    image: minio/minio
+    hostname: captable-minio
+    container_name: minio
+    ports:
+      - 9002:9002
+      - 9001:9001
+    volumes:
+      - minio:/data
+    environment:
+      MINIO_ROOT_USER: captable
+      MINIO_ROOT_PASSWORD: password
+    entrypoint: sh
+    command: -c 'minio server /data --console-address ":9001" --address ":9002"'
+
+  mc:
+    image: minio/mc
+    container_name: captable-minio-client
+    depends_on:
+      - minio
+    entrypoint: sh
+    command: -c "
+      mc alias set myminio http://minio:9002 captable password;
+      mc mb myminio/captable-private-bucket;
+      mc mb myminio/captable-public-bucket;
+      mc policy set public myminio/captable-public-bucket;
+      exit 0;
+      "

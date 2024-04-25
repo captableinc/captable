@@ -61,27 +61,16 @@ const Share = ({ title, subtitle, trigger, contacts }: Props) => {
         ) : (
           <div className="my-3">
             <MultipleSelector
+              customLabel={true}
               className="bg-white py-3"
               selected={selected}
               setSelected={setSelected}
-              // options={options}
               options={contacts.map((contact) => ({
-                label: contact.email,
+                label: contact.name || "",
+                subLabel: contact.email,
+                image: contact.image,
                 value: contact.email,
               }))}
-              // options={[
-              //   { label: "nextjs", value: "nextjs" },
-              //   { label: "React", value: "react" },
-              //   { label: "Remix", value: "remix" },
-              //   { label: "Vite", value: "vite" },
-              //   { label: "Nuxt", value: "nuxt" },
-              //   { label: "Vue", value: "vue" },
-              //   { label: "Svelte", value: "svelte" },
-              //   { label: "Angular", value: "angular" },
-              //   { label: "Ember", value: "ember", disable: true },
-              //   { label: "Gatsby", value: "gatsby", disable: true },
-              //   { label: "Astro", value: "astro" },
-              // ]}
               placeholder="Search stakeholders, members or add email addresses"
               creatable
               emptyIndicator={

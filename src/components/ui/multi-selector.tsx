@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { RiCloseLine as CloseIcon } from "@remixicon/react";
 import * as React from "react";
 
@@ -15,10 +16,10 @@ import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { forwardRef, useEffect } from "react";
 
 export type Option = {
-  name?: string;
-  image?: string;
   value: string;
   label: string;
+  subLabel?: string;
+  image?: string;
   disable?: boolean;
   /** fixed option that can't be removed. */
   fixed?: boolean;
@@ -29,6 +30,7 @@ type GroupOption = Record<string, Option[]>;
 
 interface MultipleSelectorProps {
   value?: Option[];
+  customLabel: boolean; // If true, the label will be rendered as a ReactNode, provide subLabel and image props to Option
   defaultOptions?: Option[];
   /** manually controlled options */
   options?: Option[];
@@ -186,6 +188,7 @@ const MultipleSelector = React.forwardRef<
       inputProps,
       selected,
       setSelected,
+      customLabel = false,
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
@@ -493,7 +496,27 @@ const MultipleSelector = React.forwardRef<
                                   "cursor-default text-muted-foreground",
                               )}
                             >
-                              {option.label}
+                              {customLabel ? (
+                                <div className="flex items-center gap-2">
+                                  <Avatar className="h-8 w-8 rounded-full">
+                                    <AvatarImage
+                                      src={
+                                        option.image ?? "/placeholders/user.svg"
+                                      }
+                                    />
+                                  </Avatar>
+                                  <span className="flex flex-col font-medium">
+                                    <span className="text-sm">
+                                      {option.label}
+                                    </span>
+                                    <span className="text-xs text-primary/50">
+                                      {option.subLabel}
+                                    </span>
+                                  </span>
+                                </div>
+                              ) : (
+                                <>{option.label}</>
+                              )}
                             </CommandItem>
                           );
                         })}

@@ -57,7 +57,7 @@ export async function SendEsignEmail({ email, token }: SendEmailOptions) {
   const baseUrl = env.NEXTAUTH_URL;
   const html = await render(
     EsignEmail({
-      signingLink: `${baseUrl}/sign/${token}`,
+      signingLink: `${baseUrl}/documents/esign/${token}`,
     }),
   );
   await sendMail({

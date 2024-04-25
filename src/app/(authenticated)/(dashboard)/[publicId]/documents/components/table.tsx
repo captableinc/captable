@@ -1,21 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { dayjsExt } from "@/common/dayjs";
+import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
-import FileIcon from "@/components/shared/file-icon";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import {
-  Table,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-} from "@/components/ui/table";
+import DocumentShareModal from "@/components/documents/share/document-share-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +17,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DocumentShareModal from "@/components/document/share/document-share-modal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { type RouterOutputs } from "@/trpc/shared";
 
 type DocumentType = RouterOutputs["document"]["getAll"];
@@ -38,6 +38,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
   const router = useRouter();
   const openFileOnTab = async (key: string) => {
     const fileUrl = await getPresignedGetUrl(key);
+    debugger;
     window.open(fileUrl.url, "_blank");
   };
 
@@ -63,7 +64,9 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
             {documents.map((document) => (
               <TableRow key={document.id}>
                 <TableCell className="flex items-center ">
-                  <FileIcon type={document.bucket.mimeType} />
+                  <div className="mr-3">
+                    <FileIcon type={document.bucket.mimeType} />
+                  </div>
                   <span className="flex">{document.name}</span>
                 </TableCell>
                 <TableCell>{document.uploader.user.name}</TableCell>

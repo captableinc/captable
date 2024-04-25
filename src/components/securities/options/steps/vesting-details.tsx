@@ -1,6 +1,6 @@
 "use client";
 
-import { SpinnerIcon } from "@/components/shared/icons";
+import { SpinnerIcon } from "@/components/common/icons";
 import {
   FormControl,
   FormField,

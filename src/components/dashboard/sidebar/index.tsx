@@ -13,8 +13,8 @@ import {
   RiFolderChartLine,
   RiGroup2Fill,
   RiGroup2Line,
-  RiHome2Fill,
-  RiHome2Line,
+  // RiHome2Fill,
+  // RiHome2Line,
   RiListCheck3,
   RiListIndefinite,
   RiMailSendFill,
@@ -34,7 +34,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import { CaptableLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/common/logo";
 import { usePathname } from "next/navigation";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -45,15 +45,15 @@ import { type TGetCompanyList } from "@/server/company";
 import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
-  {
-    name: "Overview",
-    href: "/",
-    icon: RiHome2Line,
-    activeIcon: RiHome2Fill,
-  },
+  // {
+  //   name: "Overview",
+  //   href: "/",
+  //   icon: RiHome2Line,
+  //   activeIcon: RiHome2Fill,
+  // },
   {
     name: "Cap table",
-    href: "/captable",
+    href: "/",
     icon: RiPieChartLine,
     activeIcon: RiPieChartFill,
   },
@@ -125,14 +125,17 @@ const navigation = [
     activeIcon: RiFolder5Fill,
     subNav: [
       {
-        name: "All documents",
+        name: "Storage",
         href: "/",
+      },
+      {
+        name: "Data rooms",
+        href: "/data-rooms",
       },
       {
         name: "eSign documents",
         href: "/esign",
       },
-
       {
         name: "Share documents",
         href: "/share",

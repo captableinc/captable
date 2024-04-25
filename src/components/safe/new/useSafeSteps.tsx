@@ -1,11 +1,11 @@
-import { type stepsType } from "@/components/shared/multistep-modal";
+import { type stepsType } from "@/components/common/multistep-modal";
 import {
+  Documents,
+  DocumentsFields,
   GeneralDetails,
   GeneralDetailsFields,
   InvestorDetails,
   InvestorDetailsFields,
-  Documents,
-  DocumentsFields,
 } from "./steps";
 
 type SafeStepsType = {

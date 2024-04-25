@@ -21,6 +21,7 @@ export const companyRouter = createTRPCRouter({
             id: true,
             publicId: true,
             name: true,
+            website: true,
             incorporationDate: true,
             incorporationType: true,
             incorporationState: true,

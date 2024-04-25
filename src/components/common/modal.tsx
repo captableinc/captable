@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { CaptableLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/common/logo";
 import { cn } from "@/lib/utils";
 import { type DialogProps } from "@radix-ui/react-dialog";
 

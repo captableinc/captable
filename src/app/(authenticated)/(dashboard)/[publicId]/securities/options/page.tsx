@@ -1,7 +1,7 @@
+import EmptyState from "@/components/common/empty-state";
+import Tldr from "@/components/common/tldr";
 import OptionModal from "@/components/securities/options/option-modal";
 import OptionTable from "@/components/securities/options/option-table";
-import EmptyState from "@/components/shared/empty-state";
-import Tldr from "@/components/shared/tldr";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";

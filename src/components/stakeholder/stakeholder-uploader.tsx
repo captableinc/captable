@@ -67,7 +67,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
         Please download the{" "}
         <Link
           download
-          href="/sample-csv/captable-stakeholders-template.csv"
+          href="/sample/csv/captable-stakeholders-template.csv"
           target="_blank"
           rel="noopener noreferrer"
           className="rounded bg-gray-300/70 px-2 py-1 text-xs font-medium hover:bg-gray-400/50"

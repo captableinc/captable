@@ -1,5 +1,5 @@
 "use client";
-import Tldr from "@/components/shared/tldr";
+import Tldr from "@/components/common/tldr";
 import MultipleStakeholdersModal from "@/components/stakeholder/multiple-stakeholders-modal";
 import SingleStakeholdersModal from "@/components/stakeholder/single-stakeholder-modal";
 import { Button } from "@/components/ui/button";

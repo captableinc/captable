@@ -1,5 +1,5 @@
+import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
-import EmptyState from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
@@ -41,7 +41,7 @@ const DocumentsPage = async () => {
     <div className="flex flex-col gap-y-3">
       <PageLayout
         title="All documents"
-        description="Uplod documents to your company's document library."
+        description="Upload documents to your company's document library."
         action={
           <DocumentUploadModal
             companyPublicId={session.user.companyPublicId}

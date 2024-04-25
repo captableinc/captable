@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import Modal from "@/components/shared/modal";
+import Modal from "@/components/common/modal";
 import Uploader, { type UploadReturn } from "@/components/ui/uploader";
-import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type DocumentUploadModalProps = {
   trigger: React.ReactNode;

@@ -22,7 +22,7 @@ type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
 type FieldRendererProps = Pick<
   Field,
   "type" | "name" | "required" | "readOnly" | "group"
-> & { recipientId: string };
+> & { recipientId: string; prefilledValue: string | null; id: string };
 
 export function FieldRenderer({
   type,
@@ -31,15 +31,16 @@ export function FieldRenderer({
   readOnly,
   group,
   recipientId,
+  prefilledValue,
+  id,
 }: FieldRendererProps) {
-  const { control, getValues } = useFormContext<TemplateSigningFieldForm>();
+  const { control } = useFormContext<TemplateSigningFieldForm>();
 
   const enabled =
     group === recipientId || group === generateAllRecipientGroup(recipientId);
   const disabled = readOnly || !enabled;
 
-  const fieldName = `fieldValues.${name}` as const;
-  const defaultValue = getValues(fieldName);
+  const fieldName = `fieldValues.${id}` as const;
 
   switch (type) {
     case "TEXT":
@@ -92,7 +93,7 @@ export function FieldRenderer({
                   onChange={(val) => {
                     onChange(val);
                   }}
-                  defaultValue={defaultValue}
+                  prefilledValue={prefilledValue}
                 />
               </FormControl>
               <FormMessage />

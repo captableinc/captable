@@ -33,6 +33,8 @@ export function SigningFields({
           readOnly={item.readOnly}
           group={item.group}
           recipientId={recipientId}
+          prefilledValue={item.prefilledValue}
+          id={item.id}
         />
       ))}
 

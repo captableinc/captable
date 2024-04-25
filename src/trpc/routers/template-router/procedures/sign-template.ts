@@ -55,7 +55,7 @@ export const signTemplateProcedure = publicProcedure
         });
 
         for (const field of fields) {
-          const value = input?.data?.[field?.name];
+          const value = input?.data?.[field?.id];
 
           if (value) {
             await tx.templateField.update({

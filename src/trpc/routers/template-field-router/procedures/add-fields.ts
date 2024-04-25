@@ -2,16 +2,11 @@
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
 
-import {
-  ALL_RECIPIENT_VALUE,
-  generateAllRecipientGroup,
-} from "@/constants/esign";
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
 import { sendMail } from "@/server/mailer";
 import { SignJWT, jwtVerify } from "jose";
 import { render } from "jsx-email";
-import { nanoid } from "nanoid";
 import { z } from "zod";
 
 interface SendEmailOptions {
@@ -107,22 +102,7 @@ export const addFieldProcedure = withAuth
         const field = input.data[index];
 
         if (field) {
-          const fieldWithTemplateId = { ...field, templateId: template.id };
-
-          if (fieldWithTemplateId.group === ALL_RECIPIENT_VALUE) {
-            for (let index = 0; index < recipientList.length; index++) {
-              const recipient = recipientList[index];
-              if (recipient) {
-                fieldsList.push({
-                  ...fieldWithTemplateId,
-                  group: generateAllRecipientGroup(recipient.id),
-                  id: nanoid(),
-                });
-              }
-            }
-          } else {
-            fieldsList.push(fieldWithTemplateId);
-          }
+          fieldsList.push({ ...field, templateId: template.id });
         }
       }
 

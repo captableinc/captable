@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
-import { ALL_RECIPIENT_VALUE, RECIPIENT_COLORS } from "@/constants/esign";
+import { RECIPIENT_COLORS } from "@/constants/esign";
 import { FieldTypes } from "@/prisma/enums";
 import { type RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,7 +55,7 @@ export const TemplateFieldProvider = ({
     defaultValues: {
       fields: fields ?? [],
       fieldType: undefined,
-      recipient: ALL_RECIPIENT_VALUE,
+      recipient: recipients?.[0]?.id,
       recipientColors: recipients
         ? recipients.reduce<Record<string, string>>((prev, curr, index) => {
             const color = RECIPIENT_COLORS?.[index] ?? "";

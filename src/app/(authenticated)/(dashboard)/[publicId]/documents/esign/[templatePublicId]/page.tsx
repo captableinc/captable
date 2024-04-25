@@ -2,7 +2,6 @@ import { CanvasToolbar } from "@/components/template/canavs-toolbar";
 import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { TemplateFieldForm } from "@/components/template/template-field-form";
 import { Badge } from "@/components/ui/badge";
-import { ALL_RECIPIENT_VALUE } from "@/constants/esign";
 import { TemplateFieldProvider } from "@/providers/template-field-provider";
 import { api } from "@/trpc/server";
 
@@ -16,12 +15,8 @@ const EsignTemplateDetailPage = async ({
       publicId: templatePublicId,
     });
 
-  const recipientList = recipients.concat({
-    id: ALL_RECIPIENT_VALUE,
-    email: "All recipients",
-  });
   return (
-    <TemplateFieldProvider recipients={recipientList} fields={fields}>
+    <TemplateFieldProvider recipients={recipients} fields={fields}>
       <TemplateFieldForm templatePublicId={templatePublicId}>
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex align-middle">
@@ -35,8 +30,8 @@ const EsignTemplateDetailPage = async ({
               {name}
             </span>
           </div>
-          <CanvasToolbar recipients={recipientList} />
-          <PdfCanvas mode="edit" recipients={recipientList} url={url} />
+          <CanvasToolbar recipients={recipients} />
+          <PdfCanvas mode="edit" recipients={recipients} url={url} />
         </div>
       </TemplateFieldForm>
     </TemplateFieldProvider>

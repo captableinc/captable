@@ -1,7 +1,3 @@
-import {
-  ALL_RECIPIENT_VALUE,
-  generateAllRecipientGroup,
-} from "@/constants/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { publicProcedure } from "@/trpc/api/trpc";
 import { DecodeEmailToken } from "../../template-field-router/procedures/add-fields";
@@ -70,15 +66,8 @@ export const getSigningFieldsProcedure = publicProcedure
 
     const { key, url } = await getPresignedGetUrl(bucket.key);
 
-    const filteredFields = fields.filter((item) => {
-      if (item.group.startsWith(ALL_RECIPIENT_VALUE)) {
-        return item.group === generateAllRecipientGroup(recipientId);
-      } else {
-        return true;
-      }
-    });
     return {
-      fields: filteredFields,
+      fields,
       key,
       url,
       recipientId,

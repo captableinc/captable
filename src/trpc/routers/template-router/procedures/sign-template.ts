@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { getFileFromS3, uploadFile } from "@/common/uploads";
-import {
-  ALL_RECIPIENT_VALUE,
-  generateAllRecipientGroup,
-} from "@/constants/esign";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
 import { type PrismaTransactionalClient } from "@/server/db";
 import { publicProcedure, type CreateTRPCContextType } from "@/trpc/api/trpc";
@@ -46,15 +42,7 @@ export const signTemplateProcedure = publicProcedure
       });
 
       if (totalGroups.size > 1) {
-        const fields = template.fields.filter((item) => {
-          if (item.group.startsWith(ALL_RECIPIENT_VALUE)) {
-            return item.group === generateAllRecipientGroup(recipient.id);
-          } else {
-            return true;
-          }
-        });
-
-        for (const field of fields) {
+        for (const field of template.fields) {
           const value = input?.data?.[field?.id];
 
           if (value) {

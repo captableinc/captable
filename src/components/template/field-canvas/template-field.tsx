@@ -25,6 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -138,34 +139,7 @@ export function TemplateField({
         />
       </div>
 
-      <FormField
-        control={control}
-        name={`fields.${index}.group`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Recipient</FormLabel>
-            <Select
-              required
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {recipients.map((item) => (
-                  <SelectItem key={item.id} value={item.id}>
-                    {item.email}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <RecipientSelect recipients={recipients} index={index} />
 
       {type === "TEXT" && <FieldDefaultValue index={index} />}
     </TemplateFieldContainer>
@@ -221,5 +195,54 @@ function FieldDefaultValue({ index }: FieldDefaultValueProps) {
         </AccordionContent>
       </AccordionItem>
     </Accordion>
+  );
+}
+
+interface RecipientSelectProps {
+  index: number;
+  recipients: Recipients;
+}
+
+function RecipientSelect({ index, recipients }: RecipientSelectProps) {
+  const { control, getValues } = useFormContext<TemplateFieldForm>();
+  const recipientColors = getValues("recipientColors");
+  return (
+    <FormField
+      control={control}
+      name={`fields.${index}.group`}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Recipient</FormLabel>
+          <Select
+            required
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {recipients.map((recipient) => (
+                <SelectItem key={recipient.id} value={recipient.id}>
+                  <span className="flex items-center">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "mr-2  rounded-full p-2",
+                        recipientColors[recipient.id],
+                      )}
+                    />
+                    <span>{recipient.email}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

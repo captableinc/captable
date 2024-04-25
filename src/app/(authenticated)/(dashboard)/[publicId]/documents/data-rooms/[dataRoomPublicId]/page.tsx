@@ -11,8 +11,9 @@ const DataRoomSettinsPage = async ({
   params: { publicId: string; dataRoomPublicId: string };
 }) => {
   const session = await getServerAuthSession();
-  const { dataRoom, documents, recipients } =
-    await api.dataRoom.getDataRoom.query({ dataRoomPublicId });
+  const { dataRoom, documents } = await api.dataRoom.getDataRoom.query({
+    dataRoomPublicId,
+  });
   const contacts = await api.dataRoom.getContacts.query();
 
   if (!dataRoom) {
@@ -24,7 +25,6 @@ const DataRoomSettinsPage = async ({
       dataRoom={dataRoom}
       contacts={contacts}
       documents={documents}
-      recipients={recipients}
       companyPublicId={publicId}
     />
   );

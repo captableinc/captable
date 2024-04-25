@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { Command as CommandPrimitive, useCommandState } from "cmdk";
 import { forwardRef, useEffect } from "react";
 
-export interface Option {
+export type Option = {
   name?: string;
   image?: string;
   value: string;
@@ -24,7 +24,7 @@ export interface Option {
   fixed?: boolean;
   /** Group the options by providing key. */
   [key: string]: string | boolean | undefined;
-}
+};
 type GroupOption = Record<string, Option[]>;
 
 interface MultipleSelectorProps {

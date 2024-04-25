@@ -1,16 +1,10 @@
 "use client";
 
-// import Fuse from 'fuse.js'
 import Loading from "@/components/common/loading";
 import Modal from "@/components/common/modal";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
-// import { Input } from "@/components/ui/input";
-// import {
-//   Popover,
-//   PopoverContent,
-//   PopoverTrigger,
-// } from "@/components/ui/popover";
+
 import { type ContactsType } from "@/types/contacts";
 import {
   RiCheckLine as CheckIcon,
@@ -28,13 +22,6 @@ export type Props = {
 };
 
 const Share = ({ title, subtitle, trigger, contacts }: Props) => {
-  // const fuse = new Fuse(
-  //   contacts
-  //   , {
-  //     keys: ["name", "email"],
-  //     includeScore: true,
-  //   }
-  // );
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [copiedText, copy] = useCopyToClipboard();
@@ -77,24 +64,29 @@ const Share = ({ title, subtitle, trigger, contacts }: Props) => {
               className="bg-white py-3"
               selected={selected}
               setSelected={setSelected}
-              options={[
-                { label: "nextjs", value: "nextjs" },
-                { label: "React", value: "react" },
-                { label: "Remix", value: "remix" },
-                { label: "Vite", value: "vite" },
-                { label: "Nuxt", value: "nuxt" },
-                { label: "Vue", value: "vue" },
-                { label: "Svelte", value: "svelte" },
-                { label: "Angular", value: "angular" },
-                { label: "Ember", value: "ember", disable: true },
-                { label: "Gatsby", value: "gatsby", disable: true },
-                { label: "Astro", value: "astro" },
-              ]}
+              // options={options}
+              options={contacts.map((contact) => ({
+                label: contact.email,
+                value: contact.email,
+              }))}
+              // options={[
+              //   { label: "nextjs", value: "nextjs" },
+              //   { label: "React", value: "react" },
+              //   { label: "Remix", value: "remix" },
+              //   { label: "Vite", value: "vite" },
+              //   { label: "Nuxt", value: "nuxt" },
+              //   { label: "Vue", value: "vue" },
+              //   { label: "Svelte", value: "svelte" },
+              //   { label: "Angular", value: "angular" },
+              //   { label: "Ember", value: "ember", disable: true },
+              //   { label: "Gatsby", value: "gatsby", disable: true },
+              //   { label: "Astro", value: "astro" },
+              // ]}
               placeholder="Search stakeholders, members or add email addresses"
               creatable
               emptyIndicator={
                 <p className="text-center text-sm leading-10 text-gray-600 dark:text-gray-400">
-                  no results found.
+                  No results found!
                 </p>
               }
             />

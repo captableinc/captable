@@ -25,7 +25,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ALL_RECIPIENT_VALUE } from "@/constants/esign";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -60,8 +59,12 @@ export function TemplateField({
   viewportWidth,
   recipients,
 }: TemplateFieldProps) {
-  const { control } = useFormContext<TemplateFieldForm>();
+  const { control, getValues } = useFormContext<TemplateFieldForm>();
   const type = useWatch({ control: control, name: `fields.${index}.type` });
+  const group = useWatch({ control: control, name: `fields.${index}.group` });
+
+  const recipientColors = getValues("recipientColors");
+  const color = recipientColors?.[group] ?? "";
 
   return (
     <TemplateFieldContainer
@@ -73,6 +76,7 @@ export function TemplateField({
       top={top}
       left={left}
       height={height}
+      color={color}
     >
       <div className="flex items-center gap-x-2">
         <Button
@@ -156,9 +160,6 @@ export function TemplateField({
                     {item.email}
                   </SelectItem>
                 ))}
-                <SelectItem value={ALL_RECIPIENT_VALUE}>
-                  All recipients
-                </SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

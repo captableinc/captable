@@ -19,17 +19,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useFormState } from "react-hook-form";
-import { ALL_RECIPIENT_VALUE } from "@/constants/esign";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
+
+interface RecipientListProps {
+  recipients: Recipients;
+}
+
+function RecipientList({ recipients }: RecipientListProps) {
+  const { control, getValues } = useFormContext<TemplateFieldForm>();
+
+  const recipientColors = getValues("recipientColors");
+
+  return (
+    <FormField
+      name="recipient"
+      control={control}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="sr-only">Recipient</FormLabel>
+          <Select onValueChange={field.onChange} value={field.value}>
+            <FormControl>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Recipient" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {recipients.map((recipient) => (
+                <SelectItem key={recipient.id} value={recipient.id}>
+                  <span className="flex items-center">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "mr-2  rounded-full p-2",
+                        recipientColors[recipient.id],
+                      )}
+                    />
+                    <span>{recipient.email}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
 
 interface CanvasToolbarProps {
   recipients: Recipients;
 }
-
 export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
   const { control } = useFormContext<TemplateFieldForm>();
   const { isDirty } = useFormState({
@@ -76,33 +121,7 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
         />
 
         <div className="flex items-end gap-x-2">
-          <FormField
-            name="recipient"
-            control={control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="sr-only">Recipient</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select Recipient" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {recipients.map((recipient) => (
-                      <SelectItem key={recipient.id} value={recipient.id}>
-                        {recipient.email}
-                      </SelectItem>
-                    ))}
-                    <SelectItem value={ALL_RECIPIENT_VALUE}>
-                      All recipients
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <RecipientList recipients={recipients} />
 
           <Toolbar.Button asChild>
             <Button disabled={isDisabled} type="submit">

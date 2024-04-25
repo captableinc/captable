@@ -92,6 +92,7 @@ export interface TemplateFieldContainerProps
   extends ComponentProps<"button">,
     useMeasurementProps {
   children: ReactNode;
+  color: string;
 }
 
 export function TemplateFieldContainer({
@@ -105,6 +106,7 @@ export function TemplateFieldContainer({
   width,
   children,
   className,
+  color,
   ...rest
 }: TemplateFieldContainerProps) {
   const {
@@ -128,7 +130,8 @@ export function TemplateFieldContainer({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "group absolute z-20 cursor-pointer border-2 border-red-600 bg-red-300/50",
+            "group absolute z-20 cursor-pointer border-2 border-red-600 bg-opacity-50",
+            color,
             className,
           )}
           style={{

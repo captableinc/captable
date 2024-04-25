@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { mergeRefs } from "@/lib/dom";
 import { cn } from "@/lib/utils";
 import { toPng } from "html-to-image";
 import { forwardRef, useRef, useState, type MouseEvent } from "react";
@@ -48,11 +49,11 @@ function DrawingLine({ line }: { line: [Point] }) {
 interface SignaturePadProps {
   onChange?: (value: string) => void;
   disabled: boolean;
-  defaultValue: string;
+  prefilledValue: string | null;
 }
 
 export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
-  ({ onChange, disabled, defaultValue }, ref) => {
+  ({ onChange, disabled, prefilledValue }, ref) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [lines, setLines] = useState<[Point][]>([]);
@@ -85,10 +86,10 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
       };
     };
 
-    if (defaultValue !== "") {
+    if (prefilledValue) {
       return (
-        <div className="h-64 w-full cursor-not-allowed border">
-          <img src={defaultValue} alt="signature" />
+        <div ref={ref} className="h-64 w-full cursor-not-allowed border">
+          <img src={prefilledValue} alt="signature" />
         </div>
       );
     }
@@ -99,7 +100,7 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
           "h-64 w-full border",
           disabled ? "cursor-not-allowed" : "cursor-crosshair",
         )}
-        ref={canvasRef}
+        ref={mergeRefs(canvasRef, ref)}
         onMouseUp={async () => {
           if (disabled) {
             return;

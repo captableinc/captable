@@ -46,6 +46,7 @@ export const getTemplateProcedure = withAuth
           select: {
             email: true,
             id: true,
+            name: true,
           },
         },
       },

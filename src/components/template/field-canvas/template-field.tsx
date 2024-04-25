@@ -219,7 +219,7 @@ function RecipientSelect({ index, recipients }: RecipientSelectProps) {
             defaultValue={field.value}
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="h-auto px-2 py-1">
                 <SelectValue />
               </SelectTrigger>
             </FormControl>
@@ -234,7 +234,12 @@ function RecipientSelect({ index, recipients }: RecipientSelectProps) {
                         recipientColors[recipient.id],
                       )}
                     />
-                    <span>{recipient.email}</span>
+                    <span className="flex flex-col items-start">
+                      {recipient.name && recipient.name !== "" && (
+                        <span>{recipient.name}</span>
+                      )}
+                      <span>{recipient.email}</span>
+                    </span>
                   </span>
                 </SelectItem>
               ))}

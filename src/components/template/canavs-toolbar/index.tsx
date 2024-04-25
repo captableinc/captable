@@ -44,7 +44,7 @@ function RecipientList({ recipients }: RecipientListProps) {
           <FormLabel className="sr-only">Recipient</FormLabel>
           <Select onValueChange={field.onChange} value={field.value}>
             <FormControl>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="h-auto px-2 py-1 ">
                 <SelectValue placeholder="Select Recipient" />
               </SelectTrigger>
             </FormControl>
@@ -59,7 +59,12 @@ function RecipientList({ recipients }: RecipientListProps) {
                         recipientColors[recipient.id],
                       )}
                     />
-                    <span>{recipient.email}</span>
+                    <span className="flex flex-col items-start">
+                      {recipient.name && recipient.name !== "" && (
+                        <span>{recipient.name}</span>
+                      )}
+                      <span>{recipient.email}</span>
+                    </span>
                   </span>
                 </SelectItem>
               ))}

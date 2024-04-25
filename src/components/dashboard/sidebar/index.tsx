@@ -13,8 +13,8 @@ import {
   RiFolderChartLine,
   RiGroup2Fill,
   RiGroup2Line,
-  RiHome2Fill,
-  RiHome2Line,
+  // RiHome2Fill,
+  // RiHome2Line,
   RiListCheck3,
   RiListIndefinite,
   RiMailSendFill,
@@ -45,15 +45,15 @@ import { type TGetCompanyList } from "@/server/company";
 import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
-  {
-    name: "Overview",
-    href: "/",
-    icon: RiHome2Line,
-    activeIcon: RiHome2Fill,
-  },
+  // {
+  //   name: "Overview",
+  //   href: "/",
+  //   icon: RiHome2Line,
+  //   activeIcon: RiHome2Fill,
+  // },
   {
     name: "Cap table",
-    href: "/captable",
+    href: "/",
     icon: RiPieChartLine,
     activeIcon: RiPieChartFill,
   },

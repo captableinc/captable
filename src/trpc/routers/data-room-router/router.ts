@@ -134,6 +134,7 @@ export const dataRoomRouter = createTRPCRouter({
     const { db, session } = ctx;
     const user = session.user;
     const companyId = user.companyId;
+    const contacts = [] as ContactsType;
 
     const members = await db.member.findMany({
       where: {
@@ -145,6 +146,7 @@ export const dataRoomRouter = createTRPCRouter({
           select: {
             email: true,
             name: true,
+            image: true,
           },
         },
       },
@@ -156,21 +158,28 @@ export const dataRoomRouter = createTRPCRouter({
       },
     });
 
-    console.log("Members", members);
-    console.log("Stakeholders", stakeholders);
-
-    return {
-      members: (members || []).map((member) => ({
+    (members || []).map((member) =>
+      contacts.push({
         id: member.id,
-        email: member.user.email,
-        name: member.user.name,
-      })),
-      stakeholders: (stakeholders || []).map((stakeholder) => ({
+        image: member.user.image!,
+        email: member.user.email!,
+        value: member.user.email!,
+        name: member.user.name!,
+        type: "member",
+      }),
+    );
+
+    (stakeholders || []).map((stakeholder) =>
+      contacts.push({
         id: stakeholder.id,
         email: stakeholder.email,
+        value: stakeholder.email,
         name: stakeholder.name,
-        institutionName: stakeholder.institutionName,
-      })),
-    } as ContactsType;
+        institutionName: stakeholder.institutionName!,
+        type: "stakeholder",
+      }),
+    );
+
+    return contacts;
   }),
 });

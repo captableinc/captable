@@ -38,6 +38,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
   const router = useRouter();
   const openFileOnTab = async (key: string) => {
     const fileUrl = await getPresignedGetUrl(key);
+    debugger;
     window.open(fileUrl.url, "_blank");
   };
 

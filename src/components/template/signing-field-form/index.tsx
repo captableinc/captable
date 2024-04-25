@@ -36,6 +36,8 @@ export function SigningFieldForm({
 
       if (companyPublicId) {
         router.push(`/${companyPublicId}/documents`);
+      } else {
+        router.push("/");
       }
     },
   });

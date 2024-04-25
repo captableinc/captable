@@ -30,14 +30,16 @@ export function FieldRenderer({
   required,
   readOnly,
   group,
-
   recipientId,
 }: FieldRendererProps) {
-  const { control } = useFormContext<TemplateSigningFieldForm>();
+  const { control, getValues } = useFormContext<TemplateSigningFieldForm>();
 
   const enabled =
     group === recipientId || group === generateAllRecipientGroup(recipientId);
   const disabled = readOnly || !enabled;
+
+  const fieldName = `fieldValues.${name}` as const;
+  const defaultValue = getValues(fieldName);
 
   switch (type) {
     case "TEXT":
@@ -54,7 +56,7 @@ export function FieldRenderer({
                 }
               : undefined
           }
-          name={`fieldValues.${name}` as const}
+          name={fieldName}
           render={({ field }) => (
             <FormItem>
               <FormLabel>{name}</FormLabel>
@@ -80,7 +82,7 @@ export function FieldRenderer({
                 }
               : undefined
           }
-          name={`fieldValues.${name}` as const}
+          name={fieldName}
           render={({ field: { onChange } }) => (
             <FormItem>
               <FormLabel>{name}</FormLabel>
@@ -90,6 +92,7 @@ export function FieldRenderer({
                   onChange={(val) => {
                     onChange(val);
                   }}
+                  defaultValue={defaultValue}
                 />
               </FormControl>
               <FormMessage />

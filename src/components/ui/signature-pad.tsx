@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -47,10 +48,11 @@ function DrawingLine({ line }: { line: [Point] }) {
 interface SignaturePadProps {
   onChange?: (value: string) => void;
   disabled: boolean;
+  defaultValue: string;
 }
 
 export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
-  ({ onChange, disabled }, ref) => {
+  ({ onChange, disabled, defaultValue }, ref) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [lines, setLines] = useState<[Point][]>([]);
@@ -82,6 +84,14 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
         y: pointerEvent.pageY - boundingArea.top - scrollTop,
       };
     };
+
+    if (defaultValue !== "") {
+      return (
+        <div className="h-64 w-full cursor-not-allowed border">
+          <img src={defaultValue} alt="signature" />
+        </div>
+      );
+    }
 
     return (
       <div

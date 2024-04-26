@@ -2,38 +2,42 @@
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { parseStrakeholdersCSV } from "@/lib/stakeholders-csv-parser";
+import { parseInviteMembersCSV } from "@/lib/invite-team-members-csv-parser";
 import { api } from "@/trpc/react";
-import { type TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
+import { type TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
 import { RiUploadLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-type StakeholderUploaderType = {
+type TeamMemberUploaderType = {
   setOpen: (val: boolean) => void;
 };
 
-const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
+const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
   const [csvFile, setCSVFile] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter();
 
-  const { mutateAsync, isLoading } =
-    api.stakeholder.addStakeholders.useMutation({
-      onSuccess: async ({ success, message }) => {
-        toast({
-          variant: success ? "default" : "destructive",
-          title: success
-            ? "🎉 Successfully created"
-            : "Uh oh! Something went wrong.",
-          description: message,
-        });
-
-        router.refresh();
-      },
-    });
+  const inviteMember = api.member.inviteMember.useMutation({
+    onSuccess: () => {
+      setOpen(false);
+      toast({
+        variant: "default",
+        title: "🎉 Invited!",
+        description: "You have successfully invited the stakeholder.",
+      });
+      router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: error.message,
+        description: "",
+      });
+    },
+  });
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.currentTarget.files ?? []);
@@ -46,9 +50,14 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
         return;
       }
 
-      const parsedData = await parseStrakeholdersCSV(csvFile[0]);
-      await mutateAsync(parsedData as TypeStakeholderArray);
-
+      const parsedData = (await parseInviteMembersCSV(
+        csvFile[0],
+      )) as TypeZodInviteMemberArrayMutationSchema;
+      await Promise.all(
+        parsedData.map(async (data) => {
+          await inviteMember.mutateAsync(data);
+        }),
+      );
       setOpen(false);
     } catch (error) {
       console.error((error as Error).message);
@@ -67,7 +76,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
         Please download the{" "}
         <Link
           download
-          href="/sample/csv/captable-stakeholders-template.csv"
+          href="/sample-csv/captable-team-members-template.csv"
           target="_blank"
           rel="noopener noreferrer"
           className="rounded bg-gray-300/70 px-2 py-1 text-xs font-medium hover:bg-gray-400/50"
@@ -75,7 +84,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
           <span className="mr-1">sample csv file</span>
           <span aria-hidden="true"> &darr;</span>
         </Link>
-        , complete and upload it to import your existing or new stakeholders.
+        , complete and upload it to import your existing or new team members.
       </div>
 
       <div
@@ -108,10 +117,10 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
       </div>
 
       <Button onClick={onImport} className="ml-auto block">
-        {isLoading ? "Importing..." : "Import"}
+        Import
       </Button>
     </div>
   );
 };
 
-export default StakeholderUploader;
+export default TeamMemberUploader;

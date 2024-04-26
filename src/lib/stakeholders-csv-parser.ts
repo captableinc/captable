@@ -2,7 +2,7 @@ import { ZodAddStakeholderMutationSchema } from "@/trpc/routers/stakeholder-rout
 import Papa, { type ParseResult } from "papaparse";
 import { ZodError } from "zod";
 
-export const parseCSV = async (csvFile: File) => {
+export const parseStrakeholdersCSV = async (csvFile: File) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 

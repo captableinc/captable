@@ -1,6 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
+import { RECIPIENT_COLORS } from "@/constants/esign";
 import { type RouterOutputs } from "@/trpc/shared";
 import { type ReactNode } from "react";
 import { useForm } from "react-hook-form";
@@ -15,6 +16,7 @@ interface TemplateSigningFieldProviderProps {
 export type TemplateSigningFieldForm = {
   fields: Field[];
   fieldValues: Record<string, string>;
+  recipientColors: Record<string, string>;
 };
 
 export const TemplateSigningFieldProvider = ({
@@ -27,6 +29,15 @@ export const TemplateSigningFieldProvider = ({
       fieldValues: fields
         ? fields.reduce<Record<string, string>>((prev, curr) => {
             prev[curr.id] = curr?.prefilledValue || curr?.defaultValue || "";
+            return prev;
+          }, {})
+        : {},
+      recipientColors: fields
+        ? fields.reduce<Record<string, string>>((prev, curr, index) => {
+            const color = RECIPIENT_COLORS?.[index] ?? "";
+
+            prev[curr.group] = color;
+
             return prev;
           }, {})
         : {},

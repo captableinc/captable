@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignaturePad } from "@/components/ui/signature-pad";
-import { generateAllRecipientGroup } from "@/constants/esign";
+
 import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext } from "react-hook-form";
@@ -36,8 +36,7 @@ export function FieldRenderer({
 }: FieldRendererProps) {
   const { control } = useFormContext<TemplateSigningFieldForm>();
 
-  const enabled =
-    group === recipientId || group === generateAllRecipientGroup(recipientId);
+  const enabled = group === recipientId;
   const disabled = readOnly || !enabled;
 
   const fieldName = `fieldValues.${id}` as const;

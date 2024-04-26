@@ -21,23 +21,20 @@ type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
 
 type FieldRendererProps = Pick<
   Field,
-  "type" | "name" | "required" | "readOnly" | "group"
-> & { recipientId: string; prefilledValue: string | null; id: string };
+  "type" | "name" | "required" | "readOnly" | "id" | "prefilledValue"
+>;
 
 export function FieldRenderer({
   type,
   name,
   required,
   readOnly,
-  group,
-  recipientId,
   prefilledValue,
   id,
 }: FieldRendererProps) {
   const { control } = useFormContext<TemplateSigningFieldForm>();
 
-  const enabled = group === recipientId;
-  const disabled = readOnly || !enabled;
+  const disabled = readOnly;
 
   const fieldName = `fieldValues.${id}` as const;
 

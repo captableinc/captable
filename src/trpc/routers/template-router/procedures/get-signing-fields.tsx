@@ -72,5 +72,6 @@ export const getSigningFieldsProcedure = publicProcedure
       url,
       recipientId,
       templateId,
+      signableFields: fields.filter((item) => item.group === recipientId),
     };
   });

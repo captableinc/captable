@@ -18,7 +18,7 @@ interface SigningPageProps {
 export default async function SigningPage(props: SigningPageProps) {
   const { token } = props.params;
 
-  const { fields, url, recipientId, templateId } =
+  const { fields, url, recipientId, templateId, signableFields } =
     await api.template.getSigningFields.query({
       token,
     });
@@ -40,7 +40,7 @@ export default async function SigningPage(props: SigningPageProps) {
           <SigningFields
             recipientId={recipientId}
             templateId={templateId}
-            fields={fields}
+            fields={signableFields}
             companyPublicId={companyPublicId}
           />
         </div>

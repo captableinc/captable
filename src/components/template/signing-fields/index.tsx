@@ -31,8 +31,6 @@ export function SigningFields({
           type={item.type}
           required={item.required}
           readOnly={item.readOnly}
-          group={item.group}
-          recipientId={recipientId}
           prefilledValue={item.prefilledValue}
           id={item.id}
         />

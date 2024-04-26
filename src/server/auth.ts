@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { render } from "jsx-email";
+import bcrypt from "bcryptjs";
 import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
 
-import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
-import MagicLinkEmail from "@/emails/MagicLinkEmail";
 import { env } from "@/env";
 import { type MemberStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
-import { sendMail } from "./mailer";
+import { getUserByEmail, getUserById } from "./user";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
@@ -56,7 +55,23 @@ declare module "next-auth/jwt" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+    },
+  },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider !== "credentials") return true;
+
+      const existingUser = await getUserById(user.id);
+      if (!existingUser?.emailVerified) return false;
+
+      return true;
+    },
     session({ session, token }) {
       session.user.isOnboarded = token.isOnboarded;
       session.user.companyId = token.companyId;
@@ -129,23 +144,26 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   providers: [
-    EmailProvider({
-      sendVerificationRequest: async ({ identifier, url }) => {
-        if (env.NODE_ENV === "development") {
-          console.log(`🔑 Login link: ${url}`);
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (credentials) {
+          const { email, password } = credentials;
+
+          const user = await getUserByEmail(email);
+          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+          if (!user || !user.password) return null;
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+
+          if (passwordsMatch) return user;
         }
-
-        const html = await render(
-          MagicLinkEmail({
-            magicLink: url,
-          }),
-        );
-
-        await sendMail({
-          to: identifier,
-          subject: "Your Captable, Inc. Login Link",
-          html,
-        });
+        return null;
       },
     }),
     /**

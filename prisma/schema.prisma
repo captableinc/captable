@@ -477,6 +477,8 @@ model Template {
   fields         TemplateField[]
   eSignRecipient EsignRecipient[]
 
+  completedOn DateTime?
+
   @@index([bucketId])
   @@index([uploaderId])
   @@index([companyId])
@@ -492,7 +494,6 @@ model EsignRecipient {
   id    String  @id @default(cuid())
   email String
   name  String?
-  group String
 
   templateId String
   template   Template @relation(fields: [templateId], references: [id])

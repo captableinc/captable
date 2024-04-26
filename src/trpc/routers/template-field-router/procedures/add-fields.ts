@@ -74,6 +74,7 @@ export const addFieldProcedure = withAuth
         where: {
           publicId: input.templatePublicId,
           companyId: user.companyId,
+          status: "DRAFT",
         },
         select: {
           id: true,
@@ -115,28 +116,30 @@ export const addFieldProcedure = withAuth
           id: template.id,
         },
         data: {
-          status: "COMPLETE",
+          status: input.status,
         },
       });
 
-      for (let index = 0; index < recipientList.length; index++) {
-        const recipient = recipientList[index];
+      if (input.status === "COMPLETE") {
+        for (let index = 0; index < recipientList.length; index++) {
+          const recipient = recipientList[index];
 
-        if (!recipient) {
-          throw new Error("not found");
-        }
+          if (!recipient) {
+            throw new Error("not found");
+          }
 
-        const token = await EncodeEmailToken({
-          recipientId: recipient.id,
-          templateId: template.id,
-        });
+          const token = await EncodeEmailToken({
+            recipientId: recipient.id,
+            templateId: template.id,
+          });
 
-        const email = recipient.email;
+          const email = recipient.email;
 
-        mails.push(SendEsignEmail({ token, email }));
+          mails.push(SendEsignEmail({ token, email }));
 
-        if (template.orderedDelivery) {
-          break;
+          if (template.orderedDelivery) {
+            break;
+          }
         }
       }
     });

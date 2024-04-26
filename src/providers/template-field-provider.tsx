@@ -2,7 +2,7 @@
 
 import { Form } from "@/components/ui/form";
 import { RECIPIENT_COLORS } from "@/constants/esign";
-import { FieldTypes } from "@/prisma/enums";
+import { FieldTypes, TemplateStatus } from "@/prisma/enums";
 import { type RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type ReactNode } from "react";
@@ -19,6 +19,7 @@ interface TemplateFieldProviderProps {
 }
 
 const formSchema = z.object({
+  status: z.nativeEnum(TemplateStatus),
   fieldType: z.nativeEnum(FieldTypes).optional(),
   fields: z
     .array(
@@ -53,6 +54,7 @@ export const TemplateFieldProvider = ({
 }: TemplateFieldProviderProps) => {
   const form = useForm<TemplateFieldForm>({
     defaultValues: {
+      status: "DRAFT",
       fields: fields ?? [],
       fieldType: undefined,
       recipient: recipients?.[0]?.id,

@@ -6,6 +6,12 @@ import * as Toolbar from "@radix-ui/react-toolbar";
 import { FieldTypeData } from "../field-type-data";
 
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   FormControl,
   FormField,
   FormItem,
@@ -22,7 +28,8 @@ import {
 import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
-import { useFormContext, useFormState } from "react-hook-form";
+import { useRef } from "react";
+import { useFormContext } from "react-hook-form";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
@@ -81,13 +88,22 @@ interface CanvasToolbarProps {
   recipients: Recipients;
 }
 export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
-  const { control } = useFormContext<TemplateFieldForm>();
-  const { isDirty } = useFormState({
-    control,
-    name: "fields",
-  });
+  const { control, setValue } = useFormContext<TemplateFieldForm>();
+  const submitRef = useRef<HTMLButtonElement>(null);
 
-  const isDisabled = !isDirty;
+  const handleDraft = () => {
+    if (submitRef.current) {
+      setValue("status", "DRAFT");
+      submitRef.current.click();
+    }
+  };
+
+  const handleComplete = () => {
+    if (submitRef.current) {
+      setValue("status", "COMPLETE");
+      submitRef.current.click();
+    }
+  };
 
   return (
     <div className="sticky inset-x-0 top-14 z-30 col-span-12 mt-5 ">
@@ -128,11 +144,25 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
         <div className="flex items-end gap-x-2">
           <RecipientList recipients={recipients} />
 
-          <Toolbar.Button asChild>
-            <Button disabled={isDisabled} type="submit">
-              Save
-            </Button>
-          </Toolbar.Button>
+          <DropdownMenu>
+            <Toolbar.Button asChild>
+              <DropdownMenuTrigger asChild>
+                <Button>Save</Button>
+              </DropdownMenuTrigger>
+            </Toolbar.Button>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={handleDraft}>
+                As Draft
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleComplete}>
+                As Complete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <button aria-hidden ref={submitRef} type="submit" hidden>
+            submit
+          </button>
         </div>
       </Toolbar.Root>
     </div>

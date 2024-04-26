@@ -33,6 +33,7 @@ export const TemplateFieldForm = ({
     await mutateAsync({
       templatePublicId,
       data: values.fields,
+      status: values.status,
     });
   };
 

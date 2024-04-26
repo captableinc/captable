@@ -1,6 +1,6 @@
 "use client";
+import Modal from "@/components/common/modal";
 import TeamMemberUploader from "@/components/member/member-uploader";
-import Modal from "@/components/shared/modal";
 import { RiGroupLine } from "@remixicon/react";
 import { useState } from "react";
 

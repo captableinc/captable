@@ -1,6 +1,6 @@
-import { withServerSession } from "@/server/auth";
+import EmptyState from "@/components/common/empty-state";
 import SafeActions from "@/components/safe/actions";
-import EmptyState from "@/components/shared/empty-state";
+import { withServerSession } from "@/server/auth";
 import { RiSafeFill } from "@remixicon/react";
 import { type Metadata } from "next";
 
@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: "SAFEs",
 };
 
+import SafeTable from "@/components/safe/existing/safe-table";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";
-import SafeTable from "@/components/safe/existing/safe-table";
 
 const SafePage = async () => {
   const safes = await api.safe.getSafes.query();

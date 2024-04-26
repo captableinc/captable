@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import Tldr from "@/components/shared/tldr";
+import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
 import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";

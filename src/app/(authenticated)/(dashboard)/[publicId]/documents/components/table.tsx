@@ -1,14 +1,14 @@
 "use client";
 
 import { dayjsExt } from "@/common/dayjs";
-import FileIcon from "@/components/shared/file-icon";
+import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import DocumentShareModal from "@/components/document/share/document-share-modal";
+import DocumentShareModal from "@/components/documents/share/document-share-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,6 +38,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
   const router = useRouter();
   const openFileOnTab = async (key: string) => {
     const fileUrl = await getPresignedGetUrl(key);
+    debugger;
     window.open(fileUrl.url, "_blank");
   };
 
@@ -63,7 +64,9 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
             {documents.map((document) => (
               <TableRow key={document.id}>
                 <TableCell className="flex items-center ">
-                  <FileIcon type={document.bucket.mimeType} />
+                  <div className="mr-3">
+                    <FileIcon type={document.bucket.mimeType} />
+                  </div>
                   <span className="flex">{document.name}</span>
                 </TableCell>
                 <TableCell>{document?.uploader?.user?.name}</TableCell>

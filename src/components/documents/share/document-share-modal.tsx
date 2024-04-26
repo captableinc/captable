@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 
 import { generatePublicId } from "@/common/id";
-import { CaptableLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/common/logo";
+
 import {
   Dialog,
   DialogContent,

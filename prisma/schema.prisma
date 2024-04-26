@@ -72,6 +72,7 @@ model Company {
   name                 String
   logo                 String?
   publicId             String
+  website              String?
   incorporationType    String
   incorporationDate    DateTime
   incorporationCountry String
@@ -97,6 +98,7 @@ model Company {
   options          Option[]
   safes            Safe[]
   convertibleNotes ConvertibleNote[]
+  dataRooms        DataRoom[]
 
   @@unique([publicId])
 }
@@ -127,6 +129,7 @@ model Member {
   documents        Document[]
   templates        Template[]
   updates          Update[]
+  dataRooms        DataRoomRecipient[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -179,6 +182,7 @@ model Stakeholder {
   safes            Safe[]
   convertibleNotes ConvertibleNote[]
   updates          UpdateRecipient[]
+  dataRooms        DataRoomRecipient[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -323,6 +327,7 @@ model Document {
   convertibleNote   ConvertibleNote? @relation(fields: [convertibleNoteId], references: [id], onDelete: SetNull)
 
   documentShares DocumentShare[]
+  dataRooms      DataRoomDocument[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -335,6 +340,59 @@ model Document {
   @@index([optionId])
   @@index([safeId])
   @@index([convertibleNoteId])
+}
+
+model DataRoom {
+  id         String              @id @default(cuid())
+  name       String
+  publicId   String
+  public     Boolean             @default(false)
+  documents  DataRoomDocument[]
+  recipients DataRoomRecipient[]
+  companyId  String
+  company    Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([companyId, name])
+  @@unique([publicId])
+  @@index([companyId])
+}
+
+model DataRoomDocument {
+  id         String   @id @default(cuid())
+  dataRoomId String
+  documentId String
+  dataRoom   DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([dataRoomId, documentId])
+  @@index([dataRoomId])
+  @@index([documentId])
+}
+
+model DataRoomRecipient {
+  id         String   @id @default(cuid())
+  email      String
+  dataRoomId String
+  dataRoom   DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
+
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  stakeholderId String?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiresAt DateTime?
+
+  @@index([memberId])
+  @@index([dataRoomId])
+  @@index([stakeholderId])
 }
 
 model DocumentShare {

@@ -1,29 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { type z } from "zod";
-import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "@/trpc/react";
-import React, { useRef, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { useSession } from "next-auth/react";
 import { uploadFile } from "@/common/uploads";
-import { useRouter } from "next/navigation";
-import Loading from "@/components/shared/loading";
+import Loading from "@/components/common/loading";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { PayloadType } from "@/lib/constants";
+import { type RootPayload } from "@/lib/types";
 import {
   compareFormDataWithInitial,
   isFileExists,
   validateFile,
 } from "@/lib/utils";
 import { profileSettingsSchema } from "@/lib/zodSchemas";
-import { PayloadType } from "@/lib/constants";
-import { type RootPayload } from "@/lib/types";
+import { api } from "@/trpc/react";
 import { type RouterOutputs } from "@/trpc/shared";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { type z } from "zod";
 
 type MemberProfile = RouterOutputs["member"]["getProfile"];
 

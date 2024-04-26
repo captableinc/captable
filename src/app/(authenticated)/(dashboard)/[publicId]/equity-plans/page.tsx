@@ -1,5 +1,5 @@
-import EmptyState from "@/components/shared/empty-state";
-import Tldr from "@/components/shared/tldr";
+import EmptyState from "@/components/common/empty-state";
+import Tldr from "@/components/common/tldr";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";

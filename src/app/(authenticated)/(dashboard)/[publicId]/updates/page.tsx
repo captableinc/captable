@@ -1,8 +1,8 @@
-import Link from "next/link";
+import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
-import EmptyState from "@/components/shared/empty-state";
-import { RiMailSendLine, RiAddFill } from "@remixicon/react";
+import { RiAddFill, RiMailSendLine } from "@remixicon/react";
 import { type Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Updates",

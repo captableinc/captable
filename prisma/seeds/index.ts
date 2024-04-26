@@ -1,11 +1,11 @@
 import { db } from "@/server/db";
-import inquirer from "inquirer";
 import colors from "colors";
+import inquirer from "inquirer";
 colors.enable();
 
-import seedTeam from "./team";
-import seedCompanies from "./companies";
 import type { QuestionCollection } from "inquirer";
+import seedCompanies from "./companies";
+import seedTeam from "./team";
 
 if (process.env.NODE_ENV === "production") {
   console.log("❌ You cannot run this command on production".red);
@@ -44,6 +44,7 @@ const nuke = async () => {
     await db.shareClass.deleteMany();
     await db.equityPlan.deleteMany();
     await db.document.deleteMany();
+    await db.bucket.deleteMany();
     await db.audit.deleteMany();
     await db.session.deleteMany();
   });

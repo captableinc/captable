@@ -1,7 +1,7 @@
 "use client";
 
+import Modal from "@/components/common/modal";
 import { useState } from "react";
-import Modal from "@/components/shared/modal";
 import StakeholderUploader from "./stakeholder-uploader";
 
 type StakeholderType = {

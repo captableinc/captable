@@ -168,21 +168,29 @@ const navigation = [
 const company = [
   {
     id: 1,
+    name: "Team",
+    rootPath: "/settings/team",
+    href: "/settings/team",
+    icon: RiGroup2Line,
+    activeIcon: RiGroup2Fill,
+  },
+  {
+    id: 2,
     name: "Settings",
-    rootPath: "/settings/",
+    rootPath: "/settings/company",
     href: "/settings/company",
     icon: RiEqualizer2Line,
     activeIcon: RiEqualizer2Fill,
   },
   {
-    id: 2,
+    id: 3,
     name: "Form 3921",
     href: "/3921",
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
   {
-    id: 3,
+    id: 4,
     name: "409A Valuation",
     href: "/409a",
     icon: RiFileTextLine,

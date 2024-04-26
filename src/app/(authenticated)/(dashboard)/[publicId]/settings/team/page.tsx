@@ -52,7 +52,7 @@ const TeamMembersPage = async () => {
                 >
                   <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
                     <RiUserLine className="mr-2 h-5 w-5" />
-                    Invite Individual
+                    Invite a team member
                   </div>
                 </MemberModal>
               </DropdownMenuItem>

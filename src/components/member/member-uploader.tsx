@@ -1,14 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { type TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
-import Link from "next/link";
-import { RiUploadLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
-import { parseInviteMembersCSV } from "@/lib/invite-team-members-csv-parser";
 import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
+import { parseInviteMembersCSV } from "@/lib/invite-team-members-csv-parser";
 import { api } from "@/trpc/react";
+import { type TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
+import { RiUploadLine } from "@remixicon/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
 type TeamMemberUploaderType = {
   setOpen: (val: boolean) => void;
@@ -76,7 +76,7 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
         Please download the{" "}
         <Link
           download
-          href="/sample-csv/opencap-team-members-template.csv"
+          href="/sample-csv/captable-team-members-template.csv"
           target="_blank"
           rel="noopener noreferrer"
           className="rounded bg-gray-300/70 px-2 py-1 text-xs font-medium hover:bg-gray-400/50"

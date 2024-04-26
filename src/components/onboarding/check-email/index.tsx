@@ -1,10 +1,10 @@
 "use client";
 
-import { RiMailLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "next/navigation";
-import { api } from "@/trpc/react";
 import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { RiMailLine } from "@remixicon/react";
+import { useSearchParams } from "next/navigation";
 
 const CheckEmailComponent = () => {
   const searchParams = useSearchParams();
@@ -41,7 +41,11 @@ const CheckEmailComponent = () => {
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
       <div className="grid w-full max-w-md grid-cols-1 gap-5 rounded-xl border bg-white p-10 shadow">
         <div className="flex flex-col gap-y-2 text-center">
-          <RiMailLine className="mb-1 h-10 w-auto" />
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
+            <span className="text-teal-500">
+              <RiMailLine className="h-6 w-auto" />
+            </span>
+          </div>
           <h1 className="text-2xl font-semibold tracking-tight">
             Check your email
           </h1>
@@ -49,10 +53,10 @@ const CheckEmailComponent = () => {
         <div className="mb-2 text-center">
           We&apos;ve sent an email to
           <span className="text-sm font-bold"> {email} </span>. Please click the
-          link in the email to gain access to your account.
+          link in the email to verify your account.
         </div>
         <Button onClick={Resend} disabled={!!!email} loading={isLoading}>
-          Resend Email
+          Resend verification email
         </Button>
       </div>
     </div>

@@ -1,15 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
-import { Input } from "@/components/ui/input";
-import { AuthFormHeader } from "../auth-form-header";
 import { Button } from "@/components/ui/button";
-import { RiGoogleFill } from "@remixicon/react";
-import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
-import { PasswordInput } from "@/components/ui/password-input";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -18,8 +9,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useToast } from "@/components/ui/use-toast";
+import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RiGoogleFill } from "@remixicon/react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { AuthFormHeader } from "../auth-form-header";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -34,8 +34,8 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: process.env.NODE_ENV === "development" ? "ceo@example.com" : "",
+      password: process.env.NODE_ENV === "development" ? "P@ssw0rd!" : "",
     },
   });
 
@@ -49,6 +49,9 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       password,
       callbackUrl: "/onboarding",
     });
+
+    debugger;
+
     if (result?.error) {
       toast({
         variant: "destructive",
@@ -83,7 +86,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                         <FormControl>
                           <Input
                             id="email"
-                            placeholder="name@example.com"
+                            placeholder="work@email.com"
                             type="email"
                             autoCapitalize="none"
                             autoComplete="email"

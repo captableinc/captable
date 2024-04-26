@@ -40,7 +40,6 @@ export const signupProcedure = publicProcedure
 
     return {
       success: true,
-      message:
-        "Registration complete! To verify your account, please click the verification link sent to your email.",
+      message: "Please check your email to verify your account.",
     };
   });

@@ -1,8 +1,8 @@
+import { getUserByEmail } from "@/server/user";
+import { getVerificationTokenByToken } from "@/server/verification-token";
 import { publicProcedure } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { getVerificationTokenByToken } from "@/server/verification-token";
-import { getUserByEmail } from "@/server/user";
 
 export const verifyEmailProcedure = publicProcedure
   .input(z.string())
@@ -46,6 +46,6 @@ export const verifyEmailProcedure = publicProcedure
 
     return {
       success: true,
-      message: "Email Verified!",
+      message: "You're all set!",
     };
   });

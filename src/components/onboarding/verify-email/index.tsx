@@ -1,10 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { api } from "@/trpc/react";
 import { Button } from "@/components/ui/button";
+import { api } from "@/trpc/react";
+import {
+  RiArrowRightLine,
+  RiMailCheckLine,
+  RiMailCloseLine,
+} from "@remixicon/react";
 import Link from "next/link";
-import { RiMailCheckLine, RiMailCloseLine } from "@remixicon/react";
+import { useCallback, useEffect, useState } from "react";
 
 const VerifyEmail = ({ token }: { token: string }) => {
   const [loading, setLoading] = useState(true);
@@ -64,12 +68,16 @@ const VerifyEmail = ({ token }: { token: string }) => {
         <div className="flex flex-col gap-y-2 text-center">
           {success ? (
             <>
-              <RiMailCheckLine className="mb-1 h-10 w-auto" />
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
+                <span className="text-teal-500">
+                  <RiMailCheckLine className="h-6 w-auto" />
+                </span>
+              </div>
               <h1 className="text-2xl font-semibold tracking-tight">
                 {success}
               </h1>
               <div className="mb-2 text-center text-sm text-muted-foreground">
-                Email verified successfully
+                Your account has been verified. Please sign in to continue.
               </div>
             </>
           ) : (
@@ -83,9 +91,22 @@ const VerifyEmail = ({ token }: { token: string }) => {
               </div>
             </>
           )}
-          <Link href="/" className="mt-4">
-            <Button size="lg">Go back home</Button>
-          </Link>
+
+          {success ? (
+            <Link href="/signin" className="mt-4">
+              <Button size="lg">
+                Continue to Sign in page
+                <RiArrowRightLine className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/signup" className="mt-4">
+              <Button size="lg">
+                Try signing up again
+                <RiArrowRightLine className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

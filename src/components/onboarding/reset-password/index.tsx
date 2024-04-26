@@ -1,13 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { CaptableLogo } from "@/components/shared/logo";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
-import { z } from "zod";
-import { api } from "@/trpc/react";
+import { CaptableLogo } from "@/components/common/logo";
 import { PasswordInput } from "@/components/ui/password-input";
+import { api } from "@/trpc/react";
+import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {

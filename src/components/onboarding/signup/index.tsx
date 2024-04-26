@@ -1,18 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { signIn } from "next-auth/react";
-import { Input } from "@/components/ui/input";
-import { AuthFormHeader } from "../auth-form-header";
 import { Button } from "@/components/ui/button";
-import { RiGoogleFill } from "@remixicon/react";
-import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
-import { api } from "@/trpc/react";
-import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { PasswordInput } from "@/components/ui/password-input";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -21,7 +9,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RiGoogleFill } from "@remixicon/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { AuthFormHeader } from "../auth-form-header";
 
 const ZSignUpFormSchema = z.object({
   name: z.string().min(1),
@@ -37,7 +37,8 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
   const form = useForm<z.infer<typeof ZSignUpFormSchema>>({
     resolver: zodResolver(ZSignUpFormSchema),
     defaultValues: {
-      email: process.env.NODE_ENV === "development" ? "ceo@example.com" : "",
+      name: "",
+      email: "",
       password: "",
     },
   });
@@ -47,7 +48,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
     onSuccess: async ({ message }) => {
       toast({
         variant: "default",
-        title: "🎉 Registration Successfull",
+        title: "🎉 Thanks for signing up!",
         description: message,
       });
     },
@@ -122,7 +123,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
                         <FormControl>
                           <Input
                             id="email"
-                            placeholder="name@example.com"
+                            placeholder="work@email.com"
                             type="email"
                             autoCapitalize="none"
                             autoComplete="email"

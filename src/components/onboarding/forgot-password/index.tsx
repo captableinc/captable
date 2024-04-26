@@ -1,14 +1,6 @@
 "use client";
-import { CaptableLogo } from "@/components/shared/logo";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { CaptableLogo } from "@/components/common/logo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { api } from "@/trpc/react";
-import Link from "next/link";
 import {
   Form,
   FormControl,
@@ -17,6 +9,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 const ForgotPassword = () => {
   const inputSchema = z.object({ email: z.string().email() });
 

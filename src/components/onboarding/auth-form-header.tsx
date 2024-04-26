@@ -1,4 +1,4 @@
-import { CaptableLogo } from "@/components/shared/logo";
+import { CaptableLogo } from "@/components/common/logo";
 
 interface LoginFormHeaderProps {
   page?: string;

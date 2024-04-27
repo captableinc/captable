@@ -11,7 +11,7 @@ export const StakeholderTypeEnum = {
   INDIVIDUAL: "INDIVIDUAL",
   INSTITUTION: "INSTITUTION",
 } as const;
-
+ 
 export type StakeholderTypeEnum = (typeof StakeholderTypeEnum)[keyof typeof StakeholderTypeEnum];
 
 export const StakeholderRelationshipEnum = {
@@ -208,6 +208,14 @@ export const ConvertibleInterestPaymentScheduleEnum = {
 } as const;
 
 export type ConvertibleInterestPaymentScheduleEnum = (typeof ConvertibleInterestPaymentScheduleEnum)[keyof typeof ConvertibleInterestPaymentScheduleEnum];
+
+export const UpdateStatusEnum = {
+  DRAFT: "DRAFT",
+  PUBLIC: "PUBLIC",
+  PRIVATE: "PRIVATE",
+} as const;
+
+export type UpdateStatusEnum = (typeof UpdateStatusEnum)[keyof typeof UpdateStatusEnum];
 
 export const UpdateEmailStatusEnum = {
   SENT: "SENT",

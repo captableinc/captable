@@ -787,13 +787,19 @@ model ConvertibleNote {
   @@index([stakeholderId])
 }
 
+enum UpdateStatusEnum {
+  DRAFT
+  PUBLIC
+  PRIVATE
+}
+
 model Update {
-  id       String  @id @default(cuid())
+  id       String           @id @default(cuid())
   publicId String
   title    String
   content  Json
   html     String
-  isPublic Boolean @default(false)
+  status   UpdateStatusEnum @default(DRAFT)
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)

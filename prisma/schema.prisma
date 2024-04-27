@@ -809,7 +809,7 @@ model Update {
 
   recipients UpdateRecipient[]
 
-  sharedAt  DateTime?
+  sentAt    DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

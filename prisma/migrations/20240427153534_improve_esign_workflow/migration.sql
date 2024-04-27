@@ -1,7 +1,6 @@
 /*
   Warnings:
 
-  - You are about to drop the column `sentAt` on the `Update` table. All the data in the column will be lost.
   - Added the required column `templateId` to the `EsignRecipient` table without a default value. This is not possible if the table is not empty.
   - Made the column `email` on table `EsignRecipient` required. This step will fail if there are existing NULL values in that column.
   - Added the required column `recipientId` to the `TemplateField` table without a default value. This is not possible if the table is not empty.
@@ -22,10 +21,6 @@ ADD COLUMN     "orderedDelivery" BOOLEAN NOT NULL DEFAULT false;
 -- AlterTable
 ALTER TABLE "TemplateField" ADD COLUMN     "prefilledValue" TEXT,
 ADD COLUMN     "recipientId" TEXT NOT NULL;
-
--- AlterTable
-ALTER TABLE "Update" DROP COLUMN "sentAt",
-ADD COLUMN     "sharedAt" TIMESTAMP(3);
 
 -- CreateIndex
 CREATE INDEX "EsignRecipient_templateId_idx" ON "EsignRecipient"("templateId");

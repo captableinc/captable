@@ -23,3 +23,5 @@ if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 export type PrismaTransactionalClient = Parameters<
   Parameters<PrismaClient["$transaction"]>[0]
 >[0];
+
+export type TPrisma = typeof db;

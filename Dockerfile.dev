@@ -1,4 +1,6 @@
-FROM node:18-alpine AS base
+ARG NODE_VERSION
+
+FROM node:${NODE_VERSION}-alpine AS base
 
 ############################################ DEPENDENCIES #######################################################
 FROM base AS deps
@@ -39,7 +41,7 @@ RUN \
     fi
 
 ################################################### RUNNER ###########################################################
-FROM base AS runner
+FROM gcr.io/distroless/nodejs20-debian12 AS runner
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED 1
 

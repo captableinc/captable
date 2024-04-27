@@ -1,12 +1,13 @@
-version: "3.8"
+version: "3.6"
 
-x-template: &template # restart: "always"
+x-template: &template
+  restart: "always"
   networks:
     - captable_net
 
 volumes:
   minio:
-  postgres_rawww:
+  postgres_data:
   data:
 
 networks:
@@ -25,7 +26,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - postgres_rawww:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   mailpit:
     <<: *template
@@ -57,9 +58,6 @@ services:
         SKIP_ENV_VALIDATION: ${SKIP_ENV_VALIDATION:-true}
         NODE_VERSION: ${NODE_VERSION:-20.11.0}
         NODE_ENV: ${NODE_ENV:-development}
-        # WATCHPACK_POLLING: true
-        # WDS_SOCKET_HOST: 127.0.0.1
-        # CHOKIDAR_USEPOLLING: true
     env_file: .env
     volumes:
       - .:/app

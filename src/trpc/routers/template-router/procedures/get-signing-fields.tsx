@@ -53,7 +53,7 @@ export const getSigningFieldsProcedure = publicProcedure
           viewportHeight: true,
           viewportWidth: true,
           page: true,
-          group: true,
+          recipientId: true,
           prefilledValue: true,
         },
         orderBy: {
@@ -72,6 +72,6 @@ export const getSigningFieldsProcedure = publicProcedure
       url,
       recipientId,
       templateId,
-      signableFields: fields.filter((item) => item.group === recipientId),
+      signableFields: fields.filter((item) => item.recipientId === recipientId),
     };
   });

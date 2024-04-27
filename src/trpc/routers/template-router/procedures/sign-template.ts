@@ -27,7 +27,9 @@ export const signTemplateProcedure = publicProcedure
       const companyId = template.companyId;
       const templateName = template.name;
 
-      const totalGroups = new Set(template.fields.map((item) => item.group));
+      const totalGroups = new Set(
+        template.fields.map((item) => item.recipientId),
+      );
 
       const recipient = await tx.esignRecipient.findFirstOrThrow({
         where: {

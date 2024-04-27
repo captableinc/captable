@@ -15,7 +15,7 @@ type ReadOnlyTemplateFieldProps = Omit<
   name: string;
   id: string;
   type: FieldTypes;
-  group: string;
+  recipientId: string;
   prefilledValue: string | null;
 };
 
@@ -23,7 +23,7 @@ export const ReadOnlyTemplateField = ({
   name,
   type,
   id,
-  group,
+  recipientId,
   prefilledValue,
   ...rest
 }: ReadOnlyTemplateFieldProps) => {
@@ -35,13 +35,7 @@ export const ReadOnlyTemplateField = ({
 
   const colors = getValues("recipientColors");
 
-  const color = colors?.[group] ?? "";
-
-  console.log({
-    value,
-    isDisabled: typeof prefilledValue === "string",
-    prefilled: !!prefilledValue,
-  });
+  const color = colors?.[recipientId] ?? "";
 
   return (
     <ReadOnlyTemplateFieldContainer {...rest} color={color}>

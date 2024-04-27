@@ -123,7 +123,7 @@ export function FieldCanvas({
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
               page: pageNum,
-              group: recipient,
+              recipientId: recipient,
             });
           }
         }}

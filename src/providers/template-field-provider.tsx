@@ -37,7 +37,7 @@ const formSchema = z.object({
         page: z.number(),
         defaultValue: z.string(),
         readOnly: z.boolean(),
-        group: z.string().min(1),
+        recipientId: z.string().min(1),
       }),
     )
     .nonempty(),

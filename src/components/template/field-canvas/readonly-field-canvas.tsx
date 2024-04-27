@@ -51,7 +51,7 @@ export function ReadOnlyFieldCanvas() {
           width={field.width}
           name={field.name}
           type={field.type}
-          group={field.group}
+          recipientId={field.recipientId}
           prefilledValue={field.prefilledValue}
         />
       ))}

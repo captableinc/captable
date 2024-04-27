@@ -426,19 +426,20 @@ enum FieldTypes {
 }
 
 model TemplateField {
-  id             String     @id @default(cuid())
+  id             String         @id @default(cuid())
   name           String
-  type           FieldTypes @default(TEXT)
-  defaultValue   String     @default("")
-  readOnly       Boolean    @default(false)
-  required       Boolean    @default(false)
-  group          String
+  type           FieldTypes     @default(TEXT)
+  defaultValue   String         @default("")
+  readOnly       Boolean        @default(false)
+  required       Boolean        @default(false)
   prefilledValue String?
   top            Int
   left           Int
   width          Int
   height         Int
-  template       Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  recipientId    String
+  recipient      EsignRecipient @relation(fields: [recipientId], references: [id])
+  template       Template       @relation(fields: [templateId], references: [id], onDelete: Cascade)
   templateId     String
   viewportHeight Int
   viewportWidth  Int
@@ -448,6 +449,7 @@ model TemplateField {
   updatedAt DateTime @updatedAt
 
   @@index([templateId])
+  @@index([recipientId])
 }
 
 enum TemplateStatus {
@@ -503,8 +505,9 @@ model EsignRecipient {
   memberId String?
   member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  templateFields TemplateField[]
 
   @@index([memberId])
   @@index([templateId])

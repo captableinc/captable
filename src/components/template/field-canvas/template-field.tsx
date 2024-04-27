@@ -62,10 +62,13 @@ export function TemplateField({
 }: TemplateFieldProps) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
   const type = useWatch({ control: control, name: `fields.${index}.type` });
-  const group = useWatch({ control: control, name: `fields.${index}.group` });
+  const recipientId = useWatch({
+    control: control,
+    name: `fields.${index}.recipientId`,
+  });
 
   const recipientColors = getValues("recipientColors");
-  const color = recipientColors?.[group] ?? "";
+  const color = recipientColors?.[recipientId] ?? "";
 
   return (
     <TemplateFieldContainer
@@ -209,7 +212,7 @@ function RecipientSelect({ index, recipients }: RecipientSelectProps) {
   return (
     <FormField
       control={control}
-      name={`fields.${index}.group`}
+      name={`fields.${index}.recipientId`}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Recipient</FormLabel>

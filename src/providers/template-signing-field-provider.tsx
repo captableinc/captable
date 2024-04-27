@@ -36,7 +36,7 @@ export const TemplateSigningFieldProvider = ({
         ? fields.reduce<Record<string, string>>((prev, curr, index) => {
             const color = RECIPIENT_COLORS?.[index] ?? "";
 
-            prev[curr.group] = color;
+            prev[curr.recipientId] = color;
 
             return prev;
           }, {})

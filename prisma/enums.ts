@@ -11,7 +11,7 @@ export const StakeholderTypeEnum = {
   INDIVIDUAL: "INDIVIDUAL",
   INSTITUTION: "INSTITUTION",
 } as const;
- 
+
 export type StakeholderTypeEnum = (typeof StakeholderTypeEnum)[keyof typeof StakeholderTypeEnum];
 
 export const StakeholderRelationshipEnum = {

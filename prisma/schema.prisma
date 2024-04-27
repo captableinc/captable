@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider     = "postgresql"
-  url          = "postgres://captable:password@database:5432/captable"
+  url          = "postgres://captable:password@postgres:5432/captable"
   relationMode = "prisma"
 }
 

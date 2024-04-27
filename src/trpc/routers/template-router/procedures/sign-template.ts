@@ -75,13 +75,13 @@ export const signTemplateProcedure = publicProcedure
               },
             },
             select: {
-              name: true,
+              id: true,
               prefilledValue: true,
             },
           });
 
           const data = values.reduce<Record<string, string>>((prev, curr) => {
-            prev[curr.name] = curr.prefilledValue ?? "";
+            prev[curr.id] = curr.prefilledValue ?? "";
 
             return prev;
           }, {});
@@ -223,7 +223,7 @@ async function signPdf({
   const pageRangeCache: Record<string, Range[]> = {};
 
   for (const field of fields) {
-    const value = data?.[field?.name];
+    const value = data?.[field?.id];
 
     if (value) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

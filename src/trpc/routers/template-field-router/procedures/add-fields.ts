@@ -4,6 +4,7 @@ import { ZodAddFieldMutationSchema } from "../schema";
 
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
+import { checkMembership } from "@/server/auth";
 import { sendMail } from "@/server/mailer";
 import { SignJWT, jwtVerify } from "jose";
 import { render } from "jsx-email";
@@ -65,15 +66,18 @@ export async function SendEsignEmail({ email, token }: SendEmailOptions) {
 export const addFieldProcedure = withAuth
   .input(ZodAddFieldMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const user = ctx.session.user;
-
     const mails: Promise<void>[] = [];
 
     await ctx.db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({
+        tx,
+        session: ctx.session,
+      });
+
       const template = await tx.template.findFirstOrThrow({
         where: {
           publicId: input.templatePublicId,
-          companyId: user.companyId,
+          companyId,
           status: "DRAFT",
         },
         select: {

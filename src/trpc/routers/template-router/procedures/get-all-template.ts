@@ -1,18 +1,9 @@
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 
 export const getAllTemplateProcedure = withAuth.query(async ({ ctx }) => {
-  const user = ctx.session.user;
-
   const { documents } = await ctx.db.$transaction(async (tx) => {
-    const { companyId } = await tx.member.findFirstOrThrow({
-      where: {
-        id: user.memberId,
-        companyId: user.companyId,
-      },
-      select: {
-        companyId: true,
-      },
-    });
+    const { companyId } = await checkMembership({ tx, session: ctx.session });
 
     const documents = await tx.template.findMany({
       where: {

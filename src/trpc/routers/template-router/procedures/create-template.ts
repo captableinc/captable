@@ -1,4 +1,5 @@
 import { generatePublicId } from "@/common/id";
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodCreateTemplateMutationSchema } from "../schema";
 
@@ -6,19 +7,13 @@ export const createTemplateProcedure = withAuth
   .input(ZodCreateTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const publicId = generatePublicId();
-    const user = ctx.session.user;
 
     const { recipients, ...rest } = input;
 
     const data = await ctx.db.$transaction(async (tx) => {
-      const { companyId, id: uploaderId } = await tx.member.findFirstOrThrow({
-        where: {
-          id: user.memberId,
-        },
-        select: {
-          companyId: true,
-          id: true,
-        },
+      const { companyId, memberId: uploaderId } = await checkMembership({
+        tx,
+        session: ctx.session,
       });
 
       const template = await tx.template.create({

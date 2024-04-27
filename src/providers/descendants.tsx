@@ -1,3 +1,5 @@
+// CREDITS https://github.com/reach/reach-ui/blob/dev/packages/descendants/src/reach-descendants.tsx
+
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */

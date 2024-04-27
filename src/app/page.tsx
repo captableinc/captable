@@ -8,5 +8,5 @@ export default async function HomePage() {
     return redirect(`/${session.user.companyPublicId}`);
   }
 
-  return redirect("/login");
+  return redirect("/signin");
 }

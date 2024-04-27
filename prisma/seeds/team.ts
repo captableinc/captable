@@ -1,6 +1,7 @@
 import type { MemberStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
 import { faker } from "@faker-js/faker";
+import bcrypt from "bcryptjs";
 import colors from "colors";
 colors.enable();
 
@@ -63,11 +64,14 @@ const seedTeam = async () => {
 
   team.forEach(async (t) => {
     // const { name, email, image, title, status, isOnboarded } = t
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash("P@ssw0rd!", salt);
     const { name, email, title, status, isOnboarded } = t;
     const user = await db.user.create({
       data: {
         name,
         email,
+        password: hashedPassword,
         // image,
       },
     });

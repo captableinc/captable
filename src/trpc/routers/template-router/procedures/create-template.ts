@@ -11,12 +11,22 @@ export const createTemplateProcedure = withAuth
     const { recipients, ...rest } = input;
 
     const data = await ctx.db.$transaction(async (tx) => {
+      const { companyId, id: uploaderId } = await tx.member.findFirstOrThrow({
+        where: {
+          id: user.memberId,
+        },
+        select: {
+          companyId: true,
+          id: true,
+        },
+      });
+
       const template = await tx.template.create({
         data: {
           status: "DRAFT",
           publicId,
-          companyId: user.companyId,
-          uploaderId: user.memberId,
+          companyId,
+          uploaderId,
           ...rest,
         },
         select: {
@@ -30,7 +40,6 @@ export const createTemplateProcedure = withAuth
         data: recipients.map((recipient) => ({
           ...recipient,
           templateId: template.id,
-          group: "",
         })),
       });
 

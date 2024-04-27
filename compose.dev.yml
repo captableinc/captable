@@ -1,7 +1,6 @@
 version: "3.6"
 
-x-template: &template
-  restart: "always"
+x-template: &template # restart: "always"
   networks:
     - captable_net
 

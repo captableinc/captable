@@ -16,6 +16,8 @@ import {
   RiBankCardFill,
   RiNotificationLine,
   RiNotificationFill,
+  RiLock2Line,
+  RiLock2Fill,
 } from "@remixicon/react";
 
 const companyNav = [
@@ -45,6 +47,12 @@ const accountNav = [
     href: "/settings/profile",
     icon: RiAccountCircleLine,
     activeIcon: RiAccountCircleFill,
+  },
+  {
+    name: "Security",
+    href: "/settings/security",
+    icon: RiLock2Line,
+    activeIcon: RiLock2Fill,
   },
   {
     name: "Notifications",

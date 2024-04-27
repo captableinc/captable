@@ -104,6 +104,15 @@ export const signTemplateProcedure = publicProcedure
           });
         }
       } else {
+        await tx.template.update({
+          where: {
+            id: template.id,
+          },
+          data: {
+            completedOn: new Date(),
+          },
+        });
+
         await signPdf({
           bucketKey,
           companyId,

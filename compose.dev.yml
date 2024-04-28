@@ -55,7 +55,6 @@ services:
       target: dev
       args:
         SKIP_ENV_VALIDATION: ${SKIP_ENV_VALIDATION:-true}
-        NODE_VERSION: ${NODE_VERSION:-20.11.0}
         NODE_ENV: ${NODE_ENV:-development}
     env_file: .env
     volumes:

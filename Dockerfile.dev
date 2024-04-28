@@ -1,14 +1,18 @@
-ARG NODE_VERSION
+ARG NODE_VERSION=20.11.0
 
 FROM node:${NODE_VERSION}-alpine AS base
 
 ############################################ DEPENDENCIES #######################################################
+
+# Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 COPY --link prisma/enum-generator.cjs ./prisma/enum-generator.cjs
 COPY --link prisma ./
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml\* ./
+
+# Install dependencies based on the preferred package manager
 RUN \
     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
     elif [ -f package-lock.json ]; then npm ci; \
@@ -21,6 +25,7 @@ COPY --link prisma/enums.ts ./prisma/enums.ts
 COPY --link . .
 
 ################################################## DEV  ###########################################################
+
 FROM base AS dev
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -28,11 +33,16 @@ COPY . .
 
 
 ################################################# BUILDER  #########################################################
+
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
 ENV NEXT_TELEMETRY_DISABLED 1
+
 RUN \
     if [ -f yarn.lock ]; then SKIP_ENV_VALIDATION=1 yarn build; \
     elif [ -f package-lock.json ]; then SKIP_ENV_VALIDATION=1 npm run build; \
@@ -41,23 +51,22 @@ RUN \
     fi
 
 ################################################### RUNNER ###########################################################
+
 FROM gcr.io/distroless/nodejs20-debian12 AS runner
 WORKDIR /app
+
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
 ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
+
+# Automatically leverage output traces to reduce image size
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000 5555
 
 CMD ["node","server.js"]
-
-
-
-
-
-
-

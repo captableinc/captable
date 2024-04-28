@@ -5,6 +5,7 @@ import {
   getPageNumber,
   type PageMeasurement,
 } from "@/lib/pdf-positioning";
+
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
@@ -54,6 +55,10 @@ export function FieldCanvas({
 
   const heightRange = generateRange(measurements, viewport.width);
 
+  const recipient = getValues("recipient");
+  const recipientColors = getValues("recipientColors");
+  const color = recipientColors?.[recipient] ?? "";
+
   return (
     <>
       <div
@@ -94,7 +99,6 @@ export function FieldCanvas({
           e.preventDefault();
 
           const fieldType = getValues("fieldType");
-          const recipient = getValues("recipient");
 
           if (!fieldType) return;
           if (!isDrawing) return;
@@ -130,6 +134,7 @@ export function FieldCanvas({
       />
       {isDrawing && (
         <DrawingField
+          color={color}
           left={Math.min(startPos.x, endPos.x)}
           top={Math.min(startPos.y, endPos.y)}
           height={Math.abs(endPos.y - startPos.y)}

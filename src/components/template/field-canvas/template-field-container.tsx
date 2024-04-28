@@ -3,6 +3,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { COLORS } from "@/constants/esign";
 import { cn } from "@/lib/utils";
 import { type ComponentProps, type ReactNode } from "react";
 
@@ -73,8 +74,9 @@ export function ReadOnlyTemplateFieldContainer({
   return (
     <div
       className={cn(
-        "group absolute z-20 flex cursor-pointer items-center overflow-hidden border-2 border-red-600 bg-opacity-50",
-        color,
+        "group absolute z-20 flex cursor-pointer items-center overflow-hidden border-2 bg-opacity-30",
+        COLORS[color as keyof typeof COLORS]?.border,
+        COLORS[color as keyof typeof COLORS]?.bg,
         className,
       )}
       style={{
@@ -132,8 +134,9 @@ export function TemplateFieldContainer({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "group absolute z-20 cursor-pointer border-2 border-red-600 bg-opacity-50",
-            color,
+            `group absolute z-20 cursor-pointer rounded border-2 bg-opacity-30`,
+            COLORS[color as keyof typeof COLORS]?.border,
+            COLORS[color as keyof typeof COLORS]?.bg,
             className,
           )}
           style={{

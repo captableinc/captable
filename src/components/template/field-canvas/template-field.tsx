@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { COLORS } from "@/constants/esign";
 import { RiCloseCircleLine } from "@remixicon/react";
 
 import { FieldTypeData } from "../field-type-data";
@@ -84,14 +85,14 @@ export function TemplateField({
     >
       <div className="flex items-center gap-x-2">
         <Button
-          className="mt-2"
+          className="group mt-2"
           variant="ghost"
           size="sm"
           onClick={() => {
             handleDelete();
           }}
         >
-          <RiCloseCircleLine className="h-5 w-5" />
+          <RiCloseCircleLine className="h-5 w-5 text-red-500/90 group-hover:text-red-500" />
         </Button>
 
         <FormField
@@ -233,15 +234,19 @@ function RecipientSelect({ index, recipients }: RecipientSelectProps) {
                     <span
                       aria-hidden
                       className={cn(
-                        "mr-2  rounded-full p-2",
-                        recipientColors[recipient.id],
+                        "mr-3 rounded-full p-2",
+                        COLORS[
+                          recipientColors[recipient.id] as keyof typeof COLORS
+                        ]?.bg,
                       )}
                     />
                     <span className="flex flex-col items-start">
                       {recipient.name && recipient.name !== "" && (
                         <span>{recipient.name}</span>
                       )}
-                      <span>{recipient.email}</span>
+                      <span className="text-xs text-primary/80">
+                        {recipient.email}
+                      </span>
                     </span>
                   </span>
                 </SelectItem>

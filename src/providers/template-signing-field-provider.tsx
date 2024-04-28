@@ -1,7 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
-import { RECIPIENT_COLORS } from "@/constants/esign";
+import { COLORS } from "@/constants/esign";
 import { type RouterOutputs } from "@/trpc/shared";
 import { type ReactNode } from "react";
 import { useForm } from "react-hook-form";
@@ -34,7 +34,7 @@ export const TemplateSigningFieldProvider = ({
         : {},
       recipientColors: fields
         ? fields.reduce<Record<string, string>>((prev, curr, index) => {
-            const color = RECIPIENT_COLORS?.[index] ?? "";
+            const color = Object.keys(COLORS)?.[index] ?? "";
 
             prev[curr.recipientId] = color;
 

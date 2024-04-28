@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { COLORS } from "@/constants/esign";
 import { type FieldTypes } from "@/prisma/enums";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { FieldTypeData } from "../field-type-data";
@@ -63,7 +64,9 @@ function RecipientList({ recipients }: RecipientListProps) {
                       aria-hidden
                       className={cn(
                         "mr-2  rounded-full p-2",
-                        recipientColors[recipient.id],
+                        COLORS[
+                          recipientColors[recipient.id] as keyof typeof COLORS
+                        ]?.bg,
                       )}
                     />
                     <span className="flex flex-col items-start">
@@ -147,15 +150,15 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
           <DropdownMenu>
             <Toolbar.Button asChild>
               <DropdownMenuTrigger asChild>
-                <Button>Save</Button>
+                <Button>Save & Continue</Button>
               </DropdownMenuTrigger>
             </Toolbar.Button>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={handleDraft}>
-                As Draft
+                Save as draft
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleComplete}>
-                As Complete
+                Send for signatures
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

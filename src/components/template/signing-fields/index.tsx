@@ -36,7 +36,7 @@ export function SigningFields({
         />
       ))}
 
-      <Button type="submit">Sign</Button>
+      <Button type="submit">Complete signing</Button>
     </SigningFieldForm>
   );
 }

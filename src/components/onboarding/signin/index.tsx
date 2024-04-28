@@ -50,8 +50,6 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       callbackUrl: "/onboarding",
     });
 
-    debugger;
-
     if (result?.error) {
       toast({
         variant: "destructive",

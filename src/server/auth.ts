@@ -6,6 +6,7 @@ import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
+  type Session,
 } from "next-auth";
 
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -13,7 +14,9 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env";
 import { type MemberStatusEnum } from "@/prisma/enums";
-import { db } from "@/server/db";
+
+import { db, type PrismaTransactionalClient, type TPrisma } from "@/server/db";
+
 import { getUserByEmail, getUserById } from "./user";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
@@ -203,3 +206,24 @@ export const withServerSession = async () => {
 
   return session;
 };
+
+interface checkMembershipOptions {
+  session: Session;
+  tx: PrismaTransactionalClient | TPrisma;
+}
+
+export async function checkMembership({ session, tx }: checkMembershipOptions) {
+  const { companyId, id: memberId } = await tx.member.findFirstOrThrow({
+    where: {
+      id: session.user.memberId,
+      companyId: session.user.companyId,
+      isOnboarded: true,
+    },
+    select: {
+      id: true,
+      companyId: true,
+    },
+  });
+
+  return { companyId, memberId };
+}

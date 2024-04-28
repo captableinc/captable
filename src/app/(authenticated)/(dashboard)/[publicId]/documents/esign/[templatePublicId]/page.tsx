@@ -5,17 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import { TemplateFieldProvider } from "@/providers/template-field-provider";
 import { api } from "@/trpc/server";
 
-const TemplateDetailPage = async ({
+const EsignTemplateDetailPage = async ({
   params: { templatePublicId },
 }: {
   params: { templatePublicId: string };
 }) => {
-  const { name, status, url, fields } = await api.template.get.query({
-    publicId: templatePublicId,
-  });
+  const { name, status, url, fields, recipients } =
+    await api.template.get.query({
+      publicId: templatePublicId,
+    });
 
   return (
-    <TemplateFieldProvider fields={fields}>
+    <TemplateFieldProvider recipients={recipients} fields={fields}>
       <TemplateFieldForm templatePublicId={templatePublicId}>
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex align-middle">
@@ -29,12 +30,12 @@ const TemplateDetailPage = async ({
               {name}
             </span>
           </div>
-          <CanvasToolbar />
-          <PdfCanvas url={url} />
+          <CanvasToolbar recipients={recipients} />
+          <PdfCanvas mode="edit" recipients={recipients} url={url} />
         </div>
       </TemplateFieldForm>
     </TemplateFieldProvider>
   );
 };
 
-export default TemplateDetailPage;
+export default EsignTemplateDetailPage;

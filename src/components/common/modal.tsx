@@ -25,7 +25,7 @@ import { CaptableLogo } from "@/components/common/logo";
 import { cn } from "@/lib/utils";
 import { type DialogProps } from "@radix-ui/react-dialog";
 
-type ModalProps = {
+export type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";

@@ -12,13 +12,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignaturePad } from "@/components/ui/signature-pad";
+
 import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
+import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext } from "react-hook-form";
 
+type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
+
 type FieldRendererProps = Pick<
-  TypeZodAddFieldMutationSchema["data"][number],
-  "type" | "name" | "required" | "readOnly"
+  Field,
+  "type" | "name" | "required" | "readOnly" | "id" | "prefilledValue"
 >;
 
 export function FieldRenderer({
@@ -26,26 +29,36 @@ export function FieldRenderer({
   name,
   required,
   readOnly,
+  prefilledValue,
+  id,
 }: FieldRendererProps) {
   const { control } = useFormContext<TemplateSigningFieldForm>();
+
+  const disabled = readOnly;
+
+  const fieldName = `fieldValues.${id}` as const;
 
   switch (type) {
     case "TEXT":
       return (
         <FormField
           control={control}
-          rules={{
-            required: {
-              message: "this field is required",
-              value: required,
-            },
-          }}
-          name={`fieldValues.${name}` as const}
+          rules={
+            required && !disabled
+              ? {
+                  required: {
+                    message: "this field is required",
+                    value: required,
+                  },
+                }
+              : undefined
+          }
+          name={fieldName}
           render={({ field }) => (
             <FormItem>
               <FormLabel>{name}</FormLabel>
               <FormControl>
-                <Input disabled={readOnly} type="text" {...field} />
+                <Input disabled={disabled} type="text" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,21 +69,27 @@ export function FieldRenderer({
       return (
         <FormField
           control={control}
-          rules={{
-            required: {
-              message: "signature is required",
-              value: required,
-            },
-          }}
-          name={`fieldValues.${name}` as const}
+          rules={
+            required && !disabled
+              ? {
+                  required: {
+                    message: "this field is required",
+                    value: required,
+                  },
+                }
+              : undefined
+          }
+          name={fieldName}
           render={({ field: { onChange } }) => (
             <FormItem>
               <FormLabel>{name}</FormLabel>
               <FormControl>
                 <SignaturePad
+                  disabled={disabled}
                   onChange={(val) => {
                     onChange(val);
                   }}
+                  prefilledValue={prefilledValue}
                 />
               </FormControl>
               <FormMessage />

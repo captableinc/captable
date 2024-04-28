@@ -38,7 +38,6 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
   const router = useRouter();
   const openFileOnTab = async (key: string) => {
     const fileUrl = await getPresignedGetUrl(key);
-    debugger;
     window.open(fileUrl.url, "_blank");
   };
 
@@ -69,7 +68,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                   </div>
                   <span className="flex">{document.name}</span>
                 </TableCell>
-                <TableCell>{document.uploader.user.name}</TableCell>
+                <TableCell>{document?.uploader?.user?.name}</TableCell>
                 <TableCell suppressHydrationWarning>
                   {dayjsExt().to(document.createdAt)}
                 </TableCell>
@@ -103,7 +102,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                         >
                           Share document
                         </DropdownMenuItem>
-                        <DropdownMenuItem>E-sign document</DropdownMenuItem>
+                        <DropdownMenuItem>eSign documents</DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
                             router.push(

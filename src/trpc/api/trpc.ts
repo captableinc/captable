@@ -11,9 +11,9 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { getIp, getUserAgent } from "@/lib/headers";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { getIp, getUserAgent } from "@/lib/headers";
 
 /**
  * 1. CONTEXT
@@ -39,7 +39,9 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   };
 };
 
-type CreateTRPCContextType = Awaited<ReturnType<typeof createTRPCContext>>;
+export type CreateTRPCContextType = Awaited<
+  ReturnType<typeof createTRPCContext>
+>;
 
 const withAuthTrpcContext = ({ session, ...rest }: CreateTRPCContextType) => {
   if (!session || !session.user) {

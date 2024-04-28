@@ -1,6 +1,5 @@
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RiCloseCircleLine } from "@remixicon/react";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -8,43 +7,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { COLORS } from "@/constants/esign";
+import { RiCloseCircleLine } from "@remixicon/react";
 
 import { FieldTypeData } from "../field-type-data";
 
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
-import { useFormContext, useWatch } from "react-hook-form";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { TemplateFieldContainer } from "./template-field-container";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { cn } from "@/lib/utils";
+import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { type RouterOutputs } from "@/trpc/shared";
+import { useFormContext, useWatch } from "react-hook-form";
+import { TemplateFieldContainer } from "./template-field-container";
 
-type Field = TypeZodAddFieldMutationSchema["data"][number];
+type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface TemplateFieldProps {
   left: number;
   top: number;
   width: number;
   height: number;
-  id: string;
-  focusId: string;
   index: number;
-  handleFocus: (id: string) => void;
   handleDelete: () => void;
   viewportWidth: number;
   viewportHeight: number;
   currentViewportWidth: number;
   currentViewportHeight: number;
+  recipients: Recipients;
 }
 
 export function TemplateField({
@@ -52,22 +53,26 @@ export function TemplateField({
   left,
   top,
   width,
-  id,
-  focusId,
-  handleFocus,
   index,
   handleDelete,
   currentViewportHeight,
   currentViewportWidth,
   viewportHeight,
   viewportWidth,
+  recipients,
 }: TemplateFieldProps) {
-  const { control } = useFormContext<{ fields: Field[] }>();
+  const { control, getValues } = useFormContext<TemplateFieldForm>();
   const type = useWatch({ control: control, name: `fields.${index}.type` });
+  const recipientId = useWatch({
+    control: control,
+    name: `fields.${index}.recipientId`,
+  });
+
+  const recipientColors = getValues("recipientColors");
+  const color = recipientColors?.[recipientId] ?? "";
 
   return (
     <TemplateFieldContainer
-      className="overflow-visible"
       viewportWidth={viewportWidth}
       viewportHeight={viewportHeight}
       currentViewportWidth={currentViewportWidth}
@@ -76,84 +81,71 @@ export function TemplateField({
       top={top}
       left={left}
       height={height}
-      onClick={() => {
-        handleFocus(id);
-      }}
-      role="button"
-      tabIndex={0}
+      color={color}
     >
-      <div
-        style={{ bottom: height }}
-        className={cn(
-          "absolute min-w-[300px] flex-col gap-y-2 border bg-white p-3 shadow-md",
-          focusId === id ? "flex" : " hidden",
-        )}
-      >
-        <div className="flex items-center gap-x-2">
-          <Button
-            className="mt-2"
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              handleDelete();
-            }}
-          >
-            <RiCloseCircleLine className="h-5 w-5" />
-          </Button>
+      <div className="flex items-center gap-x-2">
+        <Button
+          className="group mt-2"
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            handleDelete();
+          }}
+        >
+          <RiCloseCircleLine className="h-5 w-5 text-red-500/90 group-hover:text-red-500" />
+        </Button>
 
-          <FormField
-            control={control}
-            name={`fields.${index}.type`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="sr-only">Field type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="trigger group h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {FieldTypeData.map((item) => (
-                      <SelectItem key={item.label} value={item.value}>
-                        <span className="flex items-center gap-x-2">
-                          <item.icon className="h-4 w-4" aria-hidden />
-                          <span className="group-[.trigger]:hidden">
-                            {item.label}
-                          </span>
-                        </span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name={`fields.${index}.name`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="sr-only">Field Name</FormLabel>
+        <FormField
+          control={control}
+          name={`fields.${index}.type`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Field type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <Input
-                    className="h-8 min-w-16"
-                    type="text"
-                    required
-                    {...field}
-                  />
+                  <SelectTrigger className="trigger group h-8">
+                    <SelectValue />
+                  </SelectTrigger>
                 </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
+                <SelectContent>
+                  {FieldTypeData.map((item) => (
+                    <SelectItem key={item.label} value={item.value}>
+                      <span className="flex items-center gap-x-2">
+                        <item.icon className="h-4 w-4" aria-hidden />
+                        <span className="group-[.trigger]:hidden">
+                          {item.label}
+                        </span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
 
-        {type === "TEXT" && <FieldDefaultValue index={index} />}
+        <FormField
+          control={control}
+          name={`fields.${index}.name`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="sr-only">Field Name</FormLabel>
+              <FormControl>
+                <Input
+                  className="h-8 min-w-16"
+                  type="text"
+                  required
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
       </div>
+
+      <RecipientSelect recipients={recipients} index={index} />
+
+      {type === "TEXT" && <FieldDefaultValue index={index} />}
     </TemplateFieldContainer>
   );
 }
@@ -163,8 +155,7 @@ interface FieldDefaultValueProps {
 }
 
 function FieldDefaultValue({ index }: FieldDefaultValueProps) {
-  const { control } = useFormContext<{ fields: Field[] }>();
-  const type = useWatch({ control: control, name: `fields.${index}.type` });
+  const { control } = useFormContext<TemplateFieldForm>();
 
   return (
     <Accordion type="single" collapsible>
@@ -208,5 +199,63 @@ function FieldDefaultValue({ index }: FieldDefaultValueProps) {
         </AccordionContent>
       </AccordionItem>
     </Accordion>
+  );
+}
+
+interface RecipientSelectProps {
+  index: number;
+  recipients: Recipients;
+}
+
+function RecipientSelect({ index, recipients }: RecipientSelectProps) {
+  const { control, getValues } = useFormContext<TemplateFieldForm>();
+  const recipientColors = getValues("recipientColors");
+  return (
+    <FormField
+      control={control}
+      name={`fields.${index}.recipientId`}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Recipient</FormLabel>
+          <Select
+            required
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+          >
+            <FormControl>
+              <SelectTrigger className="h-auto px-2 py-1">
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {recipients.map((recipient) => (
+                <SelectItem key={recipient.id} value={recipient.id}>
+                  <span className="flex items-center">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "mr-3 rounded-full p-2",
+                        COLORS[
+                          recipientColors[recipient.id] as keyof typeof COLORS
+                        ]?.bg,
+                      )}
+                    />
+                    <span className="flex flex-col items-start">
+                      {recipient.name && recipient.name !== "" && (
+                        <span>{recipient.name}</span>
+                      )}
+                      <span className="text-xs text-primary/80">
+                        {recipient.email}
+                      </span>
+                    </span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

@@ -1,11 +1,12 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
+import { COLORS } from "@/constants/esign";
+import { type RouterOutputs } from "@/trpc/shared";
 import { type ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
 
-type Field = TypeZodAddFieldMutationSchema["data"][number];
+type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
 
 interface TemplateSigningFieldProviderProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ interface TemplateSigningFieldProviderProps {
 export type TemplateSigningFieldForm = {
   fields: Field[];
   fieldValues: Record<string, string>;
+  recipientColors: Record<string, string>;
 };
 
 export const TemplateSigningFieldProvider = ({
@@ -26,7 +28,16 @@ export const TemplateSigningFieldProvider = ({
       fields: fields ?? [],
       fieldValues: fields
         ? fields.reduce<Record<string, string>>((prev, curr) => {
-            prev[curr.name] = curr?.defaultValue ?? "";
+            prev[curr.id] = curr?.prefilledValue || curr?.defaultValue || "";
+            return prev;
+          }, {})
+        : {},
+      recipientColors: fields
+        ? fields.reduce<Record<string, string>>((prev, curr, index) => {
+            const color = Object.keys(COLORS)?.[index] ?? "";
+
+            prev[curr.recipientId] = color;
+
             return prev;
           }, {})
         : {},

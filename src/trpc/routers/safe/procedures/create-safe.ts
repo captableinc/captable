@@ -1,10 +1,11 @@
-import fs from "fs";
-import path from "path";
-import { Audit } from "@/server/audit";
-import { withAuth } from "@/trpc/api/trpc";
-import { SafeMutationSchema } from "../schema";
 import { generatePublicId } from "@/common/id";
 import { uploadFile } from "@/common/uploads";
+import { Audit } from "@/server/audit";
+import { withAuth } from "@/trpc/api/trpc";
+import fs from "fs";
+import { nanoid } from "nanoid";
+import path from "path";
+import { SafeMutationSchema } from "../schema";
 
 export const createSafeProcedure = withAuth
   .input(SafeMutationSchema)
@@ -36,8 +37,15 @@ export const createSafeProcedure = withAuth
         );
         const pdfBuffer = fs.readFileSync(pdfPath);
 
+        const file = {
+          name: `safe-template-${nanoid()}`,
+          type: "application/pdf",
+          arrayBuffer: async () => Promise.resolve(pdfBuffer),
+          size: pdfBuffer.byteLength,
+        } as unknown as File;
+
         const { key, mimeType, name, size } = await uploadFile(
-          pdfBuffer,
+          file,
           {
             identifier: "templates",
             keyPrefix: "newsafe",

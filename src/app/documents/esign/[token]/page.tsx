@@ -16,9 +16,12 @@ interface SigningPageProps {
 }
 
 export default async function SigningPage(props: SigningPageProps) {
-  const { fields, url } = await api.template.get.query({
-    publicId: props.params.token,
-  });
+  const { token } = props.params;
+
+  const { fields, url, recipientId, templateId, signableFields } =
+    await api.template.getSigningFields.query({
+      token,
+    });
 
   const session = await getServerAuthSession();
   const companyPublicId = session?.user.companyPublicId;
@@ -35,8 +38,9 @@ export default async function SigningPage(props: SigningPageProps) {
         </div>
         <div className="sticky top-0 flex min-h-full w-80 flex-col lg:border-l">
           <SigningFields
-            token={props.params.token}
-            fields={fields}
+            recipientId={recipientId}
+            templateId={templateId}
+            fields={signableFields}
             companyPublicId={companyPublicId}
           />
         </div>

@@ -115,7 +115,7 @@ export function FieldCanvas({
 
             append({
               id,
-              name: `field ${fields.length}`,
+              name: `Untitled #${fields.length + 1}`,
               left,
               top,
               width,

@@ -11,7 +11,7 @@ export function UploadDocumentStep() {
   const { setValue } = useEsignValues();
 
   return (
-    <StepperStep title="Upload Document">
+    <StepperStep title="Upload a document">
       <StepperModalContent>
         <Uploader
           identifier={""}

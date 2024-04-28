@@ -103,7 +103,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                         >
                           Share document
                         </DropdownMenuItem>
-                        <DropdownMenuItem>E-sign document</DropdownMenuItem>
+                        <DropdownMenuItem>eSign documents</DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
                             router.push(

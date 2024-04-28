@@ -98,10 +98,28 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
               <div className="flex flex-col">
                 {fields.map((item, index) => (
                   <div
-                    className="flex items-end justify-between gap-x-2"
+                    className="my-3 flex items-end justify-between gap-x-2"
                     key={item.id}
                   >
-                    <div className="flex items-center gap-x-2">
+                    <div className="flex items-center gap-x-10">
+                      <FormField
+                        control={form.control}
+                        name={`recipients.${index}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name</FormLabel>
+                            <FormControl>
+                              <Input
+                                className="h-8 min-w-16"
+                                type="text"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
                       <FormField
                         control={form.control}
                         name={`recipients.${index}.email`}
@@ -120,37 +138,25 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
                           </FormItem>
                         )}
                       />
-
-                      <FormField
-                        control={form.control}
-                        name={`recipients.${index}.name`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                className="h-8 min-w-16"
-                                type="text"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
                     </div>
 
                     <div className="flex items-center">
-                      <Button
-                        disabled={isDeleteDisabled}
-                        onClick={() => {
-                          remove(index);
-                        }}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        <RiDeleteBinLine aria-hidden className="h-4 w-4" />
-                      </Button>
+                      {fields.length > 1 && (
+                        <Button
+                          disabled={isDeleteDisabled}
+                          onClick={() => {
+                            remove(index);
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="group h-8 w-8 p-2"
+                        >
+                          <RiDeleteBinLine
+                            aria-hidden
+                            className="h-8 w-8 text-red-500/70 group-hover:text-red-500"
+                          />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -169,7 +175,9 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
                         />
                       </FormControl>
                       <div className="leading-none">
-                        <FormLabel>Ordered delivery</FormLabel>
+                        <FormLabel>
+                          Require recipients to sign in the order they are added
+                        </FormLabel>
                       </div>
                     </FormItem>
                   )}
@@ -179,11 +187,13 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
               <div>
                 <Button
                   type="button"
+                  variant={"secondary"}
+                  size="sm"
                   onClick={() => {
                     append({ email: "", name: "" });
                   }}
                 >
-                  Add recipient
+                  Add more recipient
                 </Button>
               </div>
             </div>
@@ -193,7 +203,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
       <StepperModalFooter>
         <StepperPrev>Back</StepperPrev>
         <Button type="submit" form="recipient-form">
-          Submit
+          Save & Continue
         </Button>
       </StepperModalFooter>
     </StepperStep>

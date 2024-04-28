@@ -14,11 +14,12 @@ interface AddEsignModalProps {
 export function AddEsignModal({ companyPublicId }: AddEsignModalProps) {
   return (
     <StepperModal
-      title="E-sign document"
+      size={"4xl"}
+      title="eSign a document"
       subtitle=""
       trigger={
         <Button>
-          <RiAddFill className="mr-2 h-5 w-5" /> Upload a E-Sign Document
+          <RiAddFill className="mr-2 h-5 w-5" /> Upload and eSign a document
         </Button>
       }
     >

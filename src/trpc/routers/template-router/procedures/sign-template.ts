@@ -98,7 +98,7 @@ export const signTemplateProcedure = publicProcedure
           await signPdf({
             bucketKey,
             companyId,
-            ctx,
+            ctx: { ...ctx, db: tx },
             templateName,
             fields: template.fields,
             uploaderName: "open cap",
@@ -118,7 +118,7 @@ export const signTemplateProcedure = publicProcedure
         await signPdf({
           bucketKey,
           companyId,
-          ctx,
+          ctx: { ...ctx, db: tx },
           templateName,
           fields: template.fields,
           uploaderName: recipient.name ?? "unknown signer",
@@ -178,7 +178,7 @@ function getTemplate({ tx, templateId }: getTemplateOptions) {
 type TGetTemplate = Awaited<ReturnType<typeof getTemplate>>;
 
 interface TSignPdfOptions {
-  ctx: CreateTRPCContextType;
+  ctx: Omit<CreateTRPCContextType, "db"> & { db: PrismaTransactionalClient };
   bucketKey: string;
   companyId: string;
   templateName: string;

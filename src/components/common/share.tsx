@@ -2,8 +2,10 @@
 
 import Loading from "@/components/common/loading";
 import Modal from "@/components/common/modal";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
+import { useSession } from "next-auth/react";
 
 import { type ContactsType, type ShareRecipient } from "@/types/contacts";
 import {
@@ -36,6 +38,8 @@ const Share = ({
   const [copiedText, copy] = useCopyToClipboard();
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [selected, setSelected] = useState<Option[]>([]);
+  const { data } = useSession();
+  const user = data?.user;
 
   const copyToClipboard = (idx: number, text: string) => {
     copy(text)
@@ -89,18 +93,34 @@ const Share = ({
               }
             />
 
-            {recipients.length > 0 && (
-              <Fragment>
-                <h5 className="mt-6 font-medium">Previously shared with</h5>
+            <h5 className="mt-6 font-medium">People with access</h5>
 
-                <ul>
+            <li className="group flex items-center justify-between gap-x-2 py-2">
+              <div className="flex items-center gap-2">
+                <Avatar className="h-8 w-8 rounded-full">
+                  <AvatarImage
+                    src={user?.image ? user?.image : "/placeholders/user.svg"}
+                  />
+                </Avatar>
+
+                <span className="flex flex-col font-medium">
+                  <span className="text-sm">
+                    {user?.name}
+                    <span className="text-primary/50"> (You)</span>
+                  </span>
+                  <span className="text-xs text-primary/50">{user?.email}</span>
+                </span>
+              </div>
+            </li>
+
+            <ul>
+              {recipients.length > 0 && (
+                <Fragment>
                   <li className="group flex items-center justify-between gap-x-2 py-2">
                     <div className="flex items-center gap-2">
-                      <img
-                        src="https://randomuser.me/api/portraits/men/41.jpg"
-                        alt="User"
-                        className="h-8 w-8 rounded-full"
-                      />
+                      <Avatar className="h-8 w-8 rounded-full">
+                        <AvatarImage src={"/placeholders/user.svg"} />
+                      </Avatar>
                       <span className="flex flex-col font-medium">
                         <span className="text-sm">John Doe</span>
                         <span className="text-xs text-primary/50">Member</span>
@@ -137,9 +157,9 @@ const Share = ({
                       </div>
                     </div>
                   </li>
-                </ul>
-              </Fragment>
-            )}
+                </Fragment>
+              )}
+            </ul>
 
             <div className="mt-6 flex justify-end">
               <div className="space-x-4">

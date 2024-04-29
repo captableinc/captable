@@ -25,3 +25,5 @@ export type PrismaTransactionalClient = Parameters<
 >[0];
 
 export type TPrisma = typeof db;
+
+export type TPrismaOrTransaction = TPrisma | PrismaTransactionalClient;

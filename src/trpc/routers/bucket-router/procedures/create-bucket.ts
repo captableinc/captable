@@ -1,11 +1,13 @@
-import { withAuth, type CreateTRPCContextType } from "@/trpc/api/trpc";
+import { type TPrismaOrTransaction } from "@/server/db";
+import { withAuth } from "@/trpc/api/trpc";
 import {
   ZodCreateBucketMutationSchema,
   type TypeZodCreateBucketMutationSchema,
 } from "../schema";
 
-interface createBucketHandlerOptions extends Pick<CreateTRPCContextType, "db"> {
+interface createBucketHandlerOptions {
   input: TypeZodCreateBucketMutationSchema;
+  db: TPrismaOrTransaction;
 }
 
 export const createBucketHandler = ({

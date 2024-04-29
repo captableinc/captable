@@ -1,7 +1,6 @@
 import { generatePublicId } from "@/common/id";
 import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { type ContactsType } from "@/types/contacts";
 import type { DataRoom } from "@prisma/client";
 import { z } from "zod";
 import { DataRoomSchema } from "./schema";
@@ -23,9 +22,32 @@ export const dataRoomRouter = createTRPCRouter({
               publicId: dataRoomPublicId,
               companyId,
             },
-
             include: {
               documents: true,
+              recipients: {
+                include: {
+                  member: {
+                    include: {
+                      user: {
+                        select: {
+                          id: true,
+                          email: true,
+                          name: true,
+                          image: true,
+                        },
+                      },
+                    },
+                  },
+                  stakeholder: {
+                    select: {
+                      id: true,
+                      name: true,
+                      email: true,
+                      institutionName: true,
+                    },
+                  },
+                },
+              },
             },
           });
 
@@ -131,63 +153,5 @@ export const dataRoomRouter = createTRPCRouter({
           "Oops, something went wrong while saving data room. Please try again.",
       };
     }
-  }),
-
-  getContacts: withAuth.query(async ({ ctx }) => {
-    const { db, session } = ctx;
-
-    const contacts = [] as ContactsType;
-
-    const { members, stakeholders } = await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ session, tx });
-
-      const members = await tx.member.findMany({
-        where: {
-          companyId,
-        },
-
-        include: {
-          user: {
-            select: {
-              email: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-      });
-
-      const stakeholders = await tx.stakeholder.findMany({
-        where: {
-          companyId,
-        },
-      });
-
-      return { stakeholders, members };
-    });
-
-    (members || []).map((member) =>
-      contacts.push({
-        id: member.id,
-        image: member.user.image!,
-        email: member.user.email!,
-        value: member.user.email!,
-        name: member.user.name!,
-        type: "member",
-      }),
-    );
-
-    (stakeholders || []).map((stakeholder) =>
-      contacts.push({
-        id: stakeholder.id,
-        email: stakeholder.email,
-        value: stakeholder.email,
-        name: stakeholder.name,
-        institutionName: stakeholder.institutionName!,
-        type: "stakeholder",
-      }),
-    );
-
-    return contacts;
   }),
 });

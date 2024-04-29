@@ -1,6 +1,5 @@
 "use server";
 
-import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { notFound } from "next/navigation";
 import DataRoomFiles from "../components/data-room-files";
@@ -10,11 +9,10 @@ const DataRoomSettinsPage = async ({
 }: {
   params: { publicId: string; dataRoomPublicId: string };
 }) => {
-  const session = await getServerAuthSession();
   const { dataRoom, documents } = await api.dataRoom.getDataRoom.query({
     dataRoomPublicId,
   });
-  const contacts = await api.dataRoom.getContacts.query();
+  const contacts = await api.common.getContacts.query();
 
   if (!dataRoom) {
     return notFound();

@@ -1,7 +1,7 @@
 "use client";
 
 import EmptyState from "@/components/common/empty-state";
-import ShareModal from "@/components/common/share";
+import ShareModal from "@/components/common/share-modal";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";

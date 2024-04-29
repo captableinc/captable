@@ -1,20 +1,32 @@
-import { type withAuthTrpcContextType, withAuth } from "@/trpc/api/trpc";
-import {
-  type TypeZodRemoveMemberMutationSchema,
-  ZodRemoveMemberMutationSchema,
-} from "../schema";
 import { Audit } from "@/server/audit";
-import { type Prisma } from "@prisma/client";
+import { checkMembership } from "@/server/auth";
+import { type TPrismaOrTransaction } from "@/server/db";
+import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
+import {
+  ZodRemoveMemberMutationSchema,
+  type TypeZodRemoveMemberMutationSchema,
+} from "../schema";
 
 export const removeMemberProcedure = withAuth
   .input(ZodRemoveMemberMutationSchema)
   .mutation(async (args) => {
-    return await removeMemberHandler(args);
+    const data = await args.ctx.db.$transaction(async (db) => {
+      const data = await removeMemberHandler({
+        ...args,
+        ctx: { ...args.ctx, db },
+      });
+
+      return data;
+    });
+
+    return data;
   });
 
 interface removeMemberHandlerOptions {
   input: TypeZodRemoveMemberMutationSchema;
-  ctx: withAuthTrpcContextType;
+  ctx: Omit<withAuthTrpcContextType, "db"> & {
+    db: TPrismaOrTransaction;
+  };
 }
 
 export async function removeMemberHandler({
@@ -24,42 +36,42 @@ export async function removeMemberHandler({
   const user = session.user;
   const { memberId } = input;
 
-  await db.$transaction(async (tx: Prisma.TransactionClient) => {
-    const member = await tx.member.delete({
-      where: {
-        id: memberId,
-        companyId: session.user.companyId,
-      },
-      select: {
-        userId: true,
-        user: {
-          select: {
-            name: true,
-          },
-        },
-        company: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+  const { companyId } = await checkMembership({ session, tx: db });
 
-    await Audit.create(
-      {
-        action: "member.removed",
-        companyId: user.companyId,
-        actor: { type: "user", id: user.id },
-        context: {
-          requestIp,
-          userAgent,
+  const member = await db.member.delete({
+    where: {
+      id: memberId,
+      companyId,
+    },
+    select: {
+      userId: true,
+      user: {
+        select: {
+          name: true,
         },
-        target: [{ type: "user", id: member.userId }],
-        summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
       },
-      tx,
-    );
+      company: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
+
+  await Audit.create(
+    {
+      action: "member.removed",
+      companyId,
+      actor: { type: "user", id: user.id },
+      context: {
+        requestIp,
+        userAgent,
+      },
+      target: [{ type: "user", id: member.userId }],
+      summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
+    },
+    db,
+  );
 
   return { success: true };
 }

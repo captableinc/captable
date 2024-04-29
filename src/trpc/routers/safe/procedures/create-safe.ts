@@ -1,6 +1,7 @@
 import { generatePublicId } from "@/common/id";
 import { uploadFile } from "@/common/uploads";
 import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import fs from "fs";
 import { nanoid } from "nanoid";
@@ -10,12 +11,11 @@ import { SafeMutationSchema } from "../schema";
 export const createSafeProcedure = withAuth
   .input(SafeMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const { userAgent, requestIp } = ctx;
+    const { userAgent, requestIp, session } = ctx;
     const user = ctx.session.user;
     const safeTemplate = input.safeTemplate;
 
     const data = {
-      companyId: user.companyId,
       stakeholderId: input.stakeholderId,
       publicId: generatePublicId(),
       capital: input.capital,
@@ -56,21 +56,25 @@ export const createSafeProcedure = withAuth
         const bucketPayload = { key, mimeType, name, size };
 
         const { template } = await ctx.db.$transaction(async (txn) => {
+          const { companyId, memberId } = await checkMembership({
+            session,
+            tx: txn,
+          });
+
           const { id, name } = await txn.bucket.create({ data: bucketPayload });
 
-          const newSafe = await txn.safe.create({ data });
-          console.log({ newSafe });
+          await txn.safe.create({ data: { ...data, companyId } });
 
-          const template = await ctx.db.template.create({
+          const template = await txn.template.create({
             data: {
-              companyId: user.companyId,
-              uploaderId: user.memberId,
+              companyId,
+              uploaderId: memberId,
               publicId: generatePublicId(),
               bucketId: id,
               name: name,
             },
           });
-          console.log({ template });
+
           await Audit.create(
             {
               action: "safe.created",
@@ -98,12 +102,17 @@ export const createSafeProcedure = withAuth
         if (documents?.length !== 1) return;
 
         const { template } = await ctx.db.$transaction(async (txn) => {
-          await txn.safe.create({ data });
+          const { companyId, memberId } = await checkMembership({
+            session,
+            tx: txn,
+          });
+
+          await txn.safe.create({ data: { ...data, companyId } });
 
           const template = await txn.template.create({
             data: {
-              companyId: user.companyId,
-              uploaderId: user.memberId,
+              companyId: companyId,
+              uploaderId: memberId,
               publicId: generatePublicId(),
               bucketId: documents[0]!.bucketId,
               name: documents[0]!.name,

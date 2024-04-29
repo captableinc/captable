@@ -1,3 +1,4 @@
+import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
@@ -5,12 +6,11 @@ import { ZodSwitchCompanyMutationSchema } from "./schema";
 export const companyRouter = createTRPCRouter({
   getCompany: withAuth.query(async ({ ctx }) => {
     const user = ctx.session.user;
-    const userId = user.id;
     const companyId = user.companyId;
 
     const company = await ctx.db.member.findFirstOrThrow({
       where: {
-        userId,
+        id: user.memberId,
         companyId,
       },
       select: {
@@ -40,55 +40,53 @@ export const companyRouter = createTRPCRouter({
   switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { db } = ctx;
+      const { db, session } = ctx;
 
-      await db.member.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          lastAccessed: new Date(),
-        },
+      await db.$transaction(async (tx) => {
+        const { memberId } = await checkMembership({
+          session: {
+            ...session,
+            user: { ...session.user, memberId: input.id },
+          },
+          tx,
+        });
+
+        await tx.member.update({
+          where: {
+            id: memberId,
+          },
+          data: {
+            lastAccessed: new Date(),
+          },
+        });
       });
+
       return { success: true };
     }),
   updateCompany: withAuth
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const memberAuthorized = await ctx.db.member.findFirst({
-          select: {
-            company: {
-              select: {
-                id: true,
-              },
+        await ctx.db.$transaction(async (tx) => {
+          const { companyId } = await checkMembership({
+            tx,
+            session: ctx.session,
+          });
+
+          const { company } = input;
+          const { incorporationDate, ...rest } = company;
+
+          await tx.company.update({
+            where: {
+              id: companyId,
             },
-          },
-          where: {
-            userId: ctx.session.user.id,
-            companyId: ctx.session.user.companyId,
-          },
+            data: {
+              incorporationDate: new Date(incorporationDate),
+              ...rest,
+            },
+          });
         });
 
-        if (!memberAuthorized) {
-          return {
-            success: false,
-            message: "You are not authorized to perform this action",
-          };
-        }
-
-        const { company } = input;
-        const { incorporationDate, ...rest } = company;
-
-        await ctx.db.company.update({
-          where: {
-            id: memberAuthorized.company.id,
-          },
-          data: {
-            incorporationDate: new Date(incorporationDate),
-            ...rest,
-          },
-        });
         return {
           success: true,
           message: "successfully updated company",

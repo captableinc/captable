@@ -1,7 +1,8 @@
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
+import { revokeExistingInviteTokens } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodRevokeInviteMutationSchema } from "../schema";
-import { revokeExistingInviteTokens } from "@/server/member";
-import { Audit } from "@/server/audit";
 import { removeMemberHandler } from "./remove-member";
 
 export const revokeInviteProcedure = withAuth
@@ -12,6 +13,8 @@ export const revokeInviteProcedure = withAuth
     const { memberId, email } = input;
 
     await db.$transaction(async (tx) => {
+      await checkMembership({ session, tx });
+
       await revokeExistingInviteTokens({ memberId, email, tx });
 
       const member = await tx.member.findFirst({
@@ -33,22 +36,25 @@ export const revokeInviteProcedure = withAuth
         },
       });
 
-      await Audit.create({
-        action: "member.revoked-invite",
-        companyId: user.companyId,
-        actor: { type: "user", id: user.id },
-        context: {
-          requestIp,
-          userAgent,
+      await Audit.create(
+        {
+          action: "member.revoked-invite",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {
+            requestIp,
+            userAgent,
+          },
+          target: [{ type: "user", id: member?.userId }],
+          summary: `${user.name} revoked ${member?.user?.name} to join ${member?.company?.name}`,
         },
-        target: [{ type: "user", id: member?.userId }],
-        summary: `${user.name} revoked ${member?.user?.name} to join ${member?.company?.name}`,
-      });
-    });
+        tx,
+      );
 
-    await removeMemberHandler({
-      ctx,
-      input: { memberId: input.memberId },
+      await removeMemberHandler({
+        ctx: { ...ctx, db: tx },
+        input: { memberId: input.memberId },
+      });
     });
 
     return { success: true };

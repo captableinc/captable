@@ -1,22 +1,26 @@
 import { Audit } from "@/server/audit";
-import { EquityPlanMutationSchema } from "./schema";
+import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { EquityPlanMutationSchema } from "./schema";
 
 export const equityPlanRouter = createTRPCRouter({
   getPlans: withAuth.query(async ({ ctx }) => {
-    const {
-      db,
-      session: { user },
-    } = ctx;
+    const { db, session } = ctx;
 
-    const data = await db.equityPlan.findMany({
-      where: {
-        companyId: user.companyId,
-      },
+    const data = await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ session, tx });
 
-      orderBy: {
-        createdAt: "desc",
-      },
+      const data = await tx.equityPlan.findMany({
+        where: {
+          companyId,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return data;
     });
 
     return { data };
@@ -25,12 +29,12 @@ export const equityPlanRouter = createTRPCRouter({
   create: withAuth
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { userAgent, requestIp } = ctx;
-      console.log("adding user and name inside securities fields");
-      try {
-        const companyId = ctx.session.user.companyId;
+      const { userAgent, requestIp, session } = ctx;
 
+      try {
         await ctx.db.$transaction(async (tx) => {
+          const { companyId } = await checkMembership({ session, tx });
+
           const data = {
             companyId,
             name: input.name,
@@ -75,10 +79,11 @@ export const equityPlanRouter = createTRPCRouter({
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const { userAgent, requestIp } = ctx;
-        const companyId = ctx.session.user.companyId;
+        const { userAgent, requestIp, session } = ctx;
 
         await ctx.db.$transaction(async (tx) => {
+          const { companyId } = await checkMembership({ tx, session });
+
           const data = {
             name: input.name,
             planEffectiveDate: input.planEffectiveDate

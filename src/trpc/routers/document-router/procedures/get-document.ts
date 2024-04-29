@@ -1,24 +1,29 @@
+import { checkMembership } from "@/server/auth";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodGetDocumentQuerySchema } from "../schema";
-import { getPresignedGetUrl } from "@/server/file-uploads";
 
 export const getDocumentProcedure = withAuth
   .input(ZodGetDocumentQuerySchema)
-  .query(async ({ ctx, input }) => {
-    const user = ctx.session.user;
+  .query(async ({ ctx: { db, session }, input }) => {
+    const data = await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ tx, session });
 
-    const data = await ctx.db.document.findFirstOrThrow({
-      where: {
-        publicId: input.publicId,
-        companyId: user.companyId,
-      },
-      select: {
-        bucket: {
-          select: {
-            key: true,
+      const data = await tx.document.findFirstOrThrow({
+        where: {
+          publicId: input.publicId,
+          companyId,
+        },
+        select: {
+          bucket: {
+            select: {
+              key: true,
+            },
           },
         },
-      },
+      });
+
+      return data;
     });
 
     return getPresignedGetUrl(data.bucket.key);

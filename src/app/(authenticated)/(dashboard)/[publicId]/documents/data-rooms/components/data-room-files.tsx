@@ -84,9 +84,13 @@ const DataRoomFiles = ({
           {documents.length > 0 && (
             <div className="flex gap-3">
               <ShareModal
+                recipients={[]}
                 contacts={contacts}
                 title={`Share data room - "${dataRoom.name}"`}
                 subtitle="Share this data room with others."
+                onShare={async (emails) => {
+                  debugger;
+                }}
                 trigger={
                   <Button variant={"outline"}>
                     <RiShareLine className="mr-2 h-5 w-5" />

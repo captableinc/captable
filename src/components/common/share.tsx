@@ -5,7 +5,7 @@ import Modal from "@/components/common/modal";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
 
-import { type ContactsType } from "@/types/contacts";
+import { type ContactsType, type ShareRecipient } from "@/types/contacts";
 import {
   RiCheckLine as CheckIcon,
   RiDeleteBin2Line as DeleteIcon,
@@ -19,9 +19,18 @@ export type Props = {
   subtitle: string;
   trigger: React.ReactNode;
   contacts: ContactsType;
+  recipients: ShareRecipient[];
+  onShare: (emails: string[]) => void;
 };
 
-const Share = ({ title, subtitle, trigger, contacts }: Props) => {
+const Share = ({
+  title,
+  subtitle,
+  trigger,
+  contacts,
+  recipients,
+  onShare,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [copiedText, copy] = useCopyToClipboard();
@@ -80,98 +89,57 @@ const Share = ({ title, subtitle, trigger, contacts }: Props) => {
               }
             />
 
-            <h5 className="mt-6 font-medium">People with access</h5>
+            {recipients.length > 0 && (
+              <Fragment>
+                <h5 className="mt-6 font-medium">Previously shared with</h5>
 
-            <ul>
-              <li className="group flex items-center justify-between gap-x-2 py-2">
-                <div className="flex items-center gap-2">
-                  <img
-                    src="https://randomuser.me/api/portraits/men/41.jpg"
-                    alt="User"
-                    className="h-8 w-8 rounded-full"
-                  />
-                  <span className="flex flex-col font-medium">
-                    <span className="text-sm">John Doe</span>
-                    <span className="text-xs text-primary/50">Member</span>
-                  </span>
-                </div>
+                <ul>
+                  <li className="group flex items-center justify-between gap-x-2 py-2">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src="https://randomuser.me/api/portraits/men/41.jpg"
+                        alt="User"
+                        className="h-8 w-8 rounded-full"
+                      />
+                      <span className="flex flex-col font-medium">
+                        <span className="text-sm">John Doe</span>
+                        <span className="text-xs text-primary/50">Member</span>
+                      </span>
+                    </div>
 
-                <div className="ml-auto content-end justify-end object-right">
-                  <div className="flex items-center gap-1">
-                    <Button
-                      size="sm"
-                      variant={"secondary"}
-                      className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
-                    >
-                      <DeleteIcon className="h-4 w-4" />
-                      Remove
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={"secondary"}
-                      className="flex text-sm font-medium text-primary/70 hover:text-primary/90"
-                      onClick={() =>
-                        copyToClipboard(1, "https://example.com/2")
-                      }
-                    >
-                      <Fragment>
-                        {copiedIdx === 1 ? (
-                          <CheckIcon className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <LinkIcon className="h-4 w-4" />
-                        )}
-                        Copy link
-                      </Fragment>
-                    </Button>
-                  </div>
-                </div>
-              </li>
-
-              {/*  */}
-              <li className="group flex items-center justify-between gap-x-2 py-2">
-                <div className="flex items-center gap-2">
-                  <img
-                    src="https://randomuser.me/api/portraits/men/41.jpg"
-                    alt="User"
-                    className="h-8 w-8 rounded-full"
-                  />
-                  <span className="flex flex-col font-medium">
-                    <span className="text-sm">John Doe</span>
-                    <span className="text-xs text-primary/50">Member</span>
-                  </span>
-                </div>
-
-                <div className="ml-auto content-end justify-end object-right">
-                  <div className="flex items-center gap-1">
-                    <Button
-                      size="sm"
-                      variant={"secondary"}
-                      className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
-                    >
-                      <DeleteIcon className="h-4 w-4" />
-                      Remove
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={"secondary"}
-                      className="flex text-sm font-medium text-primary/70 hover:text-primary/90"
-                      onClick={() =>
-                        copyToClipboard(2, "https://example.com/1")
-                      }
-                    >
-                      <Fragment>
-                        {copiedIdx === 2 ? (
-                          <CheckIcon className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <LinkIcon className="h-4 w-4" />
-                        )}
-                        Copy link
-                      </Fragment>
-                    </Button>
-                  </div>
-                </div>
-              </li>
-            </ul>
+                    <div className="ml-auto content-end justify-end object-right">
+                      <div className="flex items-center gap-1">
+                        <Button
+                          size="sm"
+                          variant={"secondary"}
+                          className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
+                        >
+                          <DeleteIcon className="h-4 w-4" />
+                          Remove
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={"secondary"}
+                          className="flex text-sm font-medium text-primary/70 hover:text-primary/90"
+                          onClick={() =>
+                            copyToClipboard(2, "https://example.com/1")
+                          }
+                        >
+                          <Fragment>
+                            {copiedIdx === 2 ? (
+                              <CheckIcon className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <LinkIcon className="h-4 w-4" />
+                            )}
+                            Copy link
+                          </Fragment>
+                        </Button>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </Fragment>
+            )}
 
             <div className="mt-6 flex justify-end">
               <div className="space-x-4">
@@ -184,7 +152,16 @@ const Share = ({ title, subtitle, trigger, contacts }: Props) => {
                   Cancel
                 </Button>
 
-                <Button type="submit">Send</Button>
+                <Button
+                  type="submit"
+                  onClick={() => {
+                    const emails = selected.map((option) => option.value);
+                    onShare(emails);
+                    setOpen(false);
+                  }}
+                >
+                  Share
+                </Button>
               </div>
             </div>
           </div>

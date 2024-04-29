@@ -8,3 +8,9 @@ export type ContactsType = {
   institutionName?: string;
   type: "member" | "stakeholder" | "other";
 }[];
+
+export type ShareRecipient = {
+  id: string;
+  name: string;
+  email: string;
+};

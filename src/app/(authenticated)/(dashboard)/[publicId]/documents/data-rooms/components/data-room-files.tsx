@@ -4,11 +4,13 @@ import EmptyState from "@/components/common/empty-state";
 import ShareModal from "@/components/common/share-modal";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import type { DataRoomRecipientType } from "@/trpc/routers/data-room-router/schema";
 import { type ContactsType } from "@/types/contacts";
 import type { Bucket, DataRoom } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 
 import {
@@ -42,12 +44,32 @@ const DataRoomFiles = ({
   contacts,
   companyPublicId,
 }: DataRoomFilesProps) => {
-  const { mutateAsync } = api.dataRoom.save.useMutation();
-  const { mutateAsync: shareDataRoomMutation } =
-    api.dataRoom.share.useMutation();
+  const router = useRouter();
+  const { toast } = useToast();
+  const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
+  const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
+    {
+      onSuccess: () => {
+        router.refresh();
+
+        toast({
+          title: "✨ Complete",
+          description: "Data room successfully shared.",
+        });
+      },
+
+      onError: (error) => {
+        toast({
+          title: error.message,
+          description: "",
+          variant: "destructive",
+        });
+      },
+    },
+  );
 
   const debounced = useDebounceCallback(async (name) => {
-    await mutateAsync({
+    await saveDataRoomMutation({
       name,
       publicId: dataRoom.publicId,
     });

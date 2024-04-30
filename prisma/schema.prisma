@@ -388,6 +388,7 @@ model DataRoomDocument {
 
 model DataRoomRecipient {
   id         String   @id @default(cuid())
+  name       String?
   email      String
   dataRoomId String
   dataRoom   DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
@@ -398,10 +399,10 @@ model DataRoomRecipient {
   stakeholderId String?
   stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@unique([dataRoomId, email])
   @@index([memberId])
   @@index([dataRoomId])
   @@index([stakeholderId])

@@ -3,7 +3,7 @@ import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
 import { z } from "zod";
-import { DataRoomSchema } from "./schema";
+import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
 
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
@@ -154,4 +154,72 @@ export const dataRoomRouter = createTRPCRouter({
       };
     }
   }),
+
+  share: withAuth
+    .input(
+      z.object({
+        dataRoomId: z.string(),
+        others: z.array(DataRoomRecipientSchema),
+        selectedContacts: z.array(DataRoomRecipientSchema),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { session, db } = ctx;
+      const { dataRoomId, others, selectedContacts } = input;
+      const companyId = session.user.companyId;
+
+      const dataRoom = await db.dataRoom.findUniqueOrThrow({
+        where: {
+          id: dataRoomId,
+          companyId,
+        },
+      });
+
+      if (!dataRoom) {
+        throw new Error("Data room not found");
+      }
+
+      const upsertManyRecipients = async () => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        [...others, ...selectedContacts].forEach(async (recipient) => {
+          const email = (recipient.email || recipient.value).trim();
+          if (!email) {
+            throw new Error("Email is required");
+          }
+
+          const memberOrStakeholderId =
+            recipient.type === "member"
+              ? { memberId: recipient.id }
+              : recipient.type === "stakeholder"
+                ? { stakeholderId: recipient.id }
+                : {};
+
+          await db.dataRoomRecipient.upsert({
+            where: {
+              dataRoomId_email: {
+                dataRoomId,
+                email,
+              },
+            },
+            create: {
+              dataRoomId,
+              name: recipient.name,
+              email,
+              ...memberOrStakeholderId,
+            },
+            update: {
+              name: recipient.name,
+              ...memberOrStakeholderId,
+            },
+          });
+        });
+      };
+
+      await upsertManyRecipients();
+
+      return {
+        success: true,
+        message: "Data room successfully shared!",
+      };
+    }),
 });

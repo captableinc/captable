@@ -20,11 +20,12 @@ export type Option = {
   label: string;
   subLabel?: string;
   image?: string;
+  meta?: object;
   disable?: boolean;
   /** fixed option that can't be removed. */
   fixed?: boolean;
   /** Group the options by providing key. */
-  [key: string]: string | boolean | undefined;
+  [key: string]: object | string | boolean | undefined;
 };
 type GroupOption = Record<string, Option[]>;
 
@@ -380,11 +381,7 @@ const MultipleSelector = React.forwardRef<
                 <Badge
                   key={option.value}
                   variant={"success"}
-                  className={cn(
-                    "data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground",
-                    "data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground",
-                    badgeClassName,
-                  )}
+                  className={cn(badgeClassName)}
                   data-fixed={option.fixed}
                   data-disabled={disabled}
                 >

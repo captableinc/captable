@@ -5,6 +5,7 @@ import ShareModal from "@/components/common/share-modal";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
+import type { DataRoomRecipientType } from "@/trpc/routers/data-room-router/schema";
 import { type ContactsType } from "@/types/contacts";
 import type { Bucket, DataRoom } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
@@ -42,6 +43,9 @@ const DataRoomFiles = ({
   companyPublicId,
 }: DataRoomFilesProps) => {
   const { mutateAsync } = api.dataRoom.save.useMutation();
+  const { mutateAsync: shareDataRoomMutation } =
+    api.dataRoom.share.useMutation();
+
   const debounced = useDebounceCallback(async (name) => {
     await mutateAsync({
       name,
@@ -88,8 +92,13 @@ const DataRoomFiles = ({
                 contacts={contacts}
                 title={`Share data room - "${dataRoom.name}"`}
                 subtitle="Share this data room with others."
-                onShare={async (emails) => {
-                  debugger;
+                onShare={async ({ selectedContacts, others }) => {
+                  await shareDataRoomMutation({
+                    dataRoomId: dataRoom.id,
+                    selectedContacts:
+                      selectedContacts as DataRoomRecipientType[],
+                    others: others as DataRoomRecipientType[],
+                  });
                 }}
                 trigger={
                   <Button variant={"outline"}>

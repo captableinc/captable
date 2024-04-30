@@ -1,6 +1,7 @@
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodToggleActivationMutationSchema } from "../schema";
-import { Audit } from "@/server/audit";
 
 export const toggleActivation = withAuth
   .input(ZodToggleActivationMutationSchema)
@@ -9,10 +10,12 @@ export const toggleActivation = withAuth
     const { memberId, status } = input;
 
     await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ session, tx });
+
       const member = await tx.member.update({
         where: {
           id: memberId,
-          companyId: session.user.companyId,
+          companyId,
         },
         data: {
           status,
@@ -35,7 +38,7 @@ export const toggleActivation = withAuth
       await Audit.create(
         {
           action: status ? "member.activated" : "member.deactivated",
-          companyId: user.companyId,
+          companyId,
           actor: { type: "user", id: user.id },
           context: {
             requestIp,

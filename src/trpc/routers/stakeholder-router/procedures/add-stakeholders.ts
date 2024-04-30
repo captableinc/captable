@@ -1,21 +1,24 @@
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddStakeholderArrayMutationSchema } from "../schema";
 
 export const addStakeholdersProcedure = withAuth
   .input(ZodAddStakeholderArrayMutationSchema)
-  .mutation(async ({ ctx, input }) => {
+  .mutation(async ({ ctx: { db, session }, input }) => {
     try {
-      const companyId = ctx.session.user.companyId;
+      await db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({ session, tx });
 
-      // insert companyId in every input
-      const inputDataWithCompanyId = input.map((stakeholder) => ({
-        ...stakeholder,
-        companyId,
-      }));
+        // insert companyId in every input
+        const inputDataWithCompanyId = input.map((stakeholder) => ({
+          ...stakeholder,
+          companyId,
+        }));
 
-      await ctx.db.stakeholder.createMany({
-        data: inputDataWithCompanyId,
-        skipDuplicates: true,
+        await tx.stakeholder.createMany({
+          data: inputDataWithCompanyId,
+          skipDuplicates: true,
+        });
       });
 
       return {

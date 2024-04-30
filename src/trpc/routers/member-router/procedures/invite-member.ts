@@ -1,19 +1,20 @@
-import { withAuth } from "@/trpc/api/trpc";
-import { ZodInviteMemberMutationSchema } from "../schema";
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
 import {
   generateInviteToken,
   generateMemberIdentifier,
   sendMemberInviteEmail,
 } from "@/server/member";
+import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { Audit } from "@/server/audit";
+import { ZodInviteMemberMutationSchema } from "../schema";
 
 export const inviteMemberProcedure = withAuth
   .input(ZodInviteMemberMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
     const { name, email, title } = input;
-    const { userAgent, requestIp } = ctx;
+    const { userAgent, requestIp, session } = ctx;
 
     //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
     const { authTokenHash, expires, memberInviteTokenHash, token } =
@@ -21,9 +22,11 @@ export const inviteMemberProcedure = withAuth
 
     const { company, verificationToken } = await ctx.db.$transaction(
       async (tx) => {
+        const { companyId } = await checkMembership({ session, tx });
+
         const company = await tx.company.findFirstOrThrow({
           where: {
-            id: user.companyId,
+            id: companyId,
           },
           select: {
             name: true,
@@ -50,7 +53,7 @@ export const inviteMemberProcedure = withAuth
         const prevMember = await tx.member.findUnique({
           where: {
             companyId_userId: {
-              companyId: user.companyId,
+              companyId,
               userId: invitedUser.id,
             },
           },
@@ -70,7 +73,7 @@ export const inviteMemberProcedure = withAuth
             title,
             isOnboarded: false,
             lastAccessed: new Date(),
-            companyId: user.companyId,
+            companyId,
             userId: invitedUser.id,
             status: "PENDING",
           },
@@ -82,7 +85,7 @@ export const inviteMemberProcedure = withAuth
           },
           where: {
             companyId_userId: {
-              companyId: user.companyId,
+              companyId,
               userId: invitedUser.id,
             },
           },

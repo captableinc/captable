@@ -1,15 +1,14 @@
 // import { Audit } from "@/server/audit";
 import { generatePublicId } from "@/common/id";
-import { UpdateMutationSchema } from "./schema";
+import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { UpdateMutationSchema } from "./schema";
 
 export const updateRouter = createTRPCRouter({
   save: withAuth
     .input(UpdateMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const authorId = ctx.session.user.memberId;
-        const companyId = ctx.session.user.companyId;
         const publicId = input.publicId ?? generatePublicId();
         const { title, content, html } = input;
 
@@ -20,6 +19,11 @@ export const updateRouter = createTRPCRouter({
           };
         } else {
           await ctx.db.$transaction(async (tx) => {
+            const { companyId, memberId: authorId } = await checkMembership({
+              session: ctx.session,
+              tx,
+            });
+
             if (input.publicId) {
               await tx.update.update({
                 where: { publicId },

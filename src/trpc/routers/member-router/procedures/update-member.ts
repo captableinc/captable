@@ -1,6 +1,7 @@
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodUpdateMemberMutationSchema } from "../schema";
-import { Audit } from "@/server/audit";
 
 export const updateMemberProcedure = withAuth
   .input(ZodUpdateMemberMutationSchema)
@@ -9,11 +10,13 @@ export const updateMemberProcedure = withAuth
     const user = session.user;
 
     await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ tx, session });
+
       const member = await tx.member.update({
         where: {
           status: "ACTIVE",
           id: memberId,
-          companyId: session.user.companyId,
+          companyId,
         },
         data: {
           ...rest,

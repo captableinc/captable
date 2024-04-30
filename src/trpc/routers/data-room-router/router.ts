@@ -1,54 +1,53 @@
 import { generatePublicId } from "@/common/id";
+import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { type ContactsType } from "@/types/contacts";
-import type { Bucket, DataRoom, DataRoomDocument } from "@prisma/client";
+import type { DataRoom } from "@prisma/client";
 import { z } from "zod";
 import { DataRoomSchema } from "./schema";
-
-interface DataRoomDocumentType extends DataRoomDocument {
-  document: {
-    id: string;
-    bucket: Bucket;
-  };
-}
 
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
     .input(z.object({ dataRoomPublicId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { db, session } = ctx;
-      const user = session.user;
-      const companyId = user.companyId;
+
       const { dataRoomPublicId } = input;
 
-      const dataRoom = await db.dataRoom.findUniqueOrThrow({
-        where: {
-          publicId: dataRoomPublicId,
-          companyId,
-        },
+      const { dataRoomDocument, dataRoom } = await db.$transaction(
+        async (tx) => {
+          const { companyId } = await checkMembership({ session, tx });
 
-        include: {
-          documents: true,
-        },
-      });
+          const dataRoom = await tx.dataRoom.findUniqueOrThrow({
+            where: {
+              publicId: dataRoomPublicId,
+              companyId,
+            },
 
-      const documentIds = dataRoom.documents.map((doc) => doc.id);
+            include: {
+              documents: true,
+            },
+          });
 
-      const dataRoomDocument: DataRoomDocumentType[] =
-        await db.dataRoomDocument.findMany({
-          where: {
-            id: { in: documentIds },
-          },
+          const documentIds = dataRoom.documents.map((doc) => doc.id);
 
-          include: {
-            document: {
-              select: {
-                id: true,
-                bucket: true,
+          const dataRoomDocument = await tx.dataRoomDocument.findMany({
+            where: {
+              id: { in: documentIds },
+            },
+
+            include: {
+              document: {
+                select: {
+                  id: true,
+                  bucket: true,
+                },
               },
             },
-          },
-        });
+          });
+          return { dataRoomDocument, dataRoom };
+        },
+      );
 
       const documents = dataRoomDocument.map((doc) => ({
         id: doc.document.bucket.id,
@@ -70,50 +69,54 @@ export const dataRoomRouter = createTRPCRouter({
     try {
       let room = {} as DataRoom;
       const { db, session } = ctx;
-      const user = session.user;
+
       const { publicId } = input;
 
-      if (!publicId) {
-        room = await db.dataRoom.create({
-          data: {
-            name: input.name,
-            companyId: user.companyId,
-            publicId: generatePublicId(),
-          },
-        });
-      } else {
-        room = await db.dataRoom.update({
-          where: {
-            publicId,
-          },
-          data: {
-            name: input.name,
-          },
-        });
+      await db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({ tx, session });
 
-        const { documents, recipients } = input;
-
-        if (documents) {
-          await db.dataRoomDocument.createMany({
-            data: documents.map((document) => ({
-              dataRoomId: room.id,
-              documentId: document.documentId,
-            })),
+        if (!publicId) {
+          room = await tx.dataRoom.create({
+            data: {
+              name: input.name,
+              companyId,
+              publicId: generatePublicId(),
+            },
           });
-        }
-
-        if (recipients) {
-          await db.dataRoomRecipient.createMany({
-            data: recipients.map((recipient) => ({
-              dataRoomId: room.id,
-              email: recipient.email,
-              memberId: recipient.memberId,
-              stakeholderId: recipient.stakeholderId,
-              expiresAt: recipient.expiresAt,
-            })),
+        } else {
+          room = await tx.dataRoom.update({
+            where: {
+              publicId,
+            },
+            data: {
+              name: input.name,
+            },
           });
+
+          const { documents, recipients } = input;
+
+          if (documents) {
+            await tx.dataRoomDocument.createMany({
+              data: documents.map((document) => ({
+                dataRoomId: room.id,
+                documentId: document.documentId,
+              })),
+            });
+          }
+
+          if (recipients) {
+            await tx.dataRoomRecipient.createMany({
+              data: recipients.map((recipient) => ({
+                dataRoomId: room.id,
+                email: recipient.email,
+                memberId: recipient.memberId,
+                stakeholderId: recipient.stakeholderId,
+                expiresAt: recipient.expiresAt,
+              })),
+            });
+          }
         }
-      }
+      });
 
       return {
         success: true,
@@ -132,30 +135,35 @@ export const dataRoomRouter = createTRPCRouter({
 
   getContacts: withAuth.query(async ({ ctx }) => {
     const { db, session } = ctx;
-    const user = session.user;
-    const companyId = user.companyId;
+
     const contacts = [] as ContactsType;
 
-    const members = await db.member.findMany({
-      where: {
-        companyId,
-      },
+    const { members, stakeholders } = await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ session, tx });
 
-      include: {
-        user: {
-          select: {
-            email: true,
-            name: true,
-            image: true,
+      const members = await tx.member.findMany({
+        where: {
+          companyId,
+        },
+
+        include: {
+          user: {
+            select: {
+              email: true,
+              name: true,
+              image: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    const stakeholders = await db.stakeholder.findMany({
-      where: {
-        companyId,
-      },
+      const stakeholders = await tx.stakeholder.findMany({
+        where: {
+          companyId,
+        },
+      });
+
+      return { stakeholders, members };
     });
 
     (members || []).map((member) =>

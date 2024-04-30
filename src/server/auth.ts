@@ -15,7 +15,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/env";
 import { type MemberStatusEnum } from "@/prisma/enums";
 
-import { db, type PrismaTransactionalClient, type TPrisma } from "@/server/db";
+import { db, type TPrismaOrTransaction } from "@/server/db";
 
 import { getUserByEmail, getUserById } from "./user";
 
@@ -209,7 +209,7 @@ export const withServerSession = async () => {
 
 interface checkMembershipOptions {
   session: Session;
-  tx: PrismaTransactionalClient | TPrisma;
+  tx: TPrismaOrTransaction;
 }
 
 export async function checkMembership({ session, tx }: checkMembershipOptions) {

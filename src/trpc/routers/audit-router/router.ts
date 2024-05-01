@@ -1,5 +1,6 @@
 import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { allEsignAuditsProcedure } from "./procedures/all-esign-audits";
 import { ZodGetAuditsQuerySchema } from "./schema";
 
 export const auditRouter = createTRPCRouter({
@@ -23,4 +24,6 @@ export const auditRouter = createTRPCRouter({
 
       return { data };
     }),
+
+  allEsignAudits: allEsignAuditsProcedure,
 });

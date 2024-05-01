@@ -1,36 +1,40 @@
 "use server";
 
-import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { SharePageLayout } from "@/components/share/page-layout";
+import { db } from "@/server/db";
 import { api } from "@/trpc/server";
 import type { Bucket, Company, DataRoom } from "@prisma/client";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const DataRoomPage = async ({
-  params: { publicId },
+  params: { publicId, documentId },
   searchParams: { token },
 }: {
-  params: { publicId: string };
+  params: { publicId: string; documentId: string };
   searchParams: { token: string };
 }) => {
-  const { dataRoom, company, documents } = await api.dataRoom.getDataRoom.query(
-    {
-      dataRoomPublicId: publicId,
-      include: {
-        company: true,
-        documents: true,
-      },
+  const { dataRoom, company } = await api.dataRoom.getDataRoom.query({
+    dataRoomPublicId: publicId,
+    include: {
+      company: true,
     },
-  );
+  });
 
-  if (!dataRoom) {
+  const file = await db.bucket.findFirst({
+    where: {
+      id: documentId,
+    },
+  });
+
+  if (!dataRoom || !company || !file) {
     return notFound();
   }
 
   const currentCompany = company as Company;
   const currentDataRoom = dataRoom as DataRoom;
-  const currentDocuments = documents as Bucket[];
+  const currentFile = file;
 
   return (
     <SharePageLayout
@@ -47,21 +51,18 @@ const DataRoomPage = async ({
           />
 
           <h1 className="text-2xl font-semibold tracking-tight">
-            <span className="text-primary/60">Data room / </span>
-            {currentDataRoom.name}
+            <Link
+              href={`/data-room/${publicId}?token=${token}`}
+              className="text-primary/60 hover:text-primary/90 hover:underline"
+            >
+              {currentDataRoom.name}
+            </Link>
+            {` / ${currentFile.name}`}
           </h1>
         </div>
       }
     >
-      <div>
-        <DataRoomFileExplorer
-          shared={true}
-          jwtToken={token}
-          documents={currentDocuments}
-          companyPublicId={currentCompany.publicId}
-          dataRoomPublicId={publicId}
-        />
-      </div>
+      <div>File preview</div>
     </SharePageLayout>
   );
 };

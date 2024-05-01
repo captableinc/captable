@@ -15,6 +15,7 @@ const DataRoomSettinsPage = async ({
     include: {
       company: false,
       recipients: true,
+      documents: true,
     },
   });
   const contacts = await api.common.getContacts.query();

@@ -12,6 +12,7 @@ export const dataRoomRouter = createTRPCRouter({
         dataRoomPublicId: z.string(),
         include: z.object({
           company: z.boolean().optional().default(false),
+          documents: z.boolean().optional().default(false),
           recipients: z.boolean().optional().default(false),
         }),
       }),
@@ -32,7 +33,7 @@ export const dataRoomRouter = createTRPCRouter({
       const { db, session } = ctx;
       const { dataRoomPublicId, include } = input;
 
-      const query = await db.$transaction(async (tx) => {
+      const { dataRoom } = await db.$transaction(async (tx) => {
         const { companyId } = await checkMembership({ session, tx });
 
         const dataRoom = await tx.dataRoom.findUniqueOrThrow({
@@ -41,45 +42,47 @@ export const dataRoomRouter = createTRPCRouter({
             companyId,
           },
           include: {
-            documents: true,
+            documents: include.documents,
             recipients: include.recipients,
             company: include.company,
           },
         });
 
-        const documentIds = dataRoom.documents.map((doc) => doc.id);
+        response.dataRoom = dataRoom;
 
-        const dataRoomDocument = await tx.dataRoomDocument.findMany({
-          where: {
-            id: { in: documentIds },
-          },
+        if (include.documents) {
+          const documentIds = dataRoom.documents.map((doc) => doc.id);
 
-          include: {
-            document: {
-              select: {
-                id: true,
-                bucket: true,
+          const dataRoomDocument = await tx.dataRoomDocument.findMany({
+            where: {
+              id: { in: documentIds },
+            },
+
+            include: {
+              document: {
+                select: {
+                  id: true,
+                  bucket: true,
+                },
               },
             },
-          },
-        });
+          });
+          response.documents = dataRoomDocument.map((doc) => ({
+            id: doc.document.bucket.id,
+            name: doc.document.bucket.name,
+            key: doc.document.bucket.key,
+            mimeType: doc.document.bucket.mimeType,
+            size: doc.document.bucket.size,
+            createdAt: doc.document.bucket.createdAt,
+            updatedAt: doc.document.bucket.updatedAt,
+          }));
+        }
 
-        response.dataRoom = dataRoom;
-        return { dataRoomDocument, dataRoom };
+        return { dataRoom };
       });
 
-      response.documents = query.dataRoomDocument.map((doc) => ({
-        id: doc.document.bucket.id,
-        name: doc.document.bucket.name,
-        key: doc.document.bucket.key,
-        mimeType: doc.document.bucket.mimeType,
-        size: doc.document.bucket.size,
-        createdAt: doc.document.bucket.createdAt,
-        updatedAt: doc.document.bucket.updatedAt,
-      }));
-
       if (include.company) {
-        response.company = query.dataRoom.company;
+        response.company = dataRoom.company;
       }
 
       return response;

@@ -39,7 +39,7 @@ export const SharePageLayout = ({
             href={`https://captable.inc?utm_source=${company.name}&utm_medium=${medium}&utm_campaign=powered_by`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-bold text-teal-500 hover:underline"
+            className="font-bold text-teal-500 hover:underline"
           >
             Captable, Inc.
           </Link>

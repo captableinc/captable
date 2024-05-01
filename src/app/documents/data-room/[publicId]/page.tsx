@@ -1,43 +1,40 @@
 "use server";
 
+import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { SharePageLayout } from "@/components/share/page-layout";
-import { db } from "@/server/db";
+import { api } from "@/trpc/server";
+import type { Bucket, Company, DataRoom } from "@prisma/client";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import { notFound } from "next/navigation";
-import { Fragment } from "react";
 
 const DataRoomPage = async ({
   params: { publicId },
 }: {
   params: { publicId: string };
 }) => {
-  const dataRoom = await db.dataRoom.findFirst({
-    where: {
-      publicId,
-    },
-
-    include: {
-      company: {
-        select: {
-          name: true,
-          logo: true,
-        },
+  const { dataRoom, company, documents } = await api.dataRoom.getDataRoom.query(
+    {
+      dataRoomPublicId: publicId,
+      include: {
+        company: true,
       },
     },
-  });
+  );
 
   if (!dataRoom) {
     return notFound();
   }
 
-  const company = dataRoom?.company;
+  const currentCompany = company as Company;
+  const currentDataRoom = dataRoom as DataRoom;
+  const currentDocuments = documents as Bucket[];
 
   return (
     <SharePageLayout
       medium="dataRoom"
       company={{
-        name: company.name,
-        logo: company.logo,
+        name: currentCompany.name,
+        logo: currentCompany.logo,
       }}
       title={
         <div className="flex">
@@ -48,14 +45,18 @@ const DataRoomPage = async ({
 
           <h1 className="text-2xl font-semibold tracking-tight">
             <span className="text-primary/60">Data room / </span>
-            {dataRoom.name}
+            {currentDataRoom.name}
           </h1>
         </div>
       }
     >
-      <Fragment>
-        <div className="mt-5">test</div>
-      </Fragment>
+      <div>
+        <DataRoomFileExplorer
+          documents={currentDocuments}
+          companyPublicId={currentCompany.publicId}
+          dataRoomPublicId={publicId}
+        />
+      </div>
     </SharePageLayout>
   );
 };

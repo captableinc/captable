@@ -7,71 +7,68 @@ import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
 
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
-    .input(z.object({ dataRoomPublicId: z.string() }))
+    .input(
+      z.object({
+        dataRoomPublicId: z.string(),
+        include: z.object({
+          company: z.boolean().optional().default(false),
+          recipients: z.boolean().optional().default(false),
+        }),
+      }),
+    )
     .query(async ({ ctx, input }) => {
+      const response = {
+        dataRoom: {},
+        documents: [],
+        recipients: [],
+        company: {},
+      } as {
+        dataRoom: object;
+        documents: object[];
+        recipients: object[];
+        company: object;
+      };
+
       const { db, session } = ctx;
+      const { dataRoomPublicId, include } = input;
 
-      const { dataRoomPublicId } = input;
+      const query = await db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({ session, tx });
 
-      const { dataRoomDocument, dataRoom } = await db.$transaction(
-        async (tx) => {
-          const { companyId } = await checkMembership({ session, tx });
+        const dataRoom = await tx.dataRoom.findUniqueOrThrow({
+          where: {
+            publicId: dataRoomPublicId,
+            companyId,
+          },
+          include: {
+            documents: true,
+            recipients: include.recipients,
+            company: include.company,
+          },
+        });
 
-          const dataRoom = await tx.dataRoom.findUniqueOrThrow({
-            where: {
-              publicId: dataRoomPublicId,
-              companyId,
-            },
-            include: {
-              documents: true,
-              recipients: {
-                include: {
-                  member: {
-                    include: {
-                      user: {
-                        select: {
-                          id: true,
-                          email: true,
-                          name: true,
-                          image: true,
-                        },
-                      },
-                    },
-                  },
-                  stakeholder: {
-                    select: {
-                      id: true,
-                      name: true,
-                      email: true,
-                      institutionName: true,
-                    },
-                  },
-                },
+        const documentIds = dataRoom.documents.map((doc) => doc.id);
+
+        const dataRoomDocument = await tx.dataRoomDocument.findMany({
+          where: {
+            id: { in: documentIds },
+          },
+
+          include: {
+            document: {
+              select: {
+                id: true,
+                bucket: true,
               },
             },
-          });
+          },
+        });
 
-          const documentIds = dataRoom.documents.map((doc) => doc.id);
+        response.dataRoom = dataRoom;
+        return { dataRoomDocument, dataRoom };
+      });
 
-          const dataRoomDocument = await tx.dataRoomDocument.findMany({
-            where: {
-              id: { in: documentIds },
-            },
-
-            include: {
-              document: {
-                select: {
-                  id: true,
-                  bucket: true,
-                },
-              },
-            },
-          });
-          return { dataRoomDocument, dataRoom };
-        },
-      );
-
-      const documents = dataRoomDocument.map((doc) => ({
+      response.documents = query.dataRoomDocument.map((doc) => ({
         id: doc.document.bucket.id,
         name: doc.document.bucket.name,
         key: doc.document.bucket.key,
@@ -81,10 +78,11 @@ export const dataRoomRouter = createTRPCRouter({
         updatedAt: doc.document.bucket.updatedAt,
       }));
 
-      return {
-        dataRoom,
-        documents,
-      };
+      if (include.company) {
+        response.company = query.dataRoom.company;
+      }
+
+      return response;
     }),
 
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {

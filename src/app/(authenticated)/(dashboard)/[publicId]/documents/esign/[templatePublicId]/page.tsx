@@ -10,7 +10,7 @@ const EsignTemplateDetailPage = async ({
 }: {
   params: { templatePublicId: string };
 }) => {
-  const { name, status, url, fields, recipients } =
+  const { name, status, completedOn, url, fields, recipients, company } =
     await api.template.get.query({
       publicId: templatePublicId,
       isDraftOnly: true,
@@ -19,7 +19,7 @@ const EsignTemplateDetailPage = async ({
   return (
     <TemplateFieldProvider recipients={recipients} fields={fields}>
       <TemplateFieldForm templatePublicId={templatePublicId}>
-        <div className="grid grid-cols-12">
+        <div className="grid h-full w-full grid-cols-12">
           <div className="col-span-12 flex align-middle">
             <Badge
               variant={status === "DRAFT" ? "warning" : "success"}
@@ -31,7 +31,13 @@ const EsignTemplateDetailPage = async ({
               {name}
             </span>
           </div>
-          <CanvasToolbar recipients={recipients} />
+          <CanvasToolbar
+            company={company}
+            completedOn={completedOn}
+            name={name}
+            status={status}
+            recipients={recipients}
+          />
           <PdfCanvas mode="edit" recipients={recipients} url={url} />
         </div>
       </TemplateFieldForm>

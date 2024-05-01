@@ -4,6 +4,7 @@ import { FieldTypes, TemplateStatus } from "@/prisma/enums";
 
 export const ZodAddFieldMutationSchema = z.object({
   status: z.nativeEnum(TemplateStatus),
+  completedOn: z.date().optional(),
   templatePublicId: z.string(),
   data: z.array(
     z.object({
@@ -23,6 +24,15 @@ export const ZodAddFieldMutationSchema = z.object({
       recipientId: z.string(),
     }),
   ),
+  emailPayload: z.object({
+    optionalMessage: z.string().optional(),
+    expiryDate: z.date().or(z.null()).or(z.string()).optional(),
+    documentName: z.string(),
+    company: z.object({
+      name: z.string(),
+      logo: z.string().optional(),
+    }),
+  }),
 });
 
 export type TypeZodAddFieldMutationSchema = z.infer<

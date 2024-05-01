@@ -1,147 +1,108 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
+import { sendEsignEmailJob } from "@/jobs";
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
-
-import EsignEmail from "@/emails/EsignEmail";
-import { env } from "@/env";
-import { decode, encode } from "@/lib/jwt";
-import { checkMembership } from "@/server/auth";
-import { sendMail } from "@/server/mailer";
-import { render } from "jsx-email";
-import { z } from "zod";
-
-interface SendEmailOptions {
-  email: string;
-  token: string;
-}
-
-const emailTokenPayloadSchema = z.object({
-  id: z.string(),
-  rec: z.string(),
-});
-
-type TEmailTokenPayloadSchema = z.infer<typeof emailTokenPayloadSchema>;
-
-interface EncodeEmailTokenOption {
-  templateId: string;
-  recipientId: string;
-}
-
-export function EncodeEmailToken({
-  recipientId,
-  templateId,
-}: EncodeEmailTokenOption) {
-  const encodeToken: TEmailTokenPayloadSchema = {
-    rec: recipientId,
-    id: templateId,
-  };
-
-  return encode(encodeToken);
-}
-
-export async function DecodeEmailToken(jwt: string) {
-  const { payload } = await decode(jwt);
-  return emailTokenPayloadSchema.parse(payload);
-}
-
-export async function SendEsignEmail({ email, token }: SendEmailOptions) {
-  const baseUrl = env.BASE_URL;
-  const html = await render(
-    EsignEmail({
-      signingLink: `${baseUrl}/esign/${token}`,
-    }),
-  );
-  await sendMail({
-    to: email,
-    subject: "esign Link",
-    html,
-  });
-}
 
 export const addFieldProcedure = withAuth
   .input(ZodAddFieldMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const mails: Promise<void>[] = [];
+    try {
+      const user = ctx.session.user;
+      const companyLogo = input.emailPayload.company.logo;
 
-    await ctx.db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({
-        tx,
-        session: ctx.session,
-      });
-
-      const template = await tx.template.findFirstOrThrow({
-        where: {
-          publicId: input.templatePublicId,
-          companyId,
-          status: "DRAFT",
-        },
-        select: {
-          id: true,
-          orderedDelivery: true,
-        },
-      });
-      await tx.templateField.deleteMany({
-        where: {
-          templateId: template.id,
-        },
-      });
-
-      const recipientList = await tx.esignRecipient.findMany({
-        where: {
-          templateId: template.id,
-        },
-        select: {
-          id: true,
-          email: true,
-        },
-      });
-
-      const fieldsList = [];
-
-      for (let index = 0; index < input.data.length; index++) {
-        const field = input.data[index];
-
-        if (field) {
-          fieldsList.push({ ...field, templateId: template.id });
-        }
+      if (input.completedOn) {
+        return {
+          success: false,
+          message: "E-signing has already completed among all parties.",
+        };
       }
+      if (!user.email || !user.name || !companyLogo) {
+        return {
+          success: false,
+          message: "Email requires sender name , email and company logo.",
+        };
+      }
+      await ctx.db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({
+          tx,
+          session: ctx.session,
+        });
 
-      await tx.templateField.createMany({
-        data: fieldsList,
-      });
-
-      await tx.template.update({
-        where: {
-          id: template.id,
-        },
-        data: {
-          status: input.status,
-        },
-      });
-
-      if (input.status === "COMPLETE") {
-        for (let index = 0; index < recipientList.length; index++) {
-          const recipient = recipientList[index];
-
-          if (!recipient) {
-            throw new Error("not found");
-          }
-
-          const token = await EncodeEmailToken({
-            recipientId: recipient.id,
+        const template = await tx.template.findFirstOrThrow({
+          where: {
+            publicId: input.templatePublicId,
+            companyId,
+            status: "DRAFT",
+          },
+          select: {
+            id: true,
+            orderedDelivery: true,
+          },
+        });
+        await tx.templateField.deleteMany({
+          where: {
             templateId: template.id,
-          });
+          },
+        });
 
-          const email = recipient.email;
+        const recipientList = await tx.esignRecipient.findMany({
+          where: {
+            templateId: template.id,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        });
 
-          mails.push(SendEsignEmail({ token, email }));
+        const fieldsList = [];
 
-          if (template.orderedDelivery) {
-            break;
+        for (let index = 0; index < input.data.length; index++) {
+          const field = input.data[index];
+
+          if (field) {
+            fieldsList.push({ ...field, templateId: template.id });
           }
         }
-      }
-    });
 
-    return {};
+        await tx.templateField.createMany({
+          data: fieldsList,
+        });
+
+        await tx.template.update({
+          where: {
+            id: template.id,
+          },
+          data: {
+            status: input.status,
+          },
+        });
+
+        if (input.status === "COMPLETE") {
+          //eslint-disable-next-line @typescript-eslint/no-floating-promises
+          sendEsignEmailJob.invoke({
+            orderedDelivery: template.orderedDelivery,
+            templateId: template.id,
+            recipients: recipientList,
+            sender: {
+              name: user.name,
+              email: user.email,
+            },
+            ...input.emailPayload,
+          });
+        }
+      });
+      return {
+        success: true,
+        message: "Successfully sent document for e-signature.",
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        success: false,
+        message: "Uh ohh! Something went wrong. Please try again later.",
+      };
+    }
   });

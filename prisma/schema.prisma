@@ -367,8 +367,9 @@ model DataRoom {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([companyId, name])
   @@unique([publicId])
+  @@unique([companyId, name])
+  @@index([publicId])
   @@index([companyId])
 }
 

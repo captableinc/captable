@@ -36,6 +36,7 @@ const generateSigningLink = (baseUrl: string, token: string): string =>
 
 interface EsignEmaiJobPayload extends EsignEmailProps {
   templateId: string;
+  orderedDelivery: Date | null;
   recipients: {
     id: string;
     name: string;
@@ -51,6 +52,7 @@ export const sendEsignEmailJob = client.defineJob({
     const baseUrl = env.NEXTAUTH_URL;
     const {
       optionalMessage,
+      orderedDelivery,
       templateId,
       recipients,
       documentName,
@@ -60,6 +62,7 @@ export const sendEsignEmailJob = client.defineJob({
     } = payload;
 
     //@TODO ( Execute parallel tasks (not supported yet))
+    let shouldBreak = false;
     for (const recipient of recipients) {
       await io.runTask(`recipient-${recipient.id}`, async () => {
         const token = await EncodeEmailToken({
@@ -83,21 +86,39 @@ export const sendEsignEmailJob = client.defineJob({
           subject: `Sign a ${documentName}`,
           html,
         });
+        if (orderedDelivery) {
+          console.log({ shouldBreak });
+          shouldBreak = true;
+        }
       });
+      if (shouldBreak) {
+        break;
+      }
     }
     // Update status to "SENT" (bulk-update)
     await io.runTask(
       `esignRecipient-status-update-${generatePublicId()}`,
       async () => {
         const recipientIds = recipients.map((recipient) => recipient.id);
-        return await db.esignRecipient.updateMany({
-          where: {
-            id: { in: recipientIds },
-          },
-          data: {
-            status: EsignRecipientStatus.SENT,
-          },
-        });
+        if (shouldBreak) {
+          return await db.esignRecipient.update({
+            where: {
+              id: recipients[0]?.id,
+            },
+            data: {
+              status: EsignRecipientStatus.SENT,
+            },
+          });
+        } else {
+          return await db.esignRecipient.updateMany({
+            where: {
+              id: { in: recipientIds },
+            },
+            data: {
+              status: EsignRecipientStatus.SENT,
+            },
+          });
+        }
       },
     );
   },

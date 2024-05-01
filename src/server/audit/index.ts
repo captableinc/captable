@@ -24,7 +24,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { type AuditSchemaType } from "@/server/audit/schema";
+import {
+  type AuditSchemaType,
+  type TEsignAuditSchema,
+} from "@/server/audit/schema";
 import { type TPrismaOrTransaction } from "@/server/db";
 
 const create = (data: AuditSchemaType, tx: TPrismaOrTransaction) => {
@@ -35,4 +38,17 @@ const create = (data: AuditSchemaType, tx: TPrismaOrTransaction) => {
 
 export const Audit = {
   create,
+};
+
+const esignAuditCreate = (
+  data: TEsignAuditSchema,
+  tx: TPrismaOrTransaction,
+) => {
+  return tx.esignAudit.create({
+    data,
+  });
+};
+
+export const EsignAudit = {
+  create: esignAuditCreate,
 };

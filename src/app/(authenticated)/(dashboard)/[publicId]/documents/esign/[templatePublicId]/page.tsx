@@ -13,6 +13,7 @@ const EsignTemplateDetailPage = async ({
   const { name, status, url, fields, recipients } =
     await api.template.get.query({
       publicId: templatePublicId,
+      isDraftOnly: true,
     });
 
   return (

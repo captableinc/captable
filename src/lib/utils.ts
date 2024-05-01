@@ -71,3 +71,27 @@ export function compareFormDataWithInitial<T extends Record<string, string>>(
 
   return isChanged;
 }
+
+function getReadableHour(hour: number) {
+  return hour < 10 ? `0${hour}` : `${hour}`;
+}
+
+function getReadableMinute(minute: number) {
+  return minute < 10 ? `0${minute}` : `${minute}`;
+}
+
+function checkPrimeMeridian(hour: number) {
+  return hour > 12;
+}
+
+export function getSanitizedDateTime(datetime: string) {
+  const date = datetime.split("T")[0];
+  const time = datetime.split("T")[1];
+  const hour = Number(time?.substring(0, 2));
+  const minute = Number(time?.substring(3, 5));
+  if (checkPrimeMeridian(hour)) {
+    return `${date}   ${getReadableHour(hour - 12)}:${getReadableMinute(minute)} PM`;
+  } else {
+    return `${date}   ${getReadableHour(hour)}:${getReadableMinute(minute)} AM`;
+  }
+}

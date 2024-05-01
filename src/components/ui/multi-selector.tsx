@@ -371,7 +371,7 @@ const MultipleSelector = React.forwardRef<
       >
         <div
           className={cn(
-            "group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+            "group rounded-md border border-input px-3 py-2 text-sm",
             className,
           )}
         >
@@ -388,7 +388,7 @@ const MultipleSelector = React.forwardRef<
                   {option.label}
                   <button
                     className={cn(
-                      "ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                      "ml-1 rounded-full outline-none",
                       (disabled || option.fixed) && "hidden",
                     )}
                     onKeyDown={(e) => {

@@ -3,7 +3,7 @@
 import { SharePageLayout } from "@/components/share/page-layout";
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
-import type { Bucket, Company, DataRoom } from "@prisma/client";
+import type { Company, DataRoom } from "@prisma/client";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -52,7 +52,7 @@ const DataRoomPage = async ({
 
           <h1 className="text-2xl font-semibold tracking-tight">
             <Link
-              href={`/data-room/${publicId}?token=${token}`}
+              href={`/data-rooms/${publicId}?token=${token}`}
               className="text-primary/60 hover:text-primary/90 hover:underline"
             >
               {currentDataRoom.name}

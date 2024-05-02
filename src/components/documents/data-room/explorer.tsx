@@ -30,7 +30,7 @@ const DataRoomFileExplorer = ({
             <Link
               href={
                 shared
-                  ? `/data-room/${dataRoomPublicId}/${document.id}?token=${jwtToken}`
+                  ? `/data-rooms/${dataRoomPublicId}/${document.id}?token=${jwtToken}`
                   : `/${companyPublicId}/documents/${document.id}`
               }
               className="col-span-1 flex cursor-pointer rounded-md transition duration-150 ease-in-out hover:shadow-md"

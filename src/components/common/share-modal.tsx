@@ -26,6 +26,7 @@ export type Props = {
   recipients: DataRoomRecipient[];
 
   onShare: (data: { others: object[]; selectedContacts: object[] }) => void;
+  onUnShare: (data: { recipientId: string }) => void;
 };
 
 const Share = ({
@@ -36,6 +37,7 @@ const Share = ({
   contacts,
   recipients,
   onShare,
+  onUnShare,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -148,6 +150,9 @@ const Share = ({
                         size="sm"
                         variant={"secondary"}
                         className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
+                        onClick={() => {
+                          onUnShare({ recipientId: recipient.id });
+                        }}
                       >
                         <DeleteIcon className="h-4 w-4" />
                         Remove
@@ -203,7 +208,8 @@ const Share = ({
                       others: others as object[],
                       selectedContacts: contacts as object[],
                     });
-                    setOpen(false);
+
+                    setSelected([]);
                   }}
                 >
                   Share

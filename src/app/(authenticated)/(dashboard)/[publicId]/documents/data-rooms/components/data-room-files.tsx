@@ -71,6 +71,26 @@ const DataRoomFiles = ({
     },
   );
 
+  const { mutateAsync: unShareDataRoomMutation } =
+    api.dataRoom.unShare.useMutation({
+      onSuccess: () => {
+        router.refresh();
+
+        toast({
+          title: "✨ Complete",
+          description: "Successfully removed access to data room.",
+        });
+      },
+
+      onError: (error) => {
+        toast({
+          title: error.message,
+          description: "",
+          variant: "destructive",
+        });
+      },
+    });
+
   const debounced = useDebounceCallback(async (name) => {
     await saveDataRoomMutation({
       name,
@@ -124,6 +144,12 @@ const DataRoomFiles = ({
                     selectedContacts:
                       selectedContacts as DataRoomRecipientType[],
                     others: others as DataRoomRecipientType[],
+                  });
+                }}
+                onUnShare={async ({ recipientId }) => {
+                  await unShareDataRoomMutation({
+                    dataRoomId: dataRoom.id,
+                    recipientId,
                   });
                 }}
                 trigger={

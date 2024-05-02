@@ -256,4 +256,40 @@ export const dataRoomRouter = createTRPCRouter({
         message: "Data room successfully shared!",
       };
     }),
+
+  unShare: withAuth
+    .input(
+      z.object({
+        dataRoomId: z.string(),
+        recipientId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { session, db } = ctx;
+      const { dataRoomId, recipientId } = input;
+      const companyId = session.user.companyId;
+
+      const dataRoom = await db.dataRoom.findUniqueOrThrow({
+        where: {
+          id: dataRoomId,
+          companyId,
+        },
+      });
+
+      if (!dataRoom) {
+        throw new Error("Data room not found");
+      }
+
+      await db.dataRoomRecipient.delete({
+        where: {
+          id: recipientId,
+          dataRoomId,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Successfully removed access to data room!",
+      };
+    }),
 });

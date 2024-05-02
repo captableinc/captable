@@ -4,7 +4,6 @@ import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import fs from "fs";
-import { nanoid } from "nanoid";
 import path from "path";
 import { SafeMutationSchema } from "../schema";
 
@@ -38,7 +37,7 @@ export const createSafeProcedure = withAuth
         const pdfBuffer = fs.readFileSync(pdfPath);
 
         const file = {
-          name: `safe-template-${nanoid()}`,
+          name: safeTemplate,
           type: "application/pdf",
           arrayBuffer: async () => Promise.resolve(pdfBuffer),
           size: pdfBuffer.byteLength,

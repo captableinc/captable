@@ -106,23 +106,11 @@ const Share = ({
 
             <h5 className="mt-6 font-medium">People with access</h5>
 
-            <li className="group flex items-center justify-between gap-x-2 py-2">
-              <div className="flex items-center gap-2">
-                <Avatar className="h-8 w-8 rounded-full">
-                  <AvatarImage
-                    src={user?.image ? user?.image : "/placeholders/user.svg"}
-                  />
-                </Avatar>
-
-                <span className="flex flex-col font-medium">
-                  <span className="text-sm">
-                    {user?.name}
-                    <span className="text-primary/50"> (You)</span>
-                  </span>
-                  <span className="text-xs text-primary/50">{user?.email}</span>
-                </span>
-              </div>
-            </li>
+            {recipients.length === 0 && (
+              <p className="text-sm text-primary/50">
+                No one has access to this yet.
+              </p>
+            )}
 
             <ul>
               {recipients.map((recipient) => (

@@ -18,6 +18,7 @@ export const getTemplateProcedure = withAuth
         select: {
           name: true,
           status: true,
+          completedOn: true,
           bucket: {
             select: {
               key: true,
@@ -52,6 +53,12 @@ export const getTemplateProcedure = withAuth
               name: true,
             },
           },
+          company: {
+            select: {
+              name: true,
+              logo: true,
+            },
+          },
         },
       });
 
@@ -64,8 +71,10 @@ export const getTemplateProcedure = withAuth
       fields: template.fields,
       key,
       url,
+      completedOn: template.completedOn,
       name: template.name,
       status: template.status,
       recipients: template.eSignRecipient,
+      company: template.company,
     };
   });

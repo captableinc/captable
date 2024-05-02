@@ -14,6 +14,7 @@ export const ZodCreateTemplateMutationSchema = z.object({
 
 export const ZodGetTemplateQuerySchema = z.object({
   publicId: z.string(),
+  isDraftOnly: z.boolean(),
 });
 
 export const ZodSignTemplateMutationSchema = z.object({

@@ -13,7 +13,7 @@ export const getTemplateProcedure = withAuth
         where: {
           publicId: input.publicId,
           companyId: companyId,
-          status: "DRAFT",
+          ...(input.isDraftOnly && { status: "DRAFT" }),
         },
         select: {
           name: true,
@@ -39,6 +39,7 @@ export const getTemplateProcedure = withAuth
               viewportWidth: true,
               page: true,
               recipientId: true,
+              prefilledValue: true,
             },
             orderBy: {
               top: "asc",

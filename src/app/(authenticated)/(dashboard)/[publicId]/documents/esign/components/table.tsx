@@ -46,7 +46,14 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
                 {item.completedOn ? "Signed" : "Not Signed"}
               </TableCell>
 
-              <TableCell>
+              <TableCell className="flex gap-x-2">
+                <Link
+                  className={buttonVariants()}
+                  href={`/${companyPublicId}/documents/esign/v/${item.publicId}`}
+                >
+                  View
+                </Link>
+
                 {item.status === "DRAFT" && (
                   <Link
                     className={buttonVariants()}

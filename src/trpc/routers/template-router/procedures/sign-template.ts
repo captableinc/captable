@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
+import { dayjsExt } from "@/common/dayjs";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
+import { EsignAudit } from "@/server/audit";
 import { type PrismaTransactionalClient } from "@/server/db";
 import { publicProcedure, type CreateTRPCContextType } from "@/trpc/api/trpc";
 import { PDFDocument, StandardFonts } from "pdf-lib";
@@ -59,6 +61,20 @@ export const signTemplateProcedure = publicProcedure
           }
         }
 
+        await EsignAudit.create(
+          {
+            action: "recipient.signed",
+            companyId: template.companyId,
+            recipientId: recipient.id,
+            templateId: template.id,
+            ip: ctx.requestIp,
+            location: "",
+            userAgent: ctx.userAgent,
+            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+          },
+          tx,
+        );
+
         const signableRecepients = await tx.esignRecipient.count({
           where: {
             templateId: template.id,
@@ -95,6 +111,34 @@ export const signTemplateProcedure = publicProcedure
             },
           });
 
+          await EsignAudit.create(
+            {
+              action: "recipient.signed",
+              companyId: template.companyId,
+              recipientId: recipient.id,
+              templateId: template.id,
+              ip: ctx.requestIp,
+              location: "",
+              userAgent: ctx.userAgent,
+              summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            },
+            tx,
+          );
+
+          await EsignAudit.create(
+            {
+              action: "document.complete",
+              companyId: template.companyId,
+              recipientId: recipient.id,
+              templateId: template.id,
+              ip: ctx.requestIp,
+              location: "",
+              userAgent: ctx.userAgent,
+              summary: `"${template.name}" completely signed at ${dayjsExt(new Date()).format("lll")}`,
+            },
+            tx,
+          );
+
           await signPdf({
             bucketKey,
             companyId,
@@ -114,6 +158,34 @@ export const signTemplateProcedure = publicProcedure
             completedOn: new Date(),
           },
         });
+
+        await EsignAudit.create(
+          {
+            action: "recipient.signed",
+            companyId: template.companyId,
+            recipientId: recipient.id,
+            templateId: template.id,
+            ip: ctx.requestIp,
+            location: "",
+            userAgent: ctx.userAgent,
+            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+          },
+          tx,
+        );
+
+        await EsignAudit.create(
+          {
+            action: "document.complete",
+            companyId: template.companyId,
+            recipientId: recipient.id,
+            templateId: template.id,
+            ip: ctx.requestIp,
+            location: "",
+            userAgent: ctx.userAgent,
+            summary: `"${template.name}" completely signed at ${dayjsExt(new Date()).format("lll")}`,
+          },
+          tx,
+        );
 
         await signPdf({
           bucketKey,
@@ -144,6 +216,22 @@ export const signTemplateProcedure = publicProcedure
           });
           const email = nextDelivery.email;
 
+          const uploaderName = template.uploader.user.name;
+
+          await EsignAudit.create(
+            {
+              action: "document.email.sent",
+              companyId: template.companyId,
+              recipientId: recipient.id,
+              templateId: template.id,
+              ip: ctx.requestIp,
+              location: "",
+              userAgent: ctx.userAgent,
+              summary: `${uploaderName ? uploaderName : ""} sent "${template.name}" to ${recipient.name ? recipient.name : ""} for eSignature at ${dayjsExt(new Date()).format("lll")}`,
+            },
+            tx,
+          );
+
           await SendEsignEmail({ token, email });
         }
       }
@@ -171,6 +259,15 @@ function getTemplate({ tx, templateId }: getTemplateOptions) {
       id: true,
       name: true,
       orderedDelivery: true,
+      uploader: {
+        select: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 }

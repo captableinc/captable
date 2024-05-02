@@ -110,6 +110,7 @@ model Company {
   safes            Safe[]
   convertibleNotes ConvertibleNote[]
   dataRooms        DataRoom[]
+  eSignAudits      EsignAudit[]
 
   @@unique([publicId])
 }
@@ -491,6 +492,7 @@ model Template {
   eSignRecipient EsignRecipient[]
 
   completedOn DateTime?
+  eSignAudits EsignAudit[]
 
   @@index([bucketId])
   @@index([uploaderId])
@@ -519,6 +521,7 @@ model EsignRecipient {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   templateFields TemplateField[]
+  eSignAudits    EsignAudit[]
 
   @@index([memberId])
   @@index([templateId])
@@ -843,4 +846,28 @@ model UpdateRecipient {
 
   @@index([updateId])
   @@index([stakeholderId])
+}
+
+model EsignAudit {
+  id String @id @default(cuid())
+
+  companyId   String
+  company     Company        @relation(fields: [companyId], references: [id])
+  templateId  String
+  template    Template       @relation(fields: [templateId], references: [id])
+  recipientId String
+  recipient   EsignRecipient @relation(fields: [recipientId], references: [id])
+
+  action    String
+  ip        String
+  userAgent String
+  location  String
+  summary   String
+
+  occurredAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([templateId])
+  @@index([recipientId])
 }

@@ -50,7 +50,7 @@ export async function DecodeEmailToken(jwt: string) {
 }
 
 export async function SendEsignEmail({ email, token }: SendEmailOptions) {
-  const baseUrl = env.NEXTAUTH_URL;
+  const baseUrl = env.BASE_URL;
   const html = await render(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,

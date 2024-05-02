@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import type { DataRoomRecipientType } from "@/trpc/routers/data-room-router/schema";
 import { type ContactsType } from "@/types/contacts";
-import type { Bucket, DataRoom } from "@prisma/client";
+import type { Bucket, DataRoom, DataRoomRecipient } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
@@ -34,6 +34,7 @@ interface DataRoomType extends DataRoom {
 type DataRoomFilesProps = {
   dataRoom: DataRoom;
   documents: Bucket[];
+  recipients: DataRoomRecipient[];
   companyPublicId: string;
   contacts: ContactsType;
 };
@@ -42,10 +43,12 @@ const DataRoomFiles = ({
   dataRoom,
   documents,
   contacts,
+  recipients,
   companyPublicId,
 }: DataRoomFilesProps) => {
   const router = useRouter();
   const { toast } = useToast();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
   const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
     {
@@ -110,8 +113,9 @@ const DataRoomFiles = ({
           {documents.length > 0 && (
             <div className="flex gap-3">
               <ShareModal
-                recipients={[]}
+                recipients={recipients}
                 contacts={contacts}
+                baseLink={`${baseUrl}/data-rooms/${dataRoom.publicId}`}
                 title={`Share data room - "${dataRoom.name}"`}
                 subtitle="Share this data room with others."
                 onShare={async ({ selectedContacts, others }) => {

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
 import { useSession } from "next-auth/react";
 
-import { type ContactsType, type ShareRecipient } from "@/types/contacts";
+import { type ContactsType } from "@/types/contacts";
+import type { DataRoomRecipient } from "@prisma/client";
 import {
   RiCheckLine as CheckIcon,
   RiDeleteBin2Line as DeleteIcon,
@@ -19,9 +20,10 @@ import { useCopyToClipboard } from "usehooks-ts";
 export type Props = {
   title: string;
   subtitle: string;
+  baseLink: string;
   trigger: React.ReactNode;
   contacts: ContactsType;
-  recipients: ShareRecipient[];
+  recipients: DataRoomRecipient[];
 
   onShare: (data: { others: object[]; selectedContacts: object[] }) => void;
 };
@@ -29,6 +31,7 @@ export type Props = {
 const Share = ({
   title,
   subtitle,
+  baseLink,
   trigger,
   contacts,
   recipients,
@@ -37,22 +40,22 @@ const Share = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [copiedText, copy] = useCopyToClipboard();
-  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Option[]>([]);
   const { data } = useSession();
   const user = data?.user;
 
-  const copyToClipboard = (idx: number, text: string) => {
+  const copyToClipboard = (id: string, text: string) => {
     copy(text)
       .then(() => {
-        setCopiedIdx(idx);
+        setCopiedId(id);
 
         setTimeout(() => {
-          setCopiedIdx(null);
+          setCopiedId(null);
         }, 1000);
       })
       .catch(() => {
-        setCopiedIdx(null);
+        setCopiedId(null);
       });
   };
 
@@ -120,51 +123,59 @@ const Share = ({
             </li>
 
             <ul>
-              {recipients.length > 0 && (
-                <Fragment>
-                  <li className="group flex items-center justify-between gap-x-2 py-2">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8 rounded-full">
-                        <AvatarImage src={"/placeholders/user.svg"} />
-                      </Avatar>
-                      <span className="flex flex-col font-medium">
-                        <span className="text-sm">John Doe</span>
-                        <span className="text-xs text-primary/50">Member</span>
+              {recipients.map((recipient) => (
+                <li
+                  key={recipient.id}
+                  className="group flex items-center justify-between gap-x-2 py-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8 rounded-full">
+                      <AvatarImage src={"/placeholders/user.svg"} />
+                    </Avatar>
+                    <span className="flex flex-col font-medium">
+                      <span className="text-sm">
+                        {recipient.name ?? "Unnamed"}
                       </span>
-                    </div>
+                      <span className="text-xs text-primary/50">
+                        {recipient.email}
+                      </span>
+                    </span>
+                  </div>
 
-                    <div className="ml-auto content-end justify-end object-right">
-                      <div className="flex items-center gap-1">
-                        <Button
-                          size="sm"
-                          variant={"secondary"}
-                          className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
-                        >
-                          <DeleteIcon className="h-4 w-4" />
-                          Remove
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant={"secondary"}
-                          className="flex text-sm font-medium text-primary/70 hover:text-primary/90"
-                          onClick={() =>
-                            copyToClipboard(2, "https://example.com/1")
-                          }
-                        >
-                          <Fragment>
-                            {copiedIdx === 2 ? (
-                              <CheckIcon className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <LinkIcon className="h-4 w-4" />
-                            )}
-                            Copy link
-                          </Fragment>
-                        </Button>
-                      </div>
+                  <div className="ml-auto content-end justify-end object-right">
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm"
+                        variant={"secondary"}
+                        className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
+                      >
+                        <DeleteIcon className="h-4 w-4" />
+                        Remove
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={"secondary"}
+                        className="flex text-sm font-medium text-primary/70 hover:text-primary/90"
+                        onClick={() =>
+                          copyToClipboard(
+                            recipient.id,
+                            `${baseLink}?token=${recipient.id}`,
+                          )
+                        }
+                      >
+                        <Fragment>
+                          {copiedId === recipient.id ? (
+                            <CheckIcon className="h-4 w-4 text-green-500 transition" />
+                          ) : (
+                            <LinkIcon className="h-4 w-4 transition" />
+                          )}
+                          Copy link
+                        </Fragment>
+                      </Button>
                     </div>
-                  </li>
-                </Fragment>
-              )}
+                  </div>
+                </li>
+              ))}
             </ul>
 
             <div className="mt-6 flex justify-end">

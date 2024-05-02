@@ -43,8 +43,38 @@ export const dataRoomRouter = createTRPCRouter({
           },
           include: {
             documents: include.documents,
-            recipients: include.recipients,
             company: include.company,
+            recipients: include.recipients,
+            // ...include.recipients && {
+            //   recipients: {
+            //     select: {
+            //       id: true,
+            //       name: true,
+            //       email: true,
+            //       member: {
+            //         select: {
+            //           id: true,
+            //           user: {
+            //             select: {
+            //               id: true,
+            //               name: true,
+            //               email: true,
+            //               image: true,
+            //             },
+            //           },
+            //         },
+            //       },
+
+            //       stakeholder: {
+            //         select: {
+            //           id: true,
+            //           name: true,
+            //           email: true,
+            //         },
+            //       },
+            //     },
+            //   }
+            // },
           },
         });
 
@@ -76,6 +106,10 @@ export const dataRoomRouter = createTRPCRouter({
             createdAt: doc.document.bucket.createdAt,
             updatedAt: doc.document.bucket.updatedAt,
           }));
+        }
+
+        if (include.recipients) {
+          response.recipients = dataRoom.recipients;
         }
 
         return { dataRoom };
@@ -147,7 +181,6 @@ export const dataRoomRouter = createTRPCRouter({
         data: room,
       };
     } catch (error) {
-      console.error("Error saving dataroom:", error);
       return {
         success: false,
         message:

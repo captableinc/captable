@@ -30,7 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
@@ -120,6 +120,13 @@ export function CanvasToolbar(payload: CanvasToolbarProps) {
     }
   };
 
+  const onCallback = useCallback((canSubmit: boolean) => {
+    if (canSubmit && submitRef.current) {
+      setValue("status", "COMPLETE");
+      submitRef.current.click();
+    }
+  }, []);
+
   const openOptionalModal = () => {
     setOpen(!open);
   };
@@ -191,7 +198,7 @@ export function CanvasToolbar(payload: CanvasToolbarProps) {
         </Toolbar.Root>
         {open && (
           <OptionalMessageModal
-            ref={submitRef}
+            callback={onCallback}
             payload={payload}
             title="E-sign Email "
             subtitle="Send optional or default message in email"

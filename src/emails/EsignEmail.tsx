@@ -19,23 +19,23 @@ import {
 export interface EsignEmailProps {
   signingLink: string;
   optionalMessage?: string;
-  documentName: string;
-  recipient: {
+  documentName?: string;
+  recipient?: {
     id: string;
     name: string;
     email: string;
     avatar?: string;
   };
-  sender: {
+  sender?: {
     id: string;
     name: string;
     email: string;
   };
-  company: {
+  company?: {
     name: string;
     logo: string;
   };
-  expiryDate: string;
+  expiryDate?: string;
 }
 
 export const EsignEmail = ({
@@ -50,13 +50,13 @@ export const EsignEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>{sender.name} has sent you a document to sign.</Preview>
+      <Preview>{sender?.name} has sent you a document to sign.</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
             <Section className="mt-[32px]">
               <Img
-                src={company.logo}
+                src={company?.logo}
                 width="45"
                 height="45"
                 alt="Vercel"
@@ -64,15 +64,15 @@ export const EsignEmail = ({
               />
             </Section>
             <Heading className="mt-8px mx-0 mb-[15px] p-0 text-center text-[24px] font-normal text-black">
-              <strong>{company.name}</strong>
+              <strong>{company?.name}</strong>
             </Heading>
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
               <Text>
-                Subject : {sender.name} has sent you a document to sign.
+                Subject : {sender?.name} has sent you a document to sign.
               </Text>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
-              Hello {recipient.name} ,
+              Hello {recipient?.name} ,
             </Text>
             {optionalMessage ? (
               <>
@@ -83,9 +83,9 @@ export const EsignEmail = ({
             ) : (
               <>
                 <Text className="text-[14px] leading-[24px] text-black">
-                  {sender.name} from <strong>{company.name}</strong> has sent
+                  {sender?.name} from <strong>{company?.name}</strong> has sent
                   {/* eslint-disable-next-line react/no-unescaped-entities */}
-                  you "{documentName.replaceAll("_", " ").toLocaleUpperCase()}"
+                  you "{documentName?.replaceAll("_", " ").toLocaleUpperCase()}"
                 </Text>
               </>
             )}

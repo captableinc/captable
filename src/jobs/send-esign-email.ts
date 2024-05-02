@@ -6,7 +6,7 @@ import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { client } from "@/trigger";
 import { invokeTrigger } from "@trigger.dev/sdk";
-import { SignJWT } from "jose";
+import { SignJWT, jwtVerify } from "jose";
 import { render } from "jsx-email";
 import { z } from "zod";
 
@@ -21,7 +21,10 @@ interface EncodeEmailTokenOption {
 }
 const secret = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
-function EncodeEmailToken({ recipientId, templateId }: EncodeEmailTokenOption) {
+export async function EncodeEmailToken({
+  recipientId,
+  templateId,
+}: EncodeEmailTokenOption) {
   const encodeToken: TEmailTokenPayloadSchema = {
     rec: recipientId,
     id: templateId,
@@ -29,6 +32,32 @@ function EncodeEmailToken({ recipientId, templateId }: EncodeEmailTokenOption) {
   return new SignJWT(encodeToken)
     .setProtectedHeader({ alg: "HS256" })
     .sign(secret);
+}
+
+export async function DecodeEmailToken(jwt: string) {
+  const { payload } = await jwtVerify(jwt, secret);
+  return emailTokenPayloadSchema.parse(payload);
+}
+
+// Since other parts were using it, just kept so that build does not break.
+export async function SendEsignEmail({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}) {
+  const baseUrl = env.NEXTAUTH_URL;
+  const html = await render(
+    EsignEmail({
+      signingLink: `${baseUrl}/documents/esign/${token}`,
+    }),
+  );
+  await sendMail({
+    to: email,
+    subject: "esign Link",
+    html,
+  });
 }
 
 const generateSigningLink = (baseUrl: string, token: string): string =>
@@ -87,7 +116,6 @@ export const sendEsignEmailJob = client.defineJob({
           html,
         });
         if (orderedDelivery) {
-          console.log({ shouldBreak });
           shouldBreak = true;
         }
       });

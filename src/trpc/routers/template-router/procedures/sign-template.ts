@@ -2,6 +2,7 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
+import { EncodeEmailToken, SendEsignEmail } from "@/jobs/send-esign-email";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { EsignAudit } from "@/server/audit";
@@ -11,10 +12,6 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
-import {
-  EncodeEmailToken,
-  SendEsignEmail,
-} from "../../template-field-router/procedures/add-fields";
 import { ZodSignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth

@@ -17,31 +17,24 @@ export const TemplateFieldForm = ({
 }: TemplateFieldFormProps) => {
   const { toast } = useToast();
 
-  const { handleSubmit, setValue, reset } =
-    useFormContext<TTemplateFieldForm>();
+  const { handleSubmit } = useFormContext<TTemplateFieldForm>();
 
   const { mutateAsync } = api.templateField.add.useMutation({
-    onSuccess: ({ message, success }) => {
-      if (!success) return;
+    onSuccess: async ({ message, success, title }) => {
       toast({
-        variant: "default",
-        title: "🎉 Successfully sent for e-sign.",
+        variant: success ? "default" : "destructive",
+        title: success ? `🎉 ${title}` : title,
         description: message,
       });
-      reset();
-      // fires use-effect in canvas-toolbar-component that closes the modal
-      setValue("closeModal", true);
     },
   });
 
   const onSubmit = async (values: TTemplateFieldForm) => {
-    console.log({ values });
     await mutateAsync({
       templatePublicId,
       data: values.fields,
       status: values.status,
-      completedOn: values.completedOn,
-      emailPayload: values.emailPayload,
+      optionalMessage: values.optionalMessage,
     });
   };
 

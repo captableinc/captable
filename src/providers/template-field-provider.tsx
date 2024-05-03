@@ -19,9 +19,7 @@ interface TemplateFieldProviderProps {
 }
 
 const formSchema = z.object({
-  closeModal: z.boolean().default(false),
   status: z.nativeEnum(TemplateStatus),
-  completedOn: z.date().optional(),
   fieldType: z.nativeEnum(FieldTypes).optional(),
   fields: z
     .array(
@@ -46,15 +44,7 @@ const formSchema = z.object({
 
   recipient: z.string(),
   recipientColors: z.record(z.string()),
-  emailPayload: z.object({
-    optionalMessage: z.string().optional(),
-    expiryDate: z.date().or(z.null()).or(z.string()).optional(),
-    documentName: z.string(),
-    company: z.object({
-      name: z.string(),
-      logo: z.string().optional(),
-    }),
-  }),
+  optionalMessage: z.string().optional(),
 });
 
 export type TemplateFieldForm = z.infer<typeof formSchema>;

@@ -9,29 +9,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { getSanitizedDateTime } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/shared";
-import { useSession } from "next-auth/react";
 import React, { type SetStateAction } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface Payload {
-  completedOn: Date | null;
   name: string;
   recipients: Recipients;
-  company: {
-    name: string;
-    logo: string | null;
-  };
 }
 type MemberModalType = {
   callback: (canSubmit: boolean) => void;
-  payload: Payload;
   title: string;
   subtitle: string;
   dialogProps: {
@@ -41,40 +32,15 @@ type MemberModalType = {
 };
 
 export const OptionalMessageModal = ({
-  payload,
   title,
   subtitle,
   dialogProps,
   callback,
 }: MemberModalType) => {
-  const { data: session } = useSession();
   const form = useFormContext();
   const isSubmitting = form.formState.isSubmitting;
 
-  const onSendEsignEmail = async () => {
-    const optionalMessage = form.getValues("emailPayload.optionalMessage") as
-      | string
-      | undefined;
-    const expiryDate = form.getValues("emailPayload.expiryDate") as
-      | string
-      | undefined;
-    if (session) {
-      const email_payload = {
-        optionalMessage: optionalMessage ?? "",
-        completedOn: payload.completedOn,
-        documentName: payload.name,
-        company: {
-          name: payload.company.name,
-          logo:
-            payload.company.logo ??
-            "https://avatars.githubusercontent.com/u/163377635?s=48&v=4",
-        },
-        expiryDate: expiryDate ? getSanitizedDateTime(expiryDate) : null,
-      };
-      form.setValue("emailPayload", email_payload);
-      callback(true);
-    }
-  };
+  const onSendEsignEmail = () => callback(true);
 
   return (
     <Modal
@@ -85,7 +51,7 @@ export const OptionalMessageModal = ({
     >
       <FormField
         control={form.control}
-        name="emailPayload.optionalMessage"
+        name="optionalMessage"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Optional message</FormLabel>
@@ -95,20 +61,6 @@ export const OptionalMessageModal = ({
                 disabled={isSubmitting}
                 {...field}
               />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
-      <FormField
-        disabled={isSubmitting}
-        control={form.control}
-        name="emailPayload.expiryDate"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Set expiry date</FormLabel>
-            <FormControl>
-              <Input type="datetime-local" {...field} />
             </FormControl>
             <FormMessage className="text-xs font-light" />
           </FormItem>

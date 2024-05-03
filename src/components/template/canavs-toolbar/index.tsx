@@ -30,7 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
@@ -89,29 +89,17 @@ function RecipientList({ recipients }: RecipientListProps) {
 }
 
 interface CanvasToolbarProps {
-  completedOn: Date | null;
   name: string;
   status: "COMPLETE" | "DRAFT";
   recipients: Recipients;
-  company: {
-    name: string;
-    logo: string | null;
-  };
 }
 
 export function CanvasToolbar(payload: CanvasToolbarProps) {
   const [open, setOpen] = useState<boolean>(false);
-  const { control, setValue, watch } = useFormContext<TemplateFieldForm>();
+  const { control, setValue } = useFormContext<TemplateFieldForm>();
   const submitRef = useRef<HTMLButtonElement>(null);
-  const closeModal = watch("closeModal");
 
-  // close modal is triggered from template-field-provider
-  useEffect(() => {
-    if (closeModal) {
-      setValue("closeModal", false);
-      setOpen(false);
-    }
-  }, [closeModal]);
+  const isDisabled = payload.status === "COMPLETE";
 
   const handleDraft = () => {
     if (submitRef.current) {
@@ -182,10 +170,13 @@ export function CanvasToolbar(payload: CanvasToolbarProps) {
                 </DropdownMenuTrigger>
               </Toolbar.Button>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={handleDraft}>
+                <DropdownMenuItem disabled={isDisabled} onClick={handleDraft}>
                   Save as draft
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={openOptionalModal}>
+                <DropdownMenuItem
+                  disabled={isDisabled}
+                  onClick={openOptionalModal}
+                >
                   Send for signatures
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -199,7 +190,6 @@ export function CanvasToolbar(payload: CanvasToolbarProps) {
         {open && (
           <OptionalMessageModal
             callback={onCallback}
-            payload={payload}
             title="E-sign Email "
             subtitle="Send optional or default message in email"
             dialogProps={{ open, onOpenChange: setOpen }}

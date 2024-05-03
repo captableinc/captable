@@ -2,6 +2,7 @@
 import { sendEsignEmailJob } from "@/jobs";
 import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
+import { TRPCError } from "@trpc/server";
 import { ZodAddFieldMutationSchema } from "../schema";
 
 export const addFieldProcedure = withAuth
@@ -9,20 +10,15 @@ export const addFieldProcedure = withAuth
   .mutation(async ({ ctx, input }) => {
     try {
       const user = ctx.session.user;
-      const companyLogo = input.emailPayload.company.logo;
 
-      if (input.completedOn) {
+      if (input.status === "COMPLETE" && (!user.email || !user.name)) {
         return {
           success: false,
-          message: "E-signing has already completed among all parties.",
+          title: "Validation failed",
+          message: "Required sender name and email",
         };
       }
-      if (!user.email || !user.name || !companyLogo) {
-        return {
-          success: false,
-          message: "Email requires sender name , email and company logo.",
-        };
-      }
+
       await ctx.db.$transaction(async (tx) => {
         const { companyId } = await checkMembership({
           tx,
@@ -37,9 +33,25 @@ export const addFieldProcedure = withAuth
           },
           select: {
             id: true,
+            name: true,
+            completedOn: true,
             orderedDelivery: true,
+            company: {
+              select: {
+                name: true,
+                logo: true,
+              },
+            },
           },
         });
+
+        if (template.completedOn) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "E-signing has already completed among all parties.",
+          });
+        }
+
         await tx.templateField.deleteMany({
           where: {
             templateId: template.id,
@@ -77,6 +89,7 @@ export const addFieldProcedure = withAuth
           },
           data: {
             status: input.status,
+            optionalMessage: input.optionalMessage,
           },
         });
 
@@ -90,19 +103,38 @@ export const addFieldProcedure = withAuth
               name: user.name,
               email: user.email,
             },
-            ...input.emailPayload,
+            optionalMessage: input?.optionalMessage,
+            documentName: template.name,
+            company: {
+              name: template.company.name,
+              logo: template.company.logo,
+            },
           });
         }
       });
       return {
         success: true,
-        message: "Successfully sent document for e-signature.",
+        title:
+          input.status === "COMPLETE" ? "Sent for e-sign" : "Saved in draft",
+        message:
+          input.status === "COMPLETE"
+            ? "Successfully sent document for e-signature."
+            : "Successfully saved as draft template.",
       };
     } catch (error) {
       console.log({ error });
-      return {
-        success: false,
-        message: "Uh ohh! Something went wrong. Please try again later.",
-      };
+      if (error instanceof TRPCError) {
+        return {
+          success: false,
+          title: "Bad request",
+          message: error.message,
+        };
+      } else {
+        return {
+          success: false,
+          title: "Error",
+          message: "Uh ohh! Something went wrong. Please try again later.",
+        };
+      }
     }
   });

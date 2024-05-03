@@ -24,15 +24,7 @@ export const ZodAddFieldMutationSchema = z.object({
       recipientId: z.string(),
     }),
   ),
-  emailPayload: z.object({
-    optionalMessage: z.string().optional(),
-    expiryDate: z.date().or(z.null()).or(z.string()).optional(),
-    documentName: z.string(),
-    company: z.object({
-      name: z.string(),
-      logo: z.string().optional(),
-    }),
-  }),
+  optionalMessage: z.string().optional(),
 });
 
 export type TypeZodAddFieldMutationSchema = z.infer<

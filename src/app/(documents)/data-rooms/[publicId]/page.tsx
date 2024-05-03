@@ -2,8 +2,8 @@
 
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { SharePageLayout } from "@/components/share/page-layout";
-import { api } from "@/trpc/server";
-import type { Bucket, Company, DataRoom } from "@prisma/client";
+import { decode, type JWTVerifyResult } from "@/lib/jwt";
+import { db } from "@/server/db";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import { notFound } from "next/navigation";
 
@@ -14,30 +14,66 @@ const DataRoomPage = async ({
   params: { publicId: string };
   searchParams: { token: string };
 }) => {
-  const { dataRoom, company, documents } = await api.dataRoom.getDataRoom.query(
-    {
-      dataRoomPublicId: publicId,
-      include: {
-        company: true,
-        documents: true,
-      },
-    },
-  );
+  let decodedToken: JWTVerifyResult | null = null;
 
-  if (!dataRoom) {
+  try {
+    decodedToken = await decode(token);
+  } catch (error) {
     return notFound();
   }
 
-  const currentCompany = company as Company;
-  const currentDataRoom = dataRoom as DataRoom;
-  const currentDocuments = documents as Bucket[];
+  const { companyId, dataRoomId, recipientId } = decodedToken?.payload;
+  if (!companyId || !recipientId || !dataRoomId) {
+    return notFound();
+  }
+
+  const recipient = await db.dataRoomRecipient.findFirstOrThrow({
+    where: {
+      id: recipientId,
+      dataRoomId,
+    },
+
+    select: {
+      id: true,
+    },
+  });
+
+  if (!recipient) {
+    return notFound();
+  }
+
+  const dataRoom = await db.dataRoom.findFirstOrThrow({
+    where: {
+      publicId,
+    },
+
+    include: {
+      company: true,
+      documents: {
+        include: {
+          document: {
+            include: {
+              bucket: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (dataRoomId !== dataRoom.id || dataRoom?.companyId !== companyId) {
+    return notFound();
+  }
+
+  const company = dataRoom.company;
+  const documents = dataRoom.documents.map((doc) => doc.document.bucket);
 
   return (
     <SharePageLayout
       medium="dataRoom"
       company={{
-        name: currentCompany.name,
-        logo: currentCompany.logo,
+        name: company.name,
+        logo: company.logo,
       }}
       title={
         <div className="flex">
@@ -48,7 +84,7 @@ const DataRoomPage = async ({
 
           <h1 className="text-2xl font-semibold tracking-tight">
             <span className="text-primary/60">Data room / </span>
-            {currentDataRoom.name}
+            {dataRoom.name}
           </h1>
         </div>
       }
@@ -57,8 +93,8 @@ const DataRoomPage = async ({
         <DataRoomFileExplorer
           shared={true}
           jwtToken={token}
-          documents={currentDocuments}
-          companyPublicId={currentCompany.publicId}
+          documents={documents}
+          companyPublicId={company.publicId}
           dataRoomPublicId={publicId}
         />
       </div>

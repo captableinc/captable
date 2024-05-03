@@ -404,6 +404,7 @@ model DataRoomRecipient {
   updatedAt DateTime @updatedAt
 
   @@unique([dataRoomId, email])
+  @@index([id, dataRoomId])
   @@index([memberId])
   @@index([dataRoomId])
   @@index([stakeholderId])

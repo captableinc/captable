@@ -1,12 +1,11 @@
 import { generatePublicId } from "@/common/id";
 import DataRoomShareEmail from "@/emails/DataRoomShareEMail";
 import { env } from "@/env";
-import { decode, encode } from "@/lib/jwt";
+import { encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
 import { sendMail } from "@/server/mailer";
-import { createTRPCRouter, withAuth, withoutAuth } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 import { render } from "jsx-email";
 import { z } from "zod";
 import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
@@ -89,7 +88,11 @@ export const dataRoomRouter = createTRPCRouter({
           response.recipients = await Promise.all(
             dataRoom.recipients.map(async (recipient) => ({
               ...recipient,
-              token: await encode({ companyId, recipientId: recipient.id }),
+              token: await encode({
+                companyId,
+                dataRoomId: dataRoom.id,
+                recipientId: recipient.id,
+              }),
             })),
           );
         }
@@ -102,30 +105,6 @@ export const dataRoomRouter = createTRPCRouter({
       }
 
       return response;
-    }),
-
-  getSharedDataRoom: withoutAuth
-    .input(
-      z.object({
-        dataRoomPublicId: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { headers } = ctx;
-      const jwtToken =
-        headers.get("Authorization")?.replace("Bearer ", "") ?? "";
-
-      if (!jwtToken) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "No JWT token provided",
-        });
-      }
-
-      console.log({ input });
-      const { payload } = await decode(jwtToken);
-
-      // TODO: Implement this
     }),
 
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {
@@ -264,6 +243,7 @@ export const dataRoomRouter = createTRPCRouter({
 
           const token = await encode({
             companyId,
+            dataRoomId,
             recipientId: recipientRecord.id,
           });
 

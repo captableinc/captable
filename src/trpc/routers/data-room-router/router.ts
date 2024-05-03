@@ -239,8 +239,6 @@ export const dataRoomRouter = createTRPCRouter({
             },
           });
 
-          console.log({ recipientRecord });
-
           const token = await encode({
             companyId,
             dataRoomId,

@@ -48,8 +48,6 @@ const Share = ({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Option[]>([]);
 
-  console.log({ recipients, contacts });
-
   const copyToClipboard = (id: string, text: string) => {
     copy(text)
       .then(() => {

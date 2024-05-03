@@ -11,11 +11,6 @@ export const addExistingSafeProcedure = withAuth
     const user = ctx.session.user;
     const documents = input.documents;
 
-    // const datas = await ctx.db.safe.deleteMany({})
-    // const docss= await ctx.db.document.deleteMany({})
-    // console.log({ datas });
-    // console.log({ docss });
-
     try {
       await ctx.db.$transaction(async (tx) => {
         const { companyId, memberId } = await checkMembership({ session, tx });

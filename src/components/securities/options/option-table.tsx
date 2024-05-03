@@ -297,7 +297,6 @@ export const columns: ColumnDef<Option[number]>[] = [
 ];
 
 const OptionTable = ({ options }: OptionsType) => {
-  console.log(options);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],

@@ -16,7 +16,7 @@ import {
 import { Fragment, useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 
-interface ExtendedRecipientType extends DataRoomRecipient {
+export interface ExtendedRecipientType extends DataRoomRecipient {
   token: string | object;
 }
 

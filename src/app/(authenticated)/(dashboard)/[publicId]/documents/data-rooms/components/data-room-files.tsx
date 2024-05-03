@@ -1,14 +1,16 @@
 "use client";
 
 import EmptyState from "@/components/common/empty-state";
-import ShareModal from "@/components/common/share-modal";
+import ShareModal, {
+  type ExtendedRecipientType,
+} from "@/components/common/share-modal";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import type { DataRoomRecipientType } from "@/trpc/routers/data-room-router/schema";
 import { type ContactsType } from "@/types/contacts";
-import type { Bucket, DataRoom, DataRoomRecipient } from "@prisma/client";
+import type { Bucket, DataRoom } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
@@ -16,7 +18,6 @@ import { useDebounceCallback } from "usehooks-ts";
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
-  // RiShareLine,
   RiUploadCloudLine,
 } from "@remixicon/react";
 import Link from "next/link";
@@ -34,7 +35,7 @@ interface DataRoomType extends DataRoom {
 type DataRoomFilesProps = {
   dataRoom: DataRoom;
   documents: Bucket[];
-  recipients: DataRoomRecipient[];
+  recipients: ExtendedRecipientType[];
   companyPublicId: string;
   contacts: ContactsType;
 };

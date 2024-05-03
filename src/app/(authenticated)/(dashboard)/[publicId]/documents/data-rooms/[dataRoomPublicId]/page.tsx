@@ -1,7 +1,8 @@
 "use server";
 
+import { type ExtendedRecipientType } from "@/components/common/share-modal";
 import { api } from "@/trpc/server";
-import type { Bucket, DataRoom, DataRoomRecipient } from "@prisma/client";
+import type { Bucket, DataRoom } from "@prisma/client";
 import { notFound } from "next/navigation";
 import DataRoomFiles from "../components/data-room-files";
 
@@ -29,7 +30,7 @@ const DataRoomSettinsPage = async ({
     <DataRoomFiles
       contacts={contacts}
       dataRoom={dataRoom as DataRoom}
-      recipients={recipients as DataRoomRecipient[]}
+      recipients={recipients as ExtendedRecipientType[]}
       documents={documents as Bucket[]}
       companyPublicId={publicId}
     />

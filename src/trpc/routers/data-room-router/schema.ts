@@ -28,6 +28,7 @@ export const DataRoomSchema = z.object({
 
 export const DataRoomRecipientSchema = z.object({
   value: z.string(),
+  token: z.string().optional().nullable(),
   email: z.string().optional().nullable(),
   id: z.string().optional().nullable(),
   name: z.string().optional().nullable(),

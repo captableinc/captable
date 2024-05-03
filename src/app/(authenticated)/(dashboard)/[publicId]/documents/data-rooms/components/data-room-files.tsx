@@ -146,7 +146,7 @@ const DataRoomFiles = ({
                     others: others as DataRoomRecipientType[],
                   });
                 }}
-                onUnShare={async ({ recipientId }) => {
+                removeAccess={async ({ recipientId }) => {
                   await unShareDataRoomMutation({
                     dataRoomId: dataRoom.id,
                     recipientId,

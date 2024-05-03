@@ -1,12 +1,12 @@
 import { generatePublicId } from "@/common/id";
 import DataRoomShareEmail from "@/emails/DataRoomShareEMail";
 import { env } from "@/env";
-import { JWT_SECRET, checkMembership } from "@/server/auth";
+import { decode, encode } from "@/lib/jwt";
+import { checkMembership } from "@/server/auth";
 import { sendMail } from "@/server/mailer";
 import { createTRPCRouter, withAuth, withoutAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { SignJWT, jwtVerify } from "jose";
 import { render } from "jsx-email";
 import { z } from "zod";
 import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
@@ -73,6 +73,7 @@ export const dataRoomRouter = createTRPCRouter({
               },
             },
           });
+
           response.documents = dataRoomDocument.map((doc) => ({
             id: doc.document.bucket.id,
             name: doc.document.bucket.name,
@@ -85,7 +86,12 @@ export const dataRoomRouter = createTRPCRouter({
         }
 
         if (include.recipients) {
-          response.recipients = dataRoom.recipients;
+          response.recipients = await Promise.all(
+            dataRoom.recipients.map(async (recipient) => ({
+              ...recipient,
+              token: await encode({ companyId, recipientId: recipient.id }),
+            })),
+          );
         }
 
         return { dataRoom };
@@ -117,7 +123,7 @@ export const dataRoomRouter = createTRPCRouter({
       }
 
       console.log({ input });
-      const { payload } = await jwtVerify(jwtToken, JWT_SECRET);
+      const { payload } = await decode(jwtToken);
 
       // TODO: Implement this
     }),
@@ -256,12 +262,10 @@ export const dataRoomRouter = createTRPCRouter({
 
           console.log({ recipientRecord });
 
-          const token = await new SignJWT({
+          const token = await encode({
             companyId,
             recipientId: recipientRecord.id,
-          })
-            .setProtectedHeader({ alg: "HS256" })
-            .sign(JWT_SECRET);
+          });
 
           const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
 

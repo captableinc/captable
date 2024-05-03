@@ -4,9 +4,9 @@ import { ZodAddFieldMutationSchema } from "../schema";
 
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
+import { decode, encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
 import { sendMail } from "@/server/mailer";
-import { SignJWT, jwtVerify } from "jose";
 import { render } from "jsx-email";
 import { z } from "zod";
 
@@ -27,8 +27,6 @@ interface EncodeEmailTokenOption {
   recipientId: string;
 }
 
-const secret = new TextEncoder().encode(env.NEXTAUTH_SECRET);
-
 export function EncodeEmailToken({
   recipientId,
   templateId,
@@ -38,14 +36,11 @@ export function EncodeEmailToken({
     id: templateId,
   };
 
-  return new SignJWT(encodeToken)
-    .setProtectedHeader({ alg: "HS256" })
-    .sign(secret);
+  return encode(encodeToken);
 }
 
 export async function DecodeEmailToken(jwt: string) {
-  const { payload } = await jwtVerify(jwt, secret);
-
+  const { payload } = await decode(jwt);
   return emailTokenPayloadSchema.parse(payload);
 }
 

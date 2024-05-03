@@ -5,7 +5,6 @@ import Modal from "@/components/common/modal";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
-import { useSession } from "next-auth/react";
 
 import { type ContactsType } from "@/types/contacts";
 import type { DataRoomRecipient } from "@prisma/client";
@@ -17,16 +16,20 @@ import {
 import { Fragment, useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 
+interface ExtendedRecipientType extends DataRoomRecipient {
+  token: string | object;
+}
+
 export type Props = {
   title: string;
   subtitle: string;
   baseLink: string;
   trigger: React.ReactNode;
   contacts: ContactsType;
-  recipients: DataRoomRecipient[];
+  recipients: ExtendedRecipientType[];
 
   onShare: (data: { others: object[]; selectedContacts: object[] }) => void;
-  onUnShare: (data: { recipientId: string }) => void;
+  removeAccess: (data: { recipientId: string }) => void;
 };
 
 const Share = ({
@@ -37,15 +40,15 @@ const Share = ({
   contacts,
   recipients,
   onShare,
-  onUnShare,
+  removeAccess,
 }: Props) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [copiedText, copy] = useCopyToClipboard();
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Option[]>([]);
-  const { data } = useSession();
-  const user = data?.user;
+
+  console.log({ recipients, contacts });
 
   const copyToClipboard = (id: string, text: string) => {
     copy(text)
@@ -139,7 +142,7 @@ const Share = ({
                         variant={"secondary"}
                         className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
                         onClick={() => {
-                          onUnShare({ recipientId: recipient.id });
+                          removeAccess({ recipientId: recipient.id });
                         }}
                       >
                         <DeleteIcon className="h-4 w-4" />
@@ -152,7 +155,7 @@ const Share = ({
                         onClick={() =>
                           copyToClipboard(
                             recipient.id,
-                            `${baseLink}?token=${recipient.id}`,
+                            `${baseLink}?token=${recipient.token as string}`,
                           )
                         }
                       >

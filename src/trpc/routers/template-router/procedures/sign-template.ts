@@ -358,8 +358,8 @@ async function signPdf({
 
       const top = field.top - topMargin;
       const fieldY = top * widthRatio;
-      const width = field.width * widthRatio;
       const height = field.height * totalHeightRatio;
+      const width = height;
 
       if (field.type === "SIGNATURE") {
         const image = await pdfDoc.embedPng(value);

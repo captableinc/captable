@@ -1,6 +1,5 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { useCallback, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -35,7 +34,7 @@ export const PdfViewer = ({
     const [entry] = entries;
 
     if (entry) {
-      setContainerWidth(entry.contentRect.width - 38);
+      setContainerWidth(entry.contentRect.width);
     }
   }, []);
 
@@ -60,14 +59,13 @@ export const PdfViewer = ({
         className="w-full overflow-hidden rounded"
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Card className="my-5 p-3" key={`page_${index + 1}`}>
-            <Page
-              pageNumber={index + 1}
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
-              width={containerWidth}
-            />
-          </Card>
+          <Page
+            key={`page_${index + 1}`}
+            pageNumber={index + 1}
+            renderAnnotationLayer={false}
+            renderTextLayer={false}
+            width={containerWidth}
+          />
         ))}
       </Document>
     </div>

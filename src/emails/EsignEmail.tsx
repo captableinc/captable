@@ -1,3 +1,5 @@
+import { ArrowRight, SignatureIcon } from "@/components/common/icons";
+import { env } from "@/env";
 import {
   Body,
   Button,
@@ -35,7 +37,6 @@ export interface EsignEmailProps {
     name: string;
     logo: string;
   };
-  expiryDate?: string;
 }
 
 export const EsignEmail = ({
@@ -45,8 +46,8 @@ export const EsignEmail = ({
   recipient,
   sender,
   company,
-  expiryDate,
 }: EsignEmailProps) => {
+  const BASE_URL = env.NEXTAUTH_URL;
   return (
     <Html>
       <Head />
@@ -56,10 +57,10 @@ export const EsignEmail = ({
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
             <Section className="mt-[32px]">
               <Img
-                src={company?.logo}
-                width="45"
-                height="45"
-                alt="Vercel"
+                src={company?.logo || `${BASE_URL}/placeholders/company.svg`}
+                width="72"
+                height="72"
+                alt="company_logo"
                 className="mx-auto my-0"
               />
             </Section>
@@ -89,39 +90,22 @@ export const EsignEmail = ({
                 </Text>
               </>
             )}
-            {expiryDate && (
-              <Text className="mt-[4px] text-[14px] leading-[24px] text-black">
-                Please note that this document needs to be signed by{" "}
-                {expiryDate}
-              </Text>
-            )}
             <Section className="max-w-[435px]">
-              <Row>
+              <Row className="gap-x-6">
                 <Column align="right">
                   <Img
                     className="rounded-full"
-                    src={
-                      "https://www.svgrepo.com/show/452030/avatar-default.svg"
-                    }
-                    width="64"
-                    height="64"
+                    src={`${BASE_URL}/placeholders/user.svg`}
+                    width="80px"
+                    height="80px"
+                    alt={"user_svg"}
                   />
                 </Column>
-                <Column align="center">
-                  <Img
-                    src={`https://jsx.email/assets/demo/vercel-arrow.png`}
-                    width="12"
-                    height="9"
-                    alt="invited you to"
-                  />
+                <Column className="mx-24" align="center">
+                  <ArrowRight />
                 </Column>
                 <Column align="left">
-                  <Img
-                    className="rounded-full"
-                    src={"https://www.svgrepo.com/show/437226/signature.svg"}
-                    width="64"
-                    height="64"
-                  />
+                  <SignatureIcon />
                 </Column>
               </Row>
             </Section>
@@ -131,7 +115,7 @@ export const EsignEmail = ({
                 className="mx-[200px] rounded bg-black px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={signingLink}
               >
-                Esign the template
+                Sign the document
               </Button>
             </Section>
             <Text className="!text-[14px] leading-[24px] text-black">
@@ -146,7 +130,7 @@ export const EsignEmail = ({
 
             <Hr className="mx-0 my-[26px] w-full border border-solid border-neutral-200" />
             <Text className="mx-auto text-center text-[12px] leading-[24px] text-[#666666]">
-              If you were not expecting this email, you can ignore this email.
+              Please ignore, if you were not expecting this email.
             </Text>
           </Container>
         </Body>

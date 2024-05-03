@@ -87,9 +87,7 @@ export const sendEsignEmailJob = client.defineJob({
       documentName,
       sender,
       company,
-      expiryDate,
     } = payload;
-
     //@TODO ( Execute parallel tasks (not supported yet))
     let shouldBreak = false;
     for (const recipient of recipients) {
@@ -107,7 +105,6 @@ export const sendEsignEmailJob = client.defineJob({
             recipient,
             sender,
             company,
-            expiryDate,
           }),
         );
         await sendMail({

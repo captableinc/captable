@@ -3,9 +3,11 @@
 import { dayjsExt } from "@/common/dayjs";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
+import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { EsignAudit } from "@/server/audit";
 import { type PrismaTransactionalClient } from "@/server/db";
 import { publicProcedure, type CreateTRPCContextType } from "@/trpc/api/trpc";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
@@ -147,6 +149,7 @@ export const signTemplateProcedure = publicProcedure
             fields: template.fields,
             uploaderName: "open cap",
             data,
+            templateId: template.id,
           });
         }
       } else {
@@ -195,6 +198,7 @@ export const signTemplateProcedure = publicProcedure
           fields: template.fields,
           uploaderName: recipient.name ?? "unknown signer",
           data: input.data,
+          templateId: template.id,
         });
       }
 
@@ -282,6 +286,7 @@ interface TSignPdfOptions {
   data: Record<string, string>;
   fields: TGetTemplate["fields"];
   uploaderName: string;
+  templateId: string;
 }
 
 async function signPdf({
@@ -292,6 +297,7 @@ async function signPdf({
   data,
   fields,
   uploaderName,
+  templateId,
 }: TSignPdfOptions) {
   const { db, requestIp, userAgent } = ctx;
 
@@ -374,6 +380,30 @@ async function signPdf({
           font,
           size: fontSize,
         });
+      }
+    }
+  }
+
+  const audits = await db.esignAudit.findMany({
+    where: {
+      templateId,
+    },
+    select: {
+      id: true,
+      summary: true,
+    },
+  });
+
+  if (audits.length) {
+    const audit = await renderToBuffer(AuditLogTemplate({ audits }));
+    const auditPDFDoc = await PDFDocument.load(audit);
+    const indices = auditPDFDoc.getPageIndices();
+    const copiedPages = await pdfDoc.copyPages(auditPDFDoc, indices);
+
+    for (let index = 0; index < copiedPages.length; index++) {
+      const auditPage = copiedPages[index];
+      if (auditPage) {
+        pdfDoc.addPage(auditPage);
       }
     }
   }

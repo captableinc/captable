@@ -3,21 +3,26 @@
 import { useToast } from "@/components/ui/use-toast";
 import { type TemplateFieldForm as TTemplateFieldForm } from "@/providers/template-field-provider";
 import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 import { type ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 
 interface TemplateFieldFormProps {
   children: ReactNode;
   templatePublicId: string;
+  companyPublicId: string;
 }
 
 export const TemplateFieldForm = ({
   children,
   templatePublicId,
+  companyPublicId,
 }: TemplateFieldFormProps) => {
+  const router = useRouter();
   const { toast } = useToast();
 
-  const { handleSubmit } = useFormContext<TTemplateFieldForm>();
+  const { handleSubmit, getValues } = useFormContext<TTemplateFieldForm>();
+  const status = getValues("status");
 
   const { mutateAsync } = api.templateField.add.useMutation({
     onSuccess: () => {
@@ -26,6 +31,10 @@ export const TemplateFieldForm = ({
         title: "🎉 Successfully created",
         description: "Your template fields has been created.",
       });
+
+      if (status === "COMPLETE") {
+        router.push(`/${companyPublicId}/documents`);
+      }
     },
   });
 

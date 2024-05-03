@@ -478,6 +478,7 @@ model Template {
   name            String
   status          TemplateStatus @default(DRAFT)
   orderedDelivery Boolean        @default(false)
+  optionalMessage String?
 
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)

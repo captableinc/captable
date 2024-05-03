@@ -51,6 +51,7 @@ const DataRoomPage = async ({
           />
 
           <h1 className="text-2xl font-semibold tracking-tight">
+            <span className="text-primary/60">Data room / </span>
             <Link
               href={`/data-rooms/${publicId}?token=${token}`}
               className="text-primary/60 hover:text-primary/90 hover:underline"

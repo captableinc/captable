@@ -1,11 +1,11 @@
 import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/token";
-import { publicProcedure } from "@/trpc/api/trpc";
+import { withoutAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import { ZSignUpMutationSchema } from "../schema";
 
-export const signupProcedure = publicProcedure
+export const signupProcedure = withoutAuth
   .input(ZSignUpMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { name, email, password } = input;

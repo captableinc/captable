@@ -31,6 +31,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    NEXTAUTH_URL: z.string(),
     NEXTAUTH_SECRET: z.string(),
     EMAIL_SERVER: z.string().optional(),
     EMAIL_FROM: z.string(),
@@ -88,6 +89,7 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
     EMAIL_FROM: process.env.EMAIL_FROM,

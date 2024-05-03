@@ -1,10 +1,10 @@
-import { publicProcedure } from "@/trpc/api/trpc";
-import { ZNewPasswordProcedureSchema } from "../schema";
 import { getPasswordResetTokenByToken } from "@/server/password-reset-token";
-import { TRPCError } from "@trpc/server";
 import { getUserByEmail } from "@/server/user";
+import { withoutAuth } from "@/trpc/api/trpc";
+import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
-export const newPasswordProcedure = publicProcedure
+import { ZNewPasswordProcedureSchema } from "../schema";
+export const newPasswordProcedure = withoutAuth
   .input(ZNewPasswordProcedureSchema)
   .mutation(async ({ ctx, input }) => {
     const { token, password } = input;

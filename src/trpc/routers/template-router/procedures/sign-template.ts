@@ -6,7 +6,7 @@ import { generateRange, type Range } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { EsignAudit } from "@/server/audit";
 import { type PrismaTransactionalClient } from "@/server/db";
-import { publicProcedure, type CreateTRPCContextType } from "@/trpc/api/trpc";
+import { withoutAuth, type CreateTRPCContextType } from "@/trpc/api/trpc";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
@@ -17,7 +17,7 @@ import {
 } from "../../template-field-router/procedures/add-fields";
 import { ZodSignTemplateMutationSchema } from "../schema";
 
-export const signTemplateProcedure = publicProcedure
+export const signTemplateProcedure = withoutAuth
   .input(ZodSignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { db } = ctx;

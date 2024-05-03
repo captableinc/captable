@@ -1,7 +1,13 @@
 import { generatePublicId } from "@/common/id";
-import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import DataRoomShareEmail from "@/emails/DataRoomShareEMail";
+import { env } from "@/env";
+import { JWT_SECRET, checkMembership } from "@/server/auth";
+import { sendMail } from "@/server/mailer";
+import { createTRPCRouter, withAuth, withoutAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
+import { SignJWT, jwtVerify } from "jose";
+import { render } from "jsx-email";
 import { z } from "zod";
 import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
 
@@ -45,36 +51,6 @@ export const dataRoomRouter = createTRPCRouter({
             documents: include.documents,
             company: include.company,
             recipients: include.recipients,
-            // ...include.recipients && {
-            //   recipients: {
-            //     select: {
-            //       id: true,
-            //       name: true,
-            //       email: true,
-            //       member: {
-            //         select: {
-            //           id: true,
-            //           user: {
-            //             select: {
-            //               id: true,
-            //               name: true,
-            //               email: true,
-            //               image: true,
-            //             },
-            //           },
-            //         },
-            //       },
-
-            //       stakeholder: {
-            //         select: {
-            //           id: true,
-            //           name: true,
-            //           email: true,
-            //         },
-            //       },
-            //     },
-            //   }
-            // },
           },
         });
 
@@ -120,6 +96,30 @@ export const dataRoomRouter = createTRPCRouter({
       }
 
       return response;
+    }),
+
+  getSharedDataRoom: withoutAuth
+    .input(
+      z.object({
+        dataRoomPublicId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { headers } = ctx;
+      const jwtToken =
+        headers.get("Authorization")?.replace("Bearer ", "") ?? "";
+
+      if (!jwtToken) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "No JWT token provided",
+        });
+      }
+
+      console.log({ input });
+      const { payload } = await jwtVerify(jwtToken, JWT_SECRET);
+
+      // TODO: Implement this
     }),
 
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {
@@ -200,12 +200,16 @@ export const dataRoomRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { session, db } = ctx;
       const { dataRoomId, others, selectedContacts } = input;
-      const companyId = session.user.companyId;
+      const { name: senderName, email: senderEmail, companyId } = session.user;
 
       const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
           id: dataRoomId,
           companyId,
+        },
+
+        include: {
+          company: true,
         },
       });
 
@@ -213,7 +217,10 @@ export const dataRoomRouter = createTRPCRouter({
         throw new Error("Data room not found");
       }
 
+      const company = dataRoom.company;
+
       const upsertManyRecipients = async () => {
+        const baseUrl = env.BASE_URL;
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         [...others, ...selectedContacts].forEach(async (recipient) => {
           const email = (recipient.email || recipient.value).trim();
@@ -228,7 +235,7 @@ export const dataRoomRouter = createTRPCRouter({
                 ? { stakeholderId: recipient.id }
                 : {};
 
-          await db.dataRoomRecipient.upsert({
+          const recipientRecord = await db.dataRoomRecipient.upsert({
             where: {
               dataRoomId_email: {
                 dataRoomId,
@@ -245,6 +252,32 @@ export const dataRoomRouter = createTRPCRouter({
               name: recipient.name,
               ...memberOrStakeholderId,
             },
+          });
+
+          console.log({ recipientRecord });
+
+          const token = await new SignJWT({
+            companyId,
+            recipientId: recipientRecord.id,
+          })
+            .setProtectedHeader({ alg: "HS256" })
+            .sign(JWT_SECRET);
+
+          const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
+
+          await sendMail({
+            to: email,
+            replyTo: senderEmail!,
+            subject: `${senderName} shared a data room - ${dataRoom.name}`,
+            html: await render(
+              DataRoomShareEmail({
+                senderName: senderName!,
+                recipientName: recipient.name || undefined,
+                companyName: company.name,
+                dataRoom: dataRoom.name,
+                link,
+              }),
+            ),
           });
         });
       };

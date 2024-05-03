@@ -1,11 +1,11 @@
-import { publicProcedure } from "@/trpc/api/trpc";
-import { z } from "zod";
-import { getUserByEmail } from "@/server/user";
-import { TRPCError } from "@trpc/server";
-import { generatePasswordResetToken } from "@/lib/token";
 import { sendPasswordResetEmail } from "@/lib/mail";
+import { generatePasswordResetToken } from "@/lib/token";
+import { getUserByEmail } from "@/server/user";
+import { withoutAuth } from "@/trpc/api/trpc";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-export const forgotPasswordProcedure = publicProcedure
+export const forgotPasswordProcedure = withoutAuth
   .input(z.string().email())
   .mutation(async ({ input }) => {
     const existingUser = await getUserByEmail(input);

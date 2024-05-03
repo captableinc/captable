@@ -1,10 +1,10 @@
-import { render } from "jsx-email";
 import AccountVerificationEmail from "@/emails/AccountVerificationEmail";
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 import { sendMail } from "@/server/mailer";
+import { render } from "jsx-email";
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-  const baseUrl = process.env.NEXTAUTH_URL;
+  const baseUrl = process.env.BASE_URL;
   const confirmLink = `${baseUrl}/verify-email/${token}`;
 
   const html = await render(
@@ -21,7 +21,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
-  const baseUrl = process.env.NEXTAUTH_URL;
+  const baseUrl = process.env.BASE_URL;
   const confirmLink = `${baseUrl}/reset-password/${token}`;
 
   const html = await render(

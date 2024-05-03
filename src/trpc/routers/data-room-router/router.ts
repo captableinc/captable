@@ -1,34 +1,61 @@
 import { generatePublicId } from "@/common/id";
+import DataRoomShareEmail from "@/emails/DataRoomShareEMail";
+import { env } from "@/env";
+import { encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
+import { sendMail } from "@/server/mailer";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { type ContactsType } from "@/types/contacts";
 import type { DataRoom } from "@prisma/client";
+import { render } from "jsx-email";
 import { z } from "zod";
-import { DataRoomSchema } from "./schema";
+import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
 
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
-    .input(z.object({ dataRoomPublicId: z.string() }))
+    .input(
+      z.object({
+        dataRoomPublicId: z.string(),
+        include: z.object({
+          company: z.boolean().optional().default(false),
+          documents: z.boolean().optional().default(false),
+          recipients: z.boolean().optional().default(false),
+        }),
+      }),
+    )
     .query(async ({ ctx, input }) => {
+      const response = {
+        dataRoom: {},
+        documents: [],
+        recipients: [],
+        company: {},
+      } as {
+        dataRoom: object;
+        documents: object[];
+        recipients: object[];
+        company: object;
+      };
+
       const { db, session } = ctx;
+      const { dataRoomPublicId, include } = input;
 
-      const { dataRoomPublicId } = input;
+      const { dataRoom } = await db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({ session, tx });
 
-      const { dataRoomDocument, dataRoom } = await db.$transaction(
-        async (tx) => {
-          const { companyId } = await checkMembership({ session, tx });
+        const dataRoom = await tx.dataRoom.findUniqueOrThrow({
+          where: {
+            publicId: dataRoomPublicId,
+            companyId,
+          },
+          include: {
+            documents: include.documents,
+            company: include.company,
+            recipients: include.recipients,
+          },
+        });
 
-          const dataRoom = await tx.dataRoom.findUniqueOrThrow({
-            where: {
-              publicId: dataRoomPublicId,
-              companyId,
-            },
+        response.dataRoom = dataRoom;
 
-            include: {
-              documents: true,
-            },
-          });
-
+        if (include.documents) {
           const documentIds = dataRoom.documents.map((doc) => doc.id);
 
           const dataRoomDocument = await tx.dataRoomDocument.findMany({
@@ -45,24 +72,39 @@ export const dataRoomRouter = createTRPCRouter({
               },
             },
           });
-          return { dataRoomDocument, dataRoom };
-        },
-      );
 
-      const documents = dataRoomDocument.map((doc) => ({
-        id: doc.document.bucket.id,
-        name: doc.document.bucket.name,
-        key: doc.document.bucket.key,
-        mimeType: doc.document.bucket.mimeType,
-        size: doc.document.bucket.size,
-        createdAt: doc.document.bucket.createdAt,
-        updatedAt: doc.document.bucket.updatedAt,
-      }));
+          response.documents = dataRoomDocument.map((doc) => ({
+            id: doc.document.bucket.id,
+            name: doc.document.bucket.name,
+            key: doc.document.bucket.key,
+            mimeType: doc.document.bucket.mimeType,
+            size: doc.document.bucket.size,
+            createdAt: doc.document.bucket.createdAt,
+            updatedAt: doc.document.bucket.updatedAt,
+          }));
+        }
 
-      return {
-        dataRoom,
-        documents,
-      };
+        if (include.recipients) {
+          response.recipients = await Promise.all(
+            dataRoom.recipients.map(async (recipient) => ({
+              ...recipient,
+              token: await encode({
+                companyId,
+                dataRoomId: dataRoom.id,
+                recipientId: recipient.id,
+              }),
+            })),
+          );
+        }
+
+        return { dataRoom };
+      });
+
+      if (include.company) {
+        response.company = dataRoom.company;
+      }
+
+      return response;
     }),
 
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {
@@ -124,7 +166,6 @@ export const dataRoomRouter = createTRPCRouter({
         data: room,
       };
     } catch (error) {
-      console.error("Error saving dataroom:", error);
       return {
         success: false,
         message:
@@ -133,61 +174,137 @@ export const dataRoomRouter = createTRPCRouter({
     }
   }),
 
-  getContacts: withAuth.query(async ({ ctx }) => {
-    const { db, session } = ctx;
+  share: withAuth
+    .input(
+      z.object({
+        dataRoomId: z.string(),
+        others: z.array(DataRoomRecipientSchema),
+        selectedContacts: z.array(DataRoomRecipientSchema),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { session, db } = ctx;
+      const { dataRoomId, others, selectedContacts } = input;
+      const { name: senderName, email: senderEmail, companyId } = session.user;
 
-    const contacts = [] as ContactsType;
-
-    const { members, stakeholders } = await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ session, tx });
-
-      const members = await tx.member.findMany({
+      const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
+          id: dataRoomId,
           companyId,
         },
 
         include: {
-          user: {
-            select: {
-              email: true,
-              name: true,
-              image: true,
-            },
-          },
+          company: true,
         },
       });
 
-      const stakeholders = await tx.stakeholder.findMany({
+      if (!dataRoom) {
+        throw new Error("Data room not found");
+      }
+
+      const company = dataRoom.company;
+
+      const upsertManyRecipients = async () => {
+        const baseUrl = env.BASE_URL;
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        [...others, ...selectedContacts].forEach(async (recipient) => {
+          const email = (recipient.email || recipient.value).trim();
+          if (!email) {
+            throw new Error("Email is required");
+          }
+
+          const memberOrStakeholderId =
+            recipient.type === "member"
+              ? { memberId: recipient.id }
+              : recipient.type === "stakeholder"
+                ? { stakeholderId: recipient.id }
+                : {};
+
+          const recipientRecord = await db.dataRoomRecipient.upsert({
+            where: {
+              dataRoomId_email: {
+                dataRoomId,
+                email,
+              },
+            },
+            create: {
+              dataRoomId,
+              name: recipient.name,
+              email,
+              ...memberOrStakeholderId,
+            },
+            update: {
+              name: recipient.name,
+              ...memberOrStakeholderId,
+            },
+          });
+
+          const token = await encode({
+            companyId,
+            dataRoomId,
+            recipientId: recipientRecord.id,
+          });
+
+          const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
+
+          await sendMail({
+            to: email,
+            replyTo: senderEmail!,
+            subject: `${senderName} shared a data room - ${dataRoom.name}`,
+            html: await render(
+              DataRoomShareEmail({
+                senderName: senderName!,
+                recipientName: recipient.name || undefined,
+                companyName: company.name,
+                dataRoom: dataRoom.name,
+                link,
+              }),
+            ),
+          });
+        });
+      };
+
+      await upsertManyRecipients();
+
+      return {
+        success: true,
+        message: "Data room successfully shared!",
+      };
+    }),
+
+  unShare: withAuth
+    .input(
+      z.object({
+        dataRoomId: z.string(),
+        recipientId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { session, db } = ctx;
+      const { dataRoomId, recipientId } = input;
+      const companyId = session.user.companyId;
+
+      const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
+          id: dataRoomId,
           companyId,
         },
       });
 
-      return { stakeholders, members };
-    });
+      if (!dataRoom) {
+        throw new Error("Data room not found");
+      }
 
-    (members || []).map((member) =>
-      contacts.push({
-        id: member.id,
-        image: member.user.image!,
-        email: member.user.email!,
-        value: member.user.email!,
-        name: member.user.name!,
-        type: "member",
-      }),
-    );
+      await db.dataRoomRecipient.delete({
+        where: {
+          id: recipientId,
+          dataRoomId,
+        },
+      });
 
-    (stakeholders || []).map((stakeholder) =>
-      contacts.push({
-        id: stakeholder.id,
-        email: stakeholder.email,
-        value: stakeholder.email,
-        name: stakeholder.name,
-        institutionName: stakeholder.institutionName!,
-        type: "stakeholder",
-      }),
-    );
-
-    return contacts;
-  }),
+      return {
+        success: true,
+        message: "Successfully removed access to data room!",
+      };
+    }),
 });

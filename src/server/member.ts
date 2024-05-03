@@ -1,12 +1,12 @@
-import { render } from "jsx-email";
-import { db } from "./db";
-import { sendMail } from "./mailer";
 import MemberInviteEmail from "@/emails/MemberInviteEmail";
-import { constants } from "@/lib/constants";
-import { nanoid } from "nanoid";
 import { env } from "@/env";
+import { constants } from "@/lib/constants";
 import { createHash } from "@/lib/crypto";
 import { type Prisma } from "@prisma/client";
+import { render } from "jsx-email";
+import { nanoid } from "nanoid";
+import { db } from "./db";
+import { sendMail } from "./mailer";
 
 export const checkVerificationToken = async (
   token: string,
@@ -70,7 +70,7 @@ export async function sendMemberInviteEmail({
   token,
   user,
 }: sendMemberInviteEmailOptions) {
-  const baseUrl = process.env.NEXTAUTH_URL;
+  const baseUrl = process.env.BASE_URL;
   const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
 
   const params = new URLSearchParams({

@@ -1,9 +1,9 @@
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { publicProcedure } from "@/trpc/api/trpc";
+import { withoutAuth } from "@/trpc/api/trpc";
 import { DecodeEmailToken } from "../../template-field-router/procedures/add-fields";
 import { ZodGetSigningFieldsSchema } from "../schema";
 
-export const getSigningFieldsProcedure = publicProcedure
+export const getSigningFieldsProcedure = withoutAuth
   .input(ZodGetSigningFieldsSchema)
   .query(async ({ ctx, input }) => {
     const { id: templateId, rec: recipientId } = await DecodeEmailToken(

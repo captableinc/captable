@@ -21,6 +21,7 @@ import { getUserByEmail, getUserById } from "./user";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+export const JWT_SECRET = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`

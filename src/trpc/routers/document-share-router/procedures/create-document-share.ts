@@ -49,7 +49,6 @@ export const createDocumentShareHandler = async ({
 
     return { success: true, message: "Document share created successfully." };
   } catch (err) {
-    console.log("err here ====>", err);
     return {
       success: false,
       message: "Oops, something went wrong. Please try again later.",

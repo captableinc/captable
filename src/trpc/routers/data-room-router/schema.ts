@@ -26,4 +26,16 @@ export const DataRoomSchema = z.object({
     .optional(),
 });
 
+export const DataRoomRecipientSchema = z.object({
+  value: z.string(),
+  token: z.string().optional().nullable(),
+  email: z.string().optional().nullable(),
+  id: z.string().optional().nullable(),
+  name: z.string().optional().nullable(),
+  institutionName: z.string().optional().nullable(),
+  image: z.string().optional().nullable(),
+  type: z.string().optional().nullable(),
+});
+
 export type DataRoomType = z.infer<typeof DataRoomSchema>;
+export type DataRoomRecipientType = z.infer<typeof DataRoomRecipientSchema>;

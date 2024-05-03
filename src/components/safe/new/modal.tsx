@@ -29,7 +29,6 @@ export default function CreateNewSafe({
 
   const { mutateAsync } = api.safe.create.useMutation({
     onSuccess: (payload) => {
-      console.log({ payload });
       const isSuccess = payload?.success;
       const message = payload?.message;
       toast({

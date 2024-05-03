@@ -1,6 +1,6 @@
 "use client";
 
-import { provideRequestAccess } from "@/app/documents/share/[publicId]/actions";
+import { provideRequestAccess } from "@/app/(documents)/share/[publicId]/actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -84,7 +84,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
       ...data,
     });
 
-    router.push(`/${companyPublicId}/documents/esign/${template.publicId}`);
+    router.push(`/${companyPublicId}/esign/${template.publicId}`);
   };
 
   const isDeleteDisabled = fields.length === 1;

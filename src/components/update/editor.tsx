@@ -226,7 +226,6 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
               placeholder={`Investor update - ${formattedDate}`}
               defaultValue={title}
               onChange={(e) => {
-                console.log("Updating title", e.target.value);
                 setTitle(e.target.value);
               }}
             />

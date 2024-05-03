@@ -1,6 +1,8 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
 import { auditRouter } from "../routers/audit-router/router";
+import { authRouter } from "../routers/auth/router";
 import { bucketRouter } from "../routers/bucket-router/router";
+import { commonRouter } from "../routers/common/router";
 import { companyRouter } from "../routers/company-router/router";
 import { dataRoomRouter } from "../routers/data-room-router/router";
 import { documentRouter } from "../routers/document-router/router";
@@ -15,7 +17,6 @@ import { stakeholderRouter } from "../routers/stakeholder-router/router";
 import { templateFieldRouter } from "../routers/template-field-router/router";
 import { templateRouter } from "../routers/template-router/router";
 import { updateRouter } from "../routers/update/router";
-import { authRouter } from "../routers/auth/router";
 
 /**
  * This is the primary router for your server.
@@ -40,6 +41,7 @@ export const appRouter = createTRPCRouter({
   update: updateRouter,
   auth: authRouter,
   dataRoom: dataRoomRouter,
+  common: commonRouter,
 });
 
 // export type definition of API

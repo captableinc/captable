@@ -2,25 +2,26 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
+import { sendEsignEmail } from "@/jobs";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { EsignAudit } from "@/server/audit";
 import { type PrismaTransactionalClient } from "@/server/db";
+import { getTriggerClient } from "@/trigger";
 import { withoutAuth, type CreateTRPCContextType } from "@/trpc/api/trpc";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "../../document-router/procedures/create-document";
-import {
-  EncodeEmailToken,
-  SendEsignEmail,
-} from "../../template-field-router/procedures/add-fields";
+import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
 import { ZodSignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth
   .input(ZodSignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { db } = ctx;
+
+    const triggerClient = getTriggerClient();
 
     await db.$transaction(async (tx) => {
       const template = await getTemplate({
@@ -236,7 +237,14 @@ export const signTemplateProcedure = withoutAuth
             tx,
           );
 
-          await SendEsignEmail({ token, email });
+          if (triggerClient) {
+            await triggerClient.sendEvent({
+              name: "email.esign",
+              payload: { token, email },
+            });
+          } else {
+            await sendEsignEmail({ token, email });
+          }
         }
       }
     });

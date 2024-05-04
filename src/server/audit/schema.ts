@@ -78,7 +78,7 @@ export const EsignAuditSchema = z.object({
   ]),
   occurredAt: z.date().optional(),
   templateId: z.string(),
-  recipientId: z.string(),
+  recipientId: z.string().optional(),
   companyId: z.string(),
   ip: z.string(),
   userAgent: z.string(),

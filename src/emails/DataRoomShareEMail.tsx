@@ -16,7 +16,7 @@ import { constants } from "../lib/constants";
 
 interface DataRoomShareEmailProps {
   senderName: string;
-  recipientName?: string;
+  recipientName: string | null | undefined;
   companyName: string;
   dataRoom: string;
   link: string;

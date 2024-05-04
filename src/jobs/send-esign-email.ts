@@ -1,15 +1,19 @@
 import { generatePublicId } from "@/common/id";
 import { EsignEmail, type EsignEmailProps } from "@/emails/EsignEmail";
 import { env } from "@/env";
+import { decode, encode } from "@/lib/jwt";
 import { EsignRecipientStatus } from "@/prisma/enums";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { client } from "@/trigger";
 import { invokeTrigger } from "@trigger.dev/sdk";
-import { SignJWT, jwtVerify } from "jose";
 import { render } from "jsx-email";
 import { z } from "zod";
 
+interface SendEmailOptions {
+  email: string;
+  token: string;
+}
 const emailTokenPayloadSchema = z.object({
   id: z.string(),
   rec: z.string(),
@@ -19,9 +23,8 @@ interface EncodeEmailTokenOption {
   templateId: string;
   recipientId: string;
 }
-const secret = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
-export async function EncodeEmailToken({
+export function EncodeEmailToken({
   recipientId,
   templateId,
 }: EncodeEmailTokenOption) {
@@ -29,28 +32,21 @@ export async function EncodeEmailToken({
     rec: recipientId,
     id: templateId,
   };
-  return new SignJWT(encodeToken)
-    .setProtectedHeader({ alg: "HS256" })
-    .sign(secret);
+
+  return encode(encodeToken);
 }
 
 export async function DecodeEmailToken(jwt: string) {
-  const { payload } = await jwtVerify(jwt, secret);
+  const { payload } = await decode(jwt);
   return emailTokenPayloadSchema.parse(payload);
 }
 
 // Since other parts were using it, just kept so that build does not break.
-export async function SendEsignEmail({
-  email,
-  token,
-}: {
-  email: string;
-  token: string;
-}) {
-  const baseUrl = env.NEXTAUTH_URL;
+export async function SendEsignEmail({ email, token }: SendEmailOptions) {
+  const baseUrl = env.BASE_URL;
   const html = await render(
     EsignEmail({
-      signingLink: `${baseUrl}/documents/esign/${token}`,
+      signingLink: `${baseUrl}/esign/${token}`,
     }),
   );
   await sendMail({
@@ -61,7 +57,7 @@ export async function SendEsignEmail({
 }
 
 const generateSigningLink = (baseUrl: string, token: string): string =>
-  `${baseUrl}/documents/esign/${token}`;
+  `${baseUrl}/esign/${token}`;
 
 interface EsignEmaiJobPayload extends EsignEmailProps {
   templateId: string;

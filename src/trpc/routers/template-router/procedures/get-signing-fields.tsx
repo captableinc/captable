@@ -1,11 +1,6 @@
 import { DecodeEmailToken } from "@/jobs/send-esign-email";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-<<<<<<< HEAD
 import { withoutAuth } from "@/trpc/api/trpc";
-import { DecodeEmailToken } from "../../template-field-router/procedures/add-fields";
-=======
-import { publicProcedure } from "@/trpc/api/trpc";
->>>>>>> 1535b47 (feat: minor refactoring for build fix)
 import { ZodGetSigningFieldsSchema } from "../schema";
 
 export const getSigningFieldsProcedure = withoutAuth

@@ -11,7 +11,7 @@ export function AuthFormHeader({ page }: LoginFormHeaderProps) {
       <h1 className="mb-2 text-2xl font-semibold tracking-tight">
         {page === "signup"
           ? "Create your Captable, Inc. account"
-          : "Sign in to Captable, Inc."}
+          : "Login to Captable, Inc."}
       </h1>
     </div>
   );

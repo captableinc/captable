@@ -77,7 +77,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
                 {success}
               </h1>
               <div className="mb-2 text-center text-sm text-muted-foreground">
-                Your account has been verified. Please sign in to continue.
+                Your account has been verified. Please login to continue.
               </div>
             </>
           ) : (
@@ -95,7 +95,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
           {success ? (
             <Link href="/signin" className="mt-4">
               <Button size="lg">
-                Continue to Sign in page
+                Continue to Login page
                 <RiArrowRightLine className="ml-2 h-4 w-4" />
               </Button>
             </Link>

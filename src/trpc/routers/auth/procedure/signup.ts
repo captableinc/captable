@@ -1,8 +1,9 @@
 import {
-  sendPasswordResetEmail,
+  sendAuthVerificationEmail,
   triggerName,
-  type TPasswordResetPayloadSchema,
-} from "@/jobs/password-reset-email";
+  type TAuthVerificationPayloadSchema,
+} from "@/jobs/auth-verification-email";
+
 import { generateVerificationToken } from "@/lib/token";
 import { getTriggerClient } from "@/trigger";
 import { withoutAuth } from "@/trpc/api/trpc";
@@ -41,7 +42,7 @@ export const signupProcedure = withoutAuth
     });
     const verificationToken = await generateVerificationToken(email);
 
-    const payload: TPasswordResetPayloadSchema = {
+    const payload: TAuthVerificationPayloadSchema = {
       email: verificationToken.identifier,
       token: verificationToken.token,
     };
@@ -49,7 +50,7 @@ export const signupProcedure = withoutAuth
     if (trigger) {
       await trigger.sendEvent({ name: triggerName, payload });
     } else {
-      await sendPasswordResetEmail(payload);
+      await sendAuthVerificationEmail(payload);
     }
 
     return {

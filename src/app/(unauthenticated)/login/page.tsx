@@ -5,8 +5,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Sign In",
-  description: "Sign In to Captable, Inc.",
+  title: "Login",
+  description: "Login to Captable, Inc.",
 };
 
 export default async function SignIn() {

@@ -171,7 +171,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
                   loadingText="Signing up..."
                   type="submit"
                 >
-                  Sign Up
+                  Create an account
                 </Button>
               </div>
             </form>
@@ -185,7 +185,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
+                    Or
                   </span>
                 </div>
               </div>
@@ -197,17 +197,17 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
                 onClick={signInWithGoogle}
               >
                 <RiGoogleFill className="mr-2 h-4 w-4" />
-                Google
+                Signup with Google
               </Button>
             </>
           )}
           <span className="text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link
-              href="/signin"
+              href="/login"
               className="underline underline-offset-4 hover:text-primary "
             >
-              Sign In
+              Login
             </Link>
           </span>
         </>

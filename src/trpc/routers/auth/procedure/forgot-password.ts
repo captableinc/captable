@@ -1,6 +1,11 @@
-import { sendPasswordResetEmail } from "@/lib/mail";
+import {
+  sendPasswordResetEmail,
+  triggerName,
+  type TPasswordResetPayloadSchema,
+} from "@/jobs/password-reset-email";
 import { generatePasswordResetToken } from "@/lib/token";
 import { getUserByEmail } from "@/server/user";
+import { getTriggerClient } from "@/trigger";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -8,6 +13,8 @@ import { z } from "zod";
 export const forgotPasswordProcedure = withoutAuth
   .input(z.string().email())
   .mutation(async ({ input }) => {
+    const trigger = getTriggerClient();
+
     const existingUser = await getUserByEmail(input);
 
     if (!existingUser) {
@@ -16,11 +23,18 @@ export const forgotPasswordProcedure = withoutAuth
         message: "Email not found!",
       });
     }
-    const passwordResetToken = await generatePasswordResetToken(input);
-    await sendPasswordResetEmail(
-      passwordResetToken.email,
-      passwordResetToken.token,
-    );
+    const { email, token } = await generatePasswordResetToken(input);
+
+    const payload: TPasswordResetPayloadSchema = {
+      email,
+      token,
+    };
+
+    if (trigger) {
+      await trigger.sendEvent({ name: triggerName, payload });
+    } else {
+      await sendPasswordResetEmail(payload);
+    }
 
     return {
       success: true,

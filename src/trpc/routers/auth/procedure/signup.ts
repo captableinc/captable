@@ -1,5 +1,10 @@
-import { sendVerificationEmail } from "@/lib/mail";
+import {
+  sendPasswordResetEmail,
+  triggerName,
+  type TPasswordResetPayloadSchema,
+} from "@/jobs/password-reset-email";
 import { generateVerificationToken } from "@/lib/token";
+import { getTriggerClient } from "@/trigger";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
@@ -8,6 +13,8 @@ import { ZSignUpMutationSchema } from "../schema";
 export const signupProcedure = withoutAuth
   .input(ZSignUpMutationSchema)
   .mutation(async ({ ctx, input }) => {
+    const trigger = getTriggerClient();
+
     const { name, email, password } = input;
 
     const userExists = await ctx.db.user.findFirst({
@@ -33,10 +40,17 @@ export const signupProcedure = withoutAuth
       },
     });
     const verificationToken = await generateVerificationToken(email);
-    await sendVerificationEmail(
-      verificationToken.identifier,
-      verificationToken.token,
-    );
+
+    const payload: TPasswordResetPayloadSchema = {
+      email: verificationToken.identifier,
+      token: verificationToken.token,
+    };
+
+    if (trigger) {
+      await trigger.sendEvent({ name: triggerName, payload });
+    } else {
+      await sendPasswordResetEmail(payload);
+    }
 
     return {
       success: true,

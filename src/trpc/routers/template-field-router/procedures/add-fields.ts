@@ -2,7 +2,7 @@
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
 
-import { sendEsignEmail } from "@/jobs";
+import { sendEsignEmail } from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
 import { getTriggerClient } from "@/trigger";

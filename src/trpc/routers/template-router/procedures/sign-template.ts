@@ -2,7 +2,7 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import { getFileFromS3, uploadFile } from "@/common/uploads";
-import { sendEsignEmail } from "@/jobs";
+import { sendEsignEmail } from "@/jobs/esign-email";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { EsignAudit } from "@/server/audit";

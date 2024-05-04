@@ -40,7 +40,7 @@ export default function CreateNewSafe({
       });
       if (isSuccess) {
         router.push(
-          `/${session?.user.companyPublicId}/templates/${payload?.template?.publicId}`,
+          `/${session?.user.companyPublicId}/documents/esign/${payload?.template?.publicId}`,
         );
       }
       setOpen(false);

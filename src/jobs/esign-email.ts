@@ -1,24 +1,44 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
+import { EsignRecipientStatus } from "@/prisma/enums";
+import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { client } from "@/trigger";
 import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
-import { z } from "zod";
 
-const schema = z.object({
-  email: z.string().email(),
-  token: z.string(),
-});
+export interface TEmailPayload {
+  documentName?: string;
+  message?: string;
+  recipient?: {
+    id: string;
+    name: string | null | undefined;
+    email: string;
+  };
+  sender?: {
+    name: string | null | undefined;
+    email: string | null | undefined;
+  };
+  company?: {
+    name: string;
+    logo: string | null | undefined;
+  };
+}
 
-type TSchema = z.infer<typeof schema>;
+interface TCorePayload {
+  email: string;
+  token: string;
+}
 
-export const sendEsignEmail = async (payload: TSchema) => {
-  const { email, token } = payload;
+export type TEsignEmailJob = TEmailPayload & TCorePayload;
+
+export const sendEsignEmail = async (payload: TEsignEmailJob) => {
+  const { email, token, ...rest } = payload;
   const baseUrl = env.BASE_URL;
   const html = await render(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,
+      ...rest,
     }),
   );
   await sendMail({
@@ -29,17 +49,26 @@ export const sendEsignEmail = async (payload: TSchema) => {
 };
 
 client.defineJob({
-  id: "esigning-email",
-  name: "send esigning email link",
+  id: "esign-notification-email",
+  name: "E-sign notification email",
   version: "0.0.1",
   trigger: eventTrigger({
     name: "email.esign",
-    schema,
   }),
 
-  run: async (payload, io) => {
-    await io.runTask("send esign email", async () => {
+  run: async (payload: TEsignEmailJob, io) => {
+    await io.runTask(`send esign email`, async () => {
       await sendEsignEmail(payload);
+      if (payload?.recipient?.id) {
+        await db.esignRecipient.update({
+          where: {
+            id: payload.recipient.id,
+          },
+          data: {
+            status: EsignRecipientStatus.SENT,
+          },
+        });
+      }
     });
   },
 });

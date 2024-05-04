@@ -44,7 +44,7 @@ export const ReadOnlyTemplateField = ({
           <img
             src={prefilledValue ?? value}
             alt="signature"
-            className="h-full w-full"
+            className="h-full "
           />
         ) : (
           <p>{name}</p>

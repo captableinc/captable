@@ -57,7 +57,7 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
                 {item.status === "DRAFT" && (
                   <Link
                     className={buttonVariants()}
-                    href={`/${companyPublicId}/esign/${item.publicId}`}
+                    href={`/${companyPublicId}/documents/esign/${item.publicId}`}
                   >
                     Edit
                   </Link>

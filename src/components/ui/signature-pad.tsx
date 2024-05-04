@@ -40,7 +40,7 @@ function DrawingLine({ line }: { line: [Point] }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       stroke="black"
-      strokeWidth="1px"
+      strokeWidth="3px"
       d={pathData}
     />
   );

@@ -1,12 +1,15 @@
 import { generatePublicId } from "@/common/id";
-import DataRoomShareEmail from "@/emails/DataRoomShareEMail";
 import { env } from "@/env";
+import {
+  sendDataRoomShareEmail,
+  triggerName,
+  type TDataRoomSharePayloadSchema,
+} from "@/jobs/data-room-share-email";
 import { encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
-import { sendMail } from "@/server/mailer";
+import { getTriggerClient } from "@/trigger";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
-import { render } from "jsx-email";
 import { z } from "zod";
 import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
 
@@ -183,6 +186,7 @@ export const dataRoomRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const trigger = getTriggerClient();
       const { session, db } = ctx;
       const { dataRoomId, others, selectedContacts } = input;
       const { name: senderName, email: senderEmail, companyId } = session.user;
@@ -206,8 +210,9 @@ export const dataRoomRouter = createTRPCRouter({
 
       const upsertManyRecipients = async () => {
         const baseUrl = env.BASE_URL;
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        [...others, ...selectedContacts].forEach(async (recipient) => {
+        const recipients = [...others, ...selectedContacts];
+
+        for (const recipient of recipients) {
           const email = (recipient.email || recipient.value).trim();
           if (!email) {
             throw new Error("Email is required");
@@ -247,21 +252,22 @@ export const dataRoomRouter = createTRPCRouter({
 
           const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
 
-          await sendMail({
-            to: email,
-            replyTo: senderEmail!,
-            subject: `${senderName} shared a data room - ${dataRoom.name}`,
-            html: await render(
-              DataRoomShareEmail({
-                senderName: senderName!,
-                recipientName: recipient.name || undefined,
-                companyName: company.name,
-                dataRoom: dataRoom.name,
-                link,
-              }),
-            ),
-          });
-        });
+          const payload: TDataRoomSharePayloadSchema = {
+            senderName: senderName!,
+            recipientName: recipient.name,
+            companyName: company.name,
+            dataRoom: dataRoom.name,
+            link,
+            email,
+            senderEmail,
+          };
+
+          if (trigger) {
+            await trigger.sendEvent({ name: triggerName, payload });
+          } else {
+            await sendDataRoomShareEmail(payload);
+          }
+        }
       };
 
       await upsertManyRecipients();

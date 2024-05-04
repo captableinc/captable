@@ -1,10 +1,8 @@
+import { sendMemberInviteEmail } from "@/jobs/member-inivite-email";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
-import {
-  generateInviteToken,
-  generateMemberIdentifier,
-  sendMemberInviteEmail,
-} from "@/server/member";
+import { generateInviteToken, generateMemberIdentifier } from "@/server/member";
+import { getTriggerClient } from "@/trigger";
 import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { ZodInviteMemberMutationSchema } from "../schema";
@@ -12,6 +10,7 @@ import { ZodInviteMemberMutationSchema } from "../schema";
 export const inviteMemberProcedure = withAuth
   .input(ZodInviteMemberMutationSchema)
   .mutation(async ({ ctx, input }) => {
+    const trigger = getTriggerClient();
     const user = ctx.session.user;
     const { name, email, title } = input;
     const { userAgent, requestIp, session } = ctx;
@@ -140,7 +139,7 @@ export const inviteMemberProcedure = withAuth
       },
     );
 
-    await sendMemberInviteEmail({
+    const payload = {
       verificationToken,
       token,
       email,
@@ -149,7 +148,13 @@ export const inviteMemberProcedure = withAuth
         email: user.email,
         name: user.name,
       },
-    });
+    };
+
+    if (trigger) {
+      await trigger.sendEvent({ name: "email.member-invite", payload });
+    } else {
+      await sendMemberInviteEmail(payload);
+    }
 
     return { success: true };
   });

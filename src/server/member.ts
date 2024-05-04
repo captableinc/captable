@@ -1,12 +1,8 @@
-import MemberInviteEmail from "@/emails/MemberInviteEmail";
 import { env } from "@/env";
-import { constants } from "@/lib/constants";
 import { createHash } from "@/lib/crypto";
 import { type Prisma } from "@prisma/client";
-import { render } from "jsx-email";
 import { nanoid } from "nanoid";
 import { db } from "./db";
-import { sendMail } from "./mailer";
 
 export const checkVerificationToken = async (
   token: string,
@@ -54,45 +50,6 @@ export const generateMemberIdentifier = ({
 }: generateMemberIdentifierOptions) => {
   return `${email}:${memberId}`;
 };
-
-interface sendMemberInviteEmailOptions {
-  verificationToken: string;
-  token: string;
-  email: string;
-  company: { name: string; id: string };
-  user: { email: string | null | undefined; name: string | null | undefined };
-}
-
-export async function sendMemberInviteEmail({
-  company,
-  email,
-  verificationToken,
-  token,
-  user,
-}: sendMemberInviteEmailOptions) {
-  const baseUrl = process.env.BASE_URL;
-  const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
-
-  const params = new URLSearchParams({
-    callbackUrl,
-    token,
-    email,
-  });
-
-  const inviteLink = `${baseUrl}/api/auth/callback/email?${params.toString()}`;
-
-  await sendMail({
-    to: email,
-    subject: `Join ${company.name} on ${constants.title}`,
-    html: await render(
-      MemberInviteEmail({
-        inviteLink,
-        companyName: company.name,
-        invitedBy: (user.name ?? user.email)!,
-      }),
-    ),
-  });
-}
 
 export async function generateInviteToken() {
   const token = nanoid(32);

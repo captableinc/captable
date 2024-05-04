@@ -84,9 +84,11 @@ export const EsignEmail = ({
             ) : (
               <>
                 <Text className="text-[14px] leading-[24px] text-black">
-                  {sender?.name} from <strong>{company?.name}</strong> has sent
-                  {/* eslint-disable-next-line react/no-unescaped-entities */}
-                  you "{documentName?.replaceAll("_", " ").toLocaleUpperCase()}"
+                  {sender?.name} from <strong>{company?.name}</strong> has sent{" "}
+                  {/* eslint-disable-next-line react/no-unescaped-entities  */}
+                  you "{documentName?.replaceAll("_", " ").toLocaleUpperCase()}
+                  {/* eslint-disable-next-line react/no-unescaped-entities  */}
+                  ".
                 </Text>
               </>
             )}

@@ -105,7 +105,7 @@ export const sendEsignEmailJob = client.defineJob({
         );
         await sendMail({
           to: recipient.email,
-          subject: `Sign a ${documentName}`,
+          subject: `Sign a ${documentName?.toLocaleLowerCase()}`,
           html,
         });
         if (orderedDelivery) {

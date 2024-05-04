@@ -44,7 +44,7 @@ const formSchema = z.object({
 
   recipient: z.string(),
   recipientColors: z.record(z.string()),
-  optionalMessage: z.string().optional(),
+  message: z.string().optional(),
 });
 
 export type TemplateFieldForm = z.infer<typeof formSchema>;

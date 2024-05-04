@@ -34,7 +34,7 @@ export const TemplateFieldForm = ({
       templatePublicId,
       data: values.fields,
       status: values.status,
-      optionalMessage: values.optionalMessage,
+      message: values.message,
     });
   };
 

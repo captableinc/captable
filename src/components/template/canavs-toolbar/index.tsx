@@ -190,8 +190,8 @@ export function CanvasToolbar(payload: CanvasToolbarProps) {
         {open && (
           <OptionalMessageModal
             callback={onCallback}
-            title="E-sign Email "
-            subtitle="Send optional or default message in email"
+            title={`Send document for signatures`}
+            subtitle="Add an optional message to your recipients to notify them about the document."
             dialogProps={{ open, onOpenChange: setOpen }}
           />
         )}

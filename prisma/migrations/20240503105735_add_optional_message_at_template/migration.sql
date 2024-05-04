@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "Template" ADD COLUMN     "optionalMessage" TEXT;
+ALTER TABLE "Template" ADD COLUMN     "message" TEXT;

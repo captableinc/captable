@@ -20,7 +20,7 @@ import {
 
 export interface EsignEmailProps {
   signingLink: string;
-  optionalMessage?: string;
+  message?: string;
   documentName?: string;
   recipient?: {
     id: string;
@@ -41,7 +41,7 @@ export interface EsignEmailProps {
 
 export const EsignEmail = ({
   signingLink,
-  optionalMessage,
+  message,
   documentName,
   recipient,
   sender,
@@ -75,10 +75,10 @@ export const EsignEmail = ({
             <Text className="text-[14px] leading-[24px] text-black">
               Hello {recipient?.name} ,
             </Text>
-            {optionalMessage ? (
+            {message ? (
               <>
                 <Text className="text-[14px] leading-[24px] text-black">
-                  {optionalMessage}
+                  {message}
                 </Text>
               </>
             ) : (

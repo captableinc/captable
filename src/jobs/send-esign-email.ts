@@ -69,14 +69,14 @@ interface EsignEmaiJobPayload extends EsignEmailProps {
   }[];
 }
 export const sendEsignEmailJob = client.defineJob({
-  id: "esign-email",
-  name: "E-sign email",
-  version: "1.0.1",
+  id: "esign-notification-email",
+  name: "E-sign notification email",
+  version: "0.0.1",
   trigger: invokeTrigger(),
   run: async (payload: EsignEmaiJobPayload, io) => {
     const baseUrl = env.NEXTAUTH_URL;
     const {
-      optionalMessage,
+      message,
       orderedDelivery,
       templateId,
       recipients,
@@ -96,7 +96,7 @@ export const sendEsignEmailJob = client.defineJob({
         const html = await render(
           EsignEmail({
             signingLink,
-            optionalMessage,
+            message,
             documentName,
             recipient,
             sender,

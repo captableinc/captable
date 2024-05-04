@@ -44,6 +44,7 @@ export const OptionalMessageModal = ({
 
   return (
     <Modal
+      size="lg"
       trigger={<></>}
       title={title}
       subtitle={subtitle}
@@ -51,13 +52,16 @@ export const OptionalMessageModal = ({
     >
       <FormField
         control={form.control}
-        name="optionalMessage"
+        name="message"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Optional message</FormLabel>
+            <FormLabel>
+              Message
+              <span className="text-xs text-gray-400"> (Optional)</span>
+            </FormLabel>
             <FormControl>
               <Textarea
-                placeholder="Type email body here instead of default message..."
+                placeholder="Add a message to your recipients (optional)"
                 disabled={isSubmitting}
                 {...field}
               />
@@ -72,11 +76,12 @@ export const OptionalMessageModal = ({
           loading={isSubmitting}
           className="mx-auto mt-5"
         >
-          Send E-sign Email
+          Send for signatures
         </Button>
       </div>
       <p className="py-1 text-center text-xs text-gray-500">
-        We{`'`}ll send an email with a link to e-sign templates.
+        We{`'`}ll send your recipients an email with a link to complete and sign
+        the document.
       </p>
     </Modal>
   );

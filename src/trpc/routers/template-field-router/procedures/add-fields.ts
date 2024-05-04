@@ -89,7 +89,7 @@ export const addFieldProcedure = withAuth
           },
           data: {
             status: input.status,
-            optionalMessage: input.optionalMessage,
+            message: input.message,
           },
         });
 
@@ -103,7 +103,7 @@ export const addFieldProcedure = withAuth
               name: user.name,
               email: user.email,
             },
-            optionalMessage: input?.optionalMessage,
+            message: input?.message,
             documentName: template.name,
             company: {
               name: template.company.name,

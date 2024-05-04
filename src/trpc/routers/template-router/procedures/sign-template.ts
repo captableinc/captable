@@ -1,30 +1,33 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { dayjsExt } from "@/common/dayjs";
-import { getFileFromS3, uploadFile } from "@/common/uploads";
 import { sendEsignEmail } from "@/jobs/esign-email";
-import { generateRange, type Range } from "@/lib/pdf-positioning";
-import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
+import { type TESignPdfSchema } from "@/jobs/esign-pdf";
 import { EsignAudit } from "@/server/audit";
-import { type PrismaTransactionalClient } from "@/server/db";
+import {
+  completeEsignDocuments,
+  generateEsignPdf,
+  getEsignAudits,
+  getEsignTemplate,
+  uploadEsignDocuments,
+  type TCompleteEsignDocumentsOptions,
+  type TGenerateEsignSignPdfOptions,
+  type uploadEsignDocumentsOptions,
+} from "@/server/esign";
 import { getTriggerClient } from "@/trigger";
-import { withoutAuth, type CreateTRPCContextType } from "@/trpc/api/trpc";
-import { renderToBuffer } from "@react-pdf/renderer";
-import { PDFDocument, StandardFonts } from "pdf-lib";
-import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
-import { createDocumentHandler } from "../../document-router/procedures/create-document";
+import { withoutAuth } from "@/trpc/api/trpc";
 import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
 import { ZodSignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth
   .input(ZodSignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const { db } = ctx;
+    const { db, requestIp, userAgent } = ctx;
 
     const triggerClient = getTriggerClient();
 
     await db.$transaction(async (tx) => {
-      const template = await getTemplate({
+      const template = await getEsignTemplate({
         templateId: input.templateId,
         tx,
       });
@@ -105,15 +108,6 @@ export const signTemplateProcedure = withoutAuth
             return prev;
           }, {});
 
-          await tx.template.update({
-            where: {
-              id: template.id,
-            },
-            data: {
-              completedOn: new Date(),
-            },
-          });
-
           await EsignAudit.create(
             {
               action: "recipient.signed",
@@ -128,41 +122,21 @@ export const signTemplateProcedure = withoutAuth
             tx,
           );
 
-          await EsignAudit.create(
-            {
-              action: "document.complete",
-              companyId: template.companyId,
-              recipientId: recipient.id,
-              templateId: template.id,
-              ip: ctx.requestIp,
-              location: "",
-              userAgent: ctx.userAgent,
-              summary: `"${template.name}" completely signed at ${dayjsExt(new Date()).format("lll")}`,
-            },
-            tx,
-          );
-
           await signPdf({
             bucketKey,
             companyId,
-            ctx: { ...ctx, db: tx },
+
             templateName,
             fields: template.fields,
             uploaderName: "open cap",
             data,
             templateId: template.id,
+            db: tx,
+            requestIp,
+            userAgent,
           });
         }
       } else {
-        await tx.template.update({
-          where: {
-            id: template.id,
-          },
-          data: {
-            completedOn: new Date(),
-          },
-        });
-
         await EsignAudit.create(
           {
             action: "recipient.signed",
@@ -177,29 +151,17 @@ export const signTemplateProcedure = withoutAuth
           tx,
         );
 
-        await EsignAudit.create(
-          {
-            action: "document.complete",
-            companyId: template.companyId,
-            recipientId: recipient.id,
-            templateId: template.id,
-            ip: ctx.requestIp,
-            location: "",
-            userAgent: ctx.userAgent,
-            summary: `"${template.name}" completely signed at ${dayjsExt(new Date()).format("lll")}`,
-          },
-          tx,
-        );
-
         await signPdf({
           bucketKey,
           companyId,
-          ctx: { ...ctx, db: tx },
           templateName,
           fields: template.fields,
           uploaderName: recipient.name ?? "unknown signer",
           data: input.data,
           templateId: template.id,
+          db: tx,
+          requestIp,
+          userAgent,
         });
       }
 
@@ -252,53 +214,17 @@ export const signTemplateProcedure = withoutAuth
     return {};
   });
 
-interface getTemplateOptions {
-  templateId: string;
-  tx: PrismaTransactionalClient;
-}
-
-function getTemplate({ tx, templateId }: getTemplateOptions) {
-  return tx.template.findFirstOrThrow({
-    where: { id: templateId },
-    select: {
-      bucket: true,
-      fields: {
-        orderBy: {
-          top: "asc",
-        },
-      },
-      companyId: true,
-      id: true,
-      name: true,
-      orderedDelivery: true,
-      uploader: {
-        select: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
-  });
-}
-
-type TGetTemplate = Awaited<ReturnType<typeof getTemplate>>;
-
-interface TSignPdfOptions {
-  ctx: Omit<CreateTRPCContextType, "db"> & { db: PrismaTransactionalClient };
-  bucketKey: string;
-  companyId: string;
-  templateName: string;
-  data: Record<string, string>;
-  fields: TGetTemplate["fields"];
-  uploaderName: string;
+interface TSignPdfOptions
+  extends Omit<TGenerateEsignSignPdfOptions, "audits">,
+    Omit<uploadEsignDocumentsOptions, "buffer">,
+    Omit<TCompleteEsignDocumentsOptions, "bucketData"> {
   templateId: string;
 }
 
 async function signPdf({
-  ctx,
+  userAgent,
+  requestIp,
+  db,
   bucketKey,
   companyId,
   templateName,
@@ -307,140 +233,52 @@ async function signPdf({
   uploaderName,
   templateId,
 }: TSignPdfOptions) {
-  const { db, requestIp, userAgent } = ctx;
+  const trigger = getTriggerClient();
 
-  const docBuffer = await getFileFromS3(bucketKey);
-  const pdfDoc = await PDFDocument.load(docBuffer);
+  const audits = await getEsignAudits({ templateId, tx: db });
 
-  const pages = pdfDoc.getPages();
-
-  let cumulativePagesHeight = 0;
-  const measurements = [];
-
-  for (let i = 0; i < pages.length; i++) {
-    const page = pages[i];
-    if (page) {
-      const height = page.getHeight();
-      const width = page.getWidth();
-      cumulativePagesHeight += height;
-      measurements.push({ height, width });
-    }
-  }
-
-  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const fontSize = 8;
-  const textHeight = font.heightAtSize(fontSize);
-
-  const pageRangeCache: Record<string, Range[]> = {};
-
-  for (const field of fields) {
-    const value = data?.[field?.id];
-
-    if (value) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const pageNumber: number = field.page;
-
-      const page = pages.at(pageNumber);
-
-      if (!page) {
-        throw new Error("page not found");
-      }
-
-      const cacheKey = String(field.viewportHeight);
-      let pagesRange = pageRangeCache?.[cacheKey];
-
-      if (!pagesRange) {
-        const range = generateRange(measurements, field.viewportWidth);
-        pageRangeCache[cacheKey] = range;
-        pagesRange = range;
-      }
-
-      const { width: pageWidth, height: pageHeight } = page.getSize();
-      const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
-
-      const widthRatio = pageWidth / field.viewportWidth;
-
-      const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;
-
-      const fieldX = field.left * widthRatio;
-
-      const top = field.top - topMargin;
-      const fieldY = top * widthRatio;
-      const width = field.width * widthRatio;
-      const height = field.height * totalHeightRatio;
-
-      if (field.type === "SIGNATURE") {
-        const image = await pdfDoc.embedPng(value);
-
-        const updatedY = fieldY + height;
-
-        page.drawImage(image, {
-          x: fieldX,
-          y: pageHeight - updatedY,
-          width,
-          height,
-        });
-      } else {
-        const padding = (height + textHeight) / 2;
-        page.drawText(value, {
-          x: fieldX,
-          y: pageHeight - fieldY - padding,
-          font,
-          size: fontSize,
-        });
-      }
-    }
-  }
-
-  const audits = await db.esignAudit.findMany({
-    where: {
+  if (trigger) {
+    const payload: TESignPdfSchema = {
+      bucketKey,
+      data,
+      fields,
+      audits,
+      companyId,
+      requestIp,
       templateId,
-    },
-    select: {
-      id: true,
-      summary: true,
-    },
-  });
+      templateName,
+      uploaderName,
+      userAgent,
+    };
 
-  if (audits.length) {
-    const audit = await renderToBuffer(AuditLogTemplate({ audits }));
-    const auditPDFDoc = await PDFDocument.load(audit);
-    const indices = auditPDFDoc.getPageIndices();
-    const copiedPages = await pdfDoc.copyPages(auditPDFDoc, indices);
+    await trigger.sendEvent({
+      name: "esign.sign-pdf",
+      id: templateId,
+      payload,
+    });
+  } else {
+    const modifiedPdfBytes = await generateEsignPdf({
+      bucketKey,
+      data,
+      fields,
+      audits,
+    });
 
-    for (let index = 0; index < copiedPages.length; index++) {
-      const auditPage = copiedPages[index];
-      if (auditPage) {
-        pdfDoc.addPage(auditPage);
-      }
-    }
+    const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
+      buffer: Buffer.from(modifiedPdfBytes),
+      companyId,
+      templateName,
+    });
+
+    await completeEsignDocuments({
+      bucketData,
+      companyId,
+      db,
+      requestIp,
+      templateId,
+      templateName,
+      uploaderName,
+      userAgent,
+    });
   }
-
-  const modifiedPdfBytes = await pdfDoc.save();
-
-  const file = {
-    name: templateName,
-    type: "application/pdf",
-    arrayBuffer: async () => Promise.resolve(Buffer.from(modifiedPdfBytes)),
-    size: 0,
-  } as unknown as File;
-
-  const { fileUrl: _fileUrl, ...bucketData } = await uploadFile(file, {
-    identifier: companyId,
-    keyPrefix: "generic-document",
-  });
-
-  const { id: bucketId, name } = await createBucketHandler({
-    db,
-    input: bucketData,
-  });
-
-  await createDocumentHandler({
-    input: { bucketId, name },
-    requestIp,
-    db,
-    userAgent,
-    companyId,
-    uploaderName,
-  });
 }

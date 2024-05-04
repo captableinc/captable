@@ -2,18 +2,11 @@
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
 
-import EsignEmail from "@/emails/EsignEmail";
-import { env } from "@/env";
+import { sendEsignEmail } from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
-import { sendMail } from "@/server/mailer";
-import { render } from "jsx-email";
+import { getTriggerClient } from "@/trigger";
 import { z } from "zod";
-
-interface SendEmailOptions {
-  email: string;
-  token: string;
-}
 
 const emailTokenPayloadSchema = z.object({
   id: z.string(),
@@ -44,24 +37,12 @@ export async function DecodeEmailToken(jwt: string) {
   return emailTokenPayloadSchema.parse(payload);
 }
 
-export async function SendEsignEmail({ email, token }: SendEmailOptions) {
-  const baseUrl = env.BASE_URL;
-  const html = await render(
-    EsignEmail({
-      signingLink: `${baseUrl}/esign/${token}`,
-    }),
-  );
-  await sendMail({
-    to: email,
-    subject: "esign Link",
-    html,
-  });
-}
-
 export const addFieldProcedure = withAuth
   .input(ZodAddFieldMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const mails: Promise<void>[] = [];
+    const triggerClient = getTriggerClient();
+
+    const mails: { token: string; email: string }[] = [];
 
     await ctx.db.$transaction(async (tx) => {
       const { companyId } = await checkMembership({
@@ -134,7 +115,7 @@ export const addFieldProcedure = withAuth
 
           const email = recipient.email;
 
-          mails.push(SendEsignEmail({ token, email }));
+          mails.push({ token, email });
 
           if (template.orderedDelivery) {
             break;
@@ -142,6 +123,19 @@ export const addFieldProcedure = withAuth
         }
       }
     });
+
+    if (mails.length) {
+      if (triggerClient) {
+        await triggerClient.sendEvents(
+          mails.map((payload) => ({
+            name: "email.esign",
+            payload,
+          })),
+        );
+      } else {
+        await Promise.all(mails.map((payload) => sendEsignEmail(payload)));
+      }
+    }
 
     return {};
   });

@@ -59,7 +59,9 @@ client.defineJob({
     schema,
   }),
 
-  run: async (payload) => {
-    await sendMemberInviteEmail(payload);
+  run: async (payload, io) => {
+    await io.runTask("send member invite email", async () => {
+      await sendMemberInviteEmail(payload);
+    });
   },
 });

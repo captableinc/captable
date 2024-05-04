@@ -37,7 +37,9 @@ client.defineJob({
     schema,
   }),
 
-  run: async (payload) => {
-    await sendEsignEmail(payload);
+  run: async (payload, io) => {
+    await io.runTask("send esign email", async () => {
+      await sendEsignEmail(payload);
+    });
   },
 });

@@ -45,7 +45,9 @@ client.defineJob({
     schema,
   }),
 
-  run: async (payload) => {
-    await sendPasswordResetEmail(payload);
+  run: async (payload, io) => {
+    await io.runTask("send password reset email", async () => {
+      await sendPasswordResetEmail(payload);
+    });
   },
 });

@@ -45,7 +45,9 @@ client.defineJob({
     schema,
   }),
 
-  run: async (payload) => {
-    await sendAuthVerificationEmail(payload);
+  run: async (payload, io) => {
+    await io.runTask("send auth verification email", async () => {
+      await sendAuthVerificationEmail(payload);
+    });
   },
 });

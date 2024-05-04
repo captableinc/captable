@@ -56,7 +56,9 @@ client.defineJob({
     schema,
   }),
 
-  run: async (payload) => {
-    await sendDataRoomShareEmail(payload);
+  run: async (payload, io) => {
+    await io.runTask("send data room share email", async () => {
+      await sendDataRoomShareEmail(payload);
+    });
   },
 });

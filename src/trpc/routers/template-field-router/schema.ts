@@ -23,6 +23,7 @@ export const ZodAddFieldMutationSchema = z.object({
       recipientId: z.string(),
     }),
   ),
+  message: z.string().optional(),
 });
 
 export type TypeZodAddFieldMutationSchema = z.infer<

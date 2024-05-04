@@ -1,7 +1,7 @@
 import { client } from "@/trigger";
 import { createAppRoute } from "@trigger.dev/nextjs";
 
-import "@/jobs";
+import "@/jobs/esign-email";
 
 //this route is used to send and receive data with Trigger.dev
 export const { POST, dynamic } = createAppRoute(client);

@@ -6,6 +6,7 @@ import { type FieldTypes } from "@/prisma/enums";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { FieldTypeData } from "../field-type-data";
 
+import { OptionalMessageModal } from "@/components/esign/optional-message-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
@@ -90,7 +91,9 @@ function RecipientList({ recipients }: RecipientListProps) {
 interface CanvasToolbarProps {
   recipients: Recipients;
 }
+
 export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
+  const [open, setOpen] = useState<boolean>(false);
   const { control, setValue } = useFormContext<TemplateFieldForm>();
   const submitRef = useRef<HTMLButtonElement>(null);
 
@@ -101,73 +104,91 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
     }
   };
 
-  const handleComplete = () => {
-    if (submitRef.current) {
+  const onSignatureRequest = useCallback((canSubmit: boolean) => {
+    if (canSubmit && submitRef.current) {
       setValue("status", "COMPLETE");
       submitRef.current.click();
     }
+  }, []);
+
+  const openOptionalMessageModal = () => {
+    setOpen(true);
   };
 
   return (
-    <div className="sticky inset-x-0 top-14 z-30 col-span-12 mt-5 ">
-      <Toolbar.Root
-        className="flex w-full items-center justify-between rounded bg-white/50 p-2 shadow backdrop-blur-lg"
-        aria-label="Formatting options"
-      >
-        <FormField
-          name="fieldType"
-          control={control}
-          render={({ field }) => (
-            <Toolbar.ToggleGroup
-              onValueChange={(value) => {
-                field.onChange(value as FieldTypes);
-              }}
-              value={field.value}
-              className="flex gap-x-2"
-              type="single"
-            >
-              {FieldTypeData.map((item) => (
-                <Toolbar.ToggleItem key={item.value} value={item.value} asChild>
-                  <Button
-                    aria-label={item.label}
-                    className="flex h-auto flex-col gap-y-1 data-[state=on]:bg-accent"
-                    variant="ghost"
+    <>
+      <div className="sticky inset-x-0 top-14 z-30 col-span-12 mt-5 ">
+        <Toolbar.Root
+          className="flex w-full items-center justify-between rounded bg-white/50 p-2 shadow backdrop-blur-lg"
+          aria-label="Formatting options"
+        >
+          <FormField
+            name="fieldType"
+            control={control}
+            render={({ field }) => (
+              <Toolbar.ToggleGroup
+                onValueChange={(value) => {
+                  field.onChange(value as FieldTypes);
+                }}
+                value={field.value}
+                className="flex gap-x-2"
+                type="single"
+              >
+                {FieldTypeData.map((item) => (
+                  <Toolbar.ToggleItem
+                    key={item.value}
+                    value={item.value}
+                    asChild
                   >
-                    <span>
-                      <item.icon className="h-4 w-4" aria-hidden />
-                    </span>
-                    <span className="text-xs">{item.label}</span>
-                  </Button>
-                </Toolbar.ToggleItem>
-              ))}
-            </Toolbar.ToggleGroup>
-          )}
-        />
+                    <Button
+                      aria-label={item.label}
+                      className="flex h-auto flex-col gap-y-1 data-[state=on]:bg-accent"
+                      variant="ghost"
+                    >
+                      <span>
+                        <item.icon className="h-4 w-4" aria-hidden />
+                      </span>
+                      <span className="text-xs">{item.label}</span>
+                    </Button>
+                  </Toolbar.ToggleItem>
+                ))}
+              </Toolbar.ToggleGroup>
+            )}
+          />
 
-        <div className="flex items-end gap-x-2">
-          <RecipientList recipients={recipients} />
+          <div className="flex items-end gap-x-2">
+            <RecipientList recipients={recipients} />
 
-          <DropdownMenu>
-            <Toolbar.Button asChild>
-              <DropdownMenuTrigger asChild>
-                <Button>Save & Continue</Button>
-              </DropdownMenuTrigger>
-            </Toolbar.Button>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={handleDraft}>
-                Save as draft
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleComplete}>
-                Send for signatures
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <DropdownMenu>
+              <Toolbar.Button asChild>
+                <DropdownMenuTrigger asChild>
+                  <Button>Save & Continue</Button>
+                </DropdownMenuTrigger>
+              </Toolbar.Button>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={handleDraft}>
+                  Save as draft
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={openOptionalMessageModal}>
+                  Send for signatures
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <button aria-hidden ref={submitRef} type="submit" hidden>
-            submit
-          </button>
-        </div>
-      </Toolbar.Root>
-    </div>
+            <button aria-hidden ref={submitRef} type="submit" hidden>
+              submit
+            </button>
+          </div>
+        </Toolbar.Root>
+        {open && (
+          <OptionalMessageModal
+            callback={onSignatureRequest}
+            title="Send document for signatures"
+            subtitle="Add an optional message to your recipients to notify them about the document."
+            dialogProps={{ open, onOpenChange: setOpen }}
+          />
+        )}
+      </div>
+    </>
   );
 }

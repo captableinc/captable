@@ -11,6 +11,7 @@ import { api } from "@/trpc/react";
 import { type Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
@@ -196,6 +197,34 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     },
   });
 
+  const cloneMutation = api.update.clone.useMutation({
+    onSuccess: async ({ publicId, success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully cloned"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      if (!success) return;
+
+      router.push(`/${companyPublicId}/updates/${publicId}`);
+    },
+
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.message,
+      });
+    },
+
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
+
   const saveAsDraft = async () => {
     setLoading(true);
 
@@ -209,6 +238,17 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     draftMutation.mutate(data);
   };
 
+  const cloneUpdate = async () => {
+    setLoading(true);
+
+    const data = {
+      title,
+      html,
+      content,
+    };
+    cloneMutation.mutate(data);
+  };
+
   return (
     <div className="flex flex-col gap-y-3">
       <form className="flex items-center justify-between gap-y-2">
@@ -217,7 +257,12 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
             <Badge variant="warning" className="mr-2">
               Draft
             </Badge>
-            <span className="h4">Updates / </span>
+            <Link
+              href={`/${companyPublicId}/updates`}
+              className="h4 text-primary/70 hover:underline"
+            >
+              Updates /{" "}
+            </Link>
             <input
               name="title"
               required
@@ -272,11 +317,18 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
                 </Button>
               </li>
 
-              <li>
-                <Button variant="ghost" size="sm">
-                  Clone this update
-                </Button>
-              </li>
+              {update && (
+                <li>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    type="submit"
+                    onClick={cloneUpdate}
+                  >
+                    Clone this update
+                  </Button>
+                </li>
+              )}
             </ul>
           </DropdownButton>
         </div>

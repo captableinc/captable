@@ -1,64 +1,10 @@
-// import { Audit } from "@/server/audit";
-import { generatePublicId } from "@/common/id";
-import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { UpdateMutationSchema } from "./schema";
+import { createTRPCRouter } from "@/trpc/api/trpc";
+import { cloneUpdateProcedure } from "./procedures/clone-update";
+import { getUpdatesProcedure } from "./procedures/get-updates";
+import { saveUpdateProcedure } from "./procedures/save-update";
 
 export const updateRouter = createTRPCRouter({
-  save: withAuth
-    .input(UpdateMutationSchema)
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const publicId = input.publicId ?? generatePublicId();
-        const { title, content, html } = input;
-
-        if (title.length === 0 || content.length === 0) {
-          return {
-            success: false,
-            message: "Title and content cannot be empty.",
-          };
-        } else {
-          await ctx.db.$transaction(async (tx) => {
-            const { companyId, memberId: authorId } = await checkMembership({
-              session: ctx.session,
-              tx,
-            });
-
-            if (input.publicId) {
-              await tx.update.update({
-                where: { publicId },
-                data: {
-                  html,
-                  title,
-                  content,
-                },
-              });
-            } else {
-              await tx.update.create({
-                data: {
-                  html,
-                  title,
-                  content,
-                  publicId,
-                  companyId,
-                  authorId,
-                },
-              });
-            }
-          });
-
-          return {
-            publicId,
-            success: true,
-            message: "Successfully saved an update.",
-          };
-        }
-      } catch (error) {
-        console.error("Error saving an update:", error);
-        return {
-          success: false,
-          message: "Oops, something went wrong. Please try again later.",
-        };
-      }
-    }),
+  save: saveUpdateProcedure,
+  get: getUpdatesProcedure,
+  clone: cloneUpdateProcedure,
 });

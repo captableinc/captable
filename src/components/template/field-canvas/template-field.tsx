@@ -13,13 +13,6 @@ import { RiCloseCircleLine } from "@remixicon/react";
 import { FieldTypeData } from "../field-type-data";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
   FormControl,
   FormField,
   FormItem,
@@ -30,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useWatch } from "react-hook-form";
+import { CustomFieldRenderer } from "./custom-field-renderer";
 import { TemplateFieldContainer } from "./template-field-container";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
@@ -62,7 +56,6 @@ export function TemplateField({
   recipients,
 }: TemplateFieldProps) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
-  const type = useWatch({ control: control, name: `fields.${index}.type` });
   const recipientId = useWatch({
     control: control,
     name: `fields.${index}.recipientId`,
@@ -145,60 +138,8 @@ export function TemplateField({
 
       <RecipientSelect recipients={recipients} index={index} />
 
-      {type === "TEXT" && <FieldDefaultValue index={index} />}
+      <CustomFieldRenderer index={index} />
     </TemplateFieldContainer>
-  );
-}
-
-interface FieldDefaultValueProps {
-  index: number;
-}
-
-function FieldDefaultValue({ index }: FieldDefaultValueProps) {
-  const { control } = useFormContext<TemplateFieldForm>();
-
-  return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1" className="border-b-0">
-        <AccordionTrigger className="text-sm">
-          Additional settings
-        </AccordionTrigger>
-
-        <AccordionContent>
-          <div className="flex flex-col gap-y-2">
-            <FormField
-              control={control}
-              name={`fields.${index}.defaultValue`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Default value</FormLabel>
-                  <FormControl>
-                    <Input className="h-8 min-w-16" type="text" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name={`fields.${index}.readOnly`}
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="leading-none">
-                    <FormLabel>Read only field</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
   );
 }
 

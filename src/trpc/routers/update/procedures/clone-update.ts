@@ -1,6 +1,6 @@
 import { generatePublicId } from "@/common/id";
-import { UpdateMutationSchema } from "../schema";
 import { withAuth } from "@/trpc/api/trpc";
+import { UpdateMutationSchema } from "../schema";
 
 export const cloneUpdateProcedure = withAuth
   .input(UpdateMutationSchema)
@@ -21,7 +21,7 @@ export const cloneUpdateProcedure = withAuth
           await tx.update.create({
             data: {
               html,
-              title,
+              title: `Copy of - ${title}`,
               content,
               publicId,
               companyId,

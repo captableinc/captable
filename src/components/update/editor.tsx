@@ -11,6 +11,7 @@ import { api } from "@/trpc/react";
 import { type Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
@@ -256,7 +257,12 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
             <Badge variant="warning" className="mr-2">
               Draft
             </Badge>
-            <span className="h4">Updates / </span>
+            <Link
+              href={`/${companyPublicId}/updates`}
+              className="h4 text-primary/70 hover:underline"
+            >
+              Updates /{" "}
+            </Link>
             <input
               name="title"
               required

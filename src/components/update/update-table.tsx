@@ -1,38 +1,40 @@
 "use client";
 
-import { type RouterOutputs } from "@/trpc/shared";
+import { dayjsExt } from "@/common/dayjs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  getFacetedUniqueValues,
-  getFacetedRowModel,
-} from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
-import React from "react";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { DataTableContent } from "@/components/ui/data-table/data-table-content";
-import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { UpdateTableToolbar } from "./update-table-toolbar";
+import { type RouterOutputs } from "@/trpc/shared";
 import { RiAddCircleLine } from "@remixicon/react";
-import { dayjsExt } from "@/common/dayjs";
+import {
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import React from "react";
+import { UpdateTableToolbar } from "./update-table-toolbar";
 
 type Update = RouterOutputs["update"]["get"]["data"];
 
@@ -51,7 +53,13 @@ const getUpdateStatus = (status: string) => {
   }
 };
 
-const updateActions = (status: string) => {
+const UpdateActions = (row: {
+  original: { publicId: string; status: string };
+}) => {
+  const { publicId, status } = row.original;
+  const { data } = useSession();
+  const companyPublicId = data?.user.companyPublicId;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -62,7 +70,11 @@ const updateActions = (status: string) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {status === "DRAFT" && (
-          <DropdownMenuItem>Edit this update</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href={`/${companyPublicId}/updates/${publicId}`}>
+              Edit this update
+            </Link>
+          </DropdownMenuItem>
         )}
         <DropdownMenuItem>Share this update</DropdownMenuItem>
         {status !== "DRAFT" && (
@@ -143,7 +155,7 @@ export const columns: ColumnDef<Update[number]>[] = [
     header: () => {
       return <div>Actions</div>;
     },
-    cell: ({ row }) => <div>{updateActions(row.original.status)}</div>,
+    cell: ({ row }) => <div>{UpdateActions(row)}</div>,
   },
 ];
 

@@ -438,6 +438,7 @@ enum FieldTypes {
   TEXTAREA
   CHECKBOX
   SIGNATURE
+  SELECT
 }
 
 model TemplateField {

@@ -71,6 +71,7 @@ export const FieldTypes = {
   TEXTAREA: "TEXTAREA",
   CHECKBOX: "CHECKBOX",
   SIGNATURE: "SIGNATURE",
+  SELECT: "SELECT",
 } as const;
 
 export type FieldTypes = (typeof FieldTypes)[keyof typeof FieldTypes];

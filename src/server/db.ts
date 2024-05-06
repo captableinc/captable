@@ -1,10 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
 import { env } from "@/env";
+import { type TTemplateFieldMetaType } from "@/trpc/routers/template-field-router/schema";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace PrismaJson {}
+  namespace PrismaJson {
+    type TemplateFieldMeta = TTemplateFieldMetaType;
+  }
 }
 
 const globalForPrisma = globalThis as unknown as {

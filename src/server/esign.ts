@@ -67,6 +67,31 @@ export function getEsignTemplate({ tx, templateId }: getEsignTemplateOptions) {
 
 export type TEsignGetTemplate = Awaited<ReturnType<typeof getEsignTemplate>>;
 
+type Field = TEsignGetTemplate["fields"][number];
+interface TGetFieldValue {
+  type: Field["type"];
+  id: Field["id"];
+  data: Record<string, string>;
+  meta: Field["meta"];
+}
+
+export const getFieldValue = ({ type, id, data, meta }: TGetFieldValue) => {
+  const value = data?.[id];
+
+  const selectValue =
+    meta && meta.options
+      ? meta.options.find((val) => val.id === value)?.value
+      : undefined;
+
+  return value
+    ? type === "DATE"
+      ? dayjsExt(value).format("DD/MM/YYYY")
+      : type === "SELECT"
+        ? selectValue
+        : value
+    : undefined;
+};
+
 export interface TGenerateEsignSignPdfOptions {
   bucketKey: string;
   data: Record<string, string>;
@@ -105,7 +130,12 @@ export async function generateEsignPdf({
   const pageRangeCache: Record<string, Range[]> = {};
 
   for (const field of fields) {
-    const value = data?.[field?.id];
+    const value = getFieldValue({
+      data,
+      id: field.id,
+      meta: field.meta,
+      type: field.type,
+    });
 
     if (value) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

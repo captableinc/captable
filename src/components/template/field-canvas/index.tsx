@@ -128,6 +128,9 @@ export function FieldCanvas({
               viewportWidth: viewport.width,
               page: pageNum,
               recipientId: recipient,
+              ...(fieldType === "SELECT" && {
+                meta: { options: [{ id: nanoid(7), value: "" }] },
+              }),
             });
           }
         }}

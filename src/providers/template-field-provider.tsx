@@ -38,6 +38,13 @@ const formSchema = z.object({
         defaultValue: z.string(),
         readOnly: z.boolean(),
         recipientId: z.string().min(1),
+        meta: z
+          .object({
+            options: z
+              .array(z.object({ id: z.string(), value: z.string() }))
+              .nonempty(),
+          })
+          .optional(),
       }),
     )
     .nonempty(),

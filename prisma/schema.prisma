@@ -460,7 +460,9 @@ model TemplateField {
   viewportHeight Int
   viewportWidth  Int
   page           Int
-  meta           Json?
+
+  /// [TemplateFieldMeta]
+  meta Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,12 +1,21 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { dayjsExt } from "@/common/dayjs";
+import {
+  sendEsignConfirmationEmail,
+  type TRecipientKind,
+  type TRecipientsKind,
+} from "@/jobs/esign-confirmation-email";
 import { sendEsignEmail } from "@/jobs/esign-email";
-import { type TESignPdfSchema } from "@/jobs/esign-pdf";
+import {
+  CompleteSignDocumentJob,
+  type TESignPdfSchema,
+} from "@/jobs/esign-pdf";
 import { EsignAudit } from "@/server/audit";
 import {
   completeEsignDocuments,
   generateEsignPdf,
+  getEmailSpecificInfoFromTemplate,
   getEsignAudits,
   getEsignTemplate,
   uploadEsignDocuments,
@@ -14,6 +23,7 @@ import {
   type TGenerateEsignSignPdfOptions,
   type uploadEsignDocumentsOptions,
 } from "@/server/esign";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import { getTriggerClient } from "@/trigger";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
@@ -125,7 +135,6 @@ export const signTemplateProcedure = withoutAuth
           await signPdf({
             bucketKey,
             companyId,
-
             templateName,
             fields: template.fields,
             uploaderName: "open cap",
@@ -251,11 +260,7 @@ async function signPdf({
       userAgent,
     };
 
-    await trigger.sendEvent({
-      name: "esign.sign-pdf",
-      id: templateId,
-      payload,
-    });
+    await CompleteSignDocumentJob.invoke({ ...payload });
   } else {
     const modifiedPdfBytes = await generateEsignPdf({
       bucketKey,
@@ -264,8 +269,10 @@ async function signPdf({
       audits,
     });
 
+    const pdfBuffer = Buffer.from(modifiedPdfBytes);
+
     const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
-      buffer: Buffer.from(modifiedPdfBytes),
+      buffer: pdfBuffer,
       companyId,
       templateName,
     });
@@ -280,5 +287,52 @@ async function signPdf({
       uploaderName,
       userAgent,
     });
+
+    const payload = await getEmailSpecificInfoFromTemplate(templateId, db);
+
+    const FILE_URL = await getPresignedGetUrl(bucketData.key);
+
+    await sendConfirmationEmail({ ...payload, fileUrl: FILE_URL.url });
+  }
+}
+
+type TSendConfirmationEmail = Omit<TRecipientsKind, "kind">;
+type TMail = TRecipientKind;
+
+async function sendConfirmationEmail({
+  fileUrl,
+  recipients,
+  documentName,
+  senderName,
+  company,
+}: TSendConfirmationEmail) {
+  const mails: TMail[] = [];
+
+  for (let index = 0; index < recipients.length; index++) {
+    const recipient = recipients[index];
+
+    if (!recipient) {
+      throw new Error("not found");
+    }
+
+    mails.push({
+      fileUrl,
+      documentName,
+      senderName,
+      company,
+      kind: "RECIPIENT",
+      recipient: {
+        id: recipient.id,
+        name: recipient.name,
+        email: recipient.email,
+      },
+    });
+  }
+  if (mails.length) {
+    await Promise.all(
+      mails.map((payload) =>
+        sendEsignConfirmationEmail({ ...payload, fileUrl }),
+      ),
+    );
   }
 }

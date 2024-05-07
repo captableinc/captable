@@ -69,7 +69,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.11",
     "html-to-image": "^1.11.11",
     "input-otp": "^1.1.0",
     "jsx-email": "^1.12.0",

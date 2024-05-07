@@ -1,5 +1,3 @@
-import { ArrowRight, SignatureIcon } from "@/components/common/icons";
-import { env } from "@/env";
 import type { TEmailPayload } from "@/jobs/esign-email";
 import {
   Body,
@@ -10,7 +8,6 @@ import {
   Heading,
   Hr,
   Html,
-  Img,
   Link,
   Preview,
   Row,
@@ -18,6 +15,11 @@ import {
   Tailwind,
   Text,
 } from "jsx-email";
+import {
+  ArrowRight,
+  SignatureIcon,
+  UserAvatarIcon,
+} from "../components/common/icons";
 
 type TEsignEmailProps = TEmailPayload & { signingLink: string };
 
@@ -29,7 +31,6 @@ const EsignEmail = ({
   sender,
   company,
 }: TEsignEmailProps) => {
-  const BASE_URL = env.NEXTAUTH_URL;
   return (
     <Html>
       <Head />
@@ -37,25 +38,17 @@ const EsignEmail = ({
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
-            <Section className="mt-[32px]">
-              <Img
-                src={company?.logo || `${BASE_URL}/placeholders/company.svg`}
-                width="72"
-                height="72"
-                alt="company_logo"
-                className="mx-auto my-0"
-              />
-            </Section>
             <Heading className="mt-8px mx-0 mb-[15px] p-0 text-center text-[24px] font-normal text-black">
               <strong>{company?.name}</strong>
             </Heading>
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
               <Text>
-                Subject : {sender?.name} has sent you a document to sign.
+                <strong>{sender?.name}</strong> has sent you a document{" "}
+                <strong>{`"${documentName}"`}</strong> to sign.
               </Text>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
-              Hello {recipient?.name} ,
+              Hello {recipient?.name},
             </Text>
             {message ? (
               <>
@@ -66,30 +59,22 @@ const EsignEmail = ({
             ) : (
               <>
                 <Text className="text-[14px] leading-[24px] text-black">
-                  {sender?.name} from <strong>{company?.name}</strong> has sent
-                  {/* eslint-disable-next-line react/no-unescaped-entities */}{" "}
-                  you "{documentName?.replaceAll("_", " ").toLocaleUpperCase()}
-                  {/* eslint-disable-next-line react/no-unescaped-entities */}
-                  ."
+                  <strong>{sender?.name}</strong> from{" "}
+                  <strong>{company?.name}</strong> has sent you{" "}
+                  <strong>{`"${documentName}"`}</strong>
                 </Text>
               </>
             )}
             <Section className="max-w-[435px]">
               <Row className="gap-x-6">
                 <Column align="right">
-                  <Img
-                    className="rounded-full"
-                    src={`${BASE_URL}/placeholders/user.svg`}
-                    width="80px"
-                    height="80px"
-                    alt={"user_svg"}
-                  />
+                  <UserAvatarIcon className="h-16 w-16 rounded-full" />
                 </Column>
                 <Column className="mx-24" align="center">
-                  <ArrowRight />
+                  <ArrowRight className="mx-3 h-6 w-6" />
                 </Column>
                 <Column align="left">
-                  <SignatureIcon />
+                  <SignatureIcon className="text-blue-700" />
                 </Column>
               </Row>
             </Section>
@@ -122,5 +107,16 @@ const EsignEmail = ({
     </Html>
   );
 };
+
+EsignEmail.PreviewProps = {
+  signingLink: "https://example.com",
+  // message: "This is a test message",
+  documentName: "Test Document",
+  recipient: {},
+  sender: {
+    name: "John Doe",
+  },
+  company: {},
+} as TEsignEmailProps;
 
 export default EsignEmail;

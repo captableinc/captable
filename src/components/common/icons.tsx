@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const SpinnerIcon = (props: IconProps) => {
@@ -16,6 +16,48 @@ export const SpinnerIcon = (props: IconProps) => {
       {...props}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+  );
+};
+
+export const UserAvatarIcon = (props: IconProps) => {
+  const { className } = props;
+
+  return (
+    <svg
+      className={className}
+      width="200"
+      height="200"
+      viewBox="0 0 200 200"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="200" height="200" fill="#CCFBF1" />
+      <path
+        d="M100 50C127.6 50 150 72.4 150 100C150 127.6 127.6 150 100 150C72.4 150 50 127.6 50 100C50 72.4 72.4 50 100 50ZM70.1166 117.081C77.4542 128.034 88.4756 135 100.799 135C113.122 135 124.143 128.034 131.481 117.081C123.443 109.586 112.656 105 100.799 105C88.9411 105 78.1548 109.586 70.1166 117.081ZM100 95C108.285 95 115 88.2842 115 80C115 71.7158 108.285 65 100 65C91.7155 65 85 71.7158 85 80C85 88.2842 91.7155 95 100 95Z"
+        fill="#14B8A6"
+      />
+    </svg>
+  );
+};
+
+export const CompanyLogoIcon = (props: IconProps) => {
+  const { className } = props;
+
+  return (
+    <svg
+      className={className}
+      width="200"
+      height="200"
+      viewBox="0 0 200 200"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="200" height="200" fill="#FBEECC" />
+      <path
+        d="M142.545 133.465H152V142.898H48V133.465H57.4545V62.7166C57.4545 60.1117 59.571 58 62.1818 58H109.455C112.065 58 114.182 60.1117 114.182 62.7166V133.465H123.636V86.2993H137.818C140.429 86.2993 142.545 88.411 142.545 91.0159V133.465ZM76.3636 95.7324V105.166H95.2727V95.7324H76.3636ZM76.3636 76.8662V86.2993H95.2727V76.8662H76.3636Z"
+        fill="#DF7513"
+      />
     </svg>
   );
 };
@@ -56,7 +98,7 @@ export const SignatureIcon = (props: IconProps) => {
   return (
     <svg
       className={cn(className)}
-      fill="#000000"
+      fill="currentColor"
       width="80px"
       height="80px"
       viewBox="0 0 56 56"

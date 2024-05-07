@@ -8,7 +8,7 @@ import { render } from "jsx-email";
 
 export interface TEmailPayload {
   documentName?: string;
-  message?: string;
+  message?: string | null;
   recipient: {
     id: string;
     name: string | null | undefined;

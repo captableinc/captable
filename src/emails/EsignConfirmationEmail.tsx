@@ -1,5 +1,3 @@
-import { env } from "@/env";
-import { type TConfirmationEmailPayload } from "@/jobs/esign-confirmation-email";
 import {
   Body,
   Container,
@@ -7,21 +5,21 @@ import {
   Heading,
   Hr,
   Html,
-  Img,
   Preview,
-  Section,
   Tailwind,
   Text,
 } from "jsx-email";
 
+import { type TConfirmationEmailPayload } from "../jobs/esign-confirmation-email";
+
 type Payload = Omit<TConfirmationEmailPayload, "fileUrl">;
-export const ConfirmationEmailBody = ({
+
+const ESignConfirmationEmail = ({
   documentName,
   recipient,
   senderName,
   company,
 }: Payload) => {
-  const BASE_URL = env.NEXTAUTH_URL;
   return (
     <Html>
       <Head />
@@ -32,16 +30,6 @@ export const ConfirmationEmailBody = ({
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
-            <Section className="mt-[32px]">
-              <Img
-                src={`${BASE_URL}/placeholders/company.svg`}
-                width="48"
-                height="48"
-                alt="company_logo"
-                className="mx-auto my-0"
-              />
-            </Section>
-
             <Heading className="mx-0 mb-[15px] mt-5 p-0 text-center text-[24px] font-normal text-black">
               {company?.name}
             </Heading>
@@ -70,3 +58,12 @@ export const ConfirmationEmailBody = ({
     </Html>
   );
 };
+
+ESignConfirmationEmail.PreviewProps = {
+  documentName: "Document Name",
+  recipient: { name: "Recipient Name", email: "" },
+  senderName: "Sender Name",
+  company: { name: "Company Name" },
+};
+
+export default ESignConfirmationEmail;

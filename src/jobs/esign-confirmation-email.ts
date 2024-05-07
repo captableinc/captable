@@ -1,4 +1,4 @@
-import { ConfirmationEmailBody } from "@/emails/EsignConfirmationEmail";
+import ESignConfirmationEmail from "@/emails/EsignConfirmationEmail";
 import { sendMail } from "@/server/mailer";
 import { client } from "@/trigger";
 import { eventTrigger } from "@trigger.dev/sdk";
@@ -33,7 +33,7 @@ export type TConfirmationEmailJobPayload = TRecipientKind | TRecipientsKind;
 type Payload = TConfirmationEmailPayload;
 export const sendEsignConfirmationEmail = async (payload: Payload) => {
   const html = await render(
-    ConfirmationEmailBody({
+    ESignConfirmationEmail({
       documentName: payload.documentName,
       recipient: payload.recipient,
       senderName: payload.senderName,

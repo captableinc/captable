@@ -462,7 +462,7 @@ model TemplateField {
   page           Int
 
   /// [TemplateFieldMeta]
-  meta Json?
+  meta Json @default("{}")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

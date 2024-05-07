@@ -72,7 +72,7 @@
     "dayjs": "^1.11.10",
     "html-to-image": "^1.11.11",
     "input-otp": "^1.1.0",
-    "jsx-email": "^1.7.2",
+    "jsx-email": "^1.12.0",
     "lodash-es": "^4.17.21",
     "mime": "^4.0.3",
     "nanoid": "^5.0.4",

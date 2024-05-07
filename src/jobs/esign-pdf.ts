@@ -2,14 +2,14 @@ import { db } from "@/server/db";
 import {
   completeEsignDocuments,
   generateEsignPdf,
-  getEmailSpecificInfoFromTemplate,
   uploadEsignDocuments,
   type TEsignGetTemplate,
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { client } from "@/trigger";
-import { invokeTrigger } from "@trigger.dev/sdk";
+import { eventTrigger } from "@trigger.dev/sdk";
 import { z } from "zod";
+import { type TConfirmationEmailPayload } from "./esign-confirmation-email";
 
 const schema = z.object({
   bucketKey: z.string(),
@@ -22,20 +22,29 @@ const schema = z.object({
   templateId: z.string(),
   uploaderName: z.string(),
   userAgent: z.string(),
+  recipients: z.array(
+    z.object({ email: z.string(), name: z.string().nullish() }),
+  ),
+  company: z.object({
+    name: z.string(),
+    logo: z.string().nullish(),
+  }),
 });
 
 export type TESignPdfSchema = Omit<z.infer<typeof schema>, "fields"> & {
   fields: TEsignGetTemplate["fields"];
 };
-type TPayload = z.infer<typeof schema>;
 
-export const CompleteSignDocumentJob = client.defineJob({
+client.defineJob({
   id: "esign.complete-pdf",
   name: "esign_complete_pdf",
   version: "0.0.1",
-  trigger: invokeTrigger(),
+  trigger: eventTrigger({
+    name: "esign.sign-pdf",
+    schema,
+  }),
 
-  run: async (payload: TPayload, io) => {
+  run: async (payload, io) => {
     const {
       bucketKey,
       data,
@@ -47,6 +56,8 @@ export const CompleteSignDocumentJob = client.defineJob({
       userAgent,
       uploaderName,
       templateId,
+      recipients,
+      company,
     } = payload;
 
     const uploadedDocument = await io.runTask("upload documents", async () => {
@@ -80,24 +91,22 @@ export const CompleteSignDocumentJob = client.defineJob({
       });
     });
 
-    await io.runTask("send-confirmation-email", async () => {
-      const _fileUrl = await getPresignedGetUrl(
-        uploadedDocument.bucketData.key,
-      );
-      const _payload = await getEmailSpecificInfoFromTemplate(templateId, db);
-      const payload = {
-        documentName: _payload.documentName,
-        senderName: _payload.senderName,
-        company: _payload.company,
-        fileUrl: _fileUrl.url,
-        recipients: _payload.recipients,
-        kind: "RECIPIENTS",
-      };
+    await io.runTask("send all recipients confirmation email", async () => {
+      const file = await getPresignedGetUrl(uploadedDocument.bucketData.key);
 
-      await io.sendEvent(`trigger-confirmation-email`, {
-        name: "esign.send-confirmation",
-        payload,
-      });
+      const data: { name: string; payload: TConfirmationEmailPayload }[] =
+        recipients.map((recipient) => ({
+          payload: {
+            fileUrl: file.url,
+            documentName: templateName,
+            recipient,
+            company,
+            senderName: uploaderName,
+          },
+          name: "esign.send-confirmation",
+        }));
+
+      await io.sendEvents(`trigger-confirmation-email`, data);
     });
   },
 });

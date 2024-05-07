@@ -36,13 +36,14 @@ const DocumentUploadModal = ({
         identifier={companyPublicId}
         keyPrefix="generic-document"
         onSuccess={async (uploadedData: UploadReturn) => {
-          await mutateAsync({
-            name: uploadedData.name,
-            bucketId: uploadedData.id,
-          });
-
-          router.refresh();
-          setOpen(false);
+          if (uploadedData) {
+            await mutateAsync({
+              name: uploadedData.name,
+              bucketId: uploadedData.id,
+            });
+            router.refresh();
+            setOpen(false);
+          }
         }}
       />
     </Modal>

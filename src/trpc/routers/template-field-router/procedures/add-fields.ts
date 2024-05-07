@@ -79,6 +79,13 @@ export const addFieldProcedure = withAuth
                 logo: true,
               },
             },
+            eSignRecipient: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         });
 
@@ -95,16 +102,7 @@ export const addFieldProcedure = withAuth
           },
         });
 
-        const recipientList = await tx.esignRecipient.findMany({
-          where: {
-            templateId: template.id,
-          },
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        });
+        const recipientList = template.eSignRecipient;
 
         const fieldsList = [];
 
@@ -195,7 +193,6 @@ export const addFieldProcedure = withAuth
             : "Your template fields has been created.",
       };
     } catch (error) {
-      console.log({ error });
       if (error instanceof TRPCError) {
         return {
           success: false,

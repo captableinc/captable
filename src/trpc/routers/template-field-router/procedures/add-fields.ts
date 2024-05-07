@@ -129,6 +129,15 @@ export const addFieldProcedure = withAuth
         });
 
         if (input.status === "COMPLETE") {
+          await tx.esignRecipient.deleteMany({
+            where: {
+              templateId: template.id,
+              id: {
+                notIn: template.eSignRecipient.map((item) => item.id),
+              },
+            },
+          });
+
           for (let index = 0; index < recipientList.length; index++) {
             const recipient = recipientList[index];
 

@@ -2,12 +2,16 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import Loading from "@/components/common/loading";
+import ShareModal, {
+  type ExtendedRecipientType,
+} from "@/components/common/share-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
+import { type ContactsType } from "@/types/contacts";
 import { type Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
@@ -21,10 +25,15 @@ import "@blocknote/react/style.css";
 
 type UpdatesEditorProps = {
   update?: Update;
+  contacts: ContactsType;
   companyPublicId?: string;
 };
 
-const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
+const UpdatesEditor = ({
+  update,
+  contacts,
+  companyPublicId,
+}: UpdatesEditorProps) => {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -307,14 +316,30 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
 
               <li>
                 <Button variant="ghost" size="sm">
-                  Send this update
+                  Make it public
                 </Button>
               </li>
 
               <li>
-                <Button variant="ghost" size="sm">
-                  Make it public
-                </Button>
+                <ShareModal
+                  recipients={[] as ExtendedRecipientType[]}
+                  contacts={contacts}
+                  // baseLink={`${baseUrl}/data-rooms/${dataRoom.publicId}`}
+                  baseLink={`link`}
+                  title={`Share - "${title}"`}
+                  subtitle="Share this update with team members, stakeholders and others."
+                  onShare={async ({ selectedContacts, others }) => {
+                    debugger;
+                  }}
+                  removeAccess={async ({ recipientId }) => {
+                    debugger;
+                  }}
+                  trigger={
+                    <Button variant="ghost" size="sm">
+                      Share this update
+                    </Button>
+                  }
+                />
               </li>
 
               {update && (

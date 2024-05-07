@@ -6,7 +6,7 @@ import {
   type TRecipientKind,
   type TRecipientsKind,
 } from "@/jobs/esign-confirmation-email";
-import { sendEsignEmail } from "@/jobs/esign-email";
+import { sendEsignEmail, type TEsignEmailJob } from "@/jobs/esign-email";
 import {
   CompleteSignDocumentJob,
   type TESignPdfSchema,
@@ -94,7 +94,9 @@ export const signTemplateProcedure = withoutAuth
         const signableRecepients = await tx.esignRecipient.count({
           where: {
             templateId: template.id,
-            status: "PENDING",
+            status: {
+              not: "SIGNED",
+            },
           },
         });
 
@@ -183,6 +185,7 @@ export const signTemplateProcedure = withoutAuth
           select: {
             id: true,
             email: true,
+            name: true,
           },
         });
         if (nextDelivery) {
@@ -208,13 +211,23 @@ export const signTemplateProcedure = withoutAuth
             tx,
           );
 
+          const payload: TEsignEmailJob = {
+            email,
+            token,
+            message: template.message,
+            documentName: template.name,
+            recipient: nextDelivery,
+            company: template.company,
+            sender: template.uploader.user,
+          };
+
           if (triggerClient) {
             await triggerClient.sendEvent({
               name: "email.esign",
-              payload: { token, email },
+              payload,
             });
           } else {
-            await sendEsignEmail({ token, email });
+            await sendEsignEmail(payload);
           }
         }
       }

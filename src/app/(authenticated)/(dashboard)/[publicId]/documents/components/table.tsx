@@ -4,7 +4,7 @@ import { dayjsExt } from "@/common/dayjs";
 import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -75,15 +75,6 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
 
                 <TableCell>
                   <div className="flex items-center gap-4">
-                    <button
-                      onClick={async () => {
-                        await openFileOnTab(document.bucket.key);
-                      }}
-                      className="cursor-pointer text-muted-foreground hover:text-primary/80"
-                    >
-                      <RiFileDownloadLine className="cursor-pointer text-muted-foreground hover:text-primary/80" />
-                    </button>
-
                     <DropdownMenu>
                       <DropdownMenuTrigger>
                         <RiMoreLine className="cursor-pointer text-muted-foreground hover:text-primary/80" />
@@ -92,7 +83,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                         <DropdownMenuLabel>Options</DropdownMenuLabel>
                         <DropdownMenuSeparator />
 
-                        <DropdownMenuItem
+                        {/* <DropdownMenuItem
                           onClick={() => {
                             if (document) {
                               setSelectedDocumentId(document.id);
@@ -101,16 +92,25 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                           }}
                         >
                           Share document
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>eSign documents</DropdownMenuItem>
+                        </DropdownMenuItem> */}
+
+                        {document.bucket.mimeType === "application/pdf" && (
+                          <DropdownMenuItem
+                            onClick={() => {
+                              console.log(
+                                "TODO - Show recipient popup and redirect to template page.",
+                              );
+                            }}
+                          >
+                            eSign
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem
-                          onClick={() => {
-                            router.push(
-                              `/${companyPublicId}/documents/${document.id}/analytics`,
-                            );
+                          onClick={async () => {
+                            await openFileOnTab(document.bucket.key);
                           }}
                         >
-                          Analytics
+                          Download
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

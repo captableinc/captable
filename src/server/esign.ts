@@ -10,8 +10,8 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { EsignAudit } from "./audit";
 import {
-  type TPrismaOrTransaction,
   type PrismaTransactionalClient,
+  type TPrismaOrTransaction,
 } from "./db";
 
 interface getEsignAuditsOptions {
@@ -61,8 +61,16 @@ export function getEsignTemplate({ tx, templateId }: getEsignTemplateOptions) {
           user: {
             select: {
               name: true,
+              email: true,
             },
           },
+        },
+      },
+      message: true,
+      company: {
+        select: {
+          name: true,
+          logo: true,
         },
       },
     },

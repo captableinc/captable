@@ -180,6 +180,16 @@ export const addFieldProcedure = withAuth
           );
         } else {
           await Promise.all(mails.map((payload) => sendEsignEmail(payload)));
+          await ctx.db.$transaction(
+            mails.map((payload) =>
+              ctx.db.esignRecipient.update({
+                where: {
+                  id: payload.recipient.id,
+                },
+                data: { status: "SENT" },
+              }),
+            ),
+          );
         }
       }
 

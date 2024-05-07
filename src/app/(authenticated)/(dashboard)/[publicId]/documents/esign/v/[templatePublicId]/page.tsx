@@ -1,5 +1,6 @@
 import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
 import { api } from "@/trpc/server";
@@ -10,11 +11,12 @@ export default async function TemplateDetailViewPage({
 }: {
   params: { templatePublicId: string };
 }) {
-  const [{ url, fields }, { audits }] = await Promise.all([
+  const [{ name, status, url, fields }, { audits }] = await Promise.all([
     api.template.get.query({
       publicId: templatePublicId,
       isDraftOnly: false,
     }),
+
     api.audit.allEsignAudits.query({
       templatePublicId: templatePublicId,
     }),
@@ -24,16 +26,28 @@ export default async function TemplateDetailViewPage({
     <TemplateSigningFieldProvider fields={fields}>
       <div className="flex min-h-screen bg-gray-50">
         <div className="flex h-full flex-grow flex-col">
-          <div className="mx-auto min-h-full w-full px-5 py-10 lg:px-8 2xl:max-w-screen-xl">
+          <div className="col-span-12 flex align-middle">
+            <Badge
+              variant={status === "DRAFT" ? "warning" : "success"}
+              className="h-7 align-middle"
+            >
+              {status}
+            </Badge>
+            <span className="ml-2 align-middle text-xl font-semibold">
+              {name}
+            </span>
+          </div>
+          <div className="mx-auto min-h-full w-full  py-10  2xl:max-w-screen-xl">
             <div className="grid grid-cols-12">
               <PdfCanvas mode="readonly" url={url} />
             </div>
           </div>
         </div>
-        <div className="sticky top-0 flex min-h-full w-80 flex-col lg:border-l">
+
+        <div className="sticky top-0 -mt-7 flex min-h-full w-80 flex-col">
           <Card className="border-none bg-transparent shadow-none">
             <CardHeader>
-              <CardTitle>eSigning activity logs</CardTitle>
+              <CardTitle className="text-lg">eSigning activity logs</CardTitle>
             </CardHeader>
             <CardContent>
               {audits.length ? (

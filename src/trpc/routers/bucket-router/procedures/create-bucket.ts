@@ -31,7 +31,7 @@ export const createBucketProcedure = withAuth
       input,
     }) => {
       try {
-        await db.$transaction(async (tx) => {
+        const { bucket } = await db.$transaction(async (tx) => {
           const bucket = await db.bucket.create({ data: input });
           await Audit.create(
             {
@@ -47,7 +47,13 @@ export const createBucketProcedure = withAuth
             },
             tx,
           );
+          return { bucket };
         });
+
+        return {
+          id: bucket.id,
+          name: bucket.name,
+        };
       } catch (error) {
         console.log({ error });
       }

@@ -454,7 +454,7 @@ model TemplateField {
   width          Int
   height         Int
   recipientId    String
-  recipient      EsignRecipient @relation(fields: [recipientId], references: [id])
+  recipient      EsignRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
   template       Template       @relation(fields: [templateId], references: [id], onDelete: Cascade)
   templateId     String
   viewportHeight Int
@@ -519,7 +519,7 @@ model EsignRecipient {
   name  String?
 
   templateId String
-  template   Template @relation(fields: [templateId], references: [id])
+  template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   status EsignRecipientStatus @default(PENDING)
 
@@ -860,11 +860,11 @@ model EsignAudit {
   id String @id @default(cuid())
 
   companyId   String
-  company     Company         @relation(fields: [companyId], references: [id])
+  company     Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   templateId  String
-  template    Template        @relation(fields: [templateId], references: [id])
+  template    Template        @relation(fields: [templateId], references: [id], onDelete: Cascade)
   recipientId String?
-  recipient   EsignRecipient? @relation(fields: [recipientId], references: [id])
+  recipient   EsignRecipient? @relation(fields: [recipientId], references: [id], onDelete: SetNull)
 
   action    String
   ip        String

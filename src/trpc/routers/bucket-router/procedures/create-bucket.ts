@@ -1,9 +1,17 @@
 import { Audit } from "@/server/audit";
+<<<<<<< HEAD
 import { TPrismaOrTransaction } from "@/server/db";
 import { withAuth } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateBucketMutationSchema,
   ZodCreateBucketMutationSchema,
+=======
+import { type TPrismaOrTransaction } from "@/server/db";
+import { withAuth } from "@/trpc/api/trpc";
+import {
+  ZodCreateBucketMutationSchema,
+  type TypeZodCreateBucketMutationSchema,
+>>>>>>> 9ef6a54 (fix: exporting create-bucket-handler function)
 } from "../schema";
 
 interface createBucketHandlerOptions {
@@ -20,42 +28,24 @@ export const createBucketHandler = ({
 
 export const createBucketProcedure = withAuth
   .input(ZodCreateBucketMutationSchema)
-  .mutation(
-    async ({
-      ctx: {
-        db,
-        session: { user },
-        requestIp,
-        userAgent,
-      },
-      input,
-    }) => {
-      try {
-        const { bucket } = await db.$transaction(async (tx) => {
-          const bucket = await db.bucket.create({ data: input });
-          await Audit.create(
-            {
-              action: "bucket.created",
-              companyId: user.companyId,
-              actor: { type: "user", id: user.id },
-              context: {
-                requestIp,
-                userAgent,
-              },
-              target: [{ type: "bucket", id: bucket.id }],
-              summary: `${user.name} created a new s3 bucket.`,
-            },
-            tx,
-          );
-          return { bucket };
-        });
-
-        return {
-          id: bucket.id,
-          name: bucket.name,
-        };
-      } catch (error) {
-        console.log({ error });
-      }
-    },
-  );
+  .mutation(async ({ ctx: { db, session, requestIp, userAgent }, input }) => {
+    const { bucket } = await db.$transaction(async (tx) => {
+      const bucket = await createBucketHandler({ input, db: tx });
+      await Audit.create(
+        {
+          action: "bucket.created",
+          companyId: session.user.companyId,
+          actor: { type: "user", id: session.user.id },
+          context: {
+            requestIp,
+            userAgent,
+          },
+          target: [{ type: "bucket", id: bucket.id }],
+          summary: `${session.user.name} created a new s3 bucket.`,
+        },
+        tx,
+      );
+      return { bucket };
+    });
+    return bucket;
+  });

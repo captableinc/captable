@@ -3,12 +3,16 @@ import { dayjsExt } from "@/common/dayjs";
 import { getFileFromS3, uploadFile, type TUploadFile } from "@/common/uploads";
 import { generateRange, type Range } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
+import { EsignRecipientStatus } from "@/prisma/enums";
 import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { EsignAudit } from "./audit";
-import { type PrismaTransactionalClient } from "./db";
+import {
+  type TPrismaOrTransaction,
+  type PrismaTransactionalClient,
+} from "./db";
 
 interface getEsignAuditsOptions {
   templateId: string;
@@ -272,7 +276,6 @@ export async function completeEsignDocuments({
     {
       action: "document.complete",
       companyId,
-
       templateId,
       ip: requestIp,
       location: "",
@@ -295,4 +298,71 @@ export async function completeEsignDocuments({
     companyId,
     uploaderName,
   });
+}
+
+export async function getEmailSpecificInfoFromTemplate(
+  templateId: string,
+  db: TPrismaOrTransaction,
+) {
+  const template = await db.template.findFirstOrThrow({
+    where: {
+      id: templateId,
+    },
+    select: {
+      name: true,
+      eSignRecipient: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          status: true,
+        },
+      },
+      uploader: {
+        select: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      company: {
+        select: {
+          name: true,
+          logo: true,
+        },
+      },
+    },
+  });
+
+  const allRecipientsEmailStatus = template.eSignRecipient.map(
+    (recp) => recp.status,
+  );
+
+  const isLegalRecipients = allRecipientsEmailStatus.every(
+    (status) => status === EsignRecipientStatus.SIGNED,
+  );
+
+  if (!isLegalRecipients) {
+    throw new Error("Not an elligible condition for sending signed documents.");
+  }
+
+  const company = template.company;
+  const senderName = template.uploader.user.name;
+  const allRecipients =
+    template.eSignRecipient.map((recp) => {
+      return {
+        id: recp.id,
+        name: recp.name,
+        email: recp.email,
+      };
+    }) ?? [];
+
+  return {
+    recipients: allRecipients,
+    documentName: template.name,
+    senderName,
+    company,
+  };
 }

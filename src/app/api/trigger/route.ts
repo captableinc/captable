@@ -3,6 +3,7 @@ import { createAppRoute } from "@trigger.dev/nextjs";
 
 import "@/jobs/auth-verification-email";
 import "@/jobs/data-room-share-email";
+import "@/jobs/esign-confirmation-email";
 import "@/jobs/esign-email";
 import "@/jobs/esign-pdf";
 import "@/jobs/member-inivite-email";

@@ -438,6 +438,7 @@ enum FieldTypes {
   TEXTAREA
   CHECKBOX
   SIGNATURE
+  SELECT
 }
 
 model TemplateField {
@@ -459,6 +460,9 @@ model TemplateField {
   viewportHeight Int
   viewportWidth  Int
   page           Int
+
+  /// [TemplateFieldMeta]
+  meta Json @default("{}")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -53,6 +53,7 @@ export function ReadOnlyFieldCanvas() {
           type={field.type}
           recipientId={field.recipientId}
           prefilledValue={field.prefilledValue}
+          meta={field.meta}
         />
       ))}
     </>

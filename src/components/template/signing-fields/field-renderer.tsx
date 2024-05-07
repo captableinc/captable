@@ -11,6 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { SignaturePad } from "@/components/ui/signature-pad";
 
 import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
@@ -21,7 +28,7 @@ type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
 
 type FieldRendererProps = Pick<
   Field,
-  "type" | "name" | "required" | "readOnly" | "id" | "prefilledValue"
+  "type" | "name" | "required" | "readOnly" | "id" | "prefilledValue" | "meta"
 >;
 
 export function FieldRenderer({
@@ -31,6 +38,7 @@ export function FieldRenderer({
   readOnly,
   prefilledValue,
   id,
+  meta,
 }: FieldRendererProps) {
   const { control } = useFormContext<TemplateSigningFieldForm>();
 
@@ -38,22 +46,28 @@ export function FieldRenderer({
 
   const fieldName = `fieldValues.${id}` as const;
 
+  const rules = {
+    ...(required && !disabled
+      ? {
+          required: {
+            message: "this field is required",
+            value: required,
+          },
+        }
+      : undefined),
+  };
+
+  const commonProps = {
+    control,
+    rules,
+    name: fieldName,
+  };
+
   switch (type) {
     case "TEXT":
       return (
         <FormField
-          control={control}
-          rules={
-            required && !disabled
-              ? {
-                  required: {
-                    message: "this field is required",
-                    value: required,
-                  },
-                }
-              : undefined
-          }
-          name={fieldName}
+          {...commonProps}
           render={({ field }) => (
             <FormItem>
               <FormLabel>{name}</FormLabel>
@@ -68,18 +82,7 @@ export function FieldRenderer({
     case "SIGNATURE":
       return (
         <FormField
-          control={control}
-          rules={
-            required && !disabled
-              ? {
-                  required: {
-                    message: "this field is required",
-                    value: required,
-                  },
-                }
-              : undefined
-          }
-          name={fieldName}
+          {...commonProps}
           render={({ field: { onChange } }) => (
             <FormItem>
               <FormLabel>{name}</FormLabel>
@@ -98,6 +101,50 @@ export function FieldRenderer({
         />
       );
 
+    case "DATE":
+      return (
+        <FormField
+          {...commonProps}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{name}</FormLabel>
+              <FormControl>
+                <Input disabled={disabled} type="date" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+
+    case "SELECT":
+      return (
+        <FormField
+          {...commonProps}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{name}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {meta &&
+                    meta?.options &&
+                    meta.options.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.value}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
     default:
       return null;
   }

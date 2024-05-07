@@ -40,6 +40,7 @@ export const getTemplateProcedure = withAuth
               page: true,
               recipientId: true,
               prefilledValue: true,
+              meta: true,
             },
             orderBy: {
               top: "asc",

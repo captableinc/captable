@@ -1,5 +1,10 @@
 import { type FieldTypes } from "@/prisma/enums";
-import { RiSketching, RiText } from "@remixicon/react";
+import {
+  RiCalendar2Line,
+  RiListCheck3,
+  RiSketching,
+  RiText,
+} from "@remixicon/react";
 
 interface OptionsItems {
   label: string;
@@ -17,5 +22,15 @@ export const FieldTypeData: OptionsItems[] = [
     label: "Text",
     icon: RiText,
     value: "TEXT",
+  },
+  {
+    label: "Date",
+    icon: RiCalendar2Line,
+    value: "DATE",
+  },
+  {
+    label: "Select",
+    icon: RiListCheck3,
+    value: "SELECT",
   },
 ];

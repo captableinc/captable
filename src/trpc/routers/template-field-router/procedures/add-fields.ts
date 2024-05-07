@@ -79,13 +79,6 @@ export const addFieldProcedure = withAuth
                 logo: true,
               },
             },
-            eSignRecipient: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
           },
         });
 
@@ -102,7 +95,20 @@ export const addFieldProcedure = withAuth
           },
         });
 
-        const recipientList = template.eSignRecipient;
+        const recipientIdList = input.data.map((item) => item.recipientId);
+        const recipientList = await tx.esignRecipient.findMany({
+          where: {
+            templateId: template.id,
+            id: {
+              in: recipientIdList,
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        });
 
         const fieldsList = [];
 
@@ -129,11 +135,14 @@ export const addFieldProcedure = withAuth
         });
 
         if (input.status === "COMPLETE") {
+          const nonDeletableRecipientIdList = recipientList.map(
+            (item) => item.id,
+          );
           await tx.esignRecipient.deleteMany({
             where: {
               templateId: template.id,
               id: {
-                notIn: template.eSignRecipient.map((item) => item.id),
+                notIn: nonDeletableRecipientIdList,
               },
             },
           });

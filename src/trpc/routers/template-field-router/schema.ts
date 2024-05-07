@@ -33,6 +33,7 @@ export const ZodAddFieldMutationSchema = z.object({
       meta: TemplateFieldMetaType.optional(),
     }),
   ),
+  message: z.string().optional(),
 });
 
 export type TypeZodAddFieldMutationSchema = z.infer<

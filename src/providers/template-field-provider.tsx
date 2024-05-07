@@ -50,6 +50,7 @@ const formSchema = z.object({
     .nonempty(),
   recipient: z.string(),
   recipientColors: z.record(z.string()),
+  message: z.string().optional(),
 });
 
 export type TemplateFieldForm = z.infer<typeof formSchema>;

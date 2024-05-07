@@ -25,11 +25,11 @@ export const TemplateFieldForm = ({
   const status = getValues("status");
 
   const { mutateAsync } = api.templateField.add.useMutation({
-    onSuccess: () => {
+    onSuccess: async ({ message, success, title }) => {
       toast({
-        variant: "default",
-        title: "🎉 Successfully created",
-        description: "Your template fields has been created.",
+        variant: success ? "default" : "destructive",
+        title: success ? `🎉 ${title}` : title,
+        description: message,
       });
 
       if (status === "COMPLETE") {
@@ -43,6 +43,7 @@ export const TemplateFieldForm = ({
       templatePublicId,
       data: values.fields,
       status: values.status,
+      message: values.message,
     });
   };
 

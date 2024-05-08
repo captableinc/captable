@@ -21,10 +21,7 @@
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",
     "trigger": "npx @trigger.dev/cli@latest dev",
     "deploy:fly": "fly deploy",
-    "changeset": "changeset",
-    "changeset:version": "changeset version",
-    "changeset:publish": "changeset publish",
-    "release": "npm run build && npm run changeset:version && changeset:publish"
+    "changeset": "changeset"
   },
   "dependencies": {
     "@ark-ui/react": "^2.2.3",

@@ -14,7 +14,7 @@ import {
 } from "jsx-email";
 import { constants } from "../lib/constants";
 
-interface DataRoomShareEmailProps {
+interface ShareDataRoomEmailProps {
   senderName: string;
   recipientName: string | null | undefined;
   companyName: string;
@@ -22,13 +22,13 @@ interface DataRoomShareEmailProps {
   link: string;
 }
 
-export const DataRoomShareEmail = ({
+export const ShareDataRoomEmail = ({
   senderName,
   recipientName,
   companyName,
   dataRoom,
   link,
-}: DataRoomShareEmailProps) => {
+}: ShareDataRoomEmailProps) => {
   const recipientFirstName = recipientName?.split(" ")[0] || "there";
   const previewText = `${senderName} at ${companyName} shared ${dataRoom} with you.`;
 
@@ -81,12 +81,12 @@ export const DataRoomShareEmail = ({
   );
 };
 
-DataRoomShareEmail.PreviewProps = {
+ShareDataRoomEmail.PreviewProps = {
   senderName: "John Doe",
   recipientName: "Will Smith",
   companyName: "Captable, Inc.",
   dataRoom: "Q1 2024 Financials",
   link: "https://captable.inc/...",
-} as DataRoomShareEmailProps;
+} as ShareDataRoomEmailProps;
 
-export default DataRoomShareEmail;
+export default ShareDataRoomEmail;

@@ -1,9 +1,9 @@
 import { env } from "@/env";
 import {
-  sendUpdateShareEmail,
+  sendShareUpdateEmail,
   triggerName,
   type UpdateSharePayloadType,
-} from "@/jobs/update-share-email";
+} from "@/jobs/share-update-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
 import { getTriggerClient } from "@/trigger";
@@ -101,7 +101,7 @@ export const shareUpdateProcedure = withAuth
         if (trigger) {
           await trigger.sendEvent({ name: triggerName, payload });
         } else {
-          await sendUpdateShareEmail(payload);
+          await sendShareUpdateEmail(payload);
         }
       }
     };

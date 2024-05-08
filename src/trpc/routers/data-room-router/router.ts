@@ -1,10 +1,10 @@
 import { generatePublicId } from "@/common/id";
 import { env } from "@/env";
 import {
-  sendDataRoomShareEmail,
+  sendShareDataRoomEmail,
   triggerName,
   type DataRoomEmailPayloadType,
-} from "@/jobs/data-room-share-email";
+} from "@/jobs/share-data-room-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
 import { checkMembership } from "@/server/auth";
@@ -266,7 +266,7 @@ export const dataRoomRouter = createTRPCRouter({
           if (trigger) {
             await trigger.sendEvent({ name: triggerName, payload });
           } else {
-            await sendDataRoomShareEmail(payload);
+            await sendShareDataRoomEmail(payload);
           }
         }
       };

@@ -14,7 +14,7 @@ import {
 } from "jsx-email";
 import { constants } from "../lib/constants";
 
-interface UpdateShareEmailProps {
+interface ShareUpdateEmailProps {
   senderName: string;
   recipientName: string | null | undefined;
   companyName: string;
@@ -22,13 +22,13 @@ interface UpdateShareEmailProps {
   link: string;
 }
 
-export const UpdateShareEmail = ({
+export const ShareUpdateEmail = ({
   senderName,
   recipientName,
   companyName,
   updateTitle,
   link,
-}: UpdateShareEmailProps) => {
+}: ShareUpdateEmailProps) => {
   const recipientFirstName = recipientName?.split(" ")[0] || "there";
   const previewText = `${senderName} at ${companyName} shared ${updateTitle} with you.`;
 
@@ -82,12 +82,12 @@ export const UpdateShareEmail = ({
   );
 };
 
-UpdateShareEmail.PreviewProps = {
+ShareUpdateEmail.PreviewProps = {
   senderName: "John Doe",
   recipientName: "Will Smith",
   companyName: "Captable, Inc.",
   updateTitle: "Q1 2024 Financials",
   link: "https://captable.inc/...",
-} as UpdateShareEmailProps;
+} as ShareUpdateEmailProps;
 
-export default UpdateShareEmail;
+export default ShareUpdateEmail;

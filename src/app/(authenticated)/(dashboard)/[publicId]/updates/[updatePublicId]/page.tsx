@@ -21,12 +21,17 @@ const UpdatePage = async ({
   const contacts = await getContacts();
 
   if (updatePublicId === "new") {
-    return <Editor companyPublicId={publicId} contacts={contacts} />;
+    return <Editor companyPublicId={publicId} contacts={contacts} mode="new" />;
   } else {
     const update = await getUpdate(updatePublicId);
 
     return (
-      <Editor companyPublicId={publicId} update={update} contacts={contacts} />
+      <Editor
+        companyPublicId={publicId}
+        update={update}
+        contacts={contacts}
+        mode="edit"
+      />
     );
   }
 };

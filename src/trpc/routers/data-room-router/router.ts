@@ -3,15 +3,16 @@ import { env } from "@/env";
 import {
   sendDataRoomShareEmail,
   triggerName,
-  type TDataRoomSharePayloadSchema,
+  type DataRoomEmailPayloadType,
 } from "@/jobs/data-room-share-email";
 import { encode } from "@/lib/jwt";
+import { ShareRecipientSchema } from "@/schema/contacts";
 import { checkMembership } from "@/server/auth";
 import { getTriggerClient } from "@/trigger";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
 import { z } from "zod";
-import { DataRoomRecipientSchema, DataRoomSchema } from "./schema";
+import { DataRoomSchema } from "./schema";
 
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
@@ -181,8 +182,8 @@ export const dataRoomRouter = createTRPCRouter({
     .input(
       z.object({
         dataRoomId: z.string(),
-        others: z.array(DataRoomRecipientSchema),
-        selectedContacts: z.array(DataRoomRecipientSchema),
+        others: z.array(ShareRecipientSchema),
+        selectedContacts: z.array(ShareRecipientSchema),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -252,7 +253,7 @@ export const dataRoomRouter = createTRPCRouter({
 
           const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
 
-          const payload: TDataRoomSharePayloadSchema = {
+          const payload: DataRoomEmailPayloadType = {
             senderName: senderName!,
             recipientName: recipient.name,
             companyName: company.name,

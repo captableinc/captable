@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
+import { type ShareContactType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
-import { type ContactsType } from "@/types/contacts";
 import { type Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
@@ -19,23 +19,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
+import { env } from "@/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 
 type UpdatesEditorProps = {
   update?: Update;
-  contacts: ContactsType;
+  mode: "edit" | "new";
+  contacts: ShareContactType[];
   companyPublicId?: string;
 };
 
 const UpdatesEditor = ({
+  mode,
   update,
   contacts,
   companyPublicId,
 }: UpdatesEditorProps) => {
   const router = useRouter();
   const { toast } = useToast();
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");
@@ -320,27 +324,28 @@ const UpdatesEditor = ({
                 </Button>
               </li>
 
-              <li>
-                <ShareModal
-                  recipients={[] as ExtendedRecipientType[]}
-                  contacts={contacts}
-                  // baseLink={`${baseUrl}/data-rooms/${dataRoom.publicId}`}
-                  baseLink={`link`}
-                  title={`Share - "${title}"`}
-                  subtitle="Share this update with team members, stakeholders and others."
-                  onShare={async ({ selectedContacts, others }) => {
-                    debugger;
-                  }}
-                  removeAccess={async ({ recipientId }) => {
-                    debugger;
-                  }}
-                  trigger={
-                    <Button variant="ghost" size="sm">
-                      Share this update
-                    </Button>
-                  }
-                />
-              </li>
+              {mode === "edit" && (
+                <li>
+                  <ShareModal
+                    recipients={[] as ExtendedRecipientType[]}
+                    contacts={contacts}
+                    baseLink={`${baseUrl}/updates/${update?.publicId}`}
+                    title={`Share - "${title}"`}
+                    subtitle="Share this update with team members, stakeholders and others."
+                    onShare={async ({ selectedContacts, others }) => {
+                      debugger;
+                    }}
+                    removeAccess={async ({ recipientId }) => {
+                      debugger;
+                    }}
+                    trigger={
+                      <Button variant="ghost" size="sm">
+                        Share this update
+                      </Button>
+                    }
+                  />
+                </li>
+              )}
 
               {update && (
                 <li>

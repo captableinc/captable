@@ -1,4 +1,4 @@
-import DataRoomShareEmail from "@/emails/DataRoomShareEmail";
+import UpdateShareEmail from "@/emails/UpdateShareEmail";
 import { sendMail } from "@/server/mailer";
 import { client } from "@/trigger";
 import { eventTrigger } from "@trigger.dev/sdk";
@@ -6,7 +6,9 @@ import { render } from "jsx-email";
 import { z } from "zod";
 
 const schema = z.object({
-  dataRoom: z.string(),
+  update: z.object({
+    name: z.string(),
+  }),
   link: z.string(),
   companyName: z.string(),
   recipientName: z.string().nullish(),
@@ -15,13 +17,11 @@ const schema = z.object({
   email: z.string(),
 });
 
-export type DataRoomEmailPayloadType = z.infer<typeof schema>;
+export type UpdateSharePayloadType = z.infer<typeof schema>;
 
-export const sendDataRoomShareEmail = async (
-  payload: DataRoomEmailPayloadType,
-) => {
+export const sendUpdateShareEmail = async (payload: UpdateSharePayloadType) => {
   const {
-    dataRoom,
+    update,
     link,
     companyName,
     recipientName,
@@ -32,24 +32,24 @@ export const sendDataRoomShareEmail = async (
   await sendMail({
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
-    subject: `${senderName} shared a data room - ${dataRoom}`,
+    subject: `${senderName} shared an update - ${update.name}`,
     html: await render(
-      DataRoomShareEmail({
+      UpdateShareEmail({
         senderName: senderName,
         recipientName,
         companyName,
-        dataRoom,
+        updateTitle: update.name,
         link,
       }),
     ),
   });
 };
 
-export const triggerName = "email.data-room-share";
+export const triggerName = "email.update-share";
 
 client.defineJob({
-  id: "data-room-share-email",
-  name: "data room share email",
+  id: "update-share-email",
+  name: "Investor update share email",
   version: "0.0.1",
   trigger: eventTrigger({
     name: triggerName,
@@ -57,8 +57,8 @@ client.defineJob({
   }),
 
   run: async (payload, io) => {
-    await io.runTask("send data room share email", async () => {
-      await sendDataRoomShareEmail(payload);
+    await io.runTask("Send investor update", async () => {
+      await sendUpdateShareEmail(payload);
     });
   },
 });

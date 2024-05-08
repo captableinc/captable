@@ -7,9 +7,9 @@ import ShareModal, {
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
-import type { DataRoomRecipientType } from "@/trpc/routers/data-room-router/schema";
-import { type ContactsType } from "@/types/contacts";
+
 import type { Bucket, DataRoom } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
@@ -37,7 +37,7 @@ type DataRoomFilesProps = {
   documents: Bucket[];
   recipients: ExtendedRecipientType[];
   companyPublicId: string;
-  contacts: ContactsType;
+  contacts: ShareContactType[];
 };
 
 const DataRoomFiles = ({
@@ -142,9 +142,8 @@ const DataRoomFiles = ({
                 onShare={async ({ selectedContacts, others }) => {
                   await shareDataRoomMutation({
                     dataRoomId: dataRoom.id,
-                    selectedContacts:
-                      selectedContacts as DataRoomRecipientType[],
-                    others: others as DataRoomRecipientType[],
+                    selectedContacts: selectedContacts as ShareRecipientType[],
+                    others: others as ShareRecipientType[],
                   });
                 }}
                 removeAccess={async ({ recipientId }) => {

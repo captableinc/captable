@@ -6,7 +6,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
 
-import { type ContactsType } from "@/types/contacts";
+import { type ShareContactType } from "@/schema/contacts";
 import type { DataRoomRecipient } from "@prisma/client";
 import {
   RiCheckLine as CheckIcon,
@@ -25,7 +25,7 @@ export type Props = {
   subtitle: string;
   baseLink: string;
   trigger: React.ReactNode;
-  contacts: ContactsType;
+  contacts: ShareContactType[];
   recipients: ExtendedRecipientType[];
 
   onShare: (data: { others: object[]; selectedContacts: object[] }) => void;

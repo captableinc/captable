@@ -142,6 +142,7 @@ model Member {
   templates        Template[]
   updates          Update[]
   dataRooms        DataRoomRecipient[]
+  UpdateRecipient  UpdateRecipient[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -407,6 +408,29 @@ model DataRoomRecipient {
   @@index([id, dataRoomId])
   @@index([memberId])
   @@index([dataRoomId])
+  @@index([stakeholderId])
+}
+
+model UpdateRecipient {
+  id       String  @id @default(cuid())
+  name     String?
+  email    String
+  updateId String
+  update   Update  @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  stakeholderId String?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([updateId, email])
+  @@index([id, updateId])
+  @@index([memberId])
+  @@index([updateId])
   @@index([stakeholderId])
 }
 
@@ -812,48 +836,20 @@ model Update {
   html     String
   status   UpdateStatusEnum @default(DRAFT)
 
+  authorId  String
   companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  authorId String
-  author   Member @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   recipients UpdateRecipient[]
+  author     Member            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  company    Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  sentAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([publicId])
   @@index([publicId])
   @@index([authorId])
   @@index([companyId])
-}
-
-enum UpdateEmailStatusEnum {
-  SENT
-  PENDING
-  FAILED
-}
-
-model UpdateRecipient {
-  id String @id @default(cuid())
-
-  stakeholderId String
-  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
-
-  updateId String
-  update   Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
-
-  status UpdateEmailStatusEnum @default(PENDING)
-
-  sentAt    DateTime?
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@index([updateId])
-  @@index([stakeholderId])
 }
 
 model EsignAudit {

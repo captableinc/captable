@@ -4,6 +4,7 @@ import { dayjsExt } from "@/common/dayjs";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import UpdateRenderer from "@/components/update/renderer";
+import { decode, type JWTVerifyResult } from "@/lib/jwt";
 import { db } from "@/server/db";
 import { render } from "jsx-email";
 import { notFound } from "next/navigation";
@@ -11,12 +12,33 @@ import { Fragment } from "react";
 
 const PublicUpdatePage = async ({
   params: { publicId },
+  searchParams: { token },
 }: {
   params: { publicId: string };
+  searchParams: { token: string };
 }) => {
+  let decodedToken: JWTVerifyResult | null = null;
+
+  try {
+    decodedToken = await decode(token);
+  } catch (error) {
+    return notFound();
+  }
+
+  const { payload } = decodedToken;
+
+  if (
+    payload.publicId !== publicId ||
+    !payload.companyId ||
+    !payload.recipientId
+  ) {
+    return notFound();
+  }
+
   const update = await db.update.findFirst({
     where: {
       publicId,
+      companyId: payload.companyId,
     },
 
     include: {
@@ -43,6 +65,17 @@ const PublicUpdatePage = async ({
   });
 
   if (!update) {
+    return notFound();
+  }
+
+  const recipients = await db.updateRecipient.findFirst({
+    where: {
+      id: payload.recipientId,
+      updateId: update.id,
+    },
+  });
+
+  if (!recipients) {
     return notFound();
   }
 

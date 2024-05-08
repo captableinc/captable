@@ -45,10 +45,10 @@ export const sendUpdateShareEmail = async (payload: UpdateSharePayloadType) => {
   });
 };
 
-export const triggerName = "email.update-share";
+export const triggerName = "email.share-update-email";
 
 client.defineJob({
-  id: "update-share-email",
+  id: "share-update-email",
   name: "Investor update share email",
   version: "0.0.1",
   trigger: eventTrigger({

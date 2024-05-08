@@ -1,4 +1,5 @@
 "use server";
+import type { ExtendedRecipientType } from "@/components/common/share-modal";
 import Editor from "@/components/update/editor";
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
@@ -24,12 +25,16 @@ const UpdatePage = async ({
     return <Editor companyPublicId={publicId} contacts={contacts} mode="new" />;
   } else {
     const update = await getUpdate(updatePublicId);
+    const recipients = await api.update.getRecipiants.query({
+      updateId: update?.id,
+    });
 
     return (
       <Editor
         companyPublicId={publicId}
         update={update}
         contacts={contacts}
+        recipients={recipients as object[] as ExtendedRecipientType[]}
         mode="edit"
       />
     );

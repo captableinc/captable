@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
-import { type ShareContactType } from "@/schema/contacts";
+import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
 import { type Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
@@ -27,7 +27,8 @@ import "@blocknote/react/style.css";
 type UpdatesEditorProps = {
   update?: Update;
   mode: "edit" | "new";
-  contacts: ShareContactType[];
+  contacts?: ShareContactType[];
+  recipients?: ExtendedRecipientType[];
   companyPublicId?: string;
 };
 
@@ -35,6 +36,7 @@ const UpdatesEditor = ({
   mode,
   update,
   contacts,
+  recipients,
   companyPublicId,
 }: UpdatesEditorProps) => {
   const router = useRouter();
@@ -262,6 +264,25 @@ const UpdatesEditor = ({
     cloneMutation.mutate(data);
   };
 
+  const { mutateAsync: shareUpdateMutation } = api.update.share.useMutation({
+    onSuccess: () => {
+      router.refresh();
+
+      toast({
+        title: "✅ Shared!",
+        description: "Update successfully shared.",
+      });
+    },
+
+    onError: (error) => {
+      toast({
+        title: error.message,
+        description: "",
+        variant: "destructive",
+      });
+    },
+  });
+
   return (
     <div className="flex flex-col gap-y-3">
       <form className="flex items-center justify-between gap-y-2">
@@ -324,16 +345,21 @@ const UpdatesEditor = ({
                 </Button>
               </li>
 
-              {mode === "edit" && (
+              {update && mode === "edit" && (
                 <li>
                   <ShareModal
-                    recipients={[] as ExtendedRecipientType[]}
-                    contacts={contacts}
+                    recipients={recipients!}
+                    contacts={contacts!}
                     baseLink={`${baseUrl}/updates/${update?.publicId}`}
                     title={`Share - "${title}"`}
                     subtitle="Share this update with team members, stakeholders and others."
                     onShare={async ({ selectedContacts, others }) => {
-                      debugger;
+                      await shareUpdateMutation({
+                        updateId: update?.id,
+                        selectedContacts:
+                          selectedContacts as ShareRecipientType[],
+                        others: others as ShareRecipientType[],
+                      });
                     }}
                     removeAccess={async ({ recipientId }) => {
                       debugger;

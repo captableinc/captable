@@ -8,6 +8,7 @@ import "@/jobs/esign-email";
 import "@/jobs/esign-pdf";
 import "@/jobs/member-inivite-email";
 import "@/jobs/password-reset-email";
+import "@/jobs/update-share-email";
 
 //this route is used to send and receive data with Trigger.dev
 export const { POST, dynamic } = createAppRoute(client);

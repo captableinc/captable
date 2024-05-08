@@ -45,10 +45,10 @@ export const sendDataRoomShareEmail = async (
   });
 };
 
-export const triggerName = "email.data-room-share";
+export const triggerName = "email.share-data-room-email";
 
 client.defineJob({
-  id: "data-room-share-email",
+  id: "share-data-room-email",
   name: "data room share email",
   version: "0.0.1",
   trigger: eventTrigger({

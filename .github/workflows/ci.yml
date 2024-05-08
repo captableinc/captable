@@ -16,13 +16,7 @@ jobs:
 
       - uses: ./.github/actions/node-setup
 
-      - name: Copy env
-        run: cp .env.example .env
-
-      - name: Build
-        run: npm i && npm run build
-        env:
-          SKIP_ENV_VALIDATION: "1"
+      - uses: ./.github/actions/build-app
 
   build_docker:
     name: Build Docker Image

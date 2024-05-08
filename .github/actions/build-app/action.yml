@@ -1,0 +1,12 @@
+name: "Build captable app"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Copy env
+      run: cp .env.example .env
+
+    - name: Build app
+      run: npm i && npm run build
+      env:
+        SKIP_ENV_VALIDATION: 1

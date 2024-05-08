@@ -17,7 +17,6 @@ import { stakeholderRouter } from "../routers/stakeholder-router/router";
 import { templateFieldRouter } from "../routers/template-field-router/router";
 import { templateRouter } from "../routers/template-router/router";
 import { updateRouter } from "../routers/update/router";
-import { authRouter } from "../routers/auth/router";
 import { securityRouter } from "../routers/security/router";
 
 /**

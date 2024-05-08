@@ -107,6 +107,14 @@ export const shareUpdateProcedure = withAuth
     };
 
     await upsertManyRecipients();
+    await db.update.update({
+      where: {
+        id: updateId,
+      },
+      data: {
+        status: "PRIVATE",
+      },
+    });
 
     return {
       success: true,

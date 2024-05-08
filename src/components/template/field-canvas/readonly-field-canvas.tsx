@@ -1,10 +1,10 @@
 "use client";
 
+import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
+import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { useCallback, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { ReadOnlyTemplateField } from "./readonly-template-field";
-import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 
 const resizeObserverOptions = {};
 
@@ -13,6 +13,7 @@ export function ReadOnlyFieldCanvas() {
   const { fields } = useFieldArray({
     name: "fields",
     control,
+    keyName: "_id",
   });
 
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
@@ -42,7 +43,7 @@ export function ReadOnlyFieldCanvas() {
           viewportHeight={field.viewportHeight}
           currentViewportWidth={viewport.width}
           currentViewportHeight={viewport.height}
-          key={field.id}
+          key={field._id}
           height={field.height}
           left={field.left}
           top={field.top}
@@ -50,6 +51,9 @@ export function ReadOnlyFieldCanvas() {
           width={field.width}
           name={field.name}
           type={field.type}
+          recipientId={field.recipientId}
+          prefilledValue={field.prefilledValue}
+          meta={field.meta}
         />
       ))}
     </>

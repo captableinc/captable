@@ -10,3 +10,7 @@ export const ZodGetAuditsQuerySchema = z
 export type TypeZodGetAuditsQuerySchema = z.infer<
   typeof ZodGetAuditsQuerySchema
 >;
+
+export const ZodAllEsignAuditsQuerySchema = z.object({
+  templatePublicId: z.string(),
+});

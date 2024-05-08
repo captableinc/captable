@@ -1,3 +1,4 @@
+import { checkMembership } from "@/server/auth";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodGetTemplateQuerySchema } from "../schema";
@@ -5,42 +6,57 @@ import { ZodGetTemplateQuerySchema } from "../schema";
 export const getTemplateProcedure = withAuth
   .input(ZodGetTemplateQuerySchema)
   .query(async ({ ctx, input }) => {
-    const user = ctx.session.user;
+    const { template } = await ctx.db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ tx, session: ctx.session });
 
-    const template = await ctx.db.template.findFirstOrThrow({
-      where: {
-        publicId: input.publicId,
-        companyId: user.companyId,
-      },
-      select: {
-        name: true,
-        status: true,
-        bucket: {
-          select: {
-            key: true,
+      const template = await tx.template.findFirstOrThrow({
+        where: {
+          publicId: input.publicId,
+          companyId: companyId,
+          ...(input.isDraftOnly && { status: "DRAFT" }),
+        },
+        select: {
+          name: true,
+          status: true,
+          bucket: {
+            select: {
+              key: true,
+            },
+          },
+          fields: {
+            select: {
+              id: true,
+              name: true,
+              width: true,
+              height: true,
+              top: true,
+              left: true,
+              required: true,
+              defaultValue: true,
+              readOnly: true,
+              type: true,
+              viewportHeight: true,
+              viewportWidth: true,
+              page: true,
+              recipientId: true,
+              prefilledValue: true,
+              meta: true,
+            },
+            orderBy: {
+              top: "asc",
+            },
+          },
+          eSignRecipient: {
+            select: {
+              email: true,
+              id: true,
+              name: true,
+            },
           },
         },
-        fields: {
-          select: {
-            id: true,
-            name: true,
-            width: true,
-            height: true,
-            top: true,
-            left: true,
-            required: true,
-            defaultValue: true,
-            readOnly: true,
-            type: true,
-            viewportHeight: true,
-            viewportWidth: true,
-            page: true,
-          },
-          orderBy: {
-            top: "asc",
-          },
-        },
-      },
+      });
+
+      return { template };
     });
 
     const { key, url } = await getPresignedGetUrl(template.bucket.key);
@@ -51,5 +67,6 @@ export const getTemplateProcedure = withAuth
       url,
       name: template.name,
       status: template.status,
+      recipients: template.eSignRecipient,
     };
   });

@@ -1,4 +1,6 @@
+import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { allEsignAuditsProcedure } from "./procedures/all-esign-audits";
 import { ZodGetAuditsQuerySchema } from "./schema";
 
 export const auditRouter = createTRPCRouter({
@@ -7,14 +9,21 @@ export const auditRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { db, session } = ctx;
 
-      const user = session.user;
-      const data = await db.audit.findMany({
-        where: { companyId: user.companyId },
-        orderBy: {
-          occurredAt: "desc",
-        },
-        ...input,
+      const data = await db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({ session, tx });
+
+        const data = await tx.audit.findMany({
+          where: { companyId },
+          orderBy: {
+            occurredAt: "desc",
+          },
+          ...input,
+        });
+        return data;
       });
+
       return { data };
     }),
+
+  allEsignAudits: allEsignAuditsProcedure,
 });

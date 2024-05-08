@@ -1,19 +1,23 @@
 "use client";
 
 import EmptyState from "@/components/common/empty-state";
-import ShareModal from "@/components/common/share";
+import ShareModal, {
+  type ExtendedRecipientType,
+} from "@/components/common/share-modal";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
-import { type ContactsType } from "@/types/contacts";
+
 import type { Bucket, DataRoom } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
-  // RiShareLine,
   RiUploadCloudLine,
 } from "@remixicon/react";
 import Link from "next/link";
@@ -31,19 +35,65 @@ interface DataRoomType extends DataRoom {
 type DataRoomFilesProps = {
   dataRoom: DataRoom;
   documents: Bucket[];
+  recipients: ExtendedRecipientType[];
   companyPublicId: string;
-  contacts: ContactsType;
+  contacts: ShareContactType[];
 };
 
 const DataRoomFiles = ({
   dataRoom,
   documents,
   contacts,
+  recipients,
   companyPublicId,
 }: DataRoomFilesProps) => {
-  const { mutateAsync } = api.dataRoom.save.useMutation();
+  const router = useRouter();
+  const { toast } = useToast();
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
+  const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
+    {
+      onSuccess: () => {
+        router.refresh();
+
+        toast({
+          title: "✨ Complete",
+          description: "Data room successfully shared.",
+        });
+      },
+
+      onError: (error) => {
+        toast({
+          title: error.message,
+          description: "",
+          variant: "destructive",
+        });
+      },
+    },
+  );
+
+  const { mutateAsync: unShareDataRoomMutation } =
+    api.dataRoom.unShare.useMutation({
+      onSuccess: () => {
+        router.refresh();
+
+        toast({
+          title: "✨ Complete",
+          description: "Successfully removed access to data room.",
+        });
+      },
+
+      onError: (error) => {
+        toast({
+          title: error.message,
+          description: "",
+          variant: "destructive",
+        });
+      },
+    });
+
   const debounced = useDebounceCallback(async (name) => {
-    await mutateAsync({
+    await saveDataRoomMutation({
       name,
       publicId: dataRoom.publicId,
     });
@@ -84,9 +134,24 @@ const DataRoomFiles = ({
           {documents.length > 0 && (
             <div className="flex gap-3">
               <ShareModal
+                recipients={recipients}
                 contacts={contacts}
+                baseLink={`${baseUrl}/data-rooms/${dataRoom.publicId}`}
                 title={`Share data room - "${dataRoom.name}"`}
                 subtitle="Share this data room with others."
+                onShare={async ({ selectedContacts, others }) => {
+                  await shareDataRoomMutation({
+                    dataRoomId: dataRoom.id,
+                    selectedContacts: selectedContacts as ShareRecipientType[],
+                    others: others as ShareRecipientType[],
+                  });
+                }}
+                removeAccess={async ({ recipientId }) => {
+                  await unShareDataRoomMutation({
+                    dataRoomId: dataRoom.id,
+                    recipientId,
+                  });
+                }}
                 trigger={
                   <Button variant={"outline"}>
                     <RiShareLine className="mr-2 h-5 w-5" />

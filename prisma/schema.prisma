@@ -110,6 +110,7 @@ model Company {
   safes            Safe[]
   convertibleNotes ConvertibleNote[]
   dataRooms        DataRoom[]
+  eSignAudits      EsignAudit[]
 
   @@unique([publicId])
 }
@@ -141,6 +142,7 @@ model Member {
   templates        Template[]
   updates          Update[]
   dataRooms        DataRoomRecipient[]
+  UpdateRecipient  UpdateRecipient[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -319,8 +321,8 @@ model Document {
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
-  uploaderId String
-  uploader   Member @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  uploaderId String?
+  uploader   Member? @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
@@ -366,8 +368,9 @@ model DataRoom {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([companyId, name])
   @@unique([publicId])
+  @@unique([companyId, name])
+  @@index([publicId])
   @@index([companyId])
 }
 
@@ -387,6 +390,7 @@ model DataRoomDocument {
 
 model DataRoomRecipient {
   id         String   @id @default(cuid())
+  name       String?
   email      String
   dataRoomId String
   dataRoom   DataRoom @relation(fields: [dataRoomId], references: [id], onDelete: Cascade)
@@ -397,12 +401,36 @@ model DataRoomRecipient {
   stakeholderId String?
   stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@unique([dataRoomId, email])
+  @@index([id, dataRoomId])
   @@index([memberId])
   @@index([dataRoomId])
+  @@index([stakeholderId])
+}
+
+model UpdateRecipient {
+  id       String  @id @default(cuid())
+  name     String?
+  email    String
+  updateId String
+  update   Update  @relation(fields: [updateId], references: [id], onDelete: Cascade)
+
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  stakeholderId String?
+  stakeholder   Stakeholder? @relation(fields: [stakeholderId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([updateId, email])
+  @@index([id, updateId])
+  @@index([memberId])
+  @@index([updateId])
   @@index([stakeholderId])
 }
 
@@ -434,29 +462,37 @@ enum FieldTypes {
   TEXTAREA
   CHECKBOX
   SIGNATURE
+  SELECT
 }
 
 model TemplateField {
-  id             String     @id @default(cuid())
+  id             String         @id @default(cuid())
   name           String
-  type           FieldTypes @default(TEXT)
-  defaultValue   String     @default("")
-  readOnly       Boolean    @default(false)
-  required       Boolean    @default(false)
+  type           FieldTypes     @default(TEXT)
+  defaultValue   String         @default("")
+  readOnly       Boolean        @default(false)
+  required       Boolean        @default(false)
+  prefilledValue String?
   top            Int
   left           Int
   width          Int
   height         Int
-  template       Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  recipientId    String
+  recipient      EsignRecipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  template       Template       @relation(fields: [templateId], references: [id], onDelete: Cascade)
   templateId     String
   viewportHeight Int
   viewportWidth  Int
   page           Int
 
+  /// [TemplateFieldMeta]
+  meta Json @default("{}")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([templateId])
+  @@index([recipientId])
 }
 
 enum TemplateStatus {
@@ -465,10 +501,12 @@ enum TemplateStatus {
 }
 
 model Template {
-  id       String         @id @default(cuid())
-  publicId String
-  name     String
-  status   TemplateStatus @default(DRAFT)
+  id              String         @id @default(cuid())
+  publicId        String
+  name            String
+  status          TemplateStatus @default(DRAFT)
+  orderedDelivery Boolean        @default(false)
+  message         String?
 
   bucketId String
   bucket   Bucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
@@ -482,7 +520,11 @@ model Template {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  fields TemplateField[]
+  fields         TemplateField[]
+  eSignRecipient EsignRecipient[]
+
+  completedOn DateTime?
+  eSignAudits EsignAudit[]
 
   @@index([bucketId])
   @@index([uploaderId])
@@ -496,17 +538,25 @@ enum EsignRecipientStatus {
 }
 
 model EsignRecipient {
-  id     String               @id @default(cuid())
-  email  String?
+  id    String  @id @default(cuid())
+  email String
+  name  String?
+
+  templateId String
+  template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
   status EsignRecipientStatus @default(PENDING)
 
   memberId String?
   member   Member? @relation(fields: [memberId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  templateFields TemplateField[]
+  eSignAudits    EsignAudit[]
 
   @@index([memberId])
+  @@index([templateId])
 }
 
 enum SecuritiesStatusEnum {
@@ -779,23 +829,22 @@ enum UpdateStatusEnum {
 }
 
 model Update {
-  id        String           @id @default(cuid())
-  publicId  String
-  title     String
-  content   Json
-  html      String
-  status    UpdateStatusEnum @default(DRAFT)
-  companyId String
-  company   Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  id       String           @id @default(cuid())
+  publicId String
+  title    String
+  content  Json
+  html     String
+  status   UpdateStatusEnum @default(DRAFT)
 
-  authorId String
-  author   Member @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  companyId String
 
   recipients UpdateRecipient[]
+  author     Member            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  company    Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  sentAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([publicId])
   @@index([publicId])
@@ -803,28 +852,26 @@ model Update {
   @@index([companyId])
 }
 
-enum UpdateEmailStatusEnum {
-  SENT
-  PENDING
-  FAILED
-}
-
-model UpdateRecipient {
+model EsignAudit {
   id String @id @default(cuid())
 
-  stakeholderId String
-  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
+  companyId   String
+  company     Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  templateId  String
+  template    Template        @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  recipientId String?
+  recipient   EsignRecipient? @relation(fields: [recipientId], references: [id], onDelete: SetNull)
 
-  updateId String
-  update   Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
+  action    String
+  ip        String
+  userAgent String
+  location  String
+  summary   String
 
-  status UpdateEmailStatusEnum @default(PENDING)
+  occurredAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  sentAt    DateTime?
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@index([updateId])
-  @@index([stakeholderId])
+  @@index([companyId])
+  @@index([templateId])
+  @@index([recipientId])
 }

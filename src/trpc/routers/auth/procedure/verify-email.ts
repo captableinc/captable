@@ -1,10 +1,10 @@
 import { getUserByEmail } from "@/server/user";
 import { getVerificationTokenByToken } from "@/server/verification-token";
-import { publicProcedure } from "@/trpc/api/trpc";
+import { withoutAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-export const verifyEmailProcedure = publicProcedure
+export const verifyEmailProcedure = withoutAuth
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
     const existingToken = await getVerificationTokenByToken(input);

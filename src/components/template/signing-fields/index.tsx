@@ -1,23 +1,29 @@
-import { type TypeZodAddFieldMutationSchema } from "@/trpc/routers/template-field-router/schema";
-import { FieldRenderer } from "./field-renderer";
 import { Button } from "@/components/ui/button";
+import { type RouterOutputs } from "@/trpc/shared";
 import { SigningFieldForm } from "../signing-field-form";
+import { FieldRenderer } from "./field-renderer";
 
-type Field = TypeZodAddFieldMutationSchema["data"][number];
+type Fields = RouterOutputs["template"]["getSigningFields"]["fields"];
 
 interface SigningFieldsProps {
-  fields: Field[];
-  token: string;
+  fields: Fields;
   companyPublicId: string | undefined;
+  recipientId: string;
+  templateId: string;
 }
 
 export function SigningFields({
   fields,
-  token,
   companyPublicId,
+  recipientId,
+  templateId,
 }: SigningFieldsProps) {
   return (
-    <SigningFieldForm token={token} companyPublicId={companyPublicId}>
+    <SigningFieldForm
+      recipientId={recipientId}
+      templateId={templateId}
+      companyPublicId={companyPublicId}
+    >
       {fields.map((item) => (
         <FieldRenderer
           name={item.name}
@@ -25,10 +31,13 @@ export function SigningFields({
           type={item.type}
           required={item.required}
           readOnly={item.readOnly}
+          prefilledValue={item.prefilledValue}
+          id={item.id}
+          meta={item.meta}
         />
       ))}
 
-      <Button type="submit">Sign</Button>
+      <Button type="submit">Complete signing</Button>
     </SigningFieldForm>
   );
 }

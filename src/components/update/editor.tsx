@@ -2,30 +2,46 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import Loading from "@/components/common/loading";
+import ShareModal, {
+  type ExtendedRecipientType,
+} from "@/components/common/share-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
+import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
 import { type Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
+import { env } from "@/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
 
 type UpdatesEditorProps = {
   update?: Update;
+  mode: "edit" | "new";
+  contacts?: ShareContactType[];
+  recipients?: ExtendedRecipientType[];
   companyPublicId?: string;
 };
 
-const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
+const UpdatesEditor = ({
+  mode,
+  update,
+  contacts,
+  recipients,
+  companyPublicId,
+}: UpdatesEditorProps) => {
   const router = useRouter();
   const { toast } = useToast();
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");
@@ -196,6 +212,34 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     },
   });
 
+  const cloneMutation = api.update.clone.useMutation({
+    onSuccess: async ({ publicId, success, message }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: success
+          ? "🎉 Successfully cloned"
+          : "Uh oh! Something went wrong.",
+        description: message,
+      });
+
+      if (!success) return;
+
+      router.push(`/${companyPublicId}/updates/${publicId}`);
+    },
+
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.message,
+      });
+    },
+
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
+
   const saveAsDraft = async () => {
     setLoading(true);
 
@@ -209,6 +253,57 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
     draftMutation.mutate(data);
   };
 
+  const cloneUpdate = async () => {
+    setLoading(true);
+
+    const data = {
+      title,
+      html,
+      content,
+    };
+    cloneMutation.mutate(data);
+  };
+
+  const { mutateAsync: shareUpdateMutation } = api.update.share.useMutation({
+    onSuccess: () => {
+      router.refresh();
+
+      toast({
+        title: "Successfully shared!",
+        description: "Update successfully shared.",
+      });
+    },
+
+    onError: (error) => {
+      toast({
+        title: "Oops! Something went wrong.",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const { mutateAsync: unshareUpdateMutation } = api.update.unShare.useMutation(
+    {
+      onSuccess: (r) => {
+        router.refresh();
+
+        toast({
+          title: "Removed access!",
+          description: r.message,
+        });
+      },
+
+      onError: (error: { message: string }) => {
+        toast({
+          title: "Oops! Something went wrong.",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    },
+  );
+
   return (
     <div className="flex flex-col gap-y-3">
       <form className="flex items-center justify-between gap-y-2">
@@ -217,7 +312,12 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
             <Badge variant="warning" className="mr-2">
               Draft
             </Badge>
-            <span className="h4">Updates / </span>
+            <Link
+              href={`/${companyPublicId}/updates`}
+              className="h4 text-primary/70 hover:underline"
+            >
+              Updates /{" "}
+            </Link>
             <input
               name="title"
               required
@@ -226,7 +326,6 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
               placeholder={`Investor update - ${formattedDate}`}
               defaultValue={title}
               onChange={(e) => {
-                console.log("Updating title", e.target.value);
                 setTitle(e.target.value);
               }}
             />
@@ -261,23 +360,56 @@ const UpdatesEditor = ({ update, companyPublicId }: UpdatesEditorProps) => {
                 </Button>
               </li>
 
-              <li>
-                <Button variant="ghost" size="sm">
-                  Send this update
-                </Button>
-              </li>
-
-              <li>
+              {/* TODO - implement this feature */}
+              {/* <li>
                 <Button variant="ghost" size="sm">
                   Make it public
                 </Button>
-              </li>
+              </li> */}
 
-              <li>
-                <Button variant="ghost" size="sm">
-                  Clone this update
-                </Button>
-              </li>
+              {update && mode === "edit" && (
+                <li>
+                  <ShareModal
+                    recipients={recipients!}
+                    contacts={contacts!}
+                    baseLink={`${baseUrl}/updates/${update?.publicId}`}
+                    title={`Share - "${title}"`}
+                    subtitle="Share this update with team members, stakeholders and others."
+                    onShare={async ({ selectedContacts, others }) => {
+                      await shareUpdateMutation({
+                        updateId: update?.id,
+                        selectedContacts:
+                          selectedContacts as ShareRecipientType[],
+                        others: others as ShareRecipientType[],
+                      });
+                    }}
+                    removeAccess={async ({ recipientId }) => {
+                      await unshareUpdateMutation({
+                        updateId: update?.id,
+                        recipientId,
+                      });
+                    }}
+                    trigger={
+                      <Button variant="ghost" size="sm">
+                        Share this update
+                      </Button>
+                    }
+                  />
+                </li>
+              )}
+
+              {update && (
+                <li>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    type="submit"
+                    onClick={cloneUpdate}
+                  >
+                    Clone this update
+                  </Button>
+                </li>
+              )}
             </ul>
           </DropdownButton>
         </div>

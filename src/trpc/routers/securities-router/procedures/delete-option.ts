@@ -1,9 +1,9 @@
-import { type withAuthTrpcContextType, withAuth } from "@/trpc/api/trpc";
 import { Audit } from "@/server/audit";
-import { type Prisma } from "@prisma/client";
+import { checkMembership } from "@/server/auth";
+import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
-  type TypeZodDeleteOptionMutationSchema,
   ZodDeleteOptionMutationSchema,
+  type TypeZodDeleteOptionMutationSchema,
 } from "../schema";
 
 export const deleteOptionProcedure = withAuth
@@ -24,11 +24,13 @@ export async function deleteOptionHandler({
   const user = session.user;
   const { optionId } = input;
   try {
-    await db.$transaction(async (tx: Prisma.TransactionClient) => {
+    await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ session, tx });
+
       const option = await tx.option.delete({
         where: {
           id: optionId,
-          companyId: session.user.companyId,
+          companyId,
         },
         select: {
           id: true,

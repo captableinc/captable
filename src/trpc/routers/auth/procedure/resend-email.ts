@@ -1,13 +1,20 @@
-import { sendVerificationEmail } from "@/lib/mail";
+import {
+  sendAuthVerificationEmail,
+  triggerName,
+  type TAuthVerificationPayloadSchema,
+} from "@/jobs/auth-verification-email";
+
 import { generateVerificationToken } from "@/lib/token";
 import { getVerificationTokenByEmail } from "@/server/verification-token";
-import { publicProcedure } from "@/trpc/api/trpc";
+import { getTriggerClient } from "@/trigger";
+import { withoutAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-export const resendEmailProcedure = publicProcedure
+export const resendEmailProcedure = withoutAuth
   .input(z.string().email())
   .mutation(async ({ input }) => {
+    const trigger = getTriggerClient();
     const oldVerificationToken = await getVerificationTokenByEmail(input);
 
     if (!oldVerificationToken) {
@@ -17,10 +24,18 @@ export const resendEmailProcedure = publicProcedure
       });
     }
     const verificationToken = await generateVerificationToken(input);
-    await sendVerificationEmail(
-      verificationToken.identifier,
-      verificationToken.token,
-    );
+
+    const payload: TAuthVerificationPayloadSchema = {
+      email: verificationToken.identifier,
+      token: verificationToken.token,
+    };
+
+    if (trigger) {
+      await trigger.sendEvent({ name: triggerName, payload });
+    } else {
+      await sendAuthVerificationEmail(payload);
+    }
+
     return {
       success: true,
       message:

@@ -1,24 +1,28 @@
-import { withAuth } from "@/trpc/api/trpc";
-import { ZodReInviteMutationSchema } from "../schema";
+import { sendMemberInviteEmail } from "@/jobs/member-inivite-email";
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
 import {
   generateInviteToken,
   generateMemberIdentifier,
   revokeExistingInviteTokens,
-  sendMemberInviteEmail,
 } from "@/server/member";
-import { Audit } from "@/server/audit";
+import { getTriggerClient } from "@/trigger";
+import { withAuth } from "@/trpc/api/trpc";
+import { ZodReInviteMutationSchema } from "../schema";
 
 export const reInviteProcedure = withAuth
   .input(ZodReInviteMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
-    const companyId = user.companyId;
+    const trigger = getTriggerClient();
 
     const { authTokenHash, expires, memberInviteTokenHash, token } =
       await generateInviteToken();
 
     const { company, verificationToken, email } = await db.$transaction(
       async (tx) => {
+        const { companyId } = await checkMembership({ session, tx });
+
         const company = await tx.company.findFirstOrThrow({
           where: {
             id: companyId,
@@ -98,7 +102,7 @@ export const reInviteProcedure = withAuth
       },
     );
 
-    await sendMemberInviteEmail({
+    const payload = {
       verificationToken,
       token,
       email,
@@ -107,7 +111,13 @@ export const reInviteProcedure = withAuth
         email: user.email,
         name: user.name,
       },
-    });
+    };
+
+    if (trigger) {
+      await trigger.sendEvent({ name: "email.member-invite", payload });
+    } else {
+      await sendMemberInviteEmail(payload);
+    }
 
     return { success: true };
   });

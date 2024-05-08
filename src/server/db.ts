@@ -1,10 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
 import { env } from "@/env";
+import { type TTemplateFieldMetaType } from "@/trpc/routers/template-field-router/schema";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace PrismaJson {}
+  namespace PrismaJson {
+    type TemplateFieldMeta = TTemplateFieldMetaType;
+  }
 }
 
 const globalForPrisma = globalThis as unknown as {
@@ -19,3 +22,11 @@ export const db =
   });
 
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+
+export type PrismaTransactionalClient = Parameters<
+  Parameters<PrismaClient["$transaction"]>[0]
+>[0];
+
+export type TPrisma = typeof db;
+
+export type TPrismaOrTransaction = TPrisma | PrismaTransactionalClient;

@@ -102,10 +102,10 @@ const ForgotPassword = () => {
           <span className="text-center text-sm text-gray-500">
             Remembered your password?{" "}
             <Link
-              href="/signin"
+              href="/login"
               className="underline underline-offset-4 hover:text-primary"
             >
-              Sign In
+              Login
             </Link>
           </span>
         </>

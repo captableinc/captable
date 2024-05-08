@@ -1,7 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { type MouseEvent, forwardRef, useRef, useState } from "react";
+import { mergeRefs } from "@/lib/dom";
+import { cn } from "@/lib/utils";
 import { toPng } from "html-to-image";
+import { forwardRef, useRef, useState, type MouseEvent } from "react";
 
 interface Point {
   x: number;
@@ -37,7 +40,7 @@ function DrawingLine({ line }: { line: [Point] }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       stroke="black"
-      strokeWidth="1px"
+      strokeWidth="3px"
       d={pathData}
     />
   );
@@ -45,10 +48,12 @@ function DrawingLine({ line }: { line: [Point] }) {
 
 interface SignaturePadProps {
   onChange?: (value: string) => void;
+  disabled: boolean;
+  prefilledValue: string | null;
 }
 
 export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
-  ({ onChange }) => {
+  ({ onChange, disabled, prefilledValue }, ref) => {
     const canvasRef = useRef<HTMLDivElement>(null);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [lines, setLines] = useState<[Point][]>([]);
@@ -81,11 +86,26 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
       };
     };
 
+    if (prefilledValue) {
+      return (
+        <div ref={ref} className="h-64 w-full cursor-not-allowed border">
+          <img src={prefilledValue} alt="signature" />
+        </div>
+      );
+    }
+
     return (
       <div
-        className="h-64 w-full cursor-crosshair border"
-        ref={canvasRef}
+        className={cn(
+          "h-64 w-full border",
+          disabled ? "cursor-not-allowed" : "cursor-crosshair",
+        )}
+        ref={mergeRefs(canvasRef, ref)}
         onMouseUp={async () => {
+          if (disabled) {
+            return;
+          }
+
           setIsDrawing(false);
 
           if (onChange) {
@@ -101,6 +121,10 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
           }
         }}
         onMouseDown={(e) => {
+          if (disabled) {
+            return;
+          }
+
           if (e.button !== 0) {
             return;
           }
@@ -111,6 +135,10 @@ export const SignaturePad = forwardRef<HTMLDivElement, SignaturePadProps>(
           setIsDrawing(true);
         }}
         onMouseMove={(e) => {
+          if (disabled) {
+            return;
+          }
+
           if (!isDrawing) {
             return;
           }

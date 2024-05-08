@@ -81,8 +81,7 @@ export const MemberInviteEmail = ({
 MemberInviteEmail.PreviewProps = {
   invitedBy: "joker",
   companyName: "Batmobile",
-  inviteLink:
-    "https://captable.inc/teams/invite/foo/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com",
+  inviteLink: "https://captable.inc/...",
 } as MemberInviteEmailProps;
 
 export default MemberInviteEmail;

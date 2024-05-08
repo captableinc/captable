@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { RiCheckboxCircleLine } from "@remixicon/react";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Password Updated",
@@ -22,7 +22,7 @@ export default function PasswordUpdated() {
           </p>
 
           <Link href="/" className="mt-4">
-            <Button size="lg">Return to sign in</Button>
+            <Button size="lg">Return to login page</Button>
           </Link>
         </div>
       </div>

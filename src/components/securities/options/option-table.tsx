@@ -1,19 +1,19 @@
 "use client";
 
-import * as React from "react";
 import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getFacetedUniqueValues,
-  getFacetedRowModel,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,38 +29,23 @@ import {
 import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
-import { type RouterOutputs } from "@/trpc/shared";
-import { OptionTableToolbar } from "./option-table-toolbar";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
-import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTable } from "@/components/ui/data-table/data-table";
-import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
 import { SortButton } from "@/components/ui/data-table/data-table-buttons";
-import { getPresignedGetUrl } from "@/server/file-uploads";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { useToast } from "@/components/ui/use-toast";
+import { getPresignedGetUrl } from "@/server/file-uploads";
+import { type RouterOutputs } from "@/trpc/shared";
+import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { OptionTableToolbar } from "./option-table-toolbar";
 
 type Option = RouterOutputs["securities"]["getOptions"]["data"];
 
 type OptionsType = {
   options: Option;
-};
-
-type Document = {
-  bucket: {
-    key: string;
-    mimeType: string;
-    size: number;
-  };
-  name: string;
-  uploader: {
-    user: {
-      name: string | null;
-      image: string | null;
-    };
-  };
 };
 
 export const columns: ColumnDef<Option[number]>[] = [
@@ -220,24 +205,23 @@ export const columns: ColumnDef<Option[number]>[] = [
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Documents</DropdownMenuLabel>
-            {row?.original?.documents?.map((doc: Document) => (
-              <>
-                <DropdownMenuItem
-                  className="hover:cursor-pointer"
-                  onClick={async () => {
-                    await openFileOnTab(doc.bucket.key);
-                  }}
-                >
-                  <RiFileDownloadLine
-                    type={doc.bucket.mimeType}
-                    className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
-                  />
-                  {doc.name.slice(0, 12)}
-                  <p className="mx-4 rounded-full bg-slate-100 text-xs text-slate-500">
-                    ({doc.uploader.user.name})
-                  </p>
-                </DropdownMenuItem>
-              </>
+            {row?.original?.documents?.map((doc) => (
+              <DropdownMenuItem
+                key={doc.id}
+                className="hover:cursor-pointer"
+                onClick={async () => {
+                  await openFileOnTab(doc.bucket.key);
+                }}
+              >
+                <RiFileDownloadLine
+                  type={doc.bucket.mimeType}
+                  className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
+                />
+                {doc.name.slice(0, 12)}
+                <p className="mx-4 rounded-full bg-slate-100 text-xs text-slate-500">
+                  {doc?.uploader?.user?.name}
+                </p>
+              </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -313,7 +297,6 @@ export const columns: ColumnDef<Option[number]>[] = [
 ];
 
 const OptionTable = ({ options }: OptionsType) => {
-  console.log(options);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],

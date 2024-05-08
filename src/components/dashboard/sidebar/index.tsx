@@ -136,10 +136,10 @@ const navigation = [
         name: "eSign documents",
         href: "/esign",
       },
-      {
-        name: "Share documents",
-        href: "/share",
-      },
+      // {
+      //   name: "Share documents",
+      //   href: "/share",
+      // },
     ],
   },
 

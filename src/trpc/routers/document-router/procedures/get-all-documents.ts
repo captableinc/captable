@@ -1,35 +1,41 @@
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 
-export const getAllDocumentsProcedure = withAuth.query(async ({ ctx }) => {
-  const user = ctx.session.user;
+export const getAllDocumentsProcedure = withAuth.query(
+  async ({ ctx: { session, db } }) => {
+    const data = await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ session, tx });
 
-  const data = await ctx.db.document.findMany({
-    where: {
-      companyId: user.companyId,
-    },
-    include: {
-      uploader: {
-        select: {
-          user: {
+      const data = await tx.document.findMany({
+        where: {
+          companyId,
+        },
+        include: {
+          uploader: {
             select: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          bucket: {
+            select: {
+              key: true,
+              mimeType: true,
+              size: true,
               name: true,
             },
           },
         },
-      },
-      bucket: {
-        select: {
-          key: true,
-          mimeType: true,
-          size: true,
-          name: true,
+        orderBy: {
+          createdAt: "desc",
         },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+      });
+      return data;
+    });
 
-  return data;
-});
+    return data;
+  },
+);

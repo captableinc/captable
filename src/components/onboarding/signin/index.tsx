@@ -50,12 +50,10 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       callbackUrl: "/onboarding",
     });
 
-    debugger;
-
     if (result?.error) {
       toast({
         variant: "destructive",
-        title: "Unable to sign in",
+        title: "Unable to login",
         description: "Incorrect email or password",
       });
     }
@@ -140,7 +138,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                   loadingText="Signing in..."
                   type="submit"
                 >
-                  Sign In
+                  Login with Email
                 </Button>
               </div>
             </form>
@@ -154,7 +152,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
+                    Or
                   </span>
                 </div>
               </div>
@@ -166,7 +164,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                 onClick={signInWithGoogle}
               >
                 <RiGoogleFill className="mr-2 h-4 w-4" />
-                Google
+                Login with Google
               </Button>
             </>
           )}
@@ -176,7 +174,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
               href="/signup"
               className="underline underline-offset-4 hover:text-primary"
             >
-              Sign Up
+              Signup
             </Link>
           </span>
         </>

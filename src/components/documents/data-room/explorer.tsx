@@ -5,12 +5,16 @@ import type { Bucket } from "@prisma/client";
 import Link from "next/link";
 
 type DocumentExplorerProps = {
+  shared?: boolean;
+  jwtToken?: string;
   companyPublicId: string;
   dataRoomPublicId: string;
   documents: Bucket[];
 };
 
 const DataRoomFileExplorer = ({
+  jwtToken,
+  shared,
   documents,
   companyPublicId,
   dataRoomPublicId,
@@ -24,7 +28,11 @@ const DataRoomFileExplorer = ({
         {documents.map((document) => (
           <li key={document.id}>
             <Link
-              href={`/${companyPublicId}/documents/${document.id}`}
+              href={
+                shared
+                  ? `/data-rooms/${dataRoomPublicId}/${document.id}?token=${jwtToken}`
+                  : `/${companyPublicId}/documents/${document.id}`
+              }
               className="col-span-1 flex cursor-pointer rounded-md transition duration-150 ease-in-out hover:shadow-md"
             >
               <div

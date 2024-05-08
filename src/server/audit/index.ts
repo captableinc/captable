@@ -24,18 +24,31 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { db } from "@/server/db";
-import { type Prisma } from "@prisma/client";
-import { type AuditSchemaType } from "@/server/audit/schema";
+import {
+  type AuditSchemaType,
+  type TEsignAuditSchema,
+} from "@/server/audit/schema";
+import { type TPrismaOrTransaction } from "@/server/db";
 
-const create = (data: AuditSchemaType, tx?: Prisma.TransactionClient) => {
-  const dbClient = tx ?? db;
-
-  return dbClient.audit.create({
+const create = (data: AuditSchemaType, tx: TPrismaOrTransaction) => {
+  return tx.audit.create({
     data,
   });
 };
 
 export const Audit = {
   create,
+};
+
+const esignAuditCreate = (
+  data: TEsignAuditSchema,
+  tx: TPrismaOrTransaction,
+) => {
+  return tx.esignAudit.create({
+    data,
+  });
+};
+
+export const EsignAudit = {
+  create: esignAuditCreate,
 };

@@ -69,3 +69,21 @@ export const getActions = () => {
     value: action,
   }));
 };
+
+export const EsignAuditSchema = z.object({
+  action: z.enum([
+    "document.complete",
+    "recipient.signed",
+    "document.email.sent",
+  ]),
+  occurredAt: z.date().optional(),
+  templateId: z.string(),
+  recipientId: z.string().optional(),
+  companyId: z.string(),
+  ip: z.string(),
+  userAgent: z.string(),
+  location: z.string(),
+  summary: z.string(),
+});
+
+export type TEsignAuditSchema = z.infer<typeof EsignAuditSchema>;

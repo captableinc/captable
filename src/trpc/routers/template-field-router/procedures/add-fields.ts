@@ -1,34 +1,213 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodAddFieldMutationSchema } from "../schema";
+
+import type { TEsignEmailJob } from "@/jobs/esign-email";
+import { sendEsignEmail } from "@/jobs/esign-email";
+import { decode, encode } from "@/lib/jwt";
+import { checkMembership } from "@/server/auth";
+import { getTriggerClient } from "@/trigger";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+const emailTokenPayloadSchema = z.object({
+  id: z.string(),
+  rec: z.string(),
+});
+
+type TEmailTokenPayloadSchema = z.infer<typeof emailTokenPayloadSchema>;
+
+interface EncodeEmailTokenOption {
+  templateId: string;
+  recipientId: string;
+}
+
+export function EncodeEmailToken({
+  recipientId,
+  templateId,
+}: EncodeEmailTokenOption) {
+  const encodeToken: TEmailTokenPayloadSchema = {
+    rec: recipientId,
+    id: templateId,
+  };
+
+  return encode(encodeToken);
+}
+
+export async function DecodeEmailToken(jwt: string) {
+  const { payload } = await decode(jwt);
+  return emailTokenPayloadSchema.parse(payload);
+}
 
 export const addFieldProcedure = withAuth
   .input(ZodAddFieldMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const user = ctx.session.user;
+    try {
+      const user = ctx.session.user;
+      const triggerClient = getTriggerClient();
 
-    await ctx.db.$transaction(async (tx) => {
-      const template = await tx.template.findFirstOrThrow({
-        where: {
-          publicId: input.templatePublicId,
-          companyId: user.companyId,
-        },
-        select: {
-          id: true,
-        },
+      const mails: TEsignEmailJob[] = [];
+
+      if (input.status === "COMPLETE" && (!user.email || !user.name)) {
+        return {
+          success: false,
+          title: "Validation failed",
+          message: "Required sender name and email",
+        };
+      }
+
+      await ctx.db.$transaction(async (tx) => {
+        const { companyId } = await checkMembership({
+          tx,
+          session: ctx.session,
+        });
+
+        const template = await tx.template.findFirstOrThrow({
+          where: {
+            publicId: input.templatePublicId,
+            companyId,
+            status: "DRAFT",
+          },
+          select: {
+            id: true,
+            name: true,
+            completedOn: true,
+            orderedDelivery: true,
+            company: {
+              select: {
+                name: true,
+                logo: true,
+              },
+            },
+          },
+        });
+
+        if (template.completedOn) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "E-signing has already completed among all parties.",
+          });
+        }
+
+        await tx.templateField.deleteMany({
+          where: {
+            templateId: template.id,
+          },
+        });
+
+        const recipientList = await tx.esignRecipient.findMany({
+          where: {
+            templateId: template.id,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        });
+
+        const fieldsList = [];
+
+        for (let index = 0; index < input.data.length; index++) {
+          const field = input.data[index];
+
+          if (field) {
+            fieldsList.push({ ...field, templateId: template.id });
+          }
+        }
+
+        await tx.templateField.createMany({
+          data: fieldsList,
+        });
+
+        await tx.template.update({
+          where: {
+            id: template.id,
+          },
+          data: {
+            status: input.status,
+            message: input.message,
+          },
+        });
+
+        if (input.status === "COMPLETE") {
+          for (let index = 0; index < recipientList.length; index++) {
+            const recipient = recipientList[index];
+
+            if (!recipient) {
+              throw new Error("not found");
+            }
+
+            const token = await EncodeEmailToken({
+              recipientId: recipient.id,
+              templateId: template.id,
+            });
+
+            const email = recipient.email;
+
+            mails.push({
+              token,
+              email,
+              recipient: {
+                id: recipient.id,
+                name: recipient?.name,
+                email: recipient.email,
+              },
+              sender: {
+                name: user.name,
+                email: user.email,
+              },
+              message: input?.message,
+              documentName: template.name,
+              company: {
+                name: template.company.name,
+                logo: template.company.logo,
+              },
+            });
+
+            if (template.orderedDelivery) {
+              break;
+            }
+          }
+        }
       });
-      await tx.templateField.deleteMany({
-        where: {
-          templateId: template.id,
-        },
-      });
 
-      const data = input.data.map((item) => ({
-        ...item,
-        templateId: template.id,
-      }));
+      if (mails.length) {
+        if (triggerClient) {
+          await triggerClient.sendEvents(
+            mails.map((payload) => ({
+              name: "email.esign",
+              payload,
+            })),
+          );
+        } else {
+          await Promise.all(mails.map((payload) => sendEsignEmail(payload)));
+        }
+      }
 
-      await tx.templateField.createMany({ data });
-    });
-
-    return {};
+      return {
+        success: true,
+        title:
+          input.status === "COMPLETE" ? "Sent for e-sign" : "Saved in draft",
+        message:
+          input.status === "COMPLETE"
+            ? "Successfully sent document for e-signature."
+            : "Your template fields has been created.",
+      };
+    } catch (error) {
+      console.log({ error });
+      if (error instanceof TRPCError) {
+        return {
+          success: false,
+          title: "Bad request",
+          message: error.message,
+        };
+      } else {
+        return {
+          success: false,
+          title: "Error",
+          message: "Uh ohh! Something went wrong. Please try again later.",
+        };
+      }
+    }
   });

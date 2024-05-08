@@ -77,7 +77,6 @@ export function CommandMenu() {
   }, []);
 
   const push = (path: string) => {
-    console.log("pushing path", path);
     router.push(path);
     setOpen(false);
   };

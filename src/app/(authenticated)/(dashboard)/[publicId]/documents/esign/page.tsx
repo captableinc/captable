@@ -1,22 +1,49 @@
+import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
-import EsignDocumentUpload from "@/components/documents/esign/document-uploader";
+import { AddEsignModal } from "@/components/esign/add-esign-modal";
+import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
+import { api } from "@/trpc/server";
+import { RiUploadCloudLine } from "@remixicon/react";
 import { type Metadata } from "next";
+import { ESignTable } from "./components/table";
 
 export const metadata: Metadata = {
-  title: "Esign",
+  title: "Documents",
 };
-const DocSign = async () => {
+
+const EsignDocumentPage = async () => {
   const session = await withServerSession();
-  const user = session.user;
+  const { documents } = await api.template.all.query();
+
+  if (documents.length === 0) {
+    return (
+      <EmptyState
+        icon={<RiUploadCloudLine />}
+        title="You do not have any documents!"
+        subtitle="Click the button below to upload a new document for electronic signature."
+      >
+        <AddEsignModal companyPublicId={session.user.companyPublicId} />
+      </EmptyState>
+    );
+  }
 
   return (
     <PageLayout
       title="eSign documents"
       description="Upload, sign and send documents for electronic signatures."
-      action={<EsignDocumentUpload companyPublicId={user.companyPublicId} />}
-    />
+      action={<AddEsignModal companyPublicId={session.user.companyPublicId} />}
+    >
+      <Card className="mt-3">
+        <div className="p-6">
+          <ESignTable
+            companyPublicId={session.user.companyPublicId}
+            documents={documents}
+          />
+        </div>
+      </Card>
+    </PageLayout>
   );
 };
 
-export default DocSign;
+export default EsignDocumentPage;

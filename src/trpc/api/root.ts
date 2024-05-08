@@ -1,6 +1,8 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
 import { auditRouter } from "../routers/audit-router/router";
+import { authRouter } from "../routers/auth/router";
 import { bucketRouter } from "../routers/bucket-router/router";
+import { commonRouter } from "../routers/common/router";
 import { companyRouter } from "../routers/company-router/router";
 import { dataRoomRouter } from "../routers/data-room-router/router";
 import { documentRouter } from "../routers/document-router/router";
@@ -41,6 +43,7 @@ export const appRouter = createTRPCRouter({
   update: updateRouter,
   auth: authRouter,
   dataRoom: dataRoomRouter,
+  common: commonRouter,
   security: securityRouter,
 });
 

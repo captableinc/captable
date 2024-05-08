@@ -11,9 +11,9 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { getIp, getUserAgent } from "@/lib/headers";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { getIp, getUserAgent } from "@/lib/headers";
 
 /**
  * 1. CONTEXT
@@ -39,7 +39,9 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   };
 };
 
-type CreateTRPCContextType = Awaited<ReturnType<typeof createTRPCContext>>;
+export type CreateTRPCContextType = Awaited<
+  ReturnType<typeof createTRPCContext>
+>;
 
 const withAuthTrpcContext = ({ session, ...rest }: CreateTRPCContextType) => {
   if (!session || !session.user) {
@@ -97,7 +99,7 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const withoutAuth = t.procedure;
 
 /**
  * Protected (authenticated) procedure

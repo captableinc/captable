@@ -71,6 +71,7 @@ export const FieldTypes = {
   TEXTAREA: "TEXTAREA",
   CHECKBOX: "CHECKBOX",
   SIGNATURE: "SIGNATURE",
+  SELECT: "SELECT",
 } as const;
 
 export type FieldTypes = (typeof FieldTypes)[keyof typeof FieldTypes];
@@ -216,11 +217,3 @@ export const UpdateStatusEnum = {
 } as const;
 
 export type UpdateStatusEnum = (typeof UpdateStatusEnum)[keyof typeof UpdateStatusEnum];
-
-export const UpdateEmailStatusEnum = {
-  SENT: "SENT",
-  PENDING: "PENDING",
-  FAILED: "FAILED",
-} as const;
-
-export type UpdateEmailStatusEnum = (typeof UpdateEmailStatusEnum)[keyof typeof UpdateEmailStatusEnum];

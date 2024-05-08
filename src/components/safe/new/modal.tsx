@@ -29,7 +29,6 @@ export default function CreateNewSafe({
 
   const { mutateAsync } = api.safe.create.useMutation({
     onSuccess: (payload) => {
-      console.log({ payload });
       const isSuccess = payload?.success;
       const message = payload?.message;
       toast({
@@ -41,7 +40,7 @@ export default function CreateNewSafe({
       });
       if (isSuccess) {
         router.push(
-          `/${session?.user.companyPublicId}/templates/${payload?.template?.publicId}`,
+          `/${session?.user.companyPublicId}/documents/esign/${payload?.template?.publicId}`,
         );
       }
       setOpen(false);

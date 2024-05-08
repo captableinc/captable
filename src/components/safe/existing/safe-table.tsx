@@ -1,19 +1,19 @@
 "use client";
 
-import * as React from "react";
 import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getFacetedUniqueValues,
-  getFacetedRowModel,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,38 +29,23 @@ import {
 import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { useToast } from "@/components/ui/use-toast";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import { type RouterOutputs } from "@/trpc/shared";
 import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
-import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { DataTableContent } from "@/components/ui/data-table/data-table-content";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 import { SafeTableToolbar } from "./safe-table-toolbar";
 
 type Safe = RouterOutputs["safe"]["getSafes"]["data"];
 
 type SafesType = {
   safes: Safe;
-};
-
-type Document = {
-  bucket: {
-    key: string;
-    mimeType: string;
-    size: number;
-  };
-  name: string;
-  uploader: {
-    user: {
-      name: string | null;
-      image: string | null;
-    };
-  };
 };
 
 export const columns: ColumnDef<Safe[number]>[] = [
@@ -223,24 +208,23 @@ export const columns: ColumnDef<Safe[number]>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Documents</DropdownMenuLabel>
             {documents?.length ? (
-              documents.map((doc: Document) => (
-                <>
-                  <DropdownMenuItem
-                    className="hover:cursor-pointer"
-                    onClick={async () => {
-                      await openFileOnTab(doc.bucket.key);
-                    }}
-                  >
-                    <RiFileDownloadLine
-                      type={doc.bucket.mimeType}
-                      className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
-                    />
-                    {doc.name.slice(0, 12)}
-                    <p className="mx-4 rounded-full bg-slate-100 text-xs text-slate-500">
-                      ({doc.uploader.user.name})
-                    </p>
-                  </DropdownMenuItem>
-                </>
+              documents.map((doc) => (
+                <DropdownMenuItem
+                  key={doc.id}
+                  className="hover:cursor-pointer"
+                  onClick={async () => {
+                    await openFileOnTab(doc.bucket.key);
+                  }}
+                >
+                  <RiFileDownloadLine
+                    type={doc.bucket.mimeType}
+                    className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
+                  />
+                  {doc.name.slice(0, 12)}
+                  <p className="mx-4 rounded-full bg-slate-100 text-xs text-slate-500">
+                    {doc?.uploader?.user.name}
+                  </p>
+                </DropdownMenuItem>
               ))
             ) : (
               <p className="mx-2 rounded-full py-2 text-xs text-slate-500">

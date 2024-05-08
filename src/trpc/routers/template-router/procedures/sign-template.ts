@@ -1,138 +1,338 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
-import { PDFDocument, StandardFonts } from "pdf-lib";
-import { withAuth } from "@/trpc/api/trpc";
+import { dayjsExt } from "@/common/dayjs";
+import {
+  sendEsignConfirmationEmail,
+  type TRecipientKind,
+  type TRecipientsKind,
+} from "@/jobs/esign-confirmation-email";
+import { sendEsignEmail } from "@/jobs/esign-email";
+import {
+  CompleteSignDocumentJob,
+  type TESignPdfSchema,
+} from "@/jobs/esign-pdf";
+import { EsignAudit } from "@/server/audit";
+import {
+  completeEsignDocuments,
+  generateEsignPdf,
+  getEmailSpecificInfoFromTemplate,
+  getEsignAudits,
+  getEsignTemplate,
+  uploadEsignDocuments,
+  type TCompleteEsignDocumentsOptions,
+  type TGenerateEsignSignPdfOptions,
+  type uploadEsignDocumentsOptions,
+} from "@/server/esign";
+import { getPresignedGetUrl } from "@/server/file-uploads";
+import { getTriggerClient } from "@/trigger";
+import { withoutAuth } from "@/trpc/api/trpc";
+import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
 import { ZodSignTemplateMutationSchema } from "../schema";
-import { getFileFromS3, uploadFile } from "@/common/uploads";
-import { createDocumentHandler } from "../../document-router/procedures/create-document";
-import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
-import { generateRange, type Range } from "@/lib/pdf-positioning";
 
-export const signTemplateProcedure = withAuth
+export const signTemplateProcedure = withoutAuth
   .input(ZodSignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const { db, session } = ctx;
+    const { db, requestIp, userAgent } = ctx;
 
-    const user = session.user;
+    const triggerClient = getTriggerClient();
 
-    const template = await db.template.findFirstOrThrow({
-      where: { publicId: input.templatePublicId },
-      include: {
-        fields: {
-          orderBy: {
-            top: "asc",
-          },
+    await db.$transaction(async (tx) => {
+      const template = await getEsignTemplate({
+        templateId: input.templateId,
+        tx,
+      });
+      const bucketKey = template.bucket.key;
+      const companyId = template.companyId;
+      const templateName = template.name;
+
+      const totalGroups = new Set(
+        template.fields.map((item) => item.recipientId),
+      );
+
+      const recipient = await tx.esignRecipient.findFirstOrThrow({
+        where: {
+          id: input.recipientId,
+          templateId: template.id,
         },
-        bucket: true,
-      },
-    });
+      });
 
-    const docBuffer = await getFileFromS3(template.bucket.key);
-    const pdfDoc = await PDFDocument.load(docBuffer);
+      await tx.esignRecipient.update({
+        where: { id: recipient.id },
+        data: { status: "SIGNED" },
+      });
 
-    const pages = pdfDoc.getPages();
+      if (totalGroups.size > 1) {
+        for (const field of template.fields) {
+          const value = input?.data?.[field?.id];
 
-    let cumulativePagesHeight = 0;
-    const measurements = [];
-
-    for (let i = 0; i < pages.length; i++) {
-      const page = pages[i];
-      if (page) {
-        const height = page.getHeight();
-        const width = page.getWidth();
-        cumulativePagesHeight += height;
-        measurements.push({ height, width });
-      }
-    }
-
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const fontSize = 8;
-    const textHeight = font.heightAtSize(fontSize);
-
-    const pageRangeCache: Record<string, Range[]> = {};
-
-    for (const field of template.fields) {
-      const value = input?.data?.[field?.name];
-
-      if (value) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const pageNumber: number = field.page;
-
-        const page = pages.at(pageNumber);
-
-        if (!page) {
-          throw new Error("page not found");
+          if (value) {
+            await tx.templateField.update({
+              where: {
+                id: field.id,
+              },
+              data: {
+                prefilledValue: value,
+              },
+            });
+          }
         }
 
-        const cacheKey = String(field.viewportHeight);
-        let pagesRange = pageRangeCache?.[cacheKey];
+        await EsignAudit.create(
+          {
+            action: "recipient.signed",
+            companyId: template.companyId,
+            recipientId: recipient.id,
+            templateId: template.id,
+            ip: ctx.requestIp,
+            location: "",
+            userAgent: ctx.userAgent,
+            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+          },
+          tx,
+        );
 
-        if (!pagesRange) {
-          const range = generateRange(measurements, field.viewportWidth);
-          pageRangeCache[cacheKey] = range;
-          pagesRange = range;
-        }
+        const signableRecepients = await tx.esignRecipient.count({
+          where: {
+            templateId: template.id,
+            status: "PENDING",
+          },
+        });
 
-        const { width: pageWidth, height: pageHeight } = page.getSize();
-        const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
-
-        const widthRatio = pageWidth / field.viewportWidth;
-
-        const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;
-
-        const fieldX = field.left * widthRatio;
-
-        const top = field.top - topMargin;
-        const fieldY = top * widthRatio;
-        const width = field.width * widthRatio;
-        const height = field.height * totalHeightRatio;
-
-        if (field.type === "SIGNATURE") {
-          const image = await pdfDoc.embedPng(value);
-
-          const updatedY = fieldY + height;
-
-          page.drawImage(image, {
-            x: fieldX,
-            y: pageHeight - updatedY,
-            width,
-            height,
+        if (signableRecepients === 0) {
+          const values = await tx.templateField.findMany({
+            where: {
+              templateId: template.id,
+              prefilledValue: {
+                not: null,
+              },
+            },
+            select: {
+              id: true,
+              prefilledValue: true,
+            },
           });
-        } else {
-          const padding = (height + textHeight) / 2;
-          page.drawText(value, {
-            x: fieldX,
-            y: pageHeight - fieldY - padding,
-            font,
-            size: fontSize,
+
+          const data = values.reduce<Record<string, string>>((prev, curr) => {
+            prev[curr.id] = curr.prefilledValue ?? "";
+
+            return prev;
+          }, {});
+
+          await EsignAudit.create(
+            {
+              action: "recipient.signed",
+              companyId: template.companyId,
+              recipientId: recipient.id,
+              templateId: template.id,
+              ip: ctx.requestIp,
+              location: "",
+              userAgent: ctx.userAgent,
+              summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            },
+            tx,
+          );
+
+          await signPdf({
+            bucketKey,
+            companyId,
+            templateName,
+            fields: template.fields,
+            uploaderName: "open cap",
+            data,
+            templateId: template.id,
+            db: tx,
+            requestIp,
+            userAgent,
           });
         }
+      } else {
+        await EsignAudit.create(
+          {
+            action: "recipient.signed",
+            companyId: template.companyId,
+            recipientId: recipient.id,
+            templateId: template.id,
+            ip: ctx.requestIp,
+            location: "",
+            userAgent: ctx.userAgent,
+            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+          },
+          tx,
+        );
+
+        await signPdf({
+          bucketKey,
+          companyId,
+          templateName,
+          fields: template.fields,
+          uploaderName: recipient.name ?? "unknown signer",
+          data: input.data,
+          templateId: template.id,
+          db: tx,
+          requestIp,
+          userAgent,
+        });
       }
-    }
 
-    const modifiedPdfBytes = await pdfDoc.save();
+      if (template.orderedDelivery) {
+        const nextDelivery = await tx.esignRecipient.findFirst({
+          where: {
+            templateId: template.id,
+            status: "PENDING",
+          },
+          select: {
+            id: true,
+            email: true,
+          },
+        });
+        if (nextDelivery) {
+          const token = await EncodeEmailToken({
+            recipientId: nextDelivery.id,
+            templateId: template.id,
+          });
+          const email = nextDelivery.email;
 
-    const file = {
-      name: `${template.name}`,
-      type: "application/pdf",
-      arrayBuffer: async () => Promise.resolve(Buffer.from(modifiedPdfBytes)),
-      size: 0,
-    } as unknown as File;
+          const uploaderName = template.uploader.user.name;
 
-    const { fileUrl: _fileUrl, ...bucketData } = await uploadFile(file, {
-      identifier: user.companyPublicId,
-      keyPrefix: "generic-document",
-    });
+          await EsignAudit.create(
+            {
+              action: "document.email.sent",
+              companyId: template.companyId,
+              recipientId: recipient.id,
+              templateId: template.id,
+              ip: ctx.requestIp,
+              location: "",
+              userAgent: ctx.userAgent,
+              summary: `${uploaderName ? uploaderName : ""} sent "${template.name}" to ${recipient.name ? recipient.name : ""} for eSignature at ${dayjsExt(new Date()).format("lll")}`,
+            },
+            tx,
+          );
 
-    const { id: bucketId, name } = await createBucketHandler({
-      ctx,
-      input: bucketData,
-    });
-
-    await createDocumentHandler({
-      ctx,
-      input: { bucketId, name },
+          if (triggerClient) {
+            await triggerClient.sendEvent({
+              name: "email.esign",
+              payload: { token, email },
+            });
+          } else {
+            await sendEsignEmail({ token, email });
+          }
+        }
+      }
     });
 
     return {};
   });
+
+interface TSignPdfOptions
+  extends Omit<TGenerateEsignSignPdfOptions, "audits">,
+    Omit<uploadEsignDocumentsOptions, "buffer">,
+    Omit<TCompleteEsignDocumentsOptions, "bucketData"> {
+  templateId: string;
+}
+
+async function signPdf({
+  userAgent,
+  requestIp,
+  db,
+  bucketKey,
+  companyId,
+  templateName,
+  data,
+  fields,
+  uploaderName,
+  templateId,
+}: TSignPdfOptions) {
+  const trigger = getTriggerClient();
+
+  const audits = await getEsignAudits({ templateId, tx: db });
+
+  if (trigger) {
+    const payload: TESignPdfSchema = {
+      bucketKey,
+      data,
+      fields,
+      audits,
+      companyId,
+      requestIp,
+      templateId,
+      templateName,
+      uploaderName,
+      userAgent,
+    };
+
+    await CompleteSignDocumentJob.invoke({ ...payload });
+  } else {
+    const modifiedPdfBytes = await generateEsignPdf({
+      bucketKey,
+      data,
+      fields,
+      audits,
+    });
+
+    const pdfBuffer = Buffer.from(modifiedPdfBytes);
+
+    const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
+      buffer: pdfBuffer,
+      companyId,
+      templateName,
+    });
+
+    await completeEsignDocuments({
+      bucketData,
+      companyId,
+      db,
+      requestIp,
+      templateId,
+      templateName,
+      uploaderName,
+      userAgent,
+    });
+
+    const payload = await getEmailSpecificInfoFromTemplate(templateId, db);
+
+    const FILE_URL = await getPresignedGetUrl(bucketData.key);
+
+    await sendConfirmationEmail({ ...payload, fileUrl: FILE_URL.url });
+  }
+}
+
+type TSendConfirmationEmail = Omit<TRecipientsKind, "kind">;
+type TMail = TRecipientKind;
+
+async function sendConfirmationEmail({
+  fileUrl,
+  recipients,
+  documentName,
+  senderName,
+  company,
+}: TSendConfirmationEmail) {
+  const mails: TMail[] = [];
+
+  for (let index = 0; index < recipients.length; index++) {
+    const recipient = recipients[index];
+
+    if (!recipient) {
+      throw new Error("not found");
+    }
+
+    mails.push({
+      fileUrl,
+      documentName,
+      senderName,
+      company,
+      kind: "RECIPIENT",
+      recipient: {
+        id: recipient.id,
+        name: recipient.name,
+        email: recipient.email,
+      },
+    });
+  }
+  if (mails.length) {
+    await Promise.all(
+      mails.map((payload) =>
+        sendEsignConfirmationEmail({ ...payload, fileUrl }),
+      ),
+    );
+  }
+}

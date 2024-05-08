@@ -1,35 +1,44 @@
 "use client";
 
-import { nanoid } from "nanoid";
-import { useCallback, useState } from "react";
-import { TemplateField } from "./template-field";
-import { DrawingField } from "./drawing-field";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import {
-  type PageMeasurement,
   generateRange,
   getPageNumber,
+  type PageMeasurement,
 } from "@/lib/pdf-positioning";
+
+import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { type RouterOutputs } from "@/trpc/shared";
+import { useResizeObserver } from "@wojtekmaj/react-hooks";
+import { nanoid } from "nanoid";
+import { useCallback, useState } from "react";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { DrawingField } from "./drawing-field";
+import { TemplateField } from "./template-field";
+
+type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface FieldCanvasProp {
   mode?: "readonly" | "edit";
   measurements: PageMeasurement;
+  recipients: Recipients;
 }
 
 const resizeObserverOptions = {};
 
-export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
+export function FieldCanvas({
+  mode = "edit",
+  measurements,
+  recipients,
+}: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
   const { append, fields, remove } = useFieldArray({
     name: "fields",
     control,
+    keyName: "_id",
   });
   const [isDrawing, setIsDrawing] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [endPos, setEndPos] = useState({ x: 0, y: 0 });
-  const [focusId, setFocusId] = useState("");
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [viewport, setViewport] = useState({ height: 0, width: 0 });
 
@@ -44,13 +53,11 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
-  const handleFocus = (id: string) => {
-    if (mode === "edit") {
-      setFocusId(id);
-    }
-  };
-
   const heightRange = generateRange(measurements, viewport.width);
+
+  const recipient = getValues("recipient");
+  const recipientColors = getValues("recipientColors");
+  const color = recipientColors?.[recipient] ?? "";
 
   return (
     <>
@@ -108,7 +115,7 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
 
             append({
               id,
-              name: `field ${fields.length}`,
+              name: `Untitled #${fields.length + 1}`,
               left,
               top,
               width,
@@ -120,14 +127,17 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
               page: pageNum,
+              recipientId: recipient,
+              ...(fieldType === "SELECT" && {
+                meta: { options: [{ id: nanoid(7), value: "" }] },
+              }),
             });
-
-            setFocusId(id);
           }
         }}
       />
       {isDrawing && (
         <DrawingField
+          color={color}
           left={Math.min(startPos.x, endPos.x)}
           top={Math.min(startPos.y, endPos.y)}
           height={Math.abs(endPos.y - startPos.y)}
@@ -137,18 +147,16 @@ export function FieldCanvas({ mode = "edit", measurements }: FieldCanvasProp) {
 
       {fields.map((field, index) => (
         <TemplateField
+          recipients={recipients}
           viewportWidth={field.viewportWidth}
           viewportHeight={field.viewportHeight}
           currentViewportWidth={viewport.width}
           currentViewportHeight={viewport.height}
-          key={field.id}
-          focusId={focusId}
+          key={field._id}
           height={field.height}
           left={field.left}
           top={field.top}
-          id={field.id}
           width={field.width}
-          handleFocus={handleFocus}
           index={index}
           handleDelete={() => {
             remove(index);

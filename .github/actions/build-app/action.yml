@@ -7,6 +7,7 @@ runs:
       run: cp .env.example .env
 
     - name: Build app
-      run: npm i && npm run build
+      shell: bash
+      run: npm run build
       env:
         SKIP_ENV_VALIDATION: 1

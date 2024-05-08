@@ -27,6 +27,7 @@ const UpdatePage = async ({
     const update = await getUpdate(updatePublicId);
     const recipients = await api.update.getRecipiants.query({
       updateId: update?.id,
+      publicUpdateId: update.publicId,
     });
 
     return (

@@ -22,7 +22,7 @@ export const getUpdatesProcedure = withAuth.query(async ({ ctx }) => {
 });
 
 export const getRecipientsProcedure = withAuth
-  .input(z.object({ updateId: z.string() }))
+  .input(z.object({ updateId: z.string(), publicUpdateId: z.string() }))
   .query(async ({ ctx, input }) => {
     const {
       db,

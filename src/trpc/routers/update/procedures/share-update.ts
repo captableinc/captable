@@ -80,6 +80,7 @@ export const shareUpdateProcedure = withAuth
         const token = await encode({
           companyId,
           updateId,
+          publicId: update.publicId,
           recipientId: recipientRecord.id,
         });
 

@@ -360,11 +360,12 @@ const UpdatesEditor = ({
                 </Button>
               </li>
 
-              <li>
+              {/* TODO - implement this feature */}
+              {/* <li>
                 <Button variant="ghost" size="sm">
                   Make it public
                 </Button>
-              </li>
+              </li> */}
 
               {update && mode === "edit" && (
                 <li>

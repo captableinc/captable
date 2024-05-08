@@ -14,23 +14,23 @@ import {
 } from "jsx-email";
 import { constants } from "../lib/constants";
 
-interface DataRoomShareEmailProps {
+interface ShareUpdateEmailProps {
   senderName: string;
   recipientName: string | null | undefined;
   companyName: string;
-  dataRoom: string;
+  updateTitle: string;
   link: string;
 }
 
-export const DataRoomShareEmail = ({
+export const ShareUpdateEmail = ({
   senderName,
   recipientName,
   companyName,
-  dataRoom,
+  updateTitle,
   link,
-}: DataRoomShareEmailProps) => {
+}: ShareUpdateEmailProps) => {
   const recipientFirstName = recipientName?.split(" ")[0] || "there";
-  const previewText = `${senderName} at ${companyName} shared ${dataRoom} with you.`;
+  const previewText = `${senderName} at ${companyName} shared ${updateTitle} with you.`;
 
   return (
     <Html>
@@ -40,14 +40,15 @@ export const DataRoomShareEmail = ({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              {companyName} - <strong>{dataRoom}</strong>
+              {companyName} - <strong>{updateTitle}</strong>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
               Hello {recipientFirstName},
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{senderName}</strong> has shared a data room{" "}
-              <strong>{dataRoom}</strong> on <strong>{constants.title}</strong>
+              <strong>{senderName}</strong> has shared an update{" "}
+              <strong>{updateTitle}</strong> on{" "}
+              <strong>{constants.title}</strong>
             </Text>
 
             <Section className="mb-[32px] mt-[32px]">
@@ -55,7 +56,7 @@ export const DataRoomShareEmail = ({
                 className="rounded bg-black px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={link}
               >
-                Access {dataRoom}
+                View update - <strong>{updateTitle}</strong>
               </Button>
             </Section>
 
@@ -81,12 +82,12 @@ export const DataRoomShareEmail = ({
   );
 };
 
-DataRoomShareEmail.PreviewProps = {
+ShareUpdateEmail.PreviewProps = {
   senderName: "John Doe",
   recipientName: "Will Smith",
   companyName: "Captable, Inc.",
-  dataRoom: "Q1 2024 Financials",
-  link: "https://captable.inc/teams/invite/foo/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com",
-} as DataRoomShareEmailProps;
+  updateTitle: "Q1 2024 Financials",
+  link: "https://captable.inc/...",
+} as ShareUpdateEmailProps;
 
-export default DataRoomShareEmail;
+export default ShareUpdateEmail;

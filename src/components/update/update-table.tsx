@@ -1,6 +1,5 @@
 "use client";
 
-import { dayjsExt } from "@/common/dayjs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -49,7 +48,7 @@ const getUpdateStatus = (status: string) => {
     case "PUBLIC":
       return <Badge variant="success">Public</Badge>;
     case "PRIVATE":
-      return <Badge variant="destructive">Private</Badge>;
+      return <Badge variant="outline">Private</Badge>;
   }
 };
 
@@ -128,27 +127,9 @@ export const columns: ColumnDef<Update[number]>[] = [
   {
     accessorKey: "status",
     header: () => {
-      return <div>Status</div>;
+      return <div>Sharing status</div>;
     },
     cell: ({ row }) => <div>{getUpdateStatus(row.original.status)}</div>,
-  },
-  {
-    accessorKey: "sent",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Sent"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => {
-      if (row.getValue("sentAt")) {
-        return <div>{dayjsExt().to(row.original.sentAt)}</div>;
-      } else {
-        return <div>Pending</div>;
-      }
-    },
   },
   {
     accessorKey: "actions",

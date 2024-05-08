@@ -1,12 +1,12 @@
+import { type ShareContactType } from "@/schema/contacts";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { type ContactsType } from "@/types/contacts";
 
 export const commonRouter = createTRPCRouter({
   getContacts: withAuth.query(async ({ ctx }) => {
     const { db, session } = ctx;
     const user = session.user;
     const companyId = user.companyId;
-    const contacts = [] as ContactsType;
+    const contacts = [] as ShareContactType[];
 
     const members = await db.member.findMany({
       where: {

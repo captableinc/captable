@@ -56,7 +56,7 @@ export const UpdateShareEmail = ({
                 className="rounded bg-black px-5 py-3 text-center text-[12px] font-semibold text-white no-underline"
                 href={link}
               >
-                Access {updateTitle}
+                View update - <strong>{updateTitle}</strong>
               </Button>
             </Section>
 

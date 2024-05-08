@@ -5,7 +5,10 @@ import {
   getUpdatesProcedure,
 } from "./procedures/get-updates";
 import { saveUpdateProcedure } from "./procedures/save-update";
-import { shareUpdateProcedure } from "./procedures/share-update";
+import {
+  shareUpdateProcedure,
+  unshareUpdateProcedure,
+} from "./procedures/share-update";
 
 export const updateRouter = createTRPCRouter({
   save: saveUpdateProcedure,
@@ -13,5 +16,5 @@ export const updateRouter = createTRPCRouter({
   getRecipiants: getRecipientsProcedure,
   clone: cloneUpdateProcedure,
   share: shareUpdateProcedure,
-  // unShare: unshareUpdateProcedure,
+  unShare: unshareUpdateProcedure,
 });

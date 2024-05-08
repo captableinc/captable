@@ -112,3 +112,39 @@ export const shareUpdateProcedure = withAuth
       message: "Data room successfully shared!",
     };
   });
+
+export const unshareUpdateProcedure = withAuth
+  .input(
+    z.object({
+      updateId: z.string(),
+      recipientId: z.string(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    const { session, db } = ctx;
+    const { updateId, recipientId } = input;
+    const companyId = session.user.companyId;
+
+    const update = await db.update.findUniqueOrThrow({
+      where: {
+        id: updateId,
+        companyId,
+      },
+    });
+
+    if (!update) {
+      throw new Error("Update not found");
+    }
+
+    await db.updateRecipient.delete({
+      where: {
+        id: recipientId,
+        updateId,
+      },
+    });
+
+    return {
+      success: true,
+      message: `Successfully removed access to - ${update.title}`,
+    };
+  });

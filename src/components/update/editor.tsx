@@ -269,19 +269,40 @@ const UpdatesEditor = ({
       router.refresh();
 
       toast({
-        title: "✅ Shared!",
+        title: "Successfully shared!",
         description: "Update successfully shared.",
       });
     },
 
     onError: (error) => {
       toast({
-        title: error.message,
-        description: "",
+        title: "Oops! Something went wrong.",
+        description: error.message,
         variant: "destructive",
       });
     },
   });
+
+  const { mutateAsync: unshareUpdateMutation } = api.update.unShare.useMutation(
+    {
+      onSuccess: (r) => {
+        router.refresh();
+
+        toast({
+          title: "Removed access!",
+          description: r.message,
+        });
+      },
+
+      onError: (error: { message: string }) => {
+        toast({
+          title: "Oops! Something went wrong.",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    },
+  );
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -362,7 +383,10 @@ const UpdatesEditor = ({
                       });
                     }}
                     removeAccess={async ({ recipientId }) => {
-                      debugger;
+                      await unshareUpdateMutation({
+                        updateId: update?.id,
+                        recipientId,
+                      });
                     }}
                     trigger={
                       <Button variant="ghost" size="sm">

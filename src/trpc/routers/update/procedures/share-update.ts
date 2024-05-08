@@ -83,7 +83,7 @@ export const shareUpdateProcedure = withAuth
           recipientId: recipientRecord.id,
         });
 
-        const link = `${baseUrl}/update/${update.publicId}?token=${token}`;
+        const link = `${baseUrl}/updates/${update.publicId}?token=${token}`;
 
         const payload: UpdateSharePayloadType = {
           senderName: senderName!,

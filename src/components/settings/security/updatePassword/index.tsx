@@ -49,8 +49,29 @@ export const UpdatePassword = () => {
   const isSubmitting = form.formState.isSubmitting;
   const isDirty = form.formState.isDirty;
 
-  const onFormSubmit = (data: TChangePasswordFormSchema) => {
-    console.log(data);
+  const { mutateAsync } = api.security.changePassword.useMutation({
+    onSuccess: async ({ message, success }) => {
+      toast({
+        variant: success ? "default" : "destructive",
+        title: "🎉 Password Updated",
+        description: message,
+      });
+      form.reset();
+    },
+    onError: ({ message }) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: message,
+      });
+    },
+  });
+
+  const onFormSubmit = async (data: TChangePasswordFormSchema) => {
+    await mutateAsync({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    });
   };
 
   return (

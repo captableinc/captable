@@ -16,6 +16,7 @@ import { templateFieldRouter } from "../routers/template-field-router/router";
 import { templateRouter } from "../routers/template-router/router";
 import { updateRouter } from "../routers/update/router";
 import { authRouter } from "../routers/auth/router";
+import { securityRouter } from "../routers/security/router";
 
 /**
  * This is the primary router for your server.
@@ -40,6 +41,7 @@ export const appRouter = createTRPCRouter({
   update: updateRouter,
   auth: authRouter,
   dataRoom: dataRoomRouter,
+  security: securityRouter,
 });
 
 // export type definition of API

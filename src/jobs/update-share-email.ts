@@ -7,7 +7,7 @@ import { z } from "zod";
 
 const schema = z.object({
   update: z.object({
-    name: z.string(),
+    title: z.string(),
   }),
   link: z.string(),
   companyName: z.string(),
@@ -32,13 +32,13 @@ export const sendUpdateShareEmail = async (payload: UpdateSharePayloadType) => {
   await sendMail({
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
-    subject: `${senderName} shared an update - ${update.name}`,
+    subject: `${senderName} shared an update - ${update.title}`,
     html: await render(
       UpdateShareEmail({
         senderName: senderName,
         recipientName,
         companyName,
-        updateTitle: update.name,
+        updateTitle: update.title,
         link,
       }),
     ),

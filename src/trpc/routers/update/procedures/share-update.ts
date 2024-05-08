@@ -89,7 +89,9 @@ export const shareUpdateProcedure = withAuth
           senderName: senderName!,
           recipientName: recipient.name,
           companyName: company.name,
-          dataRoom: dataRoom.name,
+          update: {
+            title: update.title,
+          },
           link,
           email,
           senderEmail,

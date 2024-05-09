@@ -9,6 +9,6 @@ runs:
 
     - name: Build app
       shell: bash
-      run: npm ci && npm run build
+      run: npx prisma generate && npm run build
       env:
         SKIP_ENV_VALIDATION: 1

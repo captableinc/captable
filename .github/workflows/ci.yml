@@ -43,6 +43,7 @@ jobs:
         with:
           push: false
           context: .
+          file: ./docker/Dockerfile
           tags: captable-${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max

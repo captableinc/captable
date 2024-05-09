@@ -34,7 +34,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            my-docker-hub-namespace/my-docker-hub-repository
+            captable/captable
             ghcr.io/${{ github.repository }}
 
       - name: Build and push Docker images

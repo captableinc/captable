@@ -42,7 +42,8 @@ const formSchema = z.object({
           .object({
             options: z
               .array(z.object({ id: z.string(), value: z.string() }))
-              .nonempty(),
+              .nonempty()
+              .optional(),
           })
           .optional(),
       }),

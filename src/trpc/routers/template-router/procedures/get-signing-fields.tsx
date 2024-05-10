@@ -15,7 +15,7 @@ export const getSigningFieldsProcedure = withoutAuth
         where: {
           id: recipientId,
           templateId,
-          status: "PENDING",
+          status: "SENT",
         },
         select: {
           templateId: true,

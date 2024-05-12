@@ -124,10 +124,5 @@
   },
   "trigger.dev": {
     "endpointId": "captable-A0-I"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,cjs,mjs}": [
-      "biome check --apply --no-errors-on-unmatched"
-    ]
   }
 }

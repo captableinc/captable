@@ -1,79 +1,57 @@
-FROM --platform=linux/amd64 node:20-alpine AS base
+# syntax = docker/dockerfile:1
 
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat openssl
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=20.11.0
+FROM node:${NODE_VERSION}-slim as base
+
+LABEL fly_launch_runtime="Next.js/Prisma"
+
+# Next.js/Prisma app lives here
 WORKDIR /app
 
-# Install Prisma Client - remove if not using Prisma
-
-COPY prisma ./prisma
-
-ENV HUSKY 0
-
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Set production environment
+# ENV NODE_ENV="production"
+ENV SKIP_ENV_VALIDATION=true
 
 
-##### BUILDER
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/prisma ./prisma
-COPY . .
+# Install packages needed to build node modules
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential node-gyp openssl pkg-config python-is-python3
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV DOCKER_OUTPUT 1
-ENV SKIP_ENV_VALIDATION 1
+# Install node modules
+COPY --link package-lock.json package.json ./
+RUN npm ci --include=dev
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Generate Prisma Client
+COPY --link prisma/enum-generator.cjs ./prisma/enum-generator.cjs
+COPY --link prisma ./
+RUN npx prisma generate
 
-##### RUNNER
+# Copy application code
+# COPY --link prisma/enums.ts ./prisma/enums.ts
+COPY --link . .
 
-FROM base AS runner
-WORKDIR /app
+# Build application
+RUN npm run build
 
-ENV NODE_ENV production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-ENV NEXT_TELEMETRY_DISABLED 1
+# Remove development dependencies
+RUN npm prune --omit=dev
 
-ENV DOCKER_OUTPUT 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Final stage for app image
+FROM base
 
-COPY --from=builder /app/public ./public
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y openssl && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# Copy built application
+COPY --from=build /app /app
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-
-ENV PORT 3000
-
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+CMD [ "npm", "run", "start" ]

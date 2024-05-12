@@ -62,7 +62,14 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
           <TableBody>
             {documents.map((document) => (
               <TableRow key={document.id}>
-                <TableCell className="flex items-center ">
+                <TableCell
+                  className="flex cursor-pointer items-center hover:underline"
+                  onClick={() => {
+                    router.push(
+                      `/${companyPublicId}/documents/${document.bucket.id}`,
+                    );
+                  }}
+                >
                   <div className="mr-3">
                     <FileIcon type={document.bucket.mimeType} />
                   </div>
@@ -105,6 +112,15 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                             eSign
                           </DropdownMenuItem>
                         )}
+                        <DropdownMenuItem
+                          onClick={() => {
+                            router.push(
+                              `/${companyPublicId}/documents/${document.bucket.id}`,
+                            );
+                          }}
+                        >
+                          View
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={async () => {
                             await openFileOnTab(document.bucket.key);

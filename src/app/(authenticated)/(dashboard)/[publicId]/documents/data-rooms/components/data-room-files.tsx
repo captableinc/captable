@@ -6,6 +6,7 @@ import ShareModal, {
 } from "@/components/common/share-modal";
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
@@ -175,15 +176,15 @@ const DataRoomFiles = ({
           )}
         </form>
 
-        <hr />
-
         <div>
           {documents.length > 0 ? (
-            <DataRoomFileExplorer
-              documents={documents}
-              companyPublicId={companyPublicId}
-              dataRoomPublicId={dataRoom.publicId}
-            />
+            <Card className="p-4">
+              <DataRoomFileExplorer
+                documents={documents}
+                companyPublicId={companyPublicId}
+                dataRoomPublicId={dataRoom.publicId}
+              />
+            </Card>
           ) : (
             <EmptyState
               icon={<RiUploadCloudLine />}

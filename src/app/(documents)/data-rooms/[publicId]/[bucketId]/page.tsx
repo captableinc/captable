@@ -1,8 +1,10 @@
 "use server";
 
+import FilePreview from "@/components/file/preview";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { decode, type JWTVerifyResult } from "@/lib/jwt";
 import { db } from "@/server/db";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -80,6 +82,7 @@ const DataRoomPage = async ({
   }
 
   const company = dataRoom.company;
+  const remoteFile = await getPresignedGetUrl(file.key);
 
   return (
     <SharePageLayout
@@ -108,7 +111,11 @@ const DataRoomPage = async ({
         </div>
       }
     >
-      <div>File preview {file.name}</div>
+      <FilePreview
+        name={file.name}
+        url={remoteFile.url}
+        mimeType={file.mimeType}
+      />
     </SharePageLayout>
   );
 };

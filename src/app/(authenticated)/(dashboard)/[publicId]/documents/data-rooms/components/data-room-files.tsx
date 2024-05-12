@@ -20,6 +20,7 @@ import {
   RiAddFill,
   RiUploadCloudLine,
 } from "@remixicon/react";
+import { env } from "next-runtime-env";
 import Link from "next/link";
 import DataRoomUploader from "./data-room-uploader";
 
@@ -49,7 +50,7 @@ const DataRoomFiles = ({
 }: DataRoomFilesProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = env("NEXT_PUBLIC_BASE_URL")!;
   const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
   const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
     {

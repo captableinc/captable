@@ -10,6 +10,7 @@ import { robotoMono, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import { type Metadata } from "next";
+import { PublicEnvScript } from "next-runtime-env";
 import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
@@ -32,6 +33,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={cn(satoshi.variable, robotoMono.variable)}>
+      <head>
+        <PublicEnvScript />
+      </head>
       <body className="min-h-screen">
         <ProgressBarProvider>
           <NextAuthProvider session={session}>

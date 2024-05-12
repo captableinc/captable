@@ -1,13 +1,8 @@
 name: Publish Docker image
 
 on:
-  push:
-    branches:
-      - release
-
-# on:
-#   release:
-#     types: [published]
+  release:
+    types: [published]
 
 jobs:
   push_to_registries:
@@ -18,6 +13,7 @@ jobs:
       contents: read
       id-token: write
       attestations: write
+
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -52,10 +48,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-      # - name: Generate artifact attestation
-      #   uses: actions/attest-build-provenance@v1
-      #   with:
-      #     subject-name: '${{ github.workspace }}/captable'
-      #     subject-digest: ${{ steps.push.outputs.digest }}
-      #     push-to-registry: true

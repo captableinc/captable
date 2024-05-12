@@ -10,7 +10,7 @@ type FilePreviewProps = {
 };
 
 const ImagePreview = ({ url, name }: FilePreviewProps) => {
-  return <img src={url} alt={name} />;
+  return <img className="rounded" src={url} alt={name} />;
 };
 
 const AuditPreview = ({ url, name, mimeType }: FilePreviewProps) => {
@@ -19,6 +19,15 @@ const AuditPreview = ({ url, name, mimeType }: FilePreviewProps) => {
       <source src={url} type={mimeType} />
       Your browser does not support the audio element.
     </audio>
+  );
+};
+
+const VideoPreview = ({ url, name, mimeType }: FilePreviewProps) => {
+  return (
+    <video controls className="w-full rounded">
+      <source src={url} type={mimeType} />
+      Your browser does not support the video type.
+    </video>
   );
 };
 
@@ -46,6 +55,8 @@ const FilePreview = ({ url, name, mimeType }: FilePreviewProps) => {
       return <ImagePreview url={url} name={name} />;
     case mimeType.startsWith("audio"):
       return <AuditPreview url={url} name={name} mimeType={mimeType} />;
+    case mimeType.startsWith("video"):
+      return <VideoPreview url={url} name={name} mimeType={mimeType} />;
     default:
       return <UnknownPreview url={url} name={name} mimeType={mimeType} />;
   }

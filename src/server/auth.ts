@@ -19,8 +19,8 @@ import { type TPrismaOrTransaction, db } from "@/server/db";
 
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import {
-  type TAuthenticationResponseJSONSchema,
   ZAuthenticationResponseJSONSchema,
+  type TAuthenticationResponseJSONSchema,
 } from "@/lib/types";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { getUserByEmail, getUserById } from "./user";
@@ -83,12 +83,6 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
     session({ session, token }) {
-      console.log(
-        "-----------------------------------------------------",
-        { session, token },
-        "---------------------------------------------------------------",
-      );
-
       session.user.isOnboarded = token.isOnboarded;
       session.user.companyId = token.companyId;
       session.user.memberId = token.memberId;
@@ -101,21 +95,10 @@ export const authOptions: NextAuthOptions = {
       if (token.sub) {
         session.user.id = token.sub;
       }
-      console.log(
-        "Returning-----------------------------------------------------",
-        { session, token },
-        "---------------------------------------------------------------",
-      );
-
       return session;
     },
 
     async jwt({ token, trigger }) {
-      console.log(
-        "-----------------------------------------------------",
-        { token, trigger },
-        "---------------------------------------------------------------",
-      );
       if (trigger) {
         console.log("Fetching member...................");
         const member = await db.member.findFirst({
@@ -161,12 +144,6 @@ export const authOptions: NextAuthOptions = {
           token.companyPublicId = "";
         }
       }
-      console.log(
-        "Returning-----------------------------------------------------",
-        { token, trigger },
-        "---------------------------------------------------------------",
-      );
-
       return token;
     },
   },

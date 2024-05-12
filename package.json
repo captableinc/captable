@@ -13,7 +13,7 @@
     "db:seed": "NODE_ENV='test' npx tsx prisma/seeds/index.ts",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "biome check --apply ./src",
     "start": "next start",
     "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" && npx prisma format",
     "email:dev": "mailpit",

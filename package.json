@@ -20,15 +20,13 @@
     "email:preview": "email preview ./src/emails",
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",
     "trigger": "npx @trigger.dev/cli@latest dev",
-    "deploy:fly": "fly deploy",
-    "changeset": "changeset"
+    "deploy:fly": "fly deploy"
   },
   "dependencies": {
     "@ark-ui/react": "^2.2.3",
     "@aws-sdk/client-s3": "^3.564.0",
     "@aws-sdk/s3-request-presigner": "^3.554.0",
     "@blocknote/react": "^0.12.2",
-    "@changesets/cli": "^2.27.1",
     "@cyntler/react-doc-viewer": "^1.14.1",
     "@hookform/resolvers": "^3.3.4",
     "@next-auth/prisma-adapter": "^1.0.7",

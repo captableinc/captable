@@ -3,7 +3,7 @@ name: Publish Docker image
 on:
   push:
     branches:
-      - main
+      - release
 
 # on:
 #   release:
@@ -40,7 +40,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            captable/captable
+            captableinc/captable
             ghcr.io/${{ github.repository }}
 
       - name: Build and push Docker images

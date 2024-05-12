@@ -14,7 +14,7 @@ generator json {
 }
 
 generator enums {
-  provider = "node ./prisma/enum-generator.cjs"
+  provider = "node prisma/enum-generator.cjs"
 }
 
 // Necessary for Next auth

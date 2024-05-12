@@ -2,8 +2,10 @@ name: Release
 
 on:
   push:
+    # branches:
+    #   - main
     branches:
-      - main
+      - 'disabled/**'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

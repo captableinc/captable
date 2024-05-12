@@ -12,6 +12,8 @@ import {
   RiBuildingLine,
   RiGroup2Fill,
   RiGroup2Line,
+  RiLockFill,
+  RiLockLine,
   RiNotificationFill,
   RiNotificationLine,
 } from "@remixicon/react";
@@ -51,6 +53,12 @@ const accountNav = [
     href: "/settings/notifications",
     icon: RiNotificationLine,
     activeIcon: RiNotificationFill,
+  },
+  {
+    name: "Passkey",
+    href: "/settings/passkey",
+    icon: RiLockLine,
+    activeIcon: RiLockFill,
   },
 ];
 

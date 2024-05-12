@@ -12,13 +12,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiGoogleFill } from "@remixicon/react";
+import {
+  browserSupportsWebAuthn,
+  startAuthentication,
+} from "@simplewebauthn/browser";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { PasskeyIcon } from "../../common/icons";
 import { AuthFormHeader } from "../auth-form-header";
 
 const loginSchema = z.object({
@@ -31,6 +38,12 @@ interface LoginFormProps {
 }
 
 const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
+  const [isPasskeyLoading, setIsPasskeyLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+
+  const { mutateAsync: createPasskeySigninOptions } =
+    api.passkey.createSigninOptions.useMutation();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -38,8 +51,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       password: process.env.NODE_ENV === "development" ? "P@ssw0rd!" : "",
     },
   });
-
-  const { toast } = useToast();
+  const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     const email = values.email;
@@ -59,10 +71,59 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
     }
   }
 
+  const onSignInWithPasskey = async () => {
+    if (!browserSupportsWebAuthn()) {
+      toast({
+        title: "Not supported",
+        description: "Passkeys are not supported on this browser",
+        duration: 10000,
+        variant: "destructive",
+      });
+      return;
+    }
+    try {
+      setIsPasskeyLoading(true);
+
+      const options = await createPasskeySigninOptions();
+
+      if (options) {
+        const credential = await startAuthentication(options);
+
+        const result = await signIn("webauthn", {
+          credential: JSON.stringify(credential),
+          callbackUrl: "/onboarding",
+          redirect: false,
+        });
+
+        if (!result?.url) {
+          toast({
+            title: "Not authorized",
+            description: "Invalid credentials",
+            duration: 10000,
+            variant: "destructive",
+          });
+          return;
+        } else {
+          window.location.href = result.url;
+        }
+      }
+    } catch (err) {
+      console.log({ err });
+      toast({
+        title: "Error",
+        //@ts-expect-error unknown
+        description: err?.message ?? "Something went out.",
+        duration: 10000,
+        variant: "destructive",
+      });
+    } finally {
+      setIsPasskeyLoading(false);
+    }
+  };
+
   async function signInWithGoogle() {
     await signIn("google", { callbackUrl: "/onboarding" });
   }
-  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -168,6 +229,20 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
               </Button>
             </>
           )}
+
+          <Button
+            type="button"
+            size="lg"
+            variant="outline"
+            disabled={isSubmitting}
+            loading={isPasskeyLoading}
+            className="border bg-background text-muted-foreground"
+            onClick={onSignInWithPasskey}
+          >
+            <PasskeyIcon className="h-5 w-5" />
+            Passkey
+          </Button>
+
           <span className="text-center text-sm text-gray-500">
             Don{`'`}t have an account?{" "}
             <Link

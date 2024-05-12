@@ -98,6 +98,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.7.3",
     "@faker-js/faker": "^8.4.0",
     "@flydotio/dockerfile": "^0.5.4",
     "@tailwindcss/typography": "^0.5.12",

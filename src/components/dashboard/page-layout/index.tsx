@@ -1,10 +1,10 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react'
 
 interface PageLayoutProps {
-  title: string;
-  description?: string;
-  action?: ReactNode;
-  children?: ReactNode;
+  title: string
+  description?: string
+  action?: ReactNode
+  children?: ReactNode
 }
 
 export function PageLayout({
@@ -28,5 +28,5 @@ export function PageLayout({
 
       {children}
     </div>
-  );
+  )
 }

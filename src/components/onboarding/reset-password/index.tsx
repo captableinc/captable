@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { CaptableLogo } from "@/components/common/logo";
-import { PasswordInput } from "@/components/ui/password-input";
-import { api } from "@/trpc/react";
-import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { CaptableLogo } from '@/components/common/logo'
+import { PasswordInput } from '@/components/ui/password-input'
+import { api } from '@/trpc/react'
+import { ZPasswordSchema } from '@/trpc/routers/auth/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -17,9 +17,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { toast } from '@/components/ui/use-toast'
 
 export const ZResetPasswordFormSchema = z
   .object({
@@ -27,52 +27,52 @@ export const ZResetPasswordFormSchema = z
     repeatedPassword: ZPasswordSchema,
   })
   .refine((data) => data.password === data.repeatedPassword, {
-    path: ["repeatedPassword"],
+    path: ['repeatedPassword'],
     message: "Passwords don't match",
-  });
+  })
 
-export type TResetPasswordFormSchema = z.infer<typeof ZResetPasswordFormSchema>;
+export type TResetPasswordFormSchema = z.infer<typeof ZResetPasswordFormSchema>
 
 export type ResetPasswordFormProps = {
-  token: string;
-};
+  token: string
+}
 
 export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
-  const router = useRouter();
+  const router = useRouter()
 
   const form = useForm<TResetPasswordFormSchema>({
     values: {
-      password: "",
-      repeatedPassword: "",
+      password: '',
+      repeatedPassword: '',
     },
     resolver: zodResolver(ZResetPasswordFormSchema),
-  });
+  })
 
-  const isSubmitting = form.formState.isSubmitting;
+  const isSubmitting = form.formState.isSubmitting
 
   const { mutateAsync } = api.auth.newPassword.useMutation({
     onSuccess: async ({ message }) => {
       toast({
-        variant: "default",
-        title: "🎉 Password Updated",
+        variant: 'default',
+        title: '🎉 Password Updated',
         description: message,
-      });
-      router.replace("/password-updated");
+      })
+      router.replace('/password-updated')
     },
     onError: ({ message }) => {
       toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
         description: message,
-      });
+      })
     },
-  });
+  })
 
   const onFormSubmit = async ({
     password,
-  }: Omit<TResetPasswordFormSchema, "repeatedPassword">) => {
-    await mutateAsync({ password, token });
-  };
+  }: Omit<TResetPasswordFormSchema, 'repeatedPassword'>) => {
+    await mutateAsync({ password, token })
+  }
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -138,12 +138,12 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                 )}
               />
               <Button type="submit" size="lg" loading={isSubmitting}>
-                {isSubmitting ? "Resetting Password..." : "Reset Password"}
+                {isSubmitting ? 'Resetting Password...' : 'Reset Password'}
               </Button>
             </div>
           </form>
         </Form>
       </div>
     </div>
-  );
-};
+  )
+}

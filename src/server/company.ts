@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from './db'
 
 export const getCompanyList = async (userId: string) => {
   const data = await db.member.findMany({
@@ -15,9 +15,9 @@ export const getCompanyList = async (userId: string) => {
         },
       },
     },
-  });
+  })
 
-  return data;
-};
+  return data
+}
 
-export type TGetCompanyList = Awaited<ReturnType<typeof getCompanyList>>;
+export type TGetCompanyList = Awaited<ReturnType<typeof getCompanyList>>

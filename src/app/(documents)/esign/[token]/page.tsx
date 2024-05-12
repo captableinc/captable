@@ -1,30 +1,30 @@
-import { PdfCanvas } from "@/components/template/pdf-canvas";
-import { SigningFields } from "@/components/template/signing-fields";
-import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
-import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
-import { type Metadata } from "next";
+import { PdfCanvas } from '@/components/template/pdf-canvas'
+import { SigningFields } from '@/components/template/signing-fields'
+import { TemplateSigningFieldProvider } from '@/providers/template-signing-field-provider'
+import { getServerAuthSession } from '@/server/auth'
+import { api } from '@/trpc/server'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Document signing",
-};
+  title: 'Document signing',
+}
 
 interface SigningPageProps {
   params: {
-    token: string;
-  };
+    token: string
+  }
 }
 
 export default async function SigningPage(props: SigningPageProps) {
-  const { token } = props.params;
+  const { token } = props.params
 
   const { fields, url, recipientId, templateId, signableFields } =
     await api.template.getSigningFields.query({
       token,
-    });
+    })
 
-  const session = await getServerAuthSession();
-  const companyPublicId = session?.user.companyPublicId;
+  const session = await getServerAuthSession()
+  const companyPublicId = session?.user.companyPublicId
 
   return (
     <TemplateSigningFieldProvider fields={fields}>
@@ -46,5 +46,5 @@ export default async function SigningPage(props: SigningPageProps) {
         </div>
       </div>
     </TemplateSigningFieldProvider>
-  );
+  )
 }

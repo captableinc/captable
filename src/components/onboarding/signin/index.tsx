@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -8,61 +8,61 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { useToast } from "@/components/ui/use-toast";
-import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RiGoogleFill } from "@remixicon/react";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { AuthFormHeader } from "../auth-form-header";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
+import { useToast } from '@/components/ui/use-toast'
+import { ZCurrentPasswordSchema } from '@/trpc/routers/auth/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { RiGoogleFill } from '@remixicon/react'
+import { signIn } from 'next-auth/react'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { AuthFormHeader } from '../auth-form-header'
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: ZCurrentPasswordSchema,
-});
+})
 
 interface LoginFormProps {
-  isGoogleAuthEnabled: boolean;
+  isGoogleAuthEnabled: boolean
 }
 
 const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: process.env.NODE_ENV === "development" ? "ceo@example.com" : "",
-      password: process.env.NODE_ENV === "development" ? "P@ssw0rd!" : "",
+      email: process.env.NODE_ENV === 'development' ? 'ceo@example.com' : '',
+      password: process.env.NODE_ENV === 'development' ? 'P@ssw0rd!' : '',
     },
-  });
+  })
 
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    const email = values.email;
-    const password = values.password;
-    const result = await signIn("credentials", {
+    const email = values.email
+    const password = values.password
+    const result = await signIn('credentials', {
       email,
       password,
-      callbackUrl: "/onboarding",
-    });
+      callbackUrl: '/onboarding',
+    })
 
     if (result?.error) {
       toast({
-        variant: "destructive",
-        title: "Unable to login",
-        description: "Incorrect email or password",
-      });
+        variant: 'destructive',
+        title: 'Unable to login',
+        description: 'Incorrect email or password',
+      })
     }
   }
 
   async function signInWithGoogle() {
-    await signIn("google", { callbackUrl: "/onboarding" });
+    await signIn('google', { callbackUrl: '/onboarding' })
   }
-  const isSubmitting = form.formState.isSubmitting;
+  const isSubmitting = form.formState.isSubmitting
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -169,7 +169,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
             </>
           )}
           <span className="text-center text-sm text-gray-500">
-            Don{`'`}t have an account?{" "}
+            Don{`'`}t have an account?{' '}
             <Link
               href="/signup"
               className="underline underline-offset-4 hover:text-primary"
@@ -180,7 +180,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
         </>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignInForm;
+export default SignInForm

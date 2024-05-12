@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { COLORS } from "@/constants/esign";
-import { RiCloseCircleLine } from "@remixicon/react";
+} from '@/components/ui/select'
+import { COLORS } from '@/constants/esign'
+import { RiCloseCircleLine } from '@remixicon/react'
 
-import { FieldTypeData } from "../field-type-data";
+import { FieldTypeData } from '../field-type-data'
 
 import {
   FormControl,
@@ -18,28 +18,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { type RouterOutputs } from "@/trpc/shared";
-import { useFormContext, useWatch } from "react-hook-form";
-import { CustomFieldRenderer } from "./custom-field-renderer";
-import { TemplateFieldContainer } from "./template-field-container";
+} from '@/components/ui/form'
+import { cn } from '@/lib/utils'
+import { type TemplateFieldForm } from '@/providers/template-field-provider'
+import { type RouterOutputs } from '@/trpc/shared'
+import { useFormContext, useWatch } from 'react-hook-form'
+import { CustomFieldRenderer } from './custom-field-renderer'
+import { TemplateFieldContainer } from './template-field-container'
 
-type Recipients = RouterOutputs["template"]["get"]["recipients"];
+type Recipients = RouterOutputs['template']['get']['recipients']
 
 interface TemplateFieldProps {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-  index: number;
-  handleDelete: () => void;
-  viewportWidth: number;
-  viewportHeight: number;
-  currentViewportWidth: number;
-  currentViewportHeight: number;
-  recipients: Recipients;
+  left: number
+  top: number
+  width: number
+  height: number
+  index: number
+  handleDelete: () => void
+  viewportWidth: number
+  viewportHeight: number
+  currentViewportWidth: number
+  currentViewportHeight: number
+  recipients: Recipients
 }
 
 export function TemplateField({
@@ -55,14 +55,14 @@ export function TemplateField({
   viewportWidth,
   recipients,
 }: TemplateFieldProps) {
-  const { control, getValues } = useFormContext<TemplateFieldForm>();
+  const { control, getValues } = useFormContext<TemplateFieldForm>()
   const recipientId = useWatch({
     control: control,
     name: `fields.${index}.recipientId`,
-  });
+  })
 
-  const recipientColors = getValues("recipientColors");
-  const color = recipientColors?.[recipientId] ?? "";
+  const recipientColors = getValues('recipientColors')
+  const color = recipientColors?.[recipientId] ?? ''
 
   return (
     <TemplateFieldContainer
@@ -82,7 +82,7 @@ export function TemplateField({
           variant="ghost"
           size="sm"
           onClick={() => {
-            handleDelete();
+            handleDelete()
           }}
         >
           <RiCloseCircleLine className="h-5 w-5 text-red-500/90 group-hover:text-red-500" />
@@ -140,17 +140,17 @@ export function TemplateField({
 
       <CustomFieldRenderer index={index} />
     </TemplateFieldContainer>
-  );
+  )
 }
 
 interface RecipientSelectProps {
-  index: number;
-  recipients: Recipients;
+  index: number
+  recipients: Recipients
 }
 
 function RecipientSelect({ index, recipients }: RecipientSelectProps) {
-  const { control, getValues } = useFormContext<TemplateFieldForm>();
-  const recipientColors = getValues("recipientColors");
+  const { control, getValues } = useFormContext<TemplateFieldForm>()
+  const recipientColors = getValues('recipientColors')
   return (
     <FormField
       control={control}
@@ -175,14 +175,14 @@ function RecipientSelect({ index, recipients }: RecipientSelectProps) {
                     <span
                       aria-hidden
                       className={cn(
-                        "mr-3 rounded-full p-2",
+                        'mr-3 rounded-full p-2',
                         COLORS[
                           recipientColors[recipient.id] as keyof typeof COLORS
                         ]?.bg,
                       )}
                     />
                     <span className="flex flex-col items-start">
-                      {recipient.name && recipient.name !== "" && (
+                      {recipient.name && recipient.name !== '' && (
                         <span>{recipient.name}</span>
                       )}
                       <span className="text-xs text-primary/80">
@@ -198,5 +198,5 @@ function RecipientSelect({ index, recipients }: RecipientSelectProps) {
         </FormItem>
       )}
     />
-  );
+  )
 }

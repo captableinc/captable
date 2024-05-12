@@ -1,19 +1,19 @@
-import { Audit } from "@/server/audit";
-import { withAuth } from "@/trpc/api/trpc";
-import { ZodAcceptMemberMutationSchema } from "../schema";
+import { Audit } from '@/server/audit'
+import { withAuth } from '@/trpc/api/trpc'
+import { ZodAcceptMemberMutationSchema } from '../schema'
 
 export const acceptMemberProcedure = withAuth
   .input(ZodAcceptMemberMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const user = ctx.session.user;
-    const { userAgent, requestIp } = ctx;
+    const user = ctx.session.user
+    const { userAgent, requestIp } = ctx
 
     const { publicId } = await ctx.db.$transaction(async (trx) => {
       await trx.verificationToken.delete({
         where: {
           token: input.token,
         },
-      });
+      })
 
       await trx.user.update({
         where: {
@@ -22,14 +22,14 @@ export const acceptMemberProcedure = withAuth
         data: {
           name: input.name,
         },
-      });
+      })
 
       const member = await trx.member.update({
         where: {
           id: input.memberId,
         },
         data: {
-          status: "ACTIVE",
+          status: 'ACTIVE',
           lastAccessed: new Date(),
           isOnboarded: true,
           userId: user.id,
@@ -50,25 +50,25 @@ export const acceptMemberProcedure = withAuth
             },
           },
         },
-      });
+      })
 
       await Audit.create(
         {
-          action: "member.accepted",
+          action: 'member.accepted',
           companyId: member.company.id,
-          actor: { type: "user", id: user.id },
+          actor: { type: 'user', id: user.id },
           context: {
             requestIp,
             userAgent,
           },
-          target: [{ type: "user", id: member.userId }],
+          target: [{ type: 'user', id: member.userId }],
           summary: `${member?.user?.name} joined ${member.company.name}`,
         },
         trx,
-      );
+      )
 
-      return { publicId: member.company.publicId };
-    });
+      return { publicId: member.company.publicId }
+    })
 
-    return { success: true, publicId };
-  });
+    return { success: true, publicId }
+  })

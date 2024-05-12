@@ -1,26 +1,26 @@
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { withoutAuth } from "@/trpc/api/trpc";
-import { DecodeEmailToken } from "../../template-field-router/procedures/add-fields";
-import { ZodGetSigningFieldsSchema } from "../schema";
+import { getPresignedGetUrl } from '@/server/file-uploads'
+import { withoutAuth } from '@/trpc/api/trpc'
+import { DecodeEmailToken } from '../../template-field-router/procedures/add-fields'
+import { ZodGetSigningFieldsSchema } from '../schema'
 
 export const getSigningFieldsProcedure = withoutAuth
   .input(ZodGetSigningFieldsSchema)
   .query(async ({ ctx, input }) => {
     const { id: templateId, rec: recipientId } = await DecodeEmailToken(
       input.token,
-    );
+    )
 
     const { bucket, fields } = await ctx.db.$transaction(async (tx) => {
       const recipient = await tx.esignRecipient.findFirstOrThrow({
         where: {
           id: recipientId,
           templateId,
-          status: "SENT",
+          status: 'SENT',
         },
         select: {
           templateId: true,
         },
-      });
+      })
 
       const { bucket } = await tx.template.findFirstOrThrow({
         where: {
@@ -33,7 +33,7 @@ export const getSigningFieldsProcedure = withoutAuth
             },
           },
         },
-      });
+      })
 
       const fields = await tx.templateField.findMany({
         where: {
@@ -58,14 +58,14 @@ export const getSigningFieldsProcedure = withoutAuth
           meta: true,
         },
         orderBy: {
-          top: "asc",
+          top: 'asc',
         },
-      });
+      })
 
-      return { bucket, fields };
-    });
+      return { bucket, fields }
+    })
 
-    const { key, url } = await getPresignedGetUrl(bucket.key);
+    const { key, url } = await getPresignedGetUrl(bucket.key)
 
     return {
       fields,
@@ -74,5 +74,5 @@ export const getSigningFieldsProcedure = withoutAuth
       recipientId,
       templateId,
       signableFields: fields.filter((item) => item.recipientId === recipientId),
-    };
-  });
+    }
+  })

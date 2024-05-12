@@ -1,10 +1,10 @@
-import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { checkMembership } from '@/server/auth'
+import { withAuth } from '@/trpc/api/trpc'
 
 export const getAllDocumentsProcedure = withAuth.query(
   async ({ ctx: { session, db } }) => {
     const data = await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ session, tx });
+      const { companyId } = await checkMembership({ session, tx })
 
       const data = await tx.document.findMany({
         where: {
@@ -31,12 +31,12 @@ export const getAllDocumentsProcedure = withAuth.query(
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
-      });
-      return data;
-    });
+      })
+      return data
+    })
 
-    return data;
+    return data
   },
-);
+)

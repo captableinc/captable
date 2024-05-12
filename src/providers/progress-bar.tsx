@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import { AppProgressBar as ProgressBar } from 'next-nprogress-bar'
 
 type ProviderProps = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 export const ProgressBarProvider = ({ children }: ProviderProps) => {
   return (
@@ -17,5 +17,5 @@ export const ProgressBarProvider = ({ children }: ProviderProps) => {
       />
       {children}
     </>
-  );
-};
+  )
+}

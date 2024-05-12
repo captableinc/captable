@@ -1,19 +1,19 @@
-import EmptyState from "@/components/common/empty-state";
-import Tldr from "@/components/common/tldr";
-import OptionModal from "@/components/securities/options/option-modal";
-import OptionTable from "@/components/securities/options/option-table";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { api } from "@/trpc/server";
-import { RiAddFill, RiGroup2Fill } from "@remixicon/react";
-import { type Metadata } from "next";
+import EmptyState from '@/components/common/empty-state'
+import Tldr from '@/components/common/tldr'
+import OptionModal from '@/components/securities/options/option-modal'
+import OptionTable from '@/components/securities/options/option-table'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { api } from '@/trpc/server'
+import { RiAddFill, RiGroup2Fill } from '@remixicon/react'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Options",
-};
+  title: 'Options',
+}
 
 const OptionsPage = async () => {
-  const options = await api.securities.getOptions.query();
+  const options = await api.securities.getOptions.query()
 
   if (options?.data?.length === 0) {
     return (
@@ -28,8 +28,8 @@ const OptionsPage = async () => {
             <Tldr
               message="Please fill in the details to create an option. If you need help, click the link below."
               cta={{
-                label: "Learn more",
-                href: "https://captable.inc/help/stakeholder-options",
+                label: 'Learn more',
+                href: 'https://captable.inc/help/stakeholder-options',
               }}
             />
           }
@@ -41,7 +41,7 @@ const OptionsPage = async () => {
           }
         />
       </EmptyState>
-    );
+    )
   }
 
   return (
@@ -61,8 +61,8 @@ const OptionsPage = async () => {
                 message="Manage stock options by adding them. 
                Add approval dates, notes, grantId for the stakeholders. "
                 cta={{
-                  label: "Learn more",
-                  href: "https://captable.inc/help/stakeholder-options",
+                  label: 'Learn more',
+                  href: 'https://captable.inc/help/stakeholder-options',
                 }}
               />
             }
@@ -74,7 +74,7 @@ const OptionsPage = async () => {
         <OptionTable options={options.data} />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default OptionsPage;
+export default OptionsPage

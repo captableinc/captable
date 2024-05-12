@@ -11,15 +11,15 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
-import { constants } from "../lib/constants";
+} from 'jsx-email'
+import { constants } from '../lib/constants'
 
 interface ShareUpdateEmailProps {
-  senderName: string;
-  recipientName: string | null | undefined;
-  companyName: string;
-  updateTitle: string;
-  link: string;
+  senderName: string
+  recipientName: string | null | undefined
+  companyName: string
+  updateTitle: string
+  link: string
 }
 
 export const ShareUpdateEmail = ({
@@ -29,8 +29,8 @@ export const ShareUpdateEmail = ({
   updateTitle,
   link,
 }: ShareUpdateEmailProps) => {
-  const recipientFirstName = recipientName?.split(" ")[0] || "there";
-  const previewText = `${senderName} at ${companyName} shared ${updateTitle} with you.`;
+  const recipientFirstName = recipientName?.split(' ')[0] || 'there'
+  const previewText = `${senderName} at ${companyName} shared ${updateTitle} with you.`
 
   return (
     <Html>
@@ -46,8 +46,8 @@ export const ShareUpdateEmail = ({
               Hello {recipientFirstName},
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{senderName}</strong> has shared an update{" "}
-              <strong>{updateTitle}</strong> on{" "}
+              <strong>{senderName}</strong> has shared an update{' '}
+              <strong>{updateTitle}</strong> on{' '}
               <strong>{constants.title}</strong>
             </Text>
 
@@ -61,7 +61,7 @@ export const ShareUpdateEmail = ({
             </Section>
 
             <Text className="!text-[14px] leading-[24px] text-black">
-              or copy and paste this URL into your browser:{" "}
+              or copy and paste this URL into your browser:{' '}
               <Link
                 href={link}
                 className="break-all text-blue-600 no-underline"
@@ -79,15 +79,15 @@ export const ShareUpdateEmail = ({
         </Body>
       </Tailwind>
     </Html>
-  );
-};
+  )
+}
 
 ShareUpdateEmail.PreviewProps = {
-  senderName: "John Doe",
-  recipientName: "Will Smith",
-  companyName: "Captable, Inc.",
-  updateTitle: "Q1 2024 Financials",
-  link: "https://captable.inc/...",
-} as ShareUpdateEmailProps;
+  senderName: 'John Doe',
+  recipientName: 'Will Smith',
+  companyName: 'Captable, Inc.',
+  updateTitle: 'Q1 2024 Financials',
+  link: 'https://captable.inc/...',
+} as ShareUpdateEmailProps
 
-export default ShareUpdateEmail;
+export default ShareUpdateEmail

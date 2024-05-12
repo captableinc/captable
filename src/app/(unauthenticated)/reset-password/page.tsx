@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
+import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: "Reset Password'",
-};
+}
 
 export default function EmailVerificationWithoutTokenPage() {
   return (
@@ -26,5 +26,5 @@ export default function EmailVerificationWithoutTokenPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

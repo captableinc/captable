@@ -1,17 +1,17 @@
-"use client";
+'use client'
 
-import { useToast } from "@/components/ui/use-toast";
-import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
-import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
-import { type ComponentProps, type ReactNode } from "react";
-import { useFormContext } from "react-hook-form";
+import { useToast } from '@/components/ui/use-toast'
+import { type TemplateSigningFieldForm } from '@/providers/template-signing-field-provider'
+import { api } from '@/trpc/react'
+import { useRouter } from 'next/navigation'
+import { type ComponentProps, type ReactNode } from 'react'
+import { useFormContext } from 'react-hook-form'
 
-interface SigningFieldFormProps extends ComponentProps<"form"> {
-  companyPublicId?: string;
-  children: ReactNode;
-  recipientId: string;
-  templateId: string;
+interface SigningFieldFormProps extends ComponentProps<'form'> {
+  companyPublicId?: string
+  children: ReactNode
+  recipientId: string
+  templateId: string
 }
 
 export function SigningFieldForm({
@@ -21,33 +21,33 @@ export function SigningFieldForm({
   templateId,
   ...rest
 }: SigningFieldFormProps) {
-  const { handleSubmit } = useFormContext<TemplateSigningFieldForm>();
-  const { toast } = useToast();
+  const { handleSubmit } = useFormContext<TemplateSigningFieldForm>()
+  const { toast } = useToast()
 
-  const router = useRouter();
+  const router = useRouter()
 
   const { mutateAsync } = api.template.sign.useMutation({
     onSuccess() {
       toast({
-        variant: "default",
-        title: "🎉 Document signed Successfully",
-        description: "",
-      });
+        variant: 'default',
+        title: '🎉 Document signed Successfully',
+        description: '',
+      })
 
       if (companyPublicId) {
-        router.push(`/${companyPublicId}/documents`);
+        router.push(`/${companyPublicId}/documents`)
       } else {
-        router.push("/");
+        router.push('/')
       }
     },
-  });
+  })
   const onSubmit = async (values: TemplateSigningFieldForm) => {
     await mutateAsync({
       data: values.fieldValues,
       recipientId,
       templateId,
-    });
-  };
+    })
+  }
 
   return (
     <form
@@ -57,5 +57,5 @@ export function SigningFieldForm({
     >
       {children}
     </form>
-  );
+  )
 }

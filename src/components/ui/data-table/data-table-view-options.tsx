@@ -1,18 +1,18 @@
-import { Button } from "../button";
+import { Button } from '../button'
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
-} from "../dropdown-menu";
+} from '../dropdown-menu'
 
-import { useDataTable } from "./data-table";
-import { RiArrowDownSLine } from "@remixicon/react";
+import { RiArrowDownSLine } from '@remixicon/react'
+import { useDataTable } from './data-table'
 
 export function DataTableViewOptions() {
-  const { table } = useDataTable();
+  const { table } = useDataTable()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -21,7 +21,7 @@ export function DataTableViewOptions() {
           size="sm"
           className="ml-auto hidden h-8 lg:flex"
         >
-          Select columns{" "}
+          Select columns{' '}
           <RiArrowDownSLine aria-hidden className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -32,7 +32,7 @@ export function DataTableViewOptions() {
           .getAllColumns()
           .filter(
             (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide(),
+              typeof column.accessorFn !== 'undefined' && column.getCanHide(),
           )
           .map((column) => {
             return (
@@ -44,9 +44,9 @@ export function DataTableViewOptions() {
               >
                 {column.id}
               </DropdownMenuCheckboxItem>
-            );
+            )
           })}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

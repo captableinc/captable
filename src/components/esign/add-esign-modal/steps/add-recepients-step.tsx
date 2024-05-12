@@ -1,6 +1,6 @@
-import { uploadFile } from "@/common/uploads";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { uploadFile } from '@/common/uploads'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -8,21 +8,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   StepperModalContent,
   StepperModalFooter,
   StepperPrev,
   StepperStep,
-} from "@/components/ui/stepper";
-import { useEsignValues } from "@/providers/esign-form-provider";
-import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDeleteBinLine } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
+} from '@/components/ui/stepper'
+import { useEsignValues } from '@/providers/esign-form-provider'
+import { api } from '@/trpc/react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { RiDeleteBinLine } from '@remixicon/react'
+import { useRouter } from 'next/navigation'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 const FormSchema = z.object({
   recipients: z.array(
@@ -32,62 +32,62 @@ const FormSchema = z.object({
     }),
   ),
   orderedDelivery: z.boolean(),
-});
+})
 
-type TFormSchema = z.infer<typeof FormSchema>;
+type TFormSchema = z.infer<typeof FormSchema>
 
 interface AddRecipientStepProps {
-  companyPublicId: string;
+  companyPublicId: string
 }
 
 export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
-  const router = useRouter();
+  const router = useRouter()
 
-  const { value } = useEsignValues();
-  const { mutateAsync: handleBucketUpload } = api.bucket.create.useMutation();
+  const { value } = useEsignValues()
+  const { mutateAsync: handleBucketUpload } = api.bucket.create.useMutation()
   const { mutateAsync: handleTemplateCreation } =
-    api.template.create.useMutation();
+    api.template.create.useMutation()
 
   const form = useForm<TFormSchema>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       orderedDelivery: false,
-      recipients: [{ email: "", name: "" }],
+      recipients: [{ email: '', name: '' }],
     },
-  });
+  })
 
   const { append, fields, remove } = useFieldArray({
     control: form.control,
-    name: "recipients",
-  });
+    name: 'recipients',
+  })
 
   const onSubmit = async (data: TFormSchema) => {
-    const document = value?.document?.[0];
+    const document = value?.document?.[0]
     if (!document) {
-      throw new Error("no document found to upload");
+      throw new Error('no document found to upload')
     }
     const { key, mimeType, name, size } = await uploadFile(document, {
       identifier: companyPublicId,
-      keyPrefix: "EsignDocs",
-    });
+      keyPrefix: 'EsignDocs',
+    })
 
     const { id: bucketId, name: templateName } = await handleBucketUpload({
       key,
       mimeType,
       name,
       size,
-    });
+    })
 
     const template = await handleTemplateCreation({
       bucketId,
       name: templateName,
       ...data,
-    });
+    })
 
-    router.push(`/${companyPublicId}/documents/esign/${template.publicId}`);
-  };
+    router.push(`/${companyPublicId}/documents/esign/${template.publicId}`)
+  }
 
-  const isDeleteDisabled = fields.length === 1;
+  const isDeleteDisabled = fields.length === 1
 
   return (
     <StepperStep className="flex flex-col gap-y-6" title="Add recipients">
@@ -145,7 +145,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
                         <Button
                           disabled={isDeleteDisabled}
                           onClick={() => {
-                            remove(index);
+                            remove(index)
                           }}
                           variant="ghost"
                           size="sm"
@@ -187,10 +187,10 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
               <div>
                 <Button
                   type="button"
-                  variant={"secondary"}
+                  variant={'secondary'}
                   size="sm"
                   onClick={() => {
-                    append({ email: "", name: "" });
+                    append({ email: '', name: '' })
                   }}
                 >
                   Add more recipient
@@ -207,5 +207,5 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
         </Button>
       </StepperModalFooter>
     </StepperStep>
-  );
+  )
 }

@@ -5,21 +5,21 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
+} from '@/components/ui/sheet'
 
 type SlideOverProps = {
-  title: string | React.ReactNode;
-  subtitle?: string | React.ReactNode;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
-  trigger: React.ReactNode;
-  children: React.ReactNode;
-};
+  title: string | React.ReactNode
+  subtitle?: string | React.ReactNode
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
+  trigger: React.ReactNode
+  children: React.ReactNode
+}
 
 const SlideOver = ({
   title,
   subtitle,
   trigger,
-  size = "md",
+  size = 'md',
   children,
 }: SlideOverProps) => {
   return (
@@ -34,7 +34,7 @@ const SlideOver = ({
         <div className="grid gap-4 py-4">{children}</div>
       </SheetContent>
     </Sheet>
-  );
-};
+  )
+}
 
-export default SlideOver;
+export default SlideOver

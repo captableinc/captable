@@ -1,11 +1,11 @@
-import { withAuth } from "@/trpc/api/trpc";
-import { TRPCError } from "@trpc/server";
+import { withAuth } from '@/trpc/api/trpc'
+import { TRPCError } from '@trpc/server'
 
 export const getProfileProcedure = withAuth.query(async ({ ctx }) => {
   const {
     db,
     session: { user },
-  } = ctx;
+  } = ctx
 
   const memberData = await db.member.findUnique({
     where: {
@@ -23,26 +23,26 @@ export const getProfileProcedure = withAuth.query(async ({ ctx }) => {
         },
       },
     },
-  });
+  })
 
   if (!memberData?.user.name || !memberData.user.email) {
     throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Something went wrong.",
-    });
+      code: 'BAD_REQUEST',
+      message: 'Something went wrong.',
+    })
   }
 
-  const { name, email, image } = memberData.user ?? {};
+  const { name, email, image } = memberData.user ?? {}
 
-  const { title, workEmail } = memberData ?? {};
+  const { title, workEmail } = memberData ?? {}
 
   const payload = {
-    fullName: name ?? "",
-    jobTitle: title ?? "",
-    loginEmail: email ?? "",
-    workEmail: workEmail ?? "",
-    avatarUrl: image ?? "",
-  };
+    fullName: name ?? '',
+    jobTitle: title ?? '',
+    loginEmail: email ?? '',
+    workEmail: workEmail ?? '',
+    avatarUrl: image ?? '',
+  }
 
-  return payload;
-});
+  return payload
+})

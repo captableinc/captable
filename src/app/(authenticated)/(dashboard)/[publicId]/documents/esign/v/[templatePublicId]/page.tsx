@@ -1,15 +1,15 @@
-import { PdfCanvas } from "@/components/template/pdf-canvas";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
-import { api } from "@/trpc/server";
-import { RiCheckFill } from "@remixicon/react";
+import { PdfCanvas } from '@/components/template/pdf-canvas'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { TemplateSigningFieldProvider } from '@/providers/template-signing-field-provider'
+import { api } from '@/trpc/server'
+import { RiCheckFill } from '@remixicon/react'
 
 export default async function TemplateDetailViewPage({
   params: { templatePublicId },
 }: {
-  params: { templatePublicId: string };
+  params: { templatePublicId: string }
 }) {
   const [{ name, status, url, fields }, { audits }] = await Promise.all([
     api.template.get.query({
@@ -20,7 +20,7 @@ export default async function TemplateDetailViewPage({
     api.audit.allEsignAudits.query({
       templatePublicId: templatePublicId,
     }),
-  ]);
+  ])
 
   return (
     <TemplateSigningFieldProvider fields={fields}>
@@ -28,7 +28,7 @@ export default async function TemplateDetailViewPage({
         <div className="flex h-full flex-grow flex-col">
           <div className="col-span-12 flex align-middle">
             <Badge
-              variant={status === "DRAFT" ? "warning" : "success"}
+              variant={status === 'DRAFT' ? 'warning' : 'success'}
               className="h-7 align-middle"
             >
               {status}
@@ -75,5 +75,5 @@ export default async function TemplateDetailViewPage({
         </div>
       </div>
     </TemplateSigningFieldProvider>
-  );
+  )
 }

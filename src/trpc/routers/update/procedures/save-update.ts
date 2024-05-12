@@ -1,21 +1,21 @@
-import { generatePublicId } from "@/common/id";
-import { UpdateMutationSchema } from "../schema";
-import { withAuth } from "@/trpc/api/trpc";
+import { generatePublicId } from '@/common/id'
+import { withAuth } from '@/trpc/api/trpc'
+import { UpdateMutationSchema } from '../schema'
 
 export const saveUpdateProcedure = withAuth
   .input(UpdateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     try {
-      const authorId = ctx.session.user.memberId;
-      const companyId = ctx.session.user.companyId;
-      const publicId = input.publicId ?? generatePublicId();
-      const { title, content, html } = input;
+      const authorId = ctx.session.user.memberId
+      const companyId = ctx.session.user.companyId
+      const publicId = input.publicId ?? generatePublicId()
+      const { title, content, html } = input
 
       if (title.length === 0 || content.length === 0) {
         return {
           success: false,
-          message: "Title and content cannot be empty.",
-        };
+          message: 'Title and content cannot be empty.',
+        }
       } else {
         await ctx.db.$transaction(async (tx) => {
           if (input.publicId) {
@@ -26,7 +26,7 @@ export const saveUpdateProcedure = withAuth
                 title,
                 content,
               },
-            });
+            })
           } else {
             await tx.update.create({
               data: {
@@ -37,21 +37,21 @@ export const saveUpdateProcedure = withAuth
                 companyId,
                 authorId,
               },
-            });
+            })
           }
-        });
+        })
 
         return {
           publicId,
           success: true,
-          message: "Successfully saved an update.",
-        };
+          message: 'Successfully saved an update.',
+        }
       }
     } catch (error) {
-      console.error("Error saving an update:", error);
+      console.error('Error saving an update:', error)
       return {
         success: false,
-        message: "Oops, something went wrong. Please try again later.",
-      };
+        message: 'Oops, something went wrong. Please try again later.',
+      }
     }
-  });
+  })

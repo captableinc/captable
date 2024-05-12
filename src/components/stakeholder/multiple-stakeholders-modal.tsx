@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import Modal from "@/components/common/modal";
-import { useState } from "react";
-import StakeholderUploader from "./stakeholder-uploader";
+import Modal from '@/components/common/modal'
+import { useState } from 'react'
+import StakeholderUploader from './stakeholder-uploader'
 
 type StakeholderType = {
-  title: string | React.ReactNode;
-  subtitle: string | React.ReactNode;
-  trigger: React.ReactNode;
-};
+  title: string | React.ReactNode
+  subtitle: string | React.ReactNode
+  trigger: React.ReactNode
+}
 
 const MultipleStakeholdersModal = ({
   title,
   subtitle,
   trigger,
 }: StakeholderType) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Modal
@@ -26,13 +26,13 @@ const MultipleStakeholdersModal = ({
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val);
+          setOpen(val)
         },
       }}
     >
       <StakeholderUploader setOpen={setOpen} />
     </Modal>
-  );
-};
+  )
+}
 
-export default MultipleStakeholdersModal;
+export default MultipleStakeholdersModal

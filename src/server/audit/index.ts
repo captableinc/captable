@@ -27,18 +27,18 @@
 import {
   type AuditSchemaType,
   type TEsignAuditSchema,
-} from "@/server/audit/schema";
-import { type TPrismaOrTransaction } from "@/server/db";
+} from '@/server/audit/schema'
+import { type TPrismaOrTransaction } from '@/server/db'
 
 const create = (data: AuditSchemaType, tx: TPrismaOrTransaction) => {
   return tx.audit.create({
     data,
-  });
-};
+  })
+}
 
 export const Audit = {
   create,
-};
+}
 
 const esignAuditCreate = (
   data: TEsignAuditSchema,
@@ -46,9 +46,9 @@ const esignAuditCreate = (
 ) => {
   return tx.esignAudit.create({
     data,
-  });
-};
+  })
+}
 
 export const EsignAudit = {
   create: esignAuditCreate,
-};
+}

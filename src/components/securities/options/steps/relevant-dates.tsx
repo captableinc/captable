@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   FormControl,
@@ -6,21 +6,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import React from "react";
-import { useFormContext } from "react-hook-form";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import React from 'react'
+import { useFormContext } from 'react-hook-form'
 
 export const RelevantDatesFields = [
-  "issueDate",
-  "expirationDate",
-  "vestingStartDate",
-  "boardApprovalDate",
-  "rule144Date",
-];
+  'issueDate',
+  'expirationDate',
+  'vestingStartDate',
+  'boardApprovalDate',
+  'rule144Date',
+]
 
 export const RelevantDates = () => {
-  const form = useFormContext();
+  const form = useFormContext()
 
   return (
     <>
@@ -96,5 +96,5 @@ export const RelevantDates = () => {
         />
       </div>
     </>
-  );
-};
+  )
+}

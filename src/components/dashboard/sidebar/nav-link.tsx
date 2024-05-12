@@ -1,19 +1,19 @@
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { type RiHome4Line } from "@remixicon/react";
+import { cn } from '@/lib/utils'
+import { type RiHome4Line } from '@remixicon/react'
+import Link from 'next/link'
 
-type Icon = typeof RiHome4Line;
+type Icon = typeof RiHome4Line
 
 interface NavLinkProps {
-  href?: string;
-  icon?: Icon;
-  name: string;
-  active: boolean;
-  className?: string;
+  href?: string
+  icon?: Icon
+  name: string
+  active: boolean
+  className?: string
 }
 
 export function NavLink({ active, href, icon, name, className }: NavLinkProps) {
-  const Icon = icon;
+  const Icon = icon
 
   return (
     <>
@@ -23,18 +23,18 @@ export function NavLink({ active, href, icon, name, className }: NavLinkProps) {
           className={cn(
             className,
             active
-              ? "bg-gray-50 font-semibold text-primary"
-              : "text-gray-700 hover:bg-gray-50 hover:text-primary",
-            "group flex gap-x-3 rounded-md p-1 text-sm leading-6",
+              ? 'bg-gray-50 font-semibold text-primary'
+              : 'text-gray-700 hover:bg-gray-50 hover:text-primary',
+            'group flex gap-x-3 rounded-md p-1 text-sm leading-6',
           )}
         >
           {Icon && (
             <Icon
               className={cn(
                 active
-                  ? "text-primary"
-                  : "text-gray-400 group-hover:text-primary",
-                "h-6 w-6 shrink-0",
+                  ? 'text-primary'
+                  : 'text-gray-400 group-hover:text-primary',
+                'h-6 w-6 shrink-0',
               )}
               aria-hidden="true"
             />
@@ -46,18 +46,18 @@ export function NavLink({ active, href, icon, name, className }: NavLinkProps) {
           className={cn(
             className,
             active
-              ? "bg-gray-50 font-semibold text-primary"
-              : "text-gray-700 hover:bg-gray-50 hover:text-primary",
-            "group flex gap-x-3 rounded-md p-2 text-sm leading-6",
+              ? 'bg-gray-50 font-semibold text-primary'
+              : 'text-gray-700 hover:bg-gray-50 hover:text-primary',
+            'group flex gap-x-3 rounded-md p-2 text-sm leading-6',
           )}
         >
           {Icon && (
             <Icon
               className={cn(
                 active
-                  ? "text-primary"
-                  : "text-gray-400 group-hover:text-primary",
-                "h-6 w-6 shrink-0",
+                  ? 'text-primary'
+                  : 'text-gray-400 group-hover:text-primary',
+                'h-6 w-6 shrink-0',
               )}
               aria-hidden="true"
             />
@@ -66,5 +66,5 @@ export function NavLink({ active, href, icon, name, className }: NavLinkProps) {
         </button>
       )}
     </>
-  );
+  )
 }

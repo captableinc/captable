@@ -1,15 +1,15 @@
-import { db } from "@/server/db";
+import { db } from '@/server/db'
 import {
+  type TEsignGetTemplate,
   completeEsignDocuments,
   generateEsignPdf,
   uploadEsignDocuments,
-  type TEsignGetTemplate,
-} from "@/server/esign";
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
-import { z } from "zod";
-import { type TConfirmationEmailPayload } from "./esign-confirmation-email";
+} from '@/server/esign'
+import { getPresignedGetUrl } from '@/server/file-uploads'
+import { client } from '@/trigger'
+import { eventTrigger } from '@trigger.dev/sdk'
+import { z } from 'zod'
+import { type TConfirmationEmailPayload } from './esign-confirmation-email'
 
 const schema = z.object({
   bucketKey: z.string(),
@@ -29,18 +29,18 @@ const schema = z.object({
     name: z.string(),
     logo: z.string().nullish(),
   }),
-});
+})
 
-export type TESignPdfSchema = Omit<z.infer<typeof schema>, "fields"> & {
-  fields: TEsignGetTemplate["fields"];
-};
+export type TESignPdfSchema = Omit<z.infer<typeof schema>, 'fields'> & {
+  fields: TEsignGetTemplate['fields']
+}
 
 client.defineJob({
-  id: "esign.complete-pdf",
-  name: "esign_complete_pdf",
-  version: "0.0.1",
+  id: 'esign.complete-pdf',
+  name: 'esign_complete_pdf',
+  version: '0.0.1',
   trigger: eventTrigger({
-    name: "esign.sign-pdf",
+    name: 'esign.sign-pdf',
     schema,
   }),
 
@@ -58,25 +58,25 @@ client.defineJob({
       templateId,
       recipients,
       company,
-    } = payload;
+    } = payload
 
-    const uploadedDocument = await io.runTask("upload documents", async () => {
+    const uploadedDocument = await io.runTask('upload documents', async () => {
       const modifiedPdfBytes = await generateEsignPdf({
         bucketKey,
         data,
         fields,
         audits,
-      });
+      })
       const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
         buffer: Buffer.from(modifiedPdfBytes),
         companyId,
         templateName,
-      });
+      })
 
-      return { bucketData, _fileUrl };
-    });
+      return { bucketData, _fileUrl }
+    })
 
-    await io.runTask("complete document", async () => {
+    await io.runTask('complete document', async () => {
       await db.$transaction(async (tx) => {
         await completeEsignDocuments({
           bucketData: uploadedDocument.bucketData,
@@ -87,12 +87,12 @@ client.defineJob({
           templateName,
           uploaderName,
           userAgent,
-        });
-      });
-    });
+        })
+      })
+    })
 
-    await io.runTask("send all recipients confirmation email", async () => {
-      const file = await getPresignedGetUrl(uploadedDocument.bucketData.key);
+    await io.runTask('send all recipients confirmation email', async () => {
+      const file = await getPresignedGetUrl(uploadedDocument.bucketData.key)
 
       const data: { name: string; payload: TConfirmationEmailPayload }[] =
         recipients.map((recipient) => ({
@@ -103,10 +103,10 @@ client.defineJob({
             company,
             senderName: uploaderName,
           },
-          name: "esign.send-confirmation",
-        }));
+          name: 'esign.send-confirmation',
+        }))
 
-      await io.sendEvents(`trigger-confirmation-email`, data);
-    });
+      await io.sendEvents(`trigger-confirmation-email`, data)
+    })
   },
-});
+})

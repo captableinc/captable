@@ -1,29 +1,29 @@
-import { Input } from "../ui/input";
-import { DataTableFacetedFilter } from "../ui/data-table/data-table-faceted-filter";
-import { DataTableViewOptions } from "../ui/data-table/data-table-view-options";
-import { statusValues } from "./data";
-import { useDataTable } from "../ui/data-table/data-table";
-import { ResetButton } from "../ui/data-table/data-table-buttons";
+import { useDataTable } from '../ui/data-table/data-table'
+import { ResetButton } from '../ui/data-table/data-table-buttons'
+import { DataTableFacetedFilter } from '../ui/data-table/data-table-faceted-filter'
+import { DataTableViewOptions } from '../ui/data-table/data-table-view-options'
+import { Input } from '../ui/input'
+import { statusValues } from './data'
 
 export function MemberTableToolbar() {
-  const { table } = useDataTable();
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const { table } = useDataTable()
+  const isFiltered = table.getState().columnFilters.length > 0
 
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex flex-col gap-2 sm:flex-1 sm:flex-row sm:items-center sm:gap-0 sm:space-x-2">
         <Input
           placeholder="Search by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="h-8 w-64"
         />
         <div className="space-x-2">
-          {table.getColumn("status") && (
+          {table.getColumn('status') && (
             <DataTableFacetedFilter
-              column={table.getColumn("status")}
+              column={table.getColumn('status')}
               title="Status"
               options={statusValues}
             />
@@ -39,5 +39,5 @@ export function MemberTableToolbar() {
       </div>
       <DataTableViewOptions />
     </div>
-  );
+  )
 }

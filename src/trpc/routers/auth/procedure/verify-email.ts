@@ -1,35 +1,35 @@
-import { getUserByEmail } from "@/server/user";
-import { getVerificationTokenByToken } from "@/server/verification-token";
-import { withoutAuth } from "@/trpc/api/trpc";
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { getUserByEmail } from '@/server/user'
+import { getVerificationTokenByToken } from '@/server/verification-token'
+import { withoutAuth } from '@/trpc/api/trpc'
+import { TRPCError } from '@trpc/server'
+import { z } from 'zod'
 
 export const verifyEmailProcedure = withoutAuth
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
-    const existingToken = await getVerificationTokenByToken(input);
+    const existingToken = await getVerificationTokenByToken(input)
     if (!existingToken) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Token does not exists!",
-      });
+        code: 'BAD_REQUEST',
+        message: 'Token does not exists!',
+      })
     }
-    const hasExpired = new Date(existingToken.expires) < new Date();
+    const hasExpired = new Date(existingToken.expires) < new Date()
 
     if (hasExpired) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Token expired!",
-      });
+        code: 'BAD_REQUEST',
+        message: 'Token expired!',
+      })
     }
 
-    const existingUser = await getUserByEmail(existingToken.identifier);
+    const existingUser = await getUserByEmail(existingToken.identifier)
 
     if (!existingUser) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Email does not exists!",
-      });
+        code: 'BAD_REQUEST',
+        message: 'Email does not exists!',
+      })
     }
 
     await ctx.db.user.update({
@@ -38,14 +38,14 @@ export const verifyEmailProcedure = withoutAuth
         emailVerified: new Date(),
         email: existingToken.identifier,
       },
-    });
+    })
 
     await ctx.db.verificationToken.delete({
       where: { id: existingToken.id },
-    });
+    })
 
     return {
       success: true,
       message: "You're all set!",
-    };
-  });
+    }
+  })

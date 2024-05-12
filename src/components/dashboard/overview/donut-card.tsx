@@ -1,73 +1,73 @@
-"use client";
+'use client'
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
-import { DonutChart } from "@tremor/react";
-import DonutSelector from "./donut-selector";
-import { useState, useEffect, Fragment } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { DonutChart } from '@tremor/react'
+import { Fragment, useEffect, useState } from 'react'
+import DonutSelector from './donut-selector'
 
 type DonutTooltipProps = {
-  name: string;
-  value: number;
-};
+  name: string
+  value: number
+}
 
 const DonutCard = () => {
-  const [isClient, setIsClient] = useState(false);
-  const [selected, setSelected] = useState("stakeholder");
+  const [isClient, setIsClient] = useState(false)
+  const [selected, setSelected] = useState('stakeholder')
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true)
+  }, [])
 
   const shareClasses = [
     {
-      key: "Common shares",
+      key: 'Common shares',
       value: 53,
     },
 
     {
-      key: "Preferred (Series A)",
+      key: 'Preferred (Series A)',
       value: 15,
     },
 
     {
-      key: "Preferred (Convertible note)",
+      key: 'Preferred (Convertible note)',
       value: 7,
     },
 
     {
-      key: "Stock Plan",
+      key: 'Stock Plan',
       value: 15,
     },
-  ];
+  ]
 
   const stakeholders = [
     {
-      key: "Dennis Shelton",
+      key: 'Dennis Shelton',
       value: 27,
     },
 
     {
-      key: "Camila Murphy",
+      key: 'Camila Murphy',
       value: 25,
     },
 
     {
-      key: "Others",
+      key: 'Others',
       value: 18,
     },
 
     {
-      key: "Equity Plan",
+      key: 'Equity Plan',
       value: 15,
     },
 
     {
-      key: "Acme Ventures",
+      key: 'Acme Ventures',
       value: 10,
     },
-  ];
+  ]
 
   return (
     <Fragment>
@@ -86,7 +86,7 @@ const DonutCard = () => {
             <div className="grid grid-cols-2 gap-4">
               <ScrollArea className="h-60 w-full py-4 pr-8">
                 <ul className="space-y-3 text-sm">
-                  {selected === "stakeholder"
+                  {selected === 'stakeholder'
                     ? stakeholders.map((stakeholder) => (
                         <li
                           key={stakeholder.key}
@@ -110,26 +110,26 @@ const DonutCard = () => {
 
               <DonutChart
                 className="h-60 py-4"
-                data={selected === "stakeholder" ? stakeholders : shareClasses}
+                data={selected === 'stakeholder' ? stakeholders : shareClasses}
                 category="value"
                 index="key"
                 showLabel={false}
                 showAnimation={true}
                 customTooltip={({ payload }) => {
                   if (Array.isArray(payload) && payload.length > 0) {
-                    const data = payload[0] as DonutTooltipProps;
+                    const data = payload[0] as DonutTooltipProps
 
                     return (
                       <div className="rounded bg-white p-2 shadow-md">
                         <p className="text-xs text-primary/80">
-                          <span className="font-semibold">{data.name}</span>:{" "}
+                          <span className="font-semibold">{data.name}</span>:{' '}
                           {data.value}%
                         </p>
                       </div>
-                    );
+                    )
                   }
 
-                  return null;
+                  return null
                 }}
               />
             </div>
@@ -137,7 +137,7 @@ const DonutCard = () => {
         </Card>
       )}
     </Fragment>
-  );
-};
+  )
+}
 
-export default DonutCard;
+export default DonutCard

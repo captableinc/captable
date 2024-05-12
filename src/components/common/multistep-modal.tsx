@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import Modal from "@/components/common/modal";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { type DialogProps } from "@radix-ui/react-dialog";
-import { RiCheckLine } from "@remixicon/react";
-import { useEffect, useMemo, useState } from "react";
-import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import { type z } from "zod";
+import Modal from '@/components/common/modal'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { type DialogProps } from '@radix-ui/react-dialog'
+import { RiCheckLine } from '@remixicon/react'
+import { useEffect, useMemo, useState } from 'react'
+import { FormProvider, type SubmitHandler, useForm } from 'react-hook-form'
+import { type z } from 'zod'
 
 export type stepsType = {
-  id: number;
-  title: string;
-  fields: string[];
-  component: () => JSX.Element;
-};
+  id: number
+  title: string
+  fields: string[]
+  component: () => JSX.Element
+}
 
 type MultiStepModalType = {
-  title: string | React.ReactNode;
-  subtitle: string | React.ReactNode;
-  trigger: React.ReactNode;
-  steps: stepsType[];
-  schema: z.AnyZodObject;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onSubmit: SubmitHandler<any>;
-  dialogProps: DialogProps;
-};
+  title: string | React.ReactNode
+  subtitle: string | React.ReactNode
+  trigger: React.ReactNode
+  steps: stepsType[]
+  schema: z.AnyZodObject
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  onSubmit: SubmitHandler<any>
+  dialogProps: DialogProps
+}
 
 export default function MultiStepModal({
   title,
@@ -37,57 +37,57 @@ export default function MultiStepModal({
   onSubmit,
   dialogProps,
 }: MultiStepModalType) {
-  const [steps, setSteps] = useState(steppers);
+  const [steps, setSteps] = useState(steppers)
 
-  const [formStep, setFormStep] = useState(1);
+  const [formStep, setFormStep] = useState(1)
 
-  const methods = useForm<FormField>({ resolver: zodResolver(schema) });
+  const methods = useForm<FormField>({ resolver: zodResolver(schema) })
 
-  const safeTemplate: string = methods.watch("safeTemplate") as string;
+  const safeTemplate: string = methods.watch('safeTemplate') as string
 
   const memoizedSteppers = useMemo(
     () => steppers.filter((step, i) => i !== steppers.length - 1),
     [],
-  );
+  )
 
   useEffect(() => {
-    if (steppers[0]?.fields?.includes("safeTemplate")) {
-      if (safeTemplate !== undefined && safeTemplate !== "CUSTOM") {
-        setSteps(memoizedSteppers);
+    if (steppers[0]?.fields?.includes('safeTemplate')) {
+      if (safeTemplate !== undefined && safeTemplate !== 'CUSTOM') {
+        setSteps(memoizedSteppers)
       } else {
-        setSteps(steppers);
+        setSteps(steppers)
       }
     }
-  }, [safeTemplate]);
+  }, [safeTemplate])
 
-  type FormField = z.infer<typeof schema>;
-  type FieldName = keyof FormField;
+  type FormField = z.infer<typeof schema>
+  type FieldName = keyof FormField
 
-  const StepForm = steps[formStep - 1]!.component;
+  const StepForm = steps[formStep - 1]!.component
 
   const nextStep = async () => {
-    const fields = steps[formStep - 1]?.fields ?? [];
+    const fields = steps[formStep - 1]?.fields ?? []
 
     const output = await methods.trigger(fields as FieldName[] as string[], {
       shouldFocus: true,
-    });
+    })
 
-    if (!output) return;
+    if (!output) return
 
     if (formStep < steps.length) {
-      setFormStep(formStep + 1);
+      setFormStep(formStep + 1)
     } else {
-      await methods.handleSubmit(onSubmit)();
-      methods.reset();
-      dialogProps.open = false;
+      await methods.handleSubmit(onSubmit)()
+      methods.reset()
+      dialogProps.open = false
     }
-  };
+  }
 
   const prevStep = () => {
     if (formStep > 1) {
-      setFormStep(formStep - 1);
+      setFormStep(formStep - 1)
     }
-  };
+  }
 
   return (
     <Modal
@@ -106,7 +106,9 @@ export default function MultiStepModal({
             {steps.map((step, stepIdx) => (
               <li
                 key={step.title}
-                className={`${stepIdx !== steps.length - 1 ? "pb-5" : ""} relative`}
+                className={`${
+                  stepIdx !== steps.length - 1 ? 'pb-5' : ''
+                } relative`}
               >
                 {step.id < formStep ? (
                   <>
@@ -204,13 +206,13 @@ export default function MultiStepModal({
             <div className="mt-6 flex justify-end">
               <div className="space-x-4">
                 {formStep > 1 && (
-                  <Button variant={"outline"} onClick={prevStep}>
+                  <Button variant={'outline'} onClick={prevStep}>
                     Back
                   </Button>
                 )}
 
                 <Button type="submit" onClick={nextStep}>
-                  {formStep < steps.length ? "Continue" : "Submit"}
+                  {formStep < steps.length ? 'Continue' : 'Submit'}
                 </Button>
               </div>
             </div>
@@ -218,5 +220,5 @@ export default function MultiStepModal({
         </div>
       </div>
     </Modal>
-  );
+  )
 }

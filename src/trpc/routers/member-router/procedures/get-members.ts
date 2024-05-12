@@ -1,11 +1,11 @@
-import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { checkMembership } from '@/server/auth'
+import { withAuth } from '@/trpc/api/trpc'
 
 export const getMembersProcedure = withAuth.query(async ({ ctx }) => {
-  const { db, session } = ctx;
+  const { db, session } = ctx
 
   const data = await db.$transaction(async (tx) => {
-    const { companyId } = await checkMembership({ tx, session });
+    const { companyId } = await checkMembership({ tx, session })
 
     const data = await tx.member.findMany({
       where: {
@@ -23,13 +23,13 @@ export const getMembersProcedure = withAuth.query(async ({ ctx }) => {
 
       orderBy: {
         user: {
-          name: "asc",
+          name: 'asc',
         },
       },
-    });
+    })
 
-    return data;
-  });
+    return data
+  })
 
-  return { data };
-});
+  return { data }
+})

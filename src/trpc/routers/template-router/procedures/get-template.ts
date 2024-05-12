@@ -1,19 +1,19 @@
-import { checkMembership } from "@/server/auth";
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { withAuth } from "@/trpc/api/trpc";
-import { ZodGetTemplateQuerySchema } from "../schema";
+import { checkMembership } from '@/server/auth'
+import { getPresignedGetUrl } from '@/server/file-uploads'
+import { withAuth } from '@/trpc/api/trpc'
+import { ZodGetTemplateQuerySchema } from '../schema'
 
 export const getTemplateProcedure = withAuth
   .input(ZodGetTemplateQuerySchema)
   .query(async ({ ctx, input }) => {
     const { template } = await ctx.db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ tx, session: ctx.session });
+      const { companyId } = await checkMembership({ tx, session: ctx.session })
 
       const template = await tx.template.findFirstOrThrow({
         where: {
           publicId: input.publicId,
           companyId: companyId,
-          ...(input.isDraftOnly && { status: "DRAFT" }),
+          ...(input.isDraftOnly && { status: 'DRAFT' }),
         },
         select: {
           name: true,
@@ -43,7 +43,7 @@ export const getTemplateProcedure = withAuth
               meta: true,
             },
             orderBy: {
-              top: "asc",
+              top: 'asc',
             },
           },
           eSignRecipient: {
@@ -54,12 +54,12 @@ export const getTemplateProcedure = withAuth
             },
           },
         },
-      });
+      })
 
-      return { template };
-    });
+      return { template }
+    })
 
-    const { key, url } = await getPresignedGetUrl(template.bucket.key);
+    const { key, url } = await getPresignedGetUrl(template.bucket.key)
 
     return {
       fields: template.fields,
@@ -68,5 +68,5 @@ export const getTemplateProcedure = withAuth
       name: template.name,
       status: template.status,
       recipients: template.eSignRecipient,
-    };
-  });
+    }
+  })

@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { RiMenuLine } from "@remixicon/react";
-import { SideBar } from "../sidebar";
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { RiMenuLine } from '@remixicon/react'
+import { SideBar } from '../sidebar'
 
-import { type TGetCompanyList } from "@/server/company";
+import { type TGetCompanyList } from '@/server/company'
 
 interface SideBarProps {
-  publicId: string;
-  companies: TGetCompanyList;
+  publicId: string
+  companies: TGetCompanyList
 }
 
 export function MobileDrawer({ publicId, companies }: SideBarProps) {
@@ -30,5 +30,5 @@ export function MobileDrawer({ publicId, companies }: SideBarProps) {
         </SheetContent>
       </Sheet>
     </div>
-  );
+  )
 }

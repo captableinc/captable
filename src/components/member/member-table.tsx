@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import * as React from "react";
+import * as React from 'react'
 
 import {
   type ColumnDef,
@@ -8,16 +8,16 @@ import {
   type SortingState,
   type VisibilityState,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getFacetedUniqueValues,
-  getFacetedRowModel,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,63 +25,63 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 
-import { api } from "@/trpc/react";
+import { api } from '@/trpc/react'
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import MemberModal from "@/components/member/member-modal";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { type RouterOutputs } from "@/trpc/shared";
-import { MemberTableToolbar } from "./member-table-toolbar";
-import { RiMoreLine } from "@remixicon/react";
-import { DataTableHeader } from "../ui/data-table/data-table-header";
-import { DataTableBody } from "../ui/data-table/data-table-body";
-import { DataTableContent } from "../ui/data-table/data-table-content";
-import { DataTable } from "../ui/data-table/data-table";
-import { DataTablePagination } from "../ui/data-table/data-table-pagination";
-import { SortButton } from "../ui/data-table/data-table-buttons";
+import MemberModal from '@/components/member/member-modal'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { type RouterOutputs } from '@/trpc/shared'
+import { RiMoreLine } from '@remixicon/react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { DataTable } from '../ui/data-table/data-table'
+import { DataTableBody } from '../ui/data-table/data-table-body'
+import { SortButton } from '../ui/data-table/data-table-buttons'
+import { DataTableContent } from '../ui/data-table/data-table-content'
+import { DataTableHeader } from '../ui/data-table/data-table-header'
+import { DataTablePagination } from '../ui/data-table/data-table-pagination'
+import { MemberTableToolbar } from './member-table-toolbar'
 
-type Member = RouterOutputs["member"]["getMembers"]["data"];
+type Member = RouterOutputs['member']['getMembers']['data']
 
 type MembersType = {
-  members: Member;
-};
+  members: Member
+}
 
 const humanizeStatus = (status: string) => {
-  if (status === "PENDING") {
+  if (status === 'PENDING') {
     return (
       <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
         Pending
       </span>
-    );
+    )
   }
-  if (status === "ACTIVE") {
+  if (status === 'ACTIVE') {
     return (
       <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
         Active
       </span>
-    );
+    )
   }
-  if (status === "INACTIVE") {
+  if (status === 'INACTIVE') {
     return (
       <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
         Inactive
       </span>
-    );
+    )
   }
-  return "Unknown";
-};
+  return 'Unknown'
+}
 
 export const columns: ColumnDef<Member[number]>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -98,21 +98,21 @@ export const columns: ColumnDef<Member[number]>[] = [
     enableHiding: false,
   },
   {
-    id: "name",
+    id: 'name',
     header: ({ column }) => {
       return (
         <SortButton
           label="Name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         />
-      );
+      )
     },
     accessorFn: (row) => row.user?.name,
     cell: ({ row }) => (
       <div className="flex">
         <Avatar className="rounded-full">
           <AvatarImage
-            src={row.original?.user?.image ?? "/placeholders/user.svg"}
+            src={row.original?.user?.image ?? '/placeholders/user.svg'}
           />
         </Avatar>
 
@@ -124,84 +124,86 @@ export const columns: ColumnDef<Member[number]>[] = [
     ),
   },
   {
-    accessorKey: "title",
+    accessorKey: 'title',
     header: ({ column }) => {
       return (
         <SortButton
           label="Title"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         />
-      );
+      )
     },
-    cell: ({ row }) => <div className="text-left">{row.getValue("title")}</div>,
+    cell: ({ row }) => <div className="text-left">{row.getValue('title')}</div>,
   },
   {
-    accessorKey: "status",
+    accessorKey: 'status',
     header: ({ column }) => {
       return (
         <SortButton
           label="Status"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         />
-      );
+      )
     },
     cell: ({ row }) => <div>{humanizeStatus(row.original.status)}</div>,
     filterFn: (row, id, value: string[]) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return value.includes(row.getValue(id));
+      return value.includes(row.getValue(id))
     },
   },
   {
-    id: "actions",
+    id: 'actions',
     enableHiding: false,
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const router = useRouter();
+      const router = useRouter()
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { data } = useSession();
-      const member = row.original;
-      const removeMember = api.member.removeMember.useMutation();
-      const revokeInvite = api.member.revokeInvite.useMutation();
-      const revInvite = api.member.reInvite.useMutation();
+      const { data } = useSession()
+      const member = row.original
+      const removeMember = api.member.removeMember.useMutation()
+      const revokeInvite = api.member.revokeInvite.useMutation()
+      const revInvite = api.member.reInvite.useMutation()
       const toggleActivation = api.member.toggleActivation.useMutation({
         onSuccess: () => {
-          router.refresh();
+          router.refresh()
         },
-      });
+      })
 
-      const status = member.status;
-      const memberId = member.id;
-      const email = member.user?.email;
+      const status = member.status
+      const memberId = member.id
+      const email = member.user?.email
 
-      const isActive = status === "ACTIVE";
-      const isPending = status === "PENDING";
-      const deleteAction = isPending ? "Revoke invite" : "Remove member";
-      const isAdminActionable = member.userId !== data?.user.id;
+      const isActive = status === 'ACTIVE'
+      const isPending = status === 'PENDING'
+      const deleteAction = isPending ? 'Revoke invite' : 'Remove member'
+      const isAdminActionable = member.userId !== data?.user.id
 
       const handleRevokeOrRemove = async () => {
         try {
           if (isPending && email) {
-            await revokeInvite.mutateAsync({ email, memberId });
+            await revokeInvite.mutateAsync({ email, memberId })
           } else {
-            await removeMember.mutateAsync({ memberId });
+            await removeMember.mutateAsync({ memberId })
           }
 
-          router.refresh();
+          router.refresh()
+          // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         } catch (error) {}
-      };
+      }
 
       const handleToggleActivation = async () => {
         try {
           await toggleActivation.mutateAsync({
-            status: isActive ? "INACTIVE" : "ACTIVE",
+            status: isActive ? 'INACTIVE' : 'ACTIVE',
             memberId,
-          });
+          })
+          // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         } catch (error) {}
-      };
+      }
 
       const handleReinvite = () => {
-        revInvite.mutate({ memberId: member.id });
-      };
+        revInvite.mutate({ memberId: member.id })
+      }
 
       return (
         <DropdownMenu>
@@ -215,22 +217,22 @@ export const columns: ColumnDef<Member[number]>[] = [
           </div>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            {isAdminActionable && status === "PENDING" && (
+            {isAdminActionable && status === 'PENDING' && (
               <DropdownMenuItem onSelect={handleReinvite}>
                 Re-invite member
               </DropdownMenuItem>
             )}
 
-            {status === "ACTIVE" && (
+            {status === 'ACTIVE' && (
               <MemberModal
                 isEditMode
                 memberId={member.id}
                 title="Update team member"
                 subtitle="Update team member's account information."
                 member={{
-                  name: member.user?.name ?? "",
-                  email: email ?? "",
-                  title: member.title ?? "",
+                  name: member.user?.name ?? '',
+                  email: email ?? '',
+                  title: member.title ?? '',
                 }}
               >
                 <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
@@ -247,7 +249,7 @@ export const columns: ColumnDef<Member[number]>[] = [
                 disabled={!isAdminActionable}
                 className="text-red-500"
               >
-                {isActive ? "Deactivate member" : "Activate member"}
+                {isActive ? 'Deactivate member' : 'Activate member'}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem
@@ -259,19 +261,19 @@ export const columns: ColumnDef<Member[number]>[] = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      );
+      )
     },
   },
-];
+]
 
 const MemberTable = ({ members }: MembersType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
-  );
+  )
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+    React.useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
     data: members,
@@ -293,7 +295,7 @@ const MemberTable = ({ members }: MembersType) => {
       columnVisibility,
       rowSelection,
     },
-  });
+  })
 
   return (
     <div className="w-full p-6">
@@ -306,7 +308,7 @@ const MemberTable = ({ members }: MembersType) => {
         <DataTablePagination />
       </DataTable>
     </div>
-  );
-};
+  )
+}
 
-export default MemberTable;
+export default MemberTable

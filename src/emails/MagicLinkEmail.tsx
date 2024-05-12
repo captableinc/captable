@@ -1,4 +1,3 @@
-import { constants } from "../lib/constants";
 import {
   Body,
   Button,
@@ -12,11 +11,12 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
-import * as React from "react";
+} from 'jsx-email'
+import * as React from 'react'
+import { constants } from '../lib/constants'
 
 interface MagicLinkEmailProps {
-  magicLink: string;
+  magicLink: string
 }
 
 export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
@@ -40,7 +40,7 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
             </Section>
           </Section>
           <Text className="!text-[14px] leading-[24px] text-black">
-            or copy and paste this URL into your browser:{" "}
+            or copy and paste this URL into your browser:{' '}
             <Link
               href={magicLink}
               className="break-all text-blue-600 no-underline"
@@ -59,10 +59,10 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
       </Body>
     </Tailwind>
   </Html>
-);
+)
 
 MagicLinkEmail.PreviewProps = {
   magicLink: `${constants.url}/api/auth/callback/email?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fonboarding&token=671d9eac4043bbe1c22aeafd419ddfe79c2282ec755c558ea789671fdaffe8dd&email=ceo%40example.com`,
-} as MagicLinkEmailProps;
+} as MagicLinkEmailProps
 
-export default MagicLinkEmail;
+export default MagicLinkEmail

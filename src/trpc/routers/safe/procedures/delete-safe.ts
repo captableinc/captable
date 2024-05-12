@@ -1,31 +1,31 @@
-import { Audit } from "@/server/audit";
-import { checkMembership } from "@/server/auth";
-import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
+import { Audit } from '@/server/audit'
+import { checkMembership } from '@/server/auth'
+import { withAuth, type withAuthTrpcContextType } from '@/trpc/api/trpc'
 import {
-  ZodDeleteSafesMutationSchema,
   type TypeZodDeleteSafesMutationSchema,
-} from "../schema";
+  ZodDeleteSafesMutationSchema,
+} from '../schema'
 
 export const deleteSafeProcedure = withAuth
   .input(ZodDeleteSafesMutationSchema)
   .mutation(async (args) => {
-    return await deleteSafeHandler(args);
-  });
+    return await deleteSafeHandler(args)
+  })
 
 interface deleteSafeHandlerOptions {
-  input: TypeZodDeleteSafesMutationSchema;
-  ctx: withAuthTrpcContextType;
+  input: TypeZodDeleteSafesMutationSchema
+  ctx: withAuthTrpcContextType
 }
 
 export async function deleteSafeHandler({
   ctx: { db, session, requestIp, userAgent },
   input,
 }: deleteSafeHandlerOptions) {
-  const user = session.user;
-  const { safeId } = input;
+  const user = session.user
+  const { safeId } = input
   try {
     await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ tx, session });
+      const { companyId } = await checkMembership({ tx, session })
 
       const safe = await tx.safe.delete({
         where: {
@@ -46,30 +46,30 @@ export async function deleteSafeHandler({
             },
           },
         },
-      });
+      })
 
       await Audit.create(
         {
-          action: "safe.deleted",
+          action: 'safe.deleted',
           companyId,
-          actor: { type: "user", id: session.user.id },
+          actor: { type: 'user', id: session.user.id },
           context: {
             requestIp,
             userAgent,
           },
-          target: [{ type: "company", id: companyId }],
+          target: [{ type: 'company', id: companyId }],
           summary: `${user.name} deleted safe agreement of stakholder ${safe.stakeholder.name}`,
         },
         tx,
-      );
-    });
+      )
+    })
 
-    return { success: true };
+    return { success: true }
   } catch (err) {
-    console.error(err);
+    console.error(err)
     return {
       success: false,
-      message: "Oops, something went wrong while deleting option.",
-    };
+      message: 'Oops, something went wrong while deleting option.',
+    }
   }
 }

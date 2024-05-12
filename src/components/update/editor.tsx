@@ -1,36 +1,36 @@
-"use client";
+'use client'
 
-import { dayjsExt } from "@/common/dayjs";
-import Loading from "@/components/common/loading";
+import { dayjsExt } from '@/common/dayjs'
+import Loading from '@/components/common/loading'
 import ShareModal, {
   type ExtendedRecipientType,
-} from "@/components/common/share-modal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { DropdownButton } from "@/components/ui/dropdown-button";
-import { useToast } from "@/components/ui/use-toast";
-import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
-import { api } from "@/trpc/react";
-import { type Block } from "@blocknote/core";
-import type { Update } from "@prisma/client";
-import { RiArrowDownSLine } from "@remixicon/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+} from '@/components/common/share-modal'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { DropdownButton } from '@/components/ui/dropdown-button'
+import { useToast } from '@/components/ui/use-toast'
+import type { ShareContactType, ShareRecipientType } from '@/schema/contacts'
+import { api } from '@/trpc/react'
+import { type Block } from '@blocknote/core'
+import type { Update } from '@prisma/client'
+import { RiArrowDownSLine } from '@remixicon/react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Fragment, useState } from 'react'
 
-import { env } from "@/env";
-import "@/styles/editor.css";
-import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
-import "@blocknote/react/style.css";
+import { env } from '@/env'
+import '@/styles/editor.css'
+import { BlockNoteView, useCreateBlockNote } from '@blocknote/react'
+import '@blocknote/react/style.css'
 
 type UpdatesEditorProps = {
-  update?: Update;
-  mode: "edit" | "new";
-  contacts?: ShareContactType[];
-  recipients?: ExtendedRecipientType[];
-  companyPublicId?: string;
-};
+  update?: Update
+  mode: 'edit' | 'new'
+  contacts?: ShareContactType[]
+  recipients?: ExtendedRecipientType[]
+  companyPublicId?: string
+}
 
 const UpdatesEditor = ({
   mode,
@@ -39,26 +39,26 @@ const UpdatesEditor = ({
   recipients,
   companyPublicId,
 }: UpdatesEditorProps) => {
-  const router = useRouter();
-  const { toast } = useToast();
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+  const router = useRouter()
+  const { toast } = useToast()
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL
 
-  const date = new Date();
-  const formattedDate = dayjsExt(date).format("MMM YYYY");
+  const date = new Date()
+  const formattedDate = dayjsExt(date).format('MMM YYYY')
 
   const defaultContent: Block[] = [
     {
-      id: "1",
-      type: "paragraph",
+      id: '1',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [
         {
-          text: "Hello, investors! 👋",
-          type: "text",
+          text: 'Hello, investors! 👋',
+          type: 'text',
           styles: {
             bold: true,
           },
@@ -67,242 +67,242 @@ const UpdatesEditor = ({
       children: [],
     },
     {
-      id: "2",
-      type: "paragraph",
+      id: '2',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [],
       children: [],
     },
     {
-      id: "3",
-      type: "paragraph",
+      id: '3',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [
         {
           text: "Here's a quick update on what's been happening at Captable, Inc. this month. We're excited to share that we've hit a major milestone! Our team has been hard at work and we're proud to announce that we've successfully launched our new product feature.",
-          type: "text",
+          type: 'text',
           styles: {},
         },
       ],
       children: [],
     },
     {
-      id: "4",
-      type: "paragraph",
+      id: '4',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [],
       children: [],
     },
     {
-      id: "5",
-      type: "paragraph",
+      id: '5',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [
         {
           text: "We're grateful for your continued support and we're looking forward to sharing more updates with you soon.",
-          type: "text",
+          type: 'text',
           styles: {},
         },
       ],
       children: [],
     },
     {
-      id: "6",
-      type: "paragraph",
+      id: '6',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [],
       children: [],
     },
     {
-      id: "7",
-      type: "paragraph",
+      id: '7',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [
         {
-          text: "Best,",
-          type: "text",
+          text: 'Best,',
+          type: 'text',
           styles: {},
         },
       ],
       children: [],
     },
     {
-      id: "8",
-      type: "paragraph",
+      id: '8',
+      type: 'paragraph',
       props: {
-        textColor: "default",
-        textAlignment: "left",
-        backgroundColor: "default",
+        textColor: 'default',
+        textAlignment: 'left',
+        backgroundColor: 'default',
       },
       content: [
         {
-          text: "The Captable, Inc. Team",
-          type: "text",
+          text: 'The Captable, Inc. Team',
+          type: 'text',
           styles: {},
         },
       ],
       children: [],
     },
-  ];
+  ]
 
-  const [title, setTitle] = useState<string>(update?.title ?? "");
+  const [title, setTitle] = useState<string>(update?.title ?? '')
   const [content, setContent] = useState<Block[]>(
     (update?.content as Block[]) ?? defaultContent,
-  );
-  const [html, setHtml] = useState<string>(update?.html ?? "");
-  const [loading, setLoading] = useState<boolean>(false);
+  )
+  const [html, setHtml] = useState<string>(update?.html ?? '')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const editor = useCreateBlockNote({
     initialContent: content,
-  });
+  })
 
   const draftMutation = api.update.save.useMutation({
     onSuccess: async ({ publicId, success, message }) => {
       toast({
-        variant: success ? "default" : "destructive",
+        variant: success ? 'default' : 'destructive',
         title: success
-          ? "🎉 Successfully saved"
-          : "Uh oh! Something went wrong.",
+          ? '🎉 Successfully saved'
+          : 'Uh oh! Something went wrong.',
         description: message,
-      });
+      })
 
-      if (!success) return;
+      if (!success) return
 
       if (update) {
-        router.refresh();
+        router.refresh()
       } else {
-        router.push(`/${companyPublicId}/updates/${publicId}`);
+        router.push(`/${companyPublicId}/updates/${publicId}`)
       }
     },
 
     onError: (error) => {
       toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
         description: error.message,
-      });
+      })
     },
 
     onSettled: () => {
-      setLoading(false);
+      setLoading(false)
     },
-  });
+  })
 
   const cloneMutation = api.update.clone.useMutation({
     onSuccess: async ({ publicId, success, message }) => {
       toast({
-        variant: success ? "default" : "destructive",
+        variant: success ? 'default' : 'destructive',
         title: success
-          ? "🎉 Successfully cloned"
-          : "Uh oh! Something went wrong.",
+          ? '🎉 Successfully cloned'
+          : 'Uh oh! Something went wrong.',
         description: message,
-      });
+      })
 
-      if (!success) return;
+      if (!success) return
 
-      router.push(`/${companyPublicId}/updates/${publicId}`);
+      router.push(`/${companyPublicId}/updates/${publicId}`)
     },
 
     onError: (error) => {
       toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
         description: error.message,
-      });
+      })
     },
 
     onSettled: () => {
-      setLoading(false);
+      setLoading(false)
     },
-  });
+  })
 
   const saveAsDraft = async () => {
-    setLoading(true);
+    setLoading(true)
 
     const data = {
       title,
       html,
       content,
       publicId: update?.publicId,
-    };
+    }
 
-    draftMutation.mutate(data);
-  };
+    draftMutation.mutate(data)
+  }
 
   const cloneUpdate = async () => {
-    setLoading(true);
+    setLoading(true)
 
     const data = {
       title,
       html,
       content,
-    };
-    cloneMutation.mutate(data);
-  };
+    }
+    cloneMutation.mutate(data)
+  }
 
   const { mutateAsync: shareUpdateMutation } = api.update.share.useMutation({
     onSuccess: () => {
-      router.refresh();
+      router.refresh()
 
       toast({
-        title: "Successfully shared!",
-        description: "Update successfully shared.",
-      });
+        title: 'Successfully shared!',
+        description: 'Update successfully shared.',
+      })
     },
 
     onError: (error) => {
       toast({
-        title: "Oops! Something went wrong.",
+        title: 'Oops! Something went wrong.',
         description: error.message,
-        variant: "destructive",
-      });
+        variant: 'destructive',
+      })
     },
-  });
+  })
 
   const { mutateAsync: unshareUpdateMutation } = api.update.unShare.useMutation(
     {
       onSuccess: (r) => {
-        router.refresh();
+        router.refresh()
 
         toast({
-          title: "Removed access!",
+          title: 'Removed access!',
           description: r.message,
-        });
+        })
       },
 
       onError: (error: { message: string }) => {
         toast({
-          title: "Oops! Something went wrong.",
+          title: 'Oops! Something went wrong.',
           description: error.message,
-          variant: "destructive",
-        });
+          variant: 'destructive',
+        })
       },
     },
-  );
+  )
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -316,7 +316,7 @@ const UpdatesEditor = ({
               href={`/${companyPublicId}/updates`}
               className="h4 text-primary/70 hover:underline"
             >
-              Updates /{" "}
+              Updates /{' '}
             </Link>
             <input
               name="title"
@@ -326,7 +326,7 @@ const UpdatesEditor = ({
               placeholder={`Investor update - ${formattedDate}`}
               defaultValue={title}
               onChange={(e) => {
-                setTitle(e.target.value);
+                setTitle(e.target.value)
               }}
             />
           </div>
@@ -367,7 +367,7 @@ const UpdatesEditor = ({
                 </Button>
               </li> */}
 
-              {update && mode === "edit" && (
+              {update && mode === 'edit' && (
                 <li>
                   <ShareModal
                     recipients={recipients!}
@@ -381,13 +381,13 @@ const UpdatesEditor = ({
                         selectedContacts:
                           selectedContacts as ShareRecipientType[],
                         others: others as ShareRecipientType[],
-                      });
+                      })
                     }}
                     removeAccess={async ({ recipientId }) => {
                       await unshareUpdateMutation({
                         updateId: update?.id,
                         recipientId,
-                      });
+                      })
                     }}
                     trigger={
                       <Button variant="ghost" size="sm">
@@ -421,16 +421,16 @@ const UpdatesEditor = ({
           editor={editor}
           theme="light"
           onChange={async () => {
-            setContent(editor.document);
-            const html = await editor.blocksToHTMLLossy(editor.document);
-            setHtml(html);
+            setContent(editor.document)
+            const html = await editor.blocksToHTMLLossy(editor.document)
+            setHtml(html)
           }}
         />
       </Card>
 
       {loading && <Loading />}
     </div>
-  );
-};
+  )
+}
 
-export default UpdatesEditor;
+export default UpdatesEditor

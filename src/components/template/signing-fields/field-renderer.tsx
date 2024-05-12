@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-"use client";
+'use client'
 
 import {
   FormControl,
@@ -9,27 +9,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { SignaturePad } from "@/components/ui/signature-pad";
+} from '@/components/ui/select'
+import { SignaturePad } from '@/components/ui/signature-pad'
 
-import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
-import { type RouterOutputs } from "@/trpc/shared";
-import { useFormContext } from "react-hook-form";
+import { type TemplateSigningFieldForm } from '@/providers/template-signing-field-provider'
+import { type RouterOutputs } from '@/trpc/shared'
+import { useFormContext } from 'react-hook-form'
 
-type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
+type Field = RouterOutputs['template']['getSigningFields']['fields'][number]
 
 type FieldRendererProps = Pick<
   Field,
-  "type" | "name" | "required" | "readOnly" | "id" | "prefilledValue" | "meta"
->;
+  'type' | 'name' | 'required' | 'readOnly' | 'id' | 'prefilledValue' | 'meta'
+>
 
 export function FieldRenderer({
   type,
@@ -40,31 +40,31 @@ export function FieldRenderer({
   id,
   meta,
 }: FieldRendererProps) {
-  const { control } = useFormContext<TemplateSigningFieldForm>();
+  const { control } = useFormContext<TemplateSigningFieldForm>()
 
-  const disabled = readOnly;
+  const disabled = readOnly
 
-  const fieldName = `fieldValues.${id}` as const;
+  const fieldName = `fieldValues.${id}` as const
 
   const rules = {
     ...(required && !disabled
       ? {
           required: {
-            message: "this field is required",
+            message: 'this field is required',
             value: required,
           },
         }
       : undefined),
-  };
+  }
 
   const commonProps = {
     control,
     rules,
     name: fieldName,
-  };
+  }
 
   switch (type) {
-    case "TEXT":
+    case 'TEXT':
       return (
         <FormField
           {...commonProps}
@@ -78,8 +78,8 @@ export function FieldRenderer({
             </FormItem>
           )}
         />
-      );
-    case "SIGNATURE":
+      )
+    case 'SIGNATURE':
       return (
         <FormField
           {...commonProps}
@@ -90,7 +90,7 @@ export function FieldRenderer({
                 <SignaturePad
                   disabled={disabled}
                   onChange={(val) => {
-                    onChange(val);
+                    onChange(val)
                   }}
                   prefilledValue={prefilledValue}
                 />
@@ -99,9 +99,9 @@ export function FieldRenderer({
             </FormItem>
           )}
         />
-      );
+      )
 
-    case "DATE":
+    case 'DATE':
       return (
         <FormField
           {...commonProps}
@@ -115,9 +115,9 @@ export function FieldRenderer({
             </FormItem>
           )}
         />
-      );
+      )
 
-    case "SELECT":
+    case 'SELECT':
       return (
         <FormField
           {...commonProps}
@@ -144,8 +144,8 @@ export function FieldRenderer({
             </FormItem>
           )}
         />
-      );
+      )
     default:
-      return null;
+      return null
   }
 }

@@ -1,33 +1,33 @@
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { ShareClassMutationSchema } from "./schema";
+import { createTRPCRouter, withAuth } from '@/trpc/api/trpc'
+import { ShareClassMutationSchema } from './schema'
 
-import { Audit } from "@/server/audit";
-import { checkMembership } from "@/server/auth";
+import { Audit } from '@/server/audit'
+import { checkMembership } from '@/server/auth'
 
 export const shareClassRouter = createTRPCRouter({
   create: withAuth
     .input(ShareClassMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { userAgent, requestIp } = ctx;
+      const { userAgent, requestIp } = ctx
 
       try {
-        const prefix = (input.classType === "COMMON" ? "CS" : "PS") as
-          | "CS"
-          | "PS";
+        const prefix = (input.classType === 'COMMON' ? 'CS' : 'PS') as
+          | 'CS'
+          | 'PS'
 
         await ctx.db.$transaction(async (tx) => {
           const { companyId } = await checkMembership({
             tx,
             session: ctx.session,
-          });
+          })
 
           const maxIdx = await tx.shareClass.count({
             where: {
               companyId,
             },
-          });
+          })
 
-          const idx = maxIdx + 1;
+          const idx = maxIdx + 1
           const data = {
             idx,
             prefix,
@@ -45,50 +45,50 @@ export const shareClassRouter = createTRPCRouter({
             convertsToShareClassId: input.convertsToShareClassId,
             liquidationPreferenceMultiple: input.liquidationPreferenceMultiple,
             participationCapMultiple: input.participationCapMultiple,
-          };
+          }
 
-          await tx.shareClass.create({ data });
+          await tx.shareClass.create({ data })
           await Audit.create(
             {
-              action: "shareClass.created",
+              action: 'shareClass.created',
               companyId,
-              actor: { type: "user", id: ctx.session.user.id },
+              actor: { type: 'user', id: ctx.session.user.id },
               context: {
                 userAgent,
                 requestIp,
               },
-              target: [{ type: "company", id: companyId }],
+              target: [{ type: 'company', id: companyId }],
               summary: `${ctx.session.user.name} created a share class - ${input.name}`,
             },
             tx,
-          );
-        });
+          )
+        })
 
-        return { success: true, message: "Share class created successfully." };
+        return { success: true, message: 'Share class created successfully.' }
       } catch (error) {
-        console.error("Error creating shareClass:", error);
+        console.error('Error creating shareClass:', error)
         return {
           success: false,
-          message: "Oops, something went wrong. Please try again later.",
-        };
+          message: 'Oops, something went wrong. Please try again later.',
+        }
       }
     }),
 
   update: withAuth
     .input(ShareClassMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { userAgent, requestIp } = ctx;
+      const { userAgent, requestIp } = ctx
 
       try {
-        const prefix = (input.classType === "COMMON" ? "CS" : "PS") as
-          | "CS"
-          | "PS";
+        const prefix = (input.classType === 'COMMON' ? 'CS' : 'PS') as
+          | 'CS'
+          | 'PS'
 
         await ctx.db.$transaction(async (tx) => {
           const { companyId } = await checkMembership({
             tx,
             session: ctx.session,
-          });
+          })
 
           const data = {
             prefix,
@@ -105,36 +105,36 @@ export const shareClassRouter = createTRPCRouter({
             convertsToShareClassId: input.convertsToShareClassId,
             liquidationPreferenceMultiple: input.liquidationPreferenceMultiple,
             participationCapMultiple: input.participationCapMultiple,
-          };
+          }
 
           await tx.shareClass.update({
             where: { id: input.id },
             data,
-          });
+          })
 
           await Audit.create(
             {
-              action: "shareClass.updated",
+              action: 'shareClass.updated',
               companyId,
-              actor: { type: "user", id: ctx.session.user.id },
+              actor: { type: 'user', id: ctx.session.user.id },
               context: {
                 userAgent,
                 requestIp,
               },
-              target: [{ type: "company", id: companyId }],
+              target: [{ type: 'company', id: companyId }],
               summary: `${ctx.session.user.name} updated a share class - ${input.name}`,
             },
             tx,
-          );
-        });
+          )
+        })
 
-        return { success: true, message: "Share class updated successfully." };
+        return { success: true, message: 'Share class updated successfully.' }
       } catch (error) {
-        console.error("Error updating shareClass:", error);
+        console.error('Error updating shareClass:', error)
         return {
           success: false,
-          message: "Oops, something went wrong. Please try again later.",
-        };
+          message: 'Oops, something went wrong. Please try again later.',
+        }
       }
     }),
-});
+})

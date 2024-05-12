@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import bcrypt from "bcryptjs";
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import bcrypt from 'bcryptjs'
 import {
-  getServerSession,
   type DefaultSession,
   type NextAuthOptions,
   type Session,
-} from "next-auth";
+  getServerSession,
+} from 'next-auth'
 
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 
-import { env } from "@/env";
-import { type MemberStatusEnum } from "@/prisma/enums";
+import { env } from '@/env'
+import { type MemberStatusEnum } from '@/prisma/enums'
 
-import { db, type TPrismaOrTransaction } from "@/server/db";
+import { type TPrismaOrTransaction, db } from '@/server/db'
 
-import { getUserByEmail, getUserById } from "./user";
+import { getUserByEmail, getUserById } from './user'
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-export const JWT_SECRET = new TextEncoder().encode(env.NEXTAUTH_SECRET);
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!
+export const JWT_SECRET = new TextEncoder().encode(env.NEXTAUTH_SECRET)
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -29,27 +29,27 @@ export const JWT_SECRET = new TextEncoder().encode(env.NEXTAUTH_SECRET);
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
-      id: string;
-      isOnboarded: boolean;
-      companyId: string;
-      memberId: string;
-      companyPublicId: string;
-      status: MemberStatusEnum | "";
-    } & DefaultSession["user"];
+      id: string
+      isOnboarded: boolean
+      companyId: string
+      memberId: string
+      companyPublicId: string
+      status: MemberStatusEnum | ''
+    } & DefaultSession['user']
   }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
-    id: string;
-    companyId: string;
-    memberId: string;
-    isOnboarded: boolean;
-    companyPublicId: string;
-    status: MemberStatusEnum | "";
+    id: string
+    companyId: string
+    memberId: string
+    isOnboarded: boolean
+    companyPublicId: string
+    status: MemberStatusEnum | ''
   }
 }
 
@@ -64,32 +64,32 @@ export const authOptions: NextAuthOptions = {
       await db.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() },
-      });
+      })
     },
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider !== "credentials") return true;
+      if (account?.provider !== 'credentials') return true
 
-      const existingUser = await getUserById(user.id);
-      if (!existingUser?.emailVerified) return false;
+      const existingUser = await getUserById(user.id)
+      if (!existingUser?.emailVerified) return false
 
-      return true;
+      return true
     },
     session({ session, token }) {
-      session.user.isOnboarded = token.isOnboarded;
-      session.user.companyId = token.companyId;
-      session.user.memberId = token.memberId;
-      session.user.companyPublicId = token.companyPublicId;
-      session.user.status = token.status;
-      session.user.name = token.name;
-      session.user.email = token.email;
-      session.user.image = token.picture ?? "";
+      session.user.isOnboarded = token.isOnboarded
+      session.user.companyId = token.companyId
+      session.user.memberId = token.memberId
+      session.user.companyPublicId = token.companyPublicId
+      session.user.status = token.status
+      session.user.name = token.name
+      session.user.email = token.email
+      session.user.image = token.picture ?? ''
 
       if (token.sub) {
-        session.user.id = token.sub;
+        session.user.id = token.sub
       }
-      return session;
+      return session
     },
 
     async jwt({ token, trigger }) {
@@ -98,10 +98,10 @@ export const authOptions: NextAuthOptions = {
           where: {
             userId: token.sub,
             isOnboarded: true,
-            status: "ACTIVE",
+            status: 'ACTIVE',
           },
           orderBy: {
-            lastAccessed: "desc",
+            lastAccessed: 'desc',
           },
           select: {
             id: true,
@@ -120,54 +120,54 @@ export const authOptions: NextAuthOptions = {
               },
             },
           },
-        });
+        })
 
         if (member) {
-          token.status = member.status;
-          token.name = member.user?.name;
-          token.memberId = member.id;
-          token.companyId = member.companyId;
-          token.isOnboarded = member.isOnboarded;
-          token.companyPublicId = member.company.publicId;
-          token.picture = member.user?.image;
+          token.status = member.status
+          token.name = member.user?.name
+          token.memberId = member.id
+          token.companyId = member.companyId
+          token.isOnboarded = member.isOnboarded
+          token.companyPublicId = member.company.publicId
+          token.picture = member.user?.image
         } else {
-          token.status = "";
-          token.companyId = "";
-          token.memberId = "";
-          token.isOnboarded = false;
-          token.companyPublicId = "";
+          token.status = ''
+          token.companyId = ''
+          token.memberId = ''
+          token.isOnboarded = false
+          token.companyPublicId = ''
         }
       }
 
-      return token;
+      return token
     },
   },
   adapter: PrismaAdapter(db),
-  secret: env.NEXTAUTH_SECRET ?? "secret",
+  secret: env.NEXTAUTH_SECRET ?? 'secret',
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (credentials) {
-          const { email, password } = credentials;
+          const { email, password } = credentials
 
-          const user = await getUserByEmail(email);
+          const user = await getUserByEmail(email)
           // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-          if (!user || !user.password) return null;
+          if (!user || !user.password) return null
 
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          const passwordsMatch = await bcrypt.compare(password, user.password)
 
-          if (passwordsMatch) return user;
+          if (passwordsMatch) return user
         }
-        return null;
+        return null
       },
     }),
     /**
@@ -186,31 +186,31 @@ export const authOptions: NextAuthOptions = {
   ],
 
   pages: {
-    signIn: "/login",
-    signOut: "/login",
+    signIn: '/login',
+    signOut: '/login',
   },
-};
+}
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
-export const getServerAuthSession = () => getServerSession(authOptions);
+export const getServerAuthSession = () => getServerSession(authOptions)
 
 export const withServerSession = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions)
 
   if (!session) {
-    throw new Error("session not found");
+    throw new Error('session not found')
   }
 
-  return session;
-};
+  return session
+}
 
 interface checkMembershipOptions {
-  session: Session;
-  tx: TPrismaOrTransaction;
+  session: Session
+  tx: TPrismaOrTransaction
 }
 
 export async function checkMembership({ session, tx }: checkMembershipOptions) {
@@ -224,7 +224,7 @@ export async function checkMembership({ session, tx }: checkMembershipOptions) {
       id: true,
       companyId: true,
     },
-  });
+  })
 
-  return { companyId, memberId };
+  return { companyId, memberId }
 }

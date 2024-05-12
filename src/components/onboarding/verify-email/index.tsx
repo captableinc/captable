@@ -1,52 +1,52 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { api } from "@/trpc/react";
+import { Button } from '@/components/ui/button'
+import { api } from '@/trpc/react'
 import {
   RiArrowRightLine,
   RiMailCheckLine,
   RiMailCloseLine,
-} from "@remixicon/react";
-import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+} from '@remixicon/react'
+import Link from 'next/link'
+import { useCallback, useEffect, useState } from 'react'
 
 const VerifyEmail = ({ token }: { token: string }) => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | undefined>('')
+  const [success, setSuccess] = useState<string | undefined>('')
 
   const { mutateAsync } = api.auth.verifyEmail.useMutation({
     onSuccess: async ({ message }) => {
-      setLoading(false);
-      setSuccess(message);
+      setLoading(false)
+      setSuccess(message)
     },
     onError: (error) => {
-      setLoading(false);
-      setError(error.message);
+      setLoading(false)
+      setError(error.message)
     },
-  });
+  })
 
   const onSubmit = useCallback(async () => {
-    if (success || error) return;
+    if (success || error) return
 
     if (!token) {
-      setLoading(false);
-      setError("Missing token!");
-      return;
+      setLoading(false)
+      setError('Missing token!')
+      return
     }
 
     try {
-      await mutateAsync(token);
+      await mutateAsync(token)
     } catch (err) {
-      console.error(err);
-      setLoading(false);
-      setError("Something went wrong! Please try again.");
+      console.error(err)
+      setLoading(false)
+      setError('Something went wrong! Please try again.')
     }
-  }, [token, success, error]);
+  }, [token, success, error])
 
   useEffect(() => {
-    void onSubmit();
-  }, [onSubmit]);
+    void onSubmit()
+  }, [onSubmit])
 
   if (loading) {
     return (
@@ -59,7 +59,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -110,7 +110,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VerifyEmail;
+export default VerifyEmail

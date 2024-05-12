@@ -1,22 +1,22 @@
-import * as React from "react";
+import * as React from 'react'
 
-import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
+import { RiEyeLine, RiEyeOffLine } from '@remixicon/react'
 
-import { cn } from "@/lib/utils";
-import { Button } from "./button";
-import { Input, type InputProps } from "./input";
+import { cn } from '@/lib/utils'
+import { Button } from './button'
+import { Input, type InputProps } from './input'
 
 const PasswordInput = React.forwardRef<
   HTMLInputElement,
-  Omit<InputProps, "type">
+  Omit<InputProps, 'type'>
 >(({ className, ...props }, ref) => {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false)
 
   return (
     <div className="relative">
       <Input
-        type={showPassword ? "text" : "password"}
-        className={cn("pr-10", className)}
+        type={showPassword ? 'text' : 'password'}
+        className={cn('pr-10', className)}
         ref={ref}
         {...props}
       />
@@ -25,7 +25,7 @@ const PasswordInput = React.forwardRef<
         variant="link"
         type="button"
         className="absolute right-0 top-0 flex h-full items-center justify-center pr-3"
-        aria-label={showPassword ? "Mask password" : "Reveal password"}
+        aria-label={showPassword ? 'Mask password' : 'Reveal password'}
         onClick={() => setShowPassword((show) => !show)}
       >
         {showPassword ? (
@@ -35,9 +35,9 @@ const PasswordInput = React.forwardRef<
         )}
       </Button>
     </div>
-  );
-});
+  )
+})
 
-PasswordInput.displayName = "PasswordInput";
+PasswordInput.displayName = 'PasswordInput'
 
-export { PasswordInput };
+export { PasswordInput }

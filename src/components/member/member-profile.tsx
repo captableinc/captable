@@ -1,66 +1,66 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
+'use client'
 
-import { uploadFile } from "@/common/uploads";
-import Loading from "@/components/common/loading";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { PayloadType } from "@/lib/constants";
-import { type RootPayload } from "@/lib/types";
+import { uploadFile } from '@/common/uploads'
+import Loading from '@/components/common/loading'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Form, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { PayloadType } from '@/lib/constants'
+import { type RootPayload } from '@/lib/types'
 import {
   compareFormDataWithInitial,
   isFileExists,
   validateFile,
-} from "@/lib/utils";
-import { profileSettingsSchema } from "@/lib/zodSchemas";
-import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { type z } from "zod";
+} from '@/lib/utils'
+import { profileSettingsSchema } from '@/lib/zodSchemas'
+import { api } from '@/trpc/react'
+import { type RouterOutputs } from '@/trpc/shared'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import React, { useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { type z } from 'zod'
 
-type MemberProfile = RouterOutputs["member"]["getProfile"];
+type MemberProfile = RouterOutputs['member']['getProfile']
 
 type ProfileType = {
-  memberProfile: MemberProfile;
-};
+  memberProfile: MemberProfile
+}
 
 export const ProfileSettings = ({ memberProfile }: ProfileType) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const { data: session, update } = useSession();
-  const router = useRouter();
-  const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState<boolean>(false)
+  const { data: session, update } = useSession()
+  const router = useRouter()
+  const { toast } = useToast()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const form = useForm<z.infer<typeof profileSettingsSchema>>({
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
       fullName: memberProfile.fullName,
       loginEmail: memberProfile.loginEmail,
-      workEmail: memberProfile.workEmail ?? "",
-      jobTitle: memberProfile.jobTitle ?? "",
+      workEmail: memberProfile.workEmail ?? '',
+      jobTitle: memberProfile.jobTitle ?? '',
     },
-  });
+  })
 
-  const errors = form.formState.errors;
-  const isSubmitting = form.formState.isSubmitting;
-  const isDirty = form.formState.isDirty;
+  const errors = form.formState.errors
+  const isSubmitting = form.formState.isSubmitting
+  const isDirty = form.formState.isDirty
 
   const saveProfileMutation = api.member.updateProfile.useMutation({
     onSuccess: async (message, rootPayload: RootPayload) => {
-      if (!message?.success) return;
+      if (!message?.success) return
 
-      const { fullName, loginEmail } = memberProfile;
+      const { fullName, loginEmail } = memberProfile
 
       switch (rootPayload.type) {
         case PayloadType.PROFILE_DATA:
-          const updatedProfilePayload = rootPayload.payload;
+          const updatedProfilePayload = rootPayload.payload
 
           if (
             loginEmail !== updatedProfilePayload.loginEmail ||
@@ -73,18 +73,18 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
                 name: updatedProfilePayload.fullName,
                 email: updatedProfilePayload.loginEmail,
               },
-            };
-            await update(updateUser);
+            }
+            await update(updateUser)
           }
 
-          form.reset(updatedProfilePayload);
+          form.reset(updatedProfilePayload)
 
-          router.refresh();
+          router.refresh()
 
-          break;
+          break
 
         case PayloadType.PROFILE_AVATAR:
-          const _updatedProfilePayload = rootPayload.payload;
+          const _updatedProfilePayload = rootPayload.payload
 
           const updateUser = {
             ...session,
@@ -92,65 +92,65 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
               ...session?.user,
               image: _updatedProfilePayload.avatarUrl,
             },
-          };
+          }
 
-          await update(updateUser);
+          await update(updateUser)
 
-          break;
+          break
 
         default:
-          break;
+          break
       }
 
       toast({
-        variant: "default",
-        title: "🎉 Successfully updated your profile",
-      });
+        variant: 'default',
+        title: '🎉 Successfully updated your profile',
+      })
     },
     onError: () => {
       return toast({
-        variant: "destructive",
-        title: "Failed updating profile",
-        description: "Something went wrong.",
-      });
+        variant: 'destructive',
+        title: 'Failed updating profile',
+        description: 'Something went wrong.',
+      })
     },
-  });
+  })
 
   async function handleImageUpload(file: File): Promise<{ imageUrl: string }> {
     if (session?.user.id) {
       const options = {
         expiresIn: 3600,
-        keyPrefix: "profile-avatars",
+        keyPrefix: 'profile-avatars',
         identifier: session.user.id,
-      };
-      const { fileUrl } = await uploadFile(file, options, "publicBucket");
+      }
+      const { fileUrl } = await uploadFile(file, options, 'publicBucket')
 
-      return { imageUrl: fileUrl };
+      return { imageUrl: fileUrl }
     }
 
-    return { imageUrl: "" };
+    return { imageUrl: '' }
   }
 
   const handleFileChangeAndUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const { file } = isFileExists(event);
+    const { file } = isFileExists(event)
 
-    if (!file) return;
+    if (!file) return
 
-    const { isValid, title, errorMessage } = validateFile(file);
+    const { isValid, title, errorMessage } = validateFile(file)
 
     if (isValid) {
       try {
-        setLoading(true);
-        const { imageUrl } = await handleImageUpload(file);
+        setLoading(true)
+        const { imageUrl } = await handleImageUpload(file)
 
         if (!imageUrl) {
           return toast({
-            variant: "destructive",
-            title: "Failed uploading the image.",
-            description: "Please try again later.",
-          });
+            variant: 'destructive',
+            title: 'Failed uploading the image.',
+            description: 'Please try again later.',
+          })
         }
 
         saveProfileMutation.mutate({
@@ -158,44 +158,44 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           payload: {
             avatarUrl: imageUrl,
           },
-        });
+        })
       } catch (error) {
-        console.error("Something went wrong", error);
+        console.error('Something went wrong', error)
         toast({
-          variant: "destructive",
-          title: "Failed uploading image.",
-          description: "Please try again later.",
-        });
+          variant: 'destructive',
+          title: 'Failed uploading image.',
+          description: 'Please try again later.',
+        })
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     } else {
       toast({
-        variant: "destructive",
+        variant: 'destructive',
         title: title,
         description: errorMessage,
-      });
+      })
 
-      return;
+      return
     }
-  };
+  }
 
   const handleAvatarChange = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click();
+      fileInputRef.current.click()
     }
-  };
+  }
 
   async function onSubmit(values: z.infer<typeof profileSettingsSchema>) {
     // React Hook Form considers trailing-spaces as change in form-state
-    const hasChanged = compareFormDataWithInitial(memberProfile, values);
+    const hasChanged = compareFormDataWithInitial(memberProfile, values)
 
-    if (!hasChanged) return;
+    if (!hasChanged) return
 
-    const { fullName, jobTitle, loginEmail, workEmail } = values;
+    const { fullName, jobTitle, loginEmail, workEmail } = values
 
     try {
-      setLoading(true);
+      setLoading(true)
       saveProfileMutation.mutate({
         type: PayloadType.PROFILE_DATA,
         payload: {
@@ -204,16 +204,16 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           loginEmail,
           workEmail,
         },
-      });
+      })
     } catch (error) {
-      console.warn(error);
+      console.warn(error)
       toast({
-        variant: "destructive",
-        title: "Failed updating profile.",
-        description: "Please try again later.",
-      });
+        variant: 'destructive',
+        title: 'Failed updating profile.',
+        description: 'Please try again later.',
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -224,7 +224,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           <div className="col-span-full flex items-center gap-x-8">
             <Avatar className="h-20 w-20 rounded-full">
               <AvatarImage
-                src={session?.user?.image || "/placeholders/user.svg"}
+                src={session?.user?.image || '/placeholders/user.svg'}
               />
             </Avatar>
 
@@ -233,7 +233,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
                 <Button
                   onClick={handleAvatarChange}
                   size="sm"
-                  variant={"outline"}
+                  variant={'outline'}
                   type="button"
                 >
                   Change avatar
@@ -254,7 +254,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           <div className="sm:col-span-3">
             <FormItem>
               <FormLabel htmlFor="name">Full name</FormLabel>
-              <Input id="name" type="text" {...form.register("fullName")} />
+              <Input id="name" type="text" {...form.register('fullName')} />
               {errors.fullName && (
                 <FormMessage>{errors.fullName.message}</FormMessage>
               )}
@@ -264,7 +264,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           <div className="sm:col-span-3">
             <FormItem>
               <FormLabel htmlFor="name">Job title</FormLabel>
-              <Input id="name" type="text" {...form.register("jobTitle")} />
+              <Input id="name" type="text" {...form.register('jobTitle')} />
               {errors.jobTitle && (
                 <FormMessage>{errors.jobTitle.message}</FormMessage>
               )}
@@ -274,7 +274,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           <div className="sm:col-span-3">
             <FormItem>
               <FormLabel htmlFor="name">Login email</FormLabel>
-              <Input id="name" type="text" {...form.register("loginEmail")} />
+              <Input id="name" type="text" {...form.register('loginEmail')} />
               {errors.loginEmail && (
                 <FormMessage>{errors.loginEmail.message}</FormMessage>
               )}
@@ -284,7 +284,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           <div className="sm:col-span-3">
             <FormItem>
               <FormLabel htmlFor="name">Work email</FormLabel>
-              <Input id="name" type="text" {...form.register("workEmail")} />
+              <Input id="name" type="text" {...form.register('workEmail')} />
               {errors.workEmail && (
                 <FormMessage>{errors.workEmail.message}</FormMessage>
               )}
@@ -306,5 +306,5 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
 
       {loading && <Loading />}
     </Form>
-  );
-};
+  )
+}

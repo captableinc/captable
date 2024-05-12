@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import Modal from "@/components/common/modal";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { useState } from "react";
-import ShareClassForm from "./form";
+import Modal from '@/components/common/modal'
+import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
+import { useState } from 'react'
+import ShareClassForm from './form'
 
 type ShareClassType = {
-  type: string;
-  title: string | React.ReactNode;
-  subtitle: string | React.ReactNode;
-  trigger: React.ReactNode;
-  shareClass?: ShareClassMutationType;
-  shareClasses?: ShareClassMutationType[];
-};
+  type: string
+  title: string | React.ReactNode
+  subtitle: string | React.ReactNode
+  trigger: React.ReactNode
+  shareClass?: ShareClassMutationType
+  shareClasses?: ShareClassMutationType[]
+}
 
 const ShareClassModal = ({
   title,
@@ -20,9 +20,9 @@ const ShareClassModal = ({
   trigger,
   shareClass,
   shareClasses = [] as ShareClassMutationType[],
-  type = "create",
+  type = 'create',
 }: ShareClassType) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Modal
@@ -33,7 +33,7 @@ const ShareClassModal = ({
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val);
+          setOpen(val)
         },
       }}
     >
@@ -44,7 +44,7 @@ const ShareClassModal = ({
         shareClasses={shareClasses}
       />
     </Modal>
-  );
-};
+  )
+}
 
-export default ShareClassModal;
+export default ShareClassModal

@@ -1,11 +1,11 @@
-import { CommandMenu } from "./command-menu";
-import { MobileDrawer } from "./mobile-drawer";
-import { UserDropdown } from "./user-dropdown";
-import { type TGetCompanyList } from "@/server/company";
+import { type TGetCompanyList } from '@/server/company'
+import { CommandMenu } from './command-menu'
+import { MobileDrawer } from './mobile-drawer'
+import { UserDropdown } from './user-dropdown'
 
 interface SideBarProps {
-  publicId: string;
-  companies: TGetCompanyList;
+  publicId: string
+  companies: TGetCompanyList
 }
 
 export function NavBar({ publicId, companies }: SideBarProps) {
@@ -21,5 +21,5 @@ export function NavBar({ publicId, companies }: SideBarProps) {
         </div>
       </header>
     </div>
-  );
+  )
 }

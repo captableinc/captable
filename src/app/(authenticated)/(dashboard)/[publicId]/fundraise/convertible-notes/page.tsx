@@ -1,11 +1,11 @@
-import EmptyState from "@/components/common/empty-state";
-import { Button } from "@/components/ui/button";
-import { RiPieChartFill } from "@remixicon/react";
-import { type Metadata } from "next";
+import EmptyState from '@/components/common/empty-state'
+import { Button } from '@/components/ui/button'
+import { RiPieChartFill } from '@remixicon/react'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Convertible notes",
-};
+  title: 'Convertible notes',
+}
 
 const ConvertibleNotesPage = () => {
   return (
@@ -16,7 +16,7 @@ const ConvertibleNotesPage = () => {
     >
       <Button size="lg">Coming soon...</Button>
     </EmptyState>
-  );
-};
+  )
+}
 
-export default ConvertibleNotesPage;
+export default ConvertibleNotesPage

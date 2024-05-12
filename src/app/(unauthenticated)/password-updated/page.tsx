@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { RiCheckboxCircleLine } from "@remixicon/react";
-import type { Metadata } from "next";
-import Link from "next/link";
+import { Button } from '@/components/ui/button'
+import { RiCheckboxCircleLine } from '@remixicon/react'
+import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: "Password Updated",
-};
+  title: 'Password Updated',
+}
 
 export default function PasswordUpdated() {
   return (
@@ -27,5 +27,5 @@ export default function PasswordUpdated() {
         </div>
       </div>
     </div>
-  );
+  )
 }

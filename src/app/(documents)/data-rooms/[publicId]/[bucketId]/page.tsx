@@ -1,32 +1,32 @@
-"use server";
+'use server'
 
-import FilePreview from "@/components/file/preview";
-import { SharePageLayout } from "@/components/share/page-layout";
-import { decode, type JWTVerifyResult } from "@/lib/jwt";
-import { db } from "@/server/db";
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import FilePreview from '@/components/file/preview'
+import { SharePageLayout } from '@/components/share/page-layout'
+import { type JWTVerifyResult, decode } from '@/lib/jwt'
+import { db } from '@/server/db'
+import { getPresignedGetUrl } from '@/server/file-uploads'
+import { RiFolder3Fill as FolderIcon } from '@remixicon/react'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 const DataRoomPage = async ({
   params: { publicId, bucketId },
   searchParams: { token },
 }: {
-  params: { publicId: string; bucketId: string };
-  searchParams: { token: string };
+  params: { publicId: string; bucketId: string }
+  searchParams: { token: string }
 }) => {
-  let decodedToken: JWTVerifyResult | null = null;
+  let decodedToken: JWTVerifyResult | null = null
 
   try {
-    decodedToken = await decode(token);
+    decodedToken = await decode(token)
   } catch (error) {
-    return notFound();
+    return notFound()
   }
 
-  const { companyId, dataRoomId, recipientId } = decodedToken?.payload;
+  const { companyId, dataRoomId, recipientId } = decodedToken?.payload
   if (!companyId || !recipientId || !dataRoomId) {
-    return notFound();
+    return notFound()
   }
 
   const recipient = await db.dataRoomRecipient.findFirstOrThrow({
@@ -38,10 +38,10 @@ const DataRoomPage = async ({
     select: {
       id: true,
     },
-  });
+  })
 
   if (!recipient) {
-    return notFound();
+    return notFound()
   }
 
   const dataRoom = await db.dataRoom.findFirstOrThrow({
@@ -61,28 +61,28 @@ const DataRoomPage = async ({
         },
       },
     },
-  });
+  })
 
   const dataRoomFile = dataRoom.documents.find(
     (doc) => doc.document.bucket.id === bucketId,
-  );
+  )
 
   if (
     dataRoomId !== dataRoom.id ||
     dataRoom?.companyId !== companyId ||
     !dataRoomFile
   ) {
-    return notFound();
+    return notFound()
   }
 
-  const file = dataRoomFile?.document.bucket;
+  const file = dataRoomFile?.document.bucket
 
   if (!file) {
-    return notFound();
+    return notFound()
   }
 
-  const company = dataRoom.company;
-  const remoteFile = await getPresignedGetUrl(file.key);
+  const company = dataRoom.company
+  const remoteFile = await getPresignedGetUrl(file.key)
 
   return (
     <SharePageLayout
@@ -117,7 +117,7 @@ const DataRoomPage = async ({
         mimeType={file.mimeType}
       />
     </SharePageLayout>
-  );
-};
+  )
+}
 
-export default DataRoomPage;
+export default DataRoomPage

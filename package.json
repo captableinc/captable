@@ -112,7 +112,7 @@
     "colors": "^1.4.0",
     "husky": "^9.0.11",
     "inquirer": "^9.2.17",
-    "lint-staged": "^15.2.0",
+    "lint-staged": "^15.2.2",
     "postcss": "^8.4.38",
     "prisma": "^5.13.0",
     "tailwindcss": "^3.4.3",
@@ -124,5 +124,10 @@
   },
   "trigger.dev": {
     "endpointId": "captable-A0-I"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,cjs,mjs}": [
+      "biome check --apply --no-errors-on-unmatched"
+    ]
   }
 }

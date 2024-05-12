@@ -11,15 +11,15 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
-import { constants } from "../lib/constants";
+} from 'jsx-email'
+import { constants } from '../lib/constants'
 
 interface ShareDataRoomEmailProps {
-  senderName: string;
-  recipientName: string | null | undefined;
-  companyName: string;
-  dataRoom: string;
-  link: string;
+  senderName: string
+  recipientName: string | null | undefined
+  companyName: string
+  dataRoom: string
+  link: string
 }
 
 export const ShareDataRoomEmail = ({
@@ -29,8 +29,8 @@ export const ShareDataRoomEmail = ({
   dataRoom,
   link,
 }: ShareDataRoomEmailProps) => {
-  const recipientFirstName = recipientName?.split(" ")[0] || "there";
-  const previewText = `${senderName} at ${companyName} shared ${dataRoom} with you.`;
+  const recipientFirstName = recipientName?.split(' ')[0] || 'there'
+  const previewText = `${senderName} at ${companyName} shared ${dataRoom} with you.`
 
   return (
     <Html>
@@ -46,7 +46,7 @@ export const ShareDataRoomEmail = ({
               Hello {recipientFirstName},
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{senderName}</strong> has shared a data room{" "}
+              <strong>{senderName}</strong> has shared a data room{' '}
               <strong>{dataRoom}</strong> on <strong>{constants.title}</strong>
             </Text>
 
@@ -60,7 +60,7 @@ export const ShareDataRoomEmail = ({
             </Section>
 
             <Text className="!text-[14px] leading-[24px] text-black">
-              or copy and paste this URL into your browser:{" "}
+              or copy and paste this URL into your browser:{' '}
               <Link
                 href={link}
                 className="break-all text-blue-600 no-underline"
@@ -78,15 +78,15 @@ export const ShareDataRoomEmail = ({
         </Body>
       </Tailwind>
     </Html>
-  );
-};
+  )
+}
 
 ShareDataRoomEmail.PreviewProps = {
-  senderName: "John Doe",
-  recipientName: "Will Smith",
-  companyName: "Captable, Inc.",
-  dataRoom: "Q1 2024 Financials",
-  link: "https://captable.inc/...",
-} as ShareDataRoomEmailProps;
+  senderName: 'John Doe',
+  recipientName: 'Will Smith',
+  companyName: 'Captable, Inc.',
+  dataRoom: 'Q1 2024 Financials',
+  link: 'https://captable.inc/...',
+} as ShareDataRoomEmailProps
 
-export default ShareDataRoomEmail;
+export default ShareDataRoomEmail

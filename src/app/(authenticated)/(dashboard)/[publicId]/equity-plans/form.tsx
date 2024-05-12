@@ -1,29 +1,29 @@
-"use client";
+'use client'
 
-import { api } from "@/trpc/react";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
+import { api } from '@/trpc/react'
+import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 
 import {
   EquityPlanMutationSchema,
   type EquityPlanMutationType,
-} from "@/trpc/routers/equity-plan/schema";
+} from '@/trpc/routers/equity-plan/schema'
 
 import {
   Select,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-  SelectValue,
-  SelectTrigger,
   SelectContent,
-} from "@/components/ui/select";
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 import {
   Form,
@@ -32,83 +32,83 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 
-const formSchema = EquityPlanMutationSchema;
+const formSchema = EquityPlanMutationSchema
 
 type EquityFormType = {
-  type?: string;
-  className?: string;
-  setOpen: (val: boolean) => void;
-  equityPlan?: EquityPlanMutationType;
-  shareClasses: ShareClassMutationType[];
-};
+  type?: string
+  className?: string
+  setOpen: (val: boolean) => void
+  equityPlan?: EquityPlanMutationType
+  shareClasses: ShareClassMutationType[]
+}
 
 const EquityPlanForm = ({
   setOpen,
-  type = "create",
+  type = 'create',
   shareClasses,
   equityPlan = {
-    id: "",
-    name: "",
+    id: '',
+    name: '',
     boardApprovalDate: new Date(),
     planEffectiveDate: null,
     initialSharesReserved: 0,
-    defaultCancellatonBehavior: "RETURN_TO_POOL",
-    shareClassId: "",
-    comments: "",
+    defaultCancellatonBehavior: 'RETURN_TO_POOL',
+    shareClassId: '',
+    comments: '',
   },
 }: EquityFormType) => {
-  const router = useRouter();
-  const { toast } = useToast();
+  const router = useRouter()
+  const { toast } = useToast()
 
   const form = useForm<EquityPlanMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: equityPlan,
-  });
+  })
 
-  const isSubmitting = form.formState.isSubmitting;
+  const isSubmitting = form.formState.isSubmitting
   const createMutation = api.equityPlan.create.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
-        variant: success ? "default" : "destructive",
+        variant: success ? 'default' : 'destructive',
         title: success
-          ? "🎉 Successfully created"
-          : "Uh oh! Something went wrong.",
+          ? '🎉 Successfully created'
+          : 'Uh oh! Something went wrong.',
         description: message,
-      });
+      })
 
-      form.reset();
-      setOpen(false);
-      router.refresh();
+      form.reset()
+      setOpen(false)
+      router.refresh()
     },
-  });
+  })
 
   const updateMutation = api.equityPlan.update.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
-        variant: success ? "default" : "destructive",
+        variant: success ? 'default' : 'destructive',
         title: success
-          ? "🎉 Successfully updated"
-          : "Uh oh! Something went wrong.",
+          ? '🎉 Successfully updated'
+          : 'Uh oh! Something went wrong.',
         description: message,
-      });
+      })
 
-      form.reset();
-      setOpen(false);
-      router.refresh();
+      form.reset()
+      setOpen(false)
+      router.refresh()
     },
-  });
+  })
 
   const onSubmit = async (values: EquityPlanMutationType) => {
-    type === "create"
+    type === 'create'
       ? await createMutation.mutateAsync(values)
-      : await updateMutation.mutateAsync(values);
-  };
+      : await updateMutation.mutateAsync(values)
+  }
 
   const parseBigInt = (value: number) => {
-    return Number(value);
-  };
+    return Number(value)
+  }
 
   return (
     <Form {...form}>
@@ -163,8 +163,8 @@ const EquityPlanForm = ({
                       {...field}
                       value={
                         field.value
-                          ? new Date(field.value).toISOString().split("T")[0]
-                          : ""
+                          ? new Date(field.value).toISOString().split('T')[0]
+                          : ''
                       }
                     />
                   </FormControl>
@@ -187,8 +187,8 @@ const EquityPlanForm = ({
                       {...field}
                       value={
                         field.value
-                          ? new Date(field.value).toISOString().split("T")[0]
-                          : ""
+                          ? new Date(field.value).toISOString().split('T')[0]
+                          : ''
                       }
                     />
                   </FormControl>
@@ -218,8 +218,8 @@ const EquityPlanForm = ({
                       <SelectGroup>
                         <SelectLabel>
                           {shareClasses.length > 0
-                            ? "Share classes"
-                            : "No share classes"}
+                            ? 'Share classes'
+                            : 'No share classes'}
                         </SelectLabel>
 
                         {shareClasses.map((shareClass) => (
@@ -299,15 +299,15 @@ const EquityPlanForm = ({
           >
             {
               {
-                create: "Create equity plan",
-                update: "Update equity plan",
+                create: 'Create equity plan',
+                update: 'Update equity plan',
               }[type]
             }
           </Button>
         </div>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default EquityPlanForm;
+export default EquityPlanForm

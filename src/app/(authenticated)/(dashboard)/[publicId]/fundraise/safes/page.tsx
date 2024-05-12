@@ -1,21 +1,21 @@
-import EmptyState from "@/components/common/empty-state";
-import SafeActions from "@/components/safe/actions";
-import { withServerSession } from "@/server/auth";
-import { RiSafeFill } from "@remixicon/react";
-import { type Metadata } from "next";
+import EmptyState from '@/components/common/empty-state'
+import SafeActions from '@/components/safe/actions'
+import { withServerSession } from '@/server/auth'
+import { RiSafeFill } from '@remixicon/react'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "SAFEs",
-};
+  title: 'SAFEs',
+}
 
-import SafeTable from "@/components/safe/existing/safe-table";
-import { Card } from "@/components/ui/card";
-import { api } from "@/trpc/server";
+import SafeTable from '@/components/safe/existing/safe-table'
+import { Card } from '@/components/ui/card'
+import { api } from '@/trpc/server'
 
 const SafePage = async () => {
-  const safes = await api.safe.getSafes.query();
-  const session = await withServerSession();
-  const user = session.user;
+  const safes = await api.safe.getSafes.query()
+  const session = await withServerSession()
+  const user = session.user
 
   if (safes?.data?.length === 0) {
     return (
@@ -26,7 +26,7 @@ const SafePage = async () => {
       >
         <SafeActions companyPublicId={user.companyPublicId} />
       </EmptyState>
-    );
+    )
   }
 
   return (
@@ -46,7 +46,7 @@ const SafePage = async () => {
         <SafeTable safes={safes.data} />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default SafePage;
+export default SafePage

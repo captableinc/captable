@@ -5,18 +5,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table'
 
-import Tldr from "@/components/common/tldr";
-import { Card } from "@/components/ui/card";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiEqualizer2Line } from "@remixicon/react";
-import ShareClassModal from "./modal";
-const formatter = new Intl.NumberFormat("en-US");
+import Tldr from '@/components/common/tldr'
+import { Card } from '@/components/ui/card'
+import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
+import { RiEqualizer2Line } from '@remixicon/react'
+import ShareClassModal from './modal'
+const formatter = new Intl.NumberFormat('en-US')
 
 type ShareClassTableProps = {
-  shareClasses: ShareClassMutationType[];
-};
+  shareClasses: ShareClassMutationType[]
+}
 
 const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
   return (
@@ -42,10 +42,10 @@ const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
               </TableCell>
               <TableCell>{`${new Date(
                 klass.boardApprovalDate,
-              ).toLocaleDateString("en-US")}`}</TableCell>
+              ).toLocaleDateString('en-US')}`}</TableCell>
               <TableCell>{`${new Date(
                 klass.stockholderApprovalDate,
-              ).toLocaleDateString("en-US")}`}</TableCell>
+              ).toLocaleDateString('en-US')}`}</TableCell>
               <TableCell>
                 <ShareClassModal
                   type="update"
@@ -55,9 +55,9 @@ const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
                     <Tldr
                       message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
                       cta={{
-                        label: "Learn more",
+                        label: 'Learn more',
                         // TODO - this link should be updated to the correct URL
-                        href: "https://captable.inc/help",
+                        href: 'https://captable.inc/help',
                       }}
                     />
                   }
@@ -71,7 +71,7 @@ const ShareClassTable = ({ shareClasses }: ShareClassTableProps) => {
         </TableBody>
       </Table>
     </Card>
-  );
-};
+  )
+}
 
-export default ShareClassTable;
+export default ShareClassTable

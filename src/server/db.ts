@@ -1,32 +1,32 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client'
 
-import { env } from "@/env";
-import { type TTemplateFieldMetaType } from "@/trpc/routers/template-field-router/schema";
+import { env } from '@/env'
+import { type TTemplateFieldMetaType } from '@/trpc/routers/template-field-router/schema'
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // biome-ignore lint/style/noNamespace: <explanation>
   namespace PrismaJson {
-    type TemplateFieldMeta = TTemplateFieldMetaType;
+    type TemplateFieldMeta = TTemplateFieldMetaType
   }
 }
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+  prisma: PrismaClient | undefined
+}
 
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
     log:
-      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-  });
+      env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  })
 
-if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+if (env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 export type PrismaTransactionalClient = Parameters<
-  Parameters<PrismaClient["$transaction"]>[0]
->[0];
+  Parameters<PrismaClient['$transaction']>[0]
+>[0]
 
-export type TPrisma = typeof db;
+export type TPrisma = typeof db
 
-export type TPrismaOrTransaction = TPrisma | PrismaTransactionalClient;
+export type TPrismaOrTransaction = TPrisma | PrismaTransactionalClient

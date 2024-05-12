@@ -1,4 +1,3 @@
-import { constants } from "../lib/constants";
 import {
   Body,
   Button,
@@ -12,11 +11,12 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
-import * as React from "react";
+} from 'jsx-email'
+import * as React from 'react'
+import { constants } from '../lib/constants'
 
 interface PasswordResetEmailProps {
-  resetLink: string;
+  resetLink: string
 }
 
 export const PasswordResetEmail = ({ resetLink }: PasswordResetEmailProps) => (
@@ -40,7 +40,7 @@ export const PasswordResetEmail = ({ resetLink }: PasswordResetEmailProps) => (
             </Section>
           </Section>
           <Text className="!text-[14px] leading-[24px] text-black">
-            or copy and paste this URL into your browser:{" "}
+            or copy and paste this URL into your browser:{' '}
             <Link
               href={resetLink}
               className="break-all text-blue-600 no-underline"
@@ -59,5 +59,5 @@ export const PasswordResetEmail = ({ resetLink }: PasswordResetEmailProps) => (
       </Body>
     </Tailwind>
   </Html>
-);
-export default PasswordResetEmail;
+)
+export default PasswordResetEmail

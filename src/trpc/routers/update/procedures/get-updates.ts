@@ -1,12 +1,12 @@
-import { encode } from "@/lib/jwt";
-import { withAuth } from "@/trpc/api/trpc";
-import { z } from "zod";
+import { encode } from '@/lib/jwt'
+import { withAuth } from '@/trpc/api/trpc'
+import { z } from 'zod'
 
 export const getUpdatesProcedure = withAuth.query(async ({ ctx }) => {
   const {
     db,
     session: { user },
-  } = ctx;
+  } = ctx
 
   const data = await db.update.findMany({
     where: {
@@ -14,12 +14,12 @@ export const getUpdatesProcedure = withAuth.query(async ({ ctx }) => {
     },
 
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
-  });
+  })
 
-  return { data };
-});
+  return { data }
+})
 
 export const getRecipientsProcedure = withAuth
   .input(z.object({ updateId: z.string(), publicUpdateId: z.string() }))
@@ -27,10 +27,10 @@ export const getRecipientsProcedure = withAuth
     const {
       db,
       session: { user },
-    } = ctx;
+    } = ctx
 
-    const { updateId } = input;
-    const { companyId } = user;
+    const { updateId } = input
+    const { companyId } = user
 
     const data = await db.updateRecipient.findMany({
       where: {
@@ -39,7 +39,7 @@ export const getRecipientsProcedure = withAuth
           companyId: companyId,
         },
       },
-    });
+    })
 
     const recipients = await Promise.all(
       data.map(async (recipient) => ({
@@ -50,7 +50,7 @@ export const getRecipientsProcedure = withAuth
           recipientId: recipient.id,
         }),
       })),
-    );
+    )
 
-    return recipients;
-  });
+    return recipients
+  })

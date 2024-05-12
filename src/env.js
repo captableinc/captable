@@ -1,11 +1,11 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from '@t3-oss/env-nextjs'
+import { z } from 'zod'
 
 // https://env.t3.gg/docs/recipes#booleans
 const COERCED_BOOLEAN = z
   .string()
   // transform to boolean using preferred coercion logic
-  .transform((s) => s !== "false" && s !== "0");
+  .transform((s) => s !== 'false' && s !== '0')
 
 // const ONLY_BOOLEAN = z
 //   .string()
@@ -25,12 +25,12 @@ export const env = createEnv({
       .string()
       .url()
       .refine(
-        (str) => !str.includes("YOUR_DATABASE_URL_HERE"),
-        "You forgot to change the default URL",
+        (str) => !str.includes('YOUR_DATABASE_URL_HERE'),
+        'You forgot to change the default URL',
       ),
     NODE_ENV: z
-      .enum(["development", "test", "production"])
-      .default("development"),
+      .enum(['development', 'test', 'production'])
+      .default('development'),
     NEXTAUTH_URL: z.string(),
     NEXTAUTH_SECRET: z.string(),
     EMAIL_SERVER: z.string().optional(),
@@ -54,7 +54,7 @@ export const env = createEnv({
     UPLOAD_BUCKET_PRIVATE: z.string(),
     UPLOAD_ACCESS_KEY_ID: z.string().optional(),
     UPLOAD_SECRET_ACCESS_KEY: z.string().optional(),
-    UPLOAD_PROVIDER: z.enum(["s3", "r2"]),
+    UPLOAD_PROVIDER: z.enum(['s3', 'r2']),
 
     // google
     GOOGLE_CLIENT_ID: z.string().optional(),
@@ -74,7 +74,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_BASE_URL: z.string(),
-    NEXT_PUBLIC_NODE_ENV: z.string().default("development"),
+    NEXT_PUBLIC_NODE_ENV: z.string().default('development'),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
     NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY: z.string().optional(),
   },
@@ -128,4 +128,4 @@ export const env = createEnv({
    * `SOME_VAR=''` will throw an error.
    */
   emptyStringAsUndefined: true,
-});
+})

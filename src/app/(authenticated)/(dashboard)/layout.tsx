@@ -1,16 +1,16 @@
-import { withServerSession } from "@/server/auth";
-import { redirect } from "next/navigation";
+import { withServerSession } from '@/server/auth'
+import { redirect } from 'next/navigation'
 
 export default async function OnboardedLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const session = await withServerSession();
+  const session = await withServerSession()
 
   if (!session.user.isOnboarded) {
-    redirect("/onboarding");
+    redirect('/onboarding')
   }
 
-  return <>{children}</>;
+  return <>{children}</>
 }

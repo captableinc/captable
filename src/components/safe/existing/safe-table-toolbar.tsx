@@ -1,13 +1,13 @@
-import { DataTableFacetedFilter } from "@/components/ui/data-table/data-table-faceted-filter";
-import { DataTableViewOptions } from "@/components/ui/data-table/data-table-view-options";
-import { statusValues } from "./data";
-import { useDataTable } from "@/components/ui/data-table/data-table";
-import { ResetButton } from "@/components/ui/data-table/data-table-buttons";
-import { Input } from "@/components/ui/input";
+import { useDataTable } from '@/components/ui/data-table/data-table'
+import { ResetButton } from '@/components/ui/data-table/data-table-buttons'
+import { DataTableFacetedFilter } from '@/components/ui/data-table/data-table-faceted-filter'
+import { DataTableViewOptions } from '@/components/ui/data-table/data-table-view-options'
+import { Input } from '@/components/ui/input'
+import { statusValues } from './data'
 
 export function SafeTableToolbar() {
-  const { table } = useDataTable();
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const { table } = useDataTable()
+  const isFiltered = table.getState().columnFilters.length > 0
 
   return (
     <div className="flex w-full items-center justify-between">
@@ -15,20 +15,20 @@ export function SafeTableToolbar() {
         <Input
           placeholder="Search by name..."
           value={
-            (table.getColumn("stakeholderName")?.getFilterValue() as string) ??
-            ""
+            (table.getColumn('stakeholderName')?.getFilterValue() as string) ??
+            ''
           }
           onChange={(event) =>
             table
-              .getColumn("stakeholderName")
+              .getColumn('stakeholderName')
               ?.setFilterValue(event.target.value)
           }
           className="h-8 w-64"
         />
         <div className="space-x-2">
-          {table.getColumn("status") && (
+          {table.getColumn('status') && (
             <DataTableFacetedFilter
-              column={table.getColumn("status")}
+              column={table.getColumn('status')}
               title="Status"
               options={statusValues}
             />
@@ -44,5 +44,5 @@ export function SafeTableToolbar() {
       </div>
       <DataTableViewOptions />
     </div>
-  );
+  )
 }

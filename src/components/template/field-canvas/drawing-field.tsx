@@ -1,11 +1,11 @@
-import { COLORS } from "@/constants/esign";
-import { cn } from "@/lib/utils";
+import { COLORS } from '@/constants/esign'
+import { cn } from '@/lib/utils'
 interface DrawingFieldProps {
-  color: string;
-  left: number;
-  top: number;
-  width: number;
-  height: number;
+  color: string
+  left: number
+  top: number
+  width: number
+  height: number
 }
 
 export function DrawingField({
@@ -18,7 +18,7 @@ export function DrawingField({
   return (
     <div
       className={cn(
-        "absolute overflow-visible border-2 bg-opacity-30",
+        'absolute overflow-visible border-2 bg-opacity-30',
         COLORS[color as keyof typeof COLORS]?.border,
         COLORS[color as keyof typeof COLORS]?.bg,
       )}
@@ -29,5 +29,5 @@ export function DrawingField({
         height,
       }}
     />
-  );
+  )
 }

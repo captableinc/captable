@@ -1,8 +1,8 @@
-import MemberBulkImportModal from "@/components/member/member-bulk-import-modal";
-import MemberModal from "@/components/member/member-modal";
-import MemberTable from "@/components/member/member-table";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import MemberBulkImportModal from '@/components/member/member-bulk-import-modal'
+import MemberModal from '@/components/member/member-modal'
+import MemberTable from '@/components/member/member-table'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 import {
   DropdownMenu,
@@ -10,17 +10,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { api } from "@/trpc/server";
-import { RiAddLine, RiUserLine } from "@remixicon/react";
-import { type Metadata } from "next";
+} from '@/components/ui/dropdown-menu'
+import { api } from '@/trpc/server'
+import { RiAddLine, RiUserLine } from '@remixicon/react'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Team",
-};
+  title: 'Team',
+}
 
 const TeamMembersPage = async () => {
-  const members = await api.member.getMembers.query();
+  const members = await api.member.getMembers.query()
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">
@@ -45,9 +45,9 @@ const TeamMembersPage = async () => {
                   title="Invite a team member"
                   subtitle="Invite a team member to your company."
                   member={{
-                    name: "",
-                    email: "",
-                    title: "",
+                    name: '',
+                    email: '',
+                    title: '',
                   }}
                 >
                   <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
@@ -69,7 +69,7 @@ const TeamMembersPage = async () => {
         <MemberTable members={members.data} />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default TeamMembersPage;
+export default TeamMembersPage

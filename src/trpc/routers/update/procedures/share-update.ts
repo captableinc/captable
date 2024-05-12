@@ -1,14 +1,14 @@
-import { env } from "@/env";
+import { env } from '@/env'
 import {
+  type UpdateSharePayloadType,
   sendShareUpdateEmail,
   triggerName,
-  type UpdateSharePayloadType,
-} from "@/jobs/share-update-email";
-import { encode } from "@/lib/jwt";
-import { ShareRecipientSchema } from "@/schema/contacts";
-import { getTriggerClient } from "@/trigger";
-import { withAuth } from "@/trpc/api/trpc";
-import { z } from "zod";
+} from '@/jobs/share-update-email'
+import { encode } from '@/lib/jwt'
+import { ShareRecipientSchema } from '@/schema/contacts'
+import { getTriggerClient } from '@/trigger'
+import { withAuth } from '@/trpc/api/trpc'
+import { z } from 'zod'
 
 export const shareUpdateProcedure = withAuth
   .input(
@@ -19,10 +19,10 @@ export const shareUpdateProcedure = withAuth
     }),
   )
   .mutation(async ({ ctx, input }) => {
-    const trigger = getTriggerClient();
-    const { session, db } = ctx;
-    const { updateId, others, selectedContacts } = input;
-    const { name: senderName, email: senderEmail, companyId } = session.user;
+    const trigger = getTriggerClient()
+    const { session, db } = ctx
+    const { updateId, others, selectedContacts } = input
+    const { name: senderName, email: senderEmail, companyId } = session.user
 
     const update = await db.update.findUniqueOrThrow({
       where: {
@@ -33,30 +33,30 @@ export const shareUpdateProcedure = withAuth
       include: {
         company: true,
       },
-    });
+    })
 
     if (!update) {
-      throw new Error("Data room not found");
+      throw new Error('Data room not found')
     }
 
-    const company = update.company;
+    const company = update.company
 
     const upsertManyRecipients = async () => {
-      const baseUrl = env.BASE_URL;
-      const recipients = [...others, ...selectedContacts];
+      const baseUrl = env.BASE_URL
+      const recipients = [...others, ...selectedContacts]
 
       for (const recipient of recipients) {
-        const email = (recipient.email || recipient.value).trim();
+        const email = (recipient.email || recipient.value).trim()
         if (!email) {
-          throw new Error("Email is required");
+          throw new Error('Email is required')
         }
 
         const memberOrStakeholderId =
-          recipient.type === "member"
+          recipient.type === 'member'
             ? { memberId: recipient.id }
-            : recipient.type === "stakeholder"
+            : recipient.type === 'stakeholder'
               ? { stakeholderId: recipient.id }
-              : {};
+              : {}
 
         const recipientRecord = await db.updateRecipient.upsert({
           where: {
@@ -75,16 +75,16 @@ export const shareUpdateProcedure = withAuth
             name: recipient.name,
             ...memberOrStakeholderId,
           },
-        });
+        })
 
         const token = await encode({
           companyId,
           updateId,
           publicId: update.publicId,
           recipientId: recipientRecord.id,
-        });
+        })
 
-        const link = `${baseUrl}/updates/${update.publicId}?token=${token}`;
+        const link = `${baseUrl}/updates/${update.publicId}?token=${token}`
 
         const payload: UpdateSharePayloadType = {
           senderName: senderName!,
@@ -96,31 +96,31 @@ export const shareUpdateProcedure = withAuth
           link,
           email,
           senderEmail,
-        };
+        }
 
         if (trigger) {
-          await trigger.sendEvent({ name: triggerName, payload });
+          await trigger.sendEvent({ name: triggerName, payload })
         } else {
-          await sendShareUpdateEmail(payload);
+          await sendShareUpdateEmail(payload)
         }
       }
-    };
+    }
 
-    await upsertManyRecipients();
+    await upsertManyRecipients()
     await db.update.update({
       where: {
         id: updateId,
       },
       data: {
-        status: "PRIVATE",
+        status: 'PRIVATE',
       },
-    });
+    })
 
     return {
       success: true,
-      message: "Data room successfully shared!",
-    };
-  });
+      message: 'Data room successfully shared!',
+    }
+  })
 
 export const unshareUpdateProcedure = withAuth
   .input(
@@ -130,19 +130,19 @@ export const unshareUpdateProcedure = withAuth
     }),
   )
   .mutation(async ({ ctx, input }) => {
-    const { session, db } = ctx;
-    const { updateId, recipientId } = input;
-    const companyId = session.user.companyId;
+    const { session, db } = ctx
+    const { updateId, recipientId } = input
+    const companyId = session.user.companyId
 
     const update = await db.update.findUniqueOrThrow({
       where: {
         id: updateId,
         companyId,
       },
-    });
+    })
 
     if (!update) {
-      throw new Error("Update not found");
+      throw new Error('Update not found')
     }
 
     await db.updateRecipient.delete({
@@ -150,10 +150,10 @@ export const unshareUpdateProcedure = withAuth
         id: recipientId,
         updateId,
       },
-    });
+    })
 
     return {
       success: true,
       message: `Successfully removed access to - ${update.title}`,
-    };
-  });
+    }
+  })

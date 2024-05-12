@@ -1,9 +1,9 @@
-import ShareDataRoomEmail from "@/emails/ShareDataRoomEmail";
-import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
-import { render } from "jsx-email";
-import { z } from "zod";
+import ShareDataRoomEmail from '@/emails/ShareDataRoomEmail'
+import { sendMail } from '@/server/mailer'
+import { client } from '@/trigger'
+import { eventTrigger } from '@trigger.dev/sdk'
+import { render } from 'jsx-email'
+import { z } from 'zod'
 
 const schema = z.object({
   dataRoom: z.string(),
@@ -13,9 +13,9 @@ const schema = z.object({
   senderName: z.string(),
   senderEmail: z.string().nullish(),
   email: z.string(),
-});
+})
 
-export type DataRoomEmailPayloadType = z.infer<typeof schema>;
+export type DataRoomEmailPayloadType = z.infer<typeof schema>
 
 export const sendShareDataRoomEmail = async (
   payload: DataRoomEmailPayloadType,
@@ -28,7 +28,7 @@ export const sendShareDataRoomEmail = async (
     senderName,
     email,
     senderEmail,
-  } = payload;
+  } = payload
   await sendMail({
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
@@ -42,23 +42,23 @@ export const sendShareDataRoomEmail = async (
         link,
       }),
     ),
-  });
-};
+  })
+}
 
-export const triggerName = "email.share-data-room-email";
+export const triggerName = 'email.share-data-room-email'
 
 client.defineJob({
-  id: "share-data-room-email",
-  name: "data room share email",
-  version: "0.0.1",
+  id: 'share-data-room-email',
+  name: 'data room share email',
+  version: '0.0.1',
   trigger: eventTrigger({
     name: triggerName,
     schema,
   }),
 
   run: async (payload, io) => {
-    await io.runTask("send data room share email", async () => {
-      await sendShareDataRoomEmail(payload);
-    });
+    await io.runTask('send data room share email', async () => {
+      await sendShareDataRoomEmail(payload)
+    })
   },
-});
+})

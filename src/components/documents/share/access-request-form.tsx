@@ -1,24 +1,24 @@
-"use client";
+'use client'
 
-import { provideRequestAccess } from "@/app/(documents)/share/[publicId]/actions";
-import { Button } from "@/components/ui/button";
+import { provideRequestAccess } from '@/app/(documents)/share/[publicId]/actions'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
-import { RiFileLockLine } from "@remixicon/react";
-import { useFormState, useFormStatus } from "react-dom";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@radix-ui/react-label'
+import { RiFileLockLine } from '@remixicon/react'
+import { useFormState, useFormStatus } from 'react-dom'
 
 export const AccessRequestForm = ({ publicId }: { publicId: string }) => {
   const [state, formAction] = useFormState(provideRequestAccess, {
-    emailError: "",
-  });
-  const { pending } = useFormStatus();
+    emailError: '',
+  })
+  const { pending } = useFormStatus()
 
   return (
     <Card className="flex w-full max-w-md flex-col items-center justify-center py-4">
@@ -49,5 +49,5 @@ export const AccessRequestForm = ({ publicId }: { publicId: string }) => {
         </form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

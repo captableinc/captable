@@ -1,12 +1,12 @@
-import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
-import { ZodSwitchCompanyMutationSchema } from "./schema";
+import { checkMembership } from '@/server/auth'
+import { createTRPCRouter, withAuth } from '@/trpc/api/trpc'
+import { ZodOnboardingMutationSchema } from '../onboarding-router/schema'
+import { ZodSwitchCompanyMutationSchema } from './schema'
 
 export const companyRouter = createTRPCRouter({
   getCompany: withAuth.query(async ({ ctx }) => {
-    const user = ctx.session.user;
-    const companyId = user.companyId;
+    const user = ctx.session.user
+    const companyId = user.companyId
 
     const company = await ctx.db.member.findFirstOrThrow({
       where: {
@@ -34,13 +34,13 @@ export const companyRouter = createTRPCRouter({
           },
         },
       },
-    });
-    return company;
+    })
+    return company
   }),
   switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { db, session } = ctx;
+      const { db, session } = ctx
 
       await db.$transaction(async (tx) => {
         const { memberId } = await checkMembership({
@@ -49,7 +49,7 @@ export const companyRouter = createTRPCRouter({
             user: { ...session.user, memberId: input.id },
           },
           tx,
-        });
+        })
 
         await tx.member.update({
           where: {
@@ -58,10 +58,10 @@ export const companyRouter = createTRPCRouter({
           data: {
             lastAccessed: new Date(),
           },
-        });
-      });
+        })
+      })
 
-      return { success: true };
+      return { success: true }
     }),
   updateCompany: withAuth
     .input(ZodOnboardingMutationSchema)
@@ -71,10 +71,10 @@ export const companyRouter = createTRPCRouter({
           const { companyId } = await checkMembership({
             tx,
             session: ctx.session,
-          });
+          })
 
-          const { company } = input;
-          const { incorporationDate, ...rest } = company;
+          const { company } = input
+          const { incorporationDate, ...rest } = company
 
           await tx.company.update({
             where: {
@@ -84,20 +84,20 @@ export const companyRouter = createTRPCRouter({
               incorporationDate: new Date(incorporationDate),
               ...rest,
             },
-          });
-        });
+          })
+        })
 
         return {
           success: true,
-          message: "successfully updated company",
-        };
+          message: 'successfully updated company',
+        }
       } catch (error) {
-        console.error("Error onboarding:", error);
+        console.error('Error onboarding:', error)
         return {
           success: false,
           message:
-            "Oops, something went wrong while onboarding. Please try again.",
-        };
+            'Oops, something went wrong while onboarding. Please try again.',
+        }
       }
     }),
-});
+})

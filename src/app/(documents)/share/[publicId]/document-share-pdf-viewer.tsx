@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { PdfViewer } from "@/components/ui/pdf-viewer";
+import { PdfViewer } from '@/components/ui/pdf-viewer'
 
 type DocumentSharePdfViewerProps = {
-  url: string;
-};
+  url: string
+}
 
 export const DocumentSharePdfViewer = ({
   url,
 }: DocumentSharePdfViewerProps) => {
   return (
-    <PdfViewer onDocumentLoadSuccess={() => console.log("heer")} file={url} />
-  );
-};
+    <PdfViewer onDocumentLoadSuccess={() => console.log('heer')} file={url} />
+  )
+}

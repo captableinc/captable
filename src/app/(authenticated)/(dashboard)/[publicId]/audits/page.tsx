@@ -1,14 +1,14 @@
-import { AuditTable } from "@/components/audit/audit-table";
-import { Card } from "@/components/ui/card";
-import { api } from "@/trpc/server";
-import { type Metadata } from "next";
+import { AuditTable } from '@/components/audit/audit-table'
+import { Card } from '@/components/ui/card'
+import { api } from '@/trpc/server'
+import { type Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Audits",
-};
+  title: 'Audits',
+}
 
 const AuditsPage = async () => {
-  const audits = await api.audit.getAudits.query({});
+  const audits = await api.audit.getAudits.query({})
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">
@@ -23,7 +23,7 @@ const AuditsPage = async () => {
         <AuditTable audits={audits.data} />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default AuditsPage;
+export default AuditsPage

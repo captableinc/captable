@@ -1,17 +1,17 @@
-"use client";
+'use client'
 
-import { TagsInput } from "@ark-ui/react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RiClipboardLine, RiCloseLine } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { TagsInput } from '@ark-ui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { RiClipboardLine, RiCloseLine } from '@remixicon/react'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 
-import { generatePublicId } from "@/common/id";
-import { CaptableLogo } from "@/components/common/logo";
+import { generatePublicId } from '@/common/id'
+import { CaptableLogo } from '@/components/common/logo'
 
 import {
   Dialog,
@@ -19,7 +19,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -27,26 +27,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
-import { cn } from "@/lib/utils";
-import { api } from "@/trpc/react";
+} from '@/components/ui/form'
+import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
+import { api } from '@/trpc/react'
 import {
   DocumentShareMutationSchema,
   type TypeDocumentShareMutation,
-} from "@/trpc/routers/document-share-router/schema";
-import { useEffect } from "react";
+} from '@/trpc/routers/document-share-router/schema'
+import { useEffect } from 'react'
 
 type DocumentShareModalProps = {
-  title: string | React.ReactNode;
-  subtitle: string | React.ReactNode;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl";
-  open: boolean;
-  documentId: string | null;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+  title: string | React.ReactNode
+  subtitle: string | React.ReactNode
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  open: boolean
+  documentId: string | null
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const formSchema = DocumentShareMutationSchema;
+const formSchema = DocumentShareMutationSchema
 
 const DocumentShareModal = ({
   open,
@@ -56,7 +56,7 @@ const DocumentShareModal = ({
   subtitle,
   documentId,
 }: DocumentShareModalProps) => {
-  const publicId = generatePublicId();
+  const publicId = generatePublicId()
   const form = useForm<TypeDocumentShareMutation>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,50 +65,50 @@ const DocumentShareModal = ({
       emailProtected: true,
       publicId,
     },
-  });
-  const { toast } = useToast();
+  })
+  const { toast } = useToast()
 
   useEffect(() => {
     if (documentId) {
-      form.setValue("documentId", documentId);
+      form.setValue('documentId', documentId)
     }
-  }, [documentId, form]);
+  }, [documentId, form])
 
   const { mutateAsync } = api.documentShare.create.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
-        variant: success ? "default" : "destructive",
+        variant: success ? 'default' : 'destructive',
         title: success
-          ? "🎉 Successfully created"
-          : "Uh oh! Something went wrong.",
+          ? '🎉 Successfully created'
+          : 'Uh oh! Something went wrong.',
         description: message,
-      });
+      })
 
-      form.reset();
-      setOpen(false);
-      router.refresh();
+      form.reset()
+      setOpen(false)
+      router.refresh()
     },
-  });
-  const router = useRouter();
+  })
+  const router = useRouter()
 
   const onSubmit = async (values: TypeDocumentShareMutation) => {
-    await mutateAsync(values);
+    await mutateAsync(values)
 
-    form.reset();
-    router.refresh();
-    setOpen(false);
-  };
+    form.reset()
+    router.refresh()
+    setOpen(false)
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
         className={cn(
-          "mb-10 mt-10 gap-0 bg-white p-0",
-          size === "sm" && "sm:max-w-sm",
-          size === "md" && "sm:max-w-md",
-          size === "lg" && "sm:max-w-lg",
-          size === "xl" && "sm:max-w-xl",
-          size === "2xl" && "sm:max-w-2xl",
+          'mb-10 mt-10 gap-0 bg-white p-0',
+          size === 'sm' && 'sm:max-w-sm',
+          size === 'md' && 'sm:max-w-md',
+          size === 'lg' && 'sm:max-w-lg',
+          size === 'xl' && 'sm:max-w-xl',
+          size === '2xl' && 'sm:max-w-2xl',
         )}
       >
         <div className="no-scrollbar max-h-[80vh] overflow-scroll">
@@ -173,8 +173,8 @@ const DocumentShareModal = ({
                                 field.value
                                   ? new Date(field.value)
                                       .toISOString()
-                                      .split("T")[0]
-                                  : ""
+                                      .split('T')[0]
+                                  : ''
                               }
                             />
                           </FormControl>
@@ -252,7 +252,7 @@ const DocumentShareModal = ({
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default DocumentShareModal;
+export default DocumentShareModal

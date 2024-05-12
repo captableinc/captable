@@ -1,12 +1,12 @@
-import "@blocknote/react/style.css";
-import "@/styles/editor.css";
+import '@blocknote/react/style.css'
+import '@/styles/editor.css'
 
 type UpdatesEditorProps = {
-  html: string;
-};
+  html: string
+}
 
 const UpdateRenderer = ({ html }: UpdatesEditorProps) => {
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
-};
+  return <div dangerouslySetInnerHTML={{ __html: html }} />
+}
 
-export default UpdateRenderer;
+export default UpdateRenderer

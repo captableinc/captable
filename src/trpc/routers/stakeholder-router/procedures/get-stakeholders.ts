@@ -1,11 +1,11 @@
-import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { checkMembership } from '@/server/auth'
+import { withAuth } from '@/trpc/api/trpc'
 
 export const getStakeholdersProcedure = withAuth.query(async ({ ctx }) => {
-  const { db, session } = ctx;
+  const { db, session } = ctx
 
   const data = await db.$transaction(async (tx) => {
-    const { companyId } = await checkMembership({ session, tx });
+    const { companyId } = await checkMembership({ session, tx })
 
     const stakeholder = await tx.stakeholder.findMany({
       where: {
@@ -13,11 +13,11 @@ export const getStakeholdersProcedure = withAuth.query(async ({ ctx }) => {
       },
 
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
-    });
-    return stakeholder;
-  });
+    })
+    return stakeholder
+  })
 
-  return { data };
-});
+  return { data }
+})

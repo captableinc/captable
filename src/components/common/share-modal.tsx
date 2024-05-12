@@ -1,36 +1,36 @@
-"use client";
+'use client'
 
-import Loading from "@/components/common/loading";
-import Modal from "@/components/common/modal";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
+import Loading from '@/components/common/loading'
+import Modal from '@/components/common/modal'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import MultipleSelector, { type Option } from '@/components/ui/multi-selector'
 
-import { type ShareContactType } from "@/schema/contacts";
-import type { DataRoomRecipient } from "@prisma/client";
+import { type ShareContactType } from '@/schema/contacts'
+import type { DataRoomRecipient } from '@prisma/client'
 import {
   RiCheckLine as CheckIcon,
   RiDeleteBin2Line as DeleteIcon,
   RiLink as LinkIcon,
-} from "@remixicon/react";
-import { Fragment, useState } from "react";
-import { useCopyToClipboard } from "usehooks-ts";
+} from '@remixicon/react'
+import { Fragment, useState } from 'react'
+import { useCopyToClipboard } from 'usehooks-ts'
 
 export interface ExtendedRecipientType extends DataRoomRecipient {
-  token: string | object;
+  token: string | object
 }
 
 export type Props = {
-  title: string;
-  subtitle: string;
-  baseLink: string;
-  trigger: React.ReactNode;
-  contacts: ShareContactType[];
-  recipients: ExtendedRecipientType[];
+  title: string
+  subtitle: string
+  baseLink: string
+  trigger: React.ReactNode
+  contacts: ShareContactType[]
+  recipients: ExtendedRecipientType[]
 
-  onShare: (data: { others: object[]; selectedContacts: object[] }) => void;
-  removeAccess: (data: { recipientId: string }) => void;
-};
+  onShare: (data: { others: object[]; selectedContacts: object[] }) => void
+  removeAccess: (data: { recipientId: string }) => void
+}
 
 const Share = ({
   title,
@@ -42,25 +42,25 @@ const Share = ({
   onShare,
   removeAccess,
 }: Props) => {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [copiedText, copy] = useCopyToClipboard();
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [selected, setSelected] = useState<Option[]>([]);
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [copiedText, copy] = useCopyToClipboard()
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [selected, setSelected] = useState<Option[]>([])
 
   const copyToClipboard = (id: string, text: string) => {
     copy(text)
       .then(() => {
-        setCopiedId(id);
+        setCopiedId(id)
 
         setTimeout(() => {
-          setCopiedId(null);
-        }, 1000);
+          setCopiedId(null)
+        }, 1000)
       })
       .catch(() => {
-        setCopiedId(null);
-      });
-  };
+        setCopiedId(null)
+      })
+  }
 
   return (
     <Modal
@@ -71,7 +71,7 @@ const Share = ({
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val);
+          setOpen(val)
         },
       }}
     >
@@ -90,7 +90,7 @@ const Share = ({
                   `${contact.name}` +
                   (contact.institutionName
                     ? ` - ${contact.institutionName}`
-                    : ""),
+                    : ''),
                 subLabel: contact.email,
                 image: contact.image,
                 value: contact.email,
@@ -121,11 +121,11 @@ const Share = ({
                 >
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8 rounded-full">
-                      <AvatarImage src={"/placeholders/user.svg"} />
+                      <AvatarImage src={'/placeholders/user.svg'} />
                     </Avatar>
                     <span className="flex flex-col font-medium">
                       <span className="text-sm">
-                        {recipient.name ?? "Unnamed"}
+                        {recipient.name ?? 'Unnamed'}
                       </span>
                       <span className="text-xs text-primary/50">
                         {recipient.email}
@@ -137,10 +137,10 @@ const Share = ({
                     <div className="flex items-center gap-1">
                       <Button
                         size="sm"
-                        variant={"secondary"}
+                        variant={'secondary'}
                         className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
                         onClick={() => {
-                          removeAccess({ recipientId: recipient.id });
+                          removeAccess({ recipientId: recipient.id })
                         }}
                       >
                         <DeleteIcon className="h-4 w-4" />
@@ -148,7 +148,7 @@ const Share = ({
                       </Button>
                       <Button
                         size="sm"
-                        variant={"secondary"}
+                        variant={'secondary'}
                         className="flex text-sm font-medium text-primary/70 hover:text-primary/90"
                         onClick={() =>
                           copyToClipboard(
@@ -175,9 +175,9 @@ const Share = ({
             <div className="mt-6 flex justify-end">
               <div className="space-x-4">
                 <Button
-                  variant={"outline"}
+                  variant={'outline'}
                   onClick={() => {
-                    setOpen(false);
+                    setOpen(false)
                   }}
                 >
                   Cancel
@@ -188,17 +188,17 @@ const Share = ({
                   onClick={() => {
                     const contacts = selected
                       .filter((option) => option.meta)
-                      .map((option) => option.meta);
+                      .map((option) => option.meta)
                     const others = selected.filter(
                       (option) => !option.meta && option.value,
-                    );
+                    )
 
                     onShare({
                       others: others as object[],
                       selectedContacts: contacts as object[],
-                    });
+                    })
 
-                    setSelected([]);
+                    setSelected([])
                   }}
                 >
                   Share
@@ -209,7 +209,7 @@ const Share = ({
         )}
       </Fragment>
     </Modal>
-  );
-};
+  )
+}
 
-export default Share;
+export default Share

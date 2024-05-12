@@ -1,46 +1,46 @@
-import EmptyState from "@/components/common/empty-state";
-import Tldr from "@/components/common/tldr";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
-import { db } from "@/server/db";
-import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiAddFill, RiPieChart2Line } from "@remixicon/react";
-import { type Metadata } from "next";
-import EquityPlanModal from "./modal";
-import EquityPlanTable from "./table";
+import EmptyState from '@/components/common/empty-state'
+import Tldr from '@/components/common/tldr'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { withServerSession } from '@/server/auth'
+import { db } from '@/server/db'
+import { type EquityPlanMutationType } from '@/trpc/routers/equity-plan/schema'
+import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
+import { RiAddFill, RiPieChart2Line } from '@remixicon/react'
+import { type Metadata } from 'next'
+import EquityPlanModal from './modal'
+import EquityPlanTable from './table'
 
 export const metadata: Metadata = {
-  title: "Equity plans",
-};
+  title: 'Equity plans',
+}
 
 const getEquityPlans = async (companyId: string) => {
   return await db.equityPlan.findMany({
     where: { companyId },
-  });
-};
+  })
+}
 
 const getShareClasses = async (companyId: string) => {
   return await db.shareClass.findMany({
     where: { companyId },
-  });
-};
+  })
+}
 
 const EquityPlanPage = async () => {
-  const session = await withServerSession();
-  const companyId = session?.user?.companyId;
-  let equityPlans: EquityPlanMutationType[] = [];
+  const session = await withServerSession()
+  const companyId = session?.user?.companyId
+  let equityPlans: EquityPlanMutationType[] = []
 
   if (companyId) {
     equityPlans = (await getEquityPlans(
       companyId,
-    )) as unknown as EquityPlanMutationType[];
+    )) as unknown as EquityPlanMutationType[]
   }
 
   const shareClasses: ShareClassMutationType[] = (await getShareClasses(
     companyId,
-  )) as unknown as ShareClassMutationType[];
+  )) as unknown as ShareClassMutationType[]
 
   if (equityPlans.length === 0) {
     return (
@@ -57,9 +57,9 @@ const EquityPlanPage = async () => {
             <Tldr
               message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
               cta={{
-                label: "Learn more",
+                label: 'Learn more',
                 // TODO - this link should be updated to the correct URL
-                href: "https://captable.inc/help",
+                href: 'https://captable.inc/help',
               }}
             />
           }
@@ -71,7 +71,7 @@ const EquityPlanPage = async () => {
           }
         />
       </EmptyState>
-    );
+    )
   }
 
   return (
@@ -93,9 +93,9 @@ const EquityPlanPage = async () => {
               <Tldr
                 message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
                 cta={{
-                  label: "Learn more",
+                  label: 'Learn more',
                   // TODO - this link should be updated to the correct URL
-                  href: "https://captable.inc/help",
+                  href: 'https://captable.inc/help',
                 }}
               />
             }
@@ -118,7 +118,7 @@ const EquityPlanPage = async () => {
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default EquityPlanPage;
+export default EquityPlanPage

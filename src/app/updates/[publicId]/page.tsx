@@ -1,38 +1,38 @@
-"use server";
+'use server'
 
-import { dayjsExt } from "@/common/dayjs";
-import { SharePageLayout } from "@/components/share/page-layout";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import UpdateRenderer from "@/components/update/renderer";
-import { decode, type JWTVerifyResult } from "@/lib/jwt";
-import { db } from "@/server/db";
-import { render } from "jsx-email";
-import { notFound } from "next/navigation";
-import { Fragment } from "react";
+import { dayjsExt } from '@/common/dayjs'
+import { SharePageLayout } from '@/components/share/page-layout'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import UpdateRenderer from '@/components/update/renderer'
+import { type JWTVerifyResult, decode } from '@/lib/jwt'
+import { db } from '@/server/db'
+import { render } from 'jsx-email'
+import { notFound } from 'next/navigation'
+import { Fragment } from 'react'
 
 const PublicUpdatePage = async ({
   params: { publicId },
   searchParams: { token },
 }: {
-  params: { publicId: string };
-  searchParams: { token: string };
+  params: { publicId: string }
+  searchParams: { token: string }
 }) => {
-  let decodedToken: JWTVerifyResult | null = null;
+  let decodedToken: JWTVerifyResult | null = null
 
   try {
-    decodedToken = await decode(token);
+    decodedToken = await decode(token)
   } catch (error) {
-    return notFound();
+    return notFound()
   }
 
-  const { payload } = decodedToken;
+  const { payload } = decodedToken
 
   if (
     payload.publicId !== publicId ||
     !payload.companyId ||
     !payload.recipientId
   ) {
-    return notFound();
+    return notFound()
   }
 
   const update = await db.update.findFirst({
@@ -62,10 +62,10 @@ const PublicUpdatePage = async ({
         },
       },
     },
-  });
+  })
 
   if (!update) {
-    return notFound();
+    return notFound()
   }
 
   const recipients = await db.updateRecipient.findFirst({
@@ -73,15 +73,15 @@ const PublicUpdatePage = async ({
       id: payload.recipientId,
       updateId: update.id,
     },
-  });
+  })
 
   if (!recipients) {
-    return notFound();
+    return notFound()
   }
 
-  const company = update?.company;
-  const author = update?.author;
-  const html = await render(<UpdateRenderer html={update.html} />);
+  const company = update?.company
+  const author = update?.author
+  const html = await render(<UpdateRenderer html={update.html} />)
 
   return (
     <SharePageLayout
@@ -104,7 +104,7 @@ const PublicUpdatePage = async ({
       <Fragment>
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 rounded-full">
-            <AvatarImage src={author.user.image || "/placeholders/user.svg"} />
+            <AvatarImage src={author.user.image || '/placeholders/user.svg'} />
           </Avatar>
 
           <div>
@@ -121,7 +121,7 @@ const PublicUpdatePage = async ({
         </div>
       </Fragment>
     </SharePageLayout>
-  );
-};
+  )
+}
 
-export default PublicUpdatePage;
+export default PublicUpdatePage

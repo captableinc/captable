@@ -1,39 +1,39 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { api } from "@/trpc/react";
-import { RiMailLine } from "@remixicon/react";
-import { useSearchParams } from "next/navigation";
+import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/use-toast'
+import { api } from '@/trpc/react'
+import { RiMailLine } from '@remixicon/react'
+import { useSearchParams } from 'next/navigation'
 
 const CheckEmailComponent = () => {
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
+  const searchParams = useSearchParams()
+  const email = searchParams.get('email')
 
   const { mutateAsync, isLoading } = api.auth.resendEmail.useMutation({
     onSuccess: async ({ message }) => {
       toast({
-        variant: "default",
-        title: "Resend Email",
+        variant: 'default',
+        title: 'Resend Email',
         description: message,
-      });
+      })
     },
     onError: () => {
       toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Email not found!",
-      });
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Email not found!',
+      })
     },
-  });
+  })
 
   async function Resend() {
     try {
       if (email) {
-        await mutateAsync(email);
+        await mutateAsync(email)
       }
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 
@@ -60,6 +60,6 @@ const CheckEmailComponent = () => {
         </Button>
       </div>
     </div>
-  );
-};
-export default CheckEmailComponent;
+  )
+}
+export default CheckEmailComponent

@@ -1,22 +1,22 @@
-import { RiAccountCircleFill } from "@remixicon/react";
+import { dayjsExt } from '@/common/dayjs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
-  CardContent,
-} from "@/components/ui/card";
-import { api } from "@/trpc/server";
-import Link from "next/link";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { dayjsExt } from "@/common/dayjs";
+} from '@/components/ui/card'
+import { api } from '@/trpc/server'
+import { RiAccountCircleFill } from '@remixicon/react'
+import Link from 'next/link'
 
 type Props = {
-  publicId: string;
-  className: string;
-};
+  publicId: string
+  className: string
+}
 
 const ActivityCard = async ({ className, publicId }: Props) => {
-  const activity = await api.audit.getAudits.query({ take: 4 });
+  const activity = await api.audit.getAudits.query({ take: 4 })
 
   return (
     <Card className={className}>
@@ -54,7 +54,7 @@ const ActivityCard = async ({ className, publicId }: Props) => {
                           <div className="text-sm text-gray-500">
                             <span className="font-medium text-primary/80">
                               {activityItem.summary}
-                            </span>{" "}
+                            </span>{' '}
                             <br />
                             <span className="whitespace-nowrap text-xs">
                               {dayjsExt().to(activityItem.occurredAt)}
@@ -84,7 +84,7 @@ const ActivityCard = async ({ className, publicId }: Props) => {
         )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default ActivityCard;
+export default ActivityCard

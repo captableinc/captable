@@ -1,11 +1,11 @@
-"use client";
-import Modal from "@/components/common/modal";
-import TeamMemberUploader from "@/components/member/member-uploader";
-import { RiGroupLine } from "@remixicon/react";
-import { useState } from "react";
+'use client'
+import Modal from '@/components/common/modal'
+import TeamMemberUploader from '@/components/member/member-uploader'
+import { RiGroupLine } from '@remixicon/react'
+import { useState } from 'react'
 
 export default function MemberBulkImportModal() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   return (
     <Modal
       size="xl"
@@ -14,7 +14,7 @@ export default function MemberBulkImportModal() {
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val);
+          setOpen(val)
         },
       }}
       trigger={
@@ -26,5 +26,5 @@ export default function MemberBulkImportModal() {
     >
       <TeamMemberUploader setOpen={setOpen} />
     </Modal>
-  );
+  )
 }

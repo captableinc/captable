@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 {
   /* Usage:
@@ -11,15 +11,15 @@
 */
 }
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 type EmptyStateProps = {
-  title?: string;
-  bordered?: boolean;
-  subtitle: string | React.ReactNode;
-  icon?: React.ReactElement<React.SVGProps<SVGSVGElement>>;
-  children?: React.ReactNode;
-};
+  title?: string
+  bordered?: boolean
+  subtitle: string | React.ReactNode
+  icon?: React.ReactElement<React.SVGProps<SVGSVGElement>>
+  children?: React.ReactNode
+}
 
 const EmptyState = ({
   icon,
@@ -33,8 +33,8 @@ const EmptyState = ({
       <div className="container mx-auto px-4">
         <div
           className={cn(
-            bordered && "rounded-xl border",
-            "border bg-white px-6 shadow-sm",
+            bordered && 'rounded-xl border',
+            'border bg-white px-6 shadow-sm',
           )}
         >
           <div className="mx-auto w-full max-w-2xl py-16 text-center">
@@ -49,7 +49,7 @@ const EmptyState = ({
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default EmptyState;
+export default EmptyState

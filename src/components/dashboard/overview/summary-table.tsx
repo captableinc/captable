@@ -6,16 +6,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table'
 
-import { Card } from "@/components/ui/card";
-const formatter = new Intl.NumberFormat("en-US");
+import { Card } from '@/components/ui/card'
+const formatter = new Intl.NumberFormat('en-US')
 
 const SummaryTable = () => {
   const shareClasses = [
     {
       id: 1,
-      name: "Common shares",
+      name: 'Common shares',
       shares: 7000000,
       diluted: 4500000,
       ownership: 53,
@@ -24,7 +24,7 @@ const SummaryTable = () => {
 
     {
       id: 2,
-      name: "Preferred (Series A)",
+      name: 'Preferred (Series A)',
       shares: 2000000,
       diluted: 1500000,
       ownership: 15,
@@ -33,7 +33,7 @@ const SummaryTable = () => {
 
     {
       id: 3,
-      name: "Preferred (Convertible note)",
+      name: 'Preferred (Convertible note)',
       shares: 1000000,
       diluted: 500000,
       ownership: 7,
@@ -42,13 +42,13 @@ const SummaryTable = () => {
 
     {
       id: 4,
-      name: "Stock Plan",
+      name: 'Stock Plan',
       shares: 2000000,
       diluted: 1000000,
       ownership: 15,
       raised: 2000000,
     },
-  ];
+  ]
 
   return (
     <Card className="mt-4">
@@ -85,7 +85,7 @@ const SummaryTable = () => {
         </TableFooter>
       </Table>
     </Card>
-  );
-};
+  )
+}
 
-export default SummaryTable;
+export default SummaryTable

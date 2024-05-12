@@ -1,18 +1,18 @@
 import {
   DropdownMenu,
-  DropdownMenuLabel,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 
-import { RiAddFill } from "@remixicon/react";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
+import { RiAddFill } from '@remixicon/react'
 
 type DropDownButtonProps = {
-  icon?: React.ReactNode;
-  children: React.ReactNode;
-  buttonSlot: React.ReactNode | string;
-};
+  icon?: React.ReactNode
+  children: React.ReactNode
+  buttonSlot: React.ReactNode | string
+}
 
 const DropdownButton = ({
   icon,
@@ -29,7 +29,7 @@ const DropdownButton = ({
         {children}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}
 
-export { DropdownButton };
+export { DropdownButton }

@@ -11,13 +11,13 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
-import { constants } from "../lib/constants";
+} from 'jsx-email'
+import { constants } from '../lib/constants'
 
 interface MemberInviteEmailProps {
-  invitedBy: string;
-  companyName: string;
-  inviteLink: string;
+  invitedBy: string
+  companyName: string
+  inviteLink: string
 }
 
 export const MemberInviteEmail = ({
@@ -25,7 +25,7 @@ export const MemberInviteEmail = ({
   companyName,
   inviteLink,
 }: MemberInviteEmailProps) => {
-  const previewText = `Join ${invitedBy} on ${constants.title}`;
+  const previewText = `Join ${invitedBy} on ${constants.title}`
 
   return (
     <Html>
@@ -35,14 +35,14 @@ export const MemberInviteEmail = ({
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
-              Join <strong>{companyName}</strong> on{" "}
+              Join <strong>{companyName}</strong> on{' '}
               <strong>{constants.title}</strong>
             </Heading>
             <Text className="text-[14px] leading-[24px] text-black">
               Hello ,
             </Text>
             <Text className="text-[14px] leading-[24px] text-black">
-              <strong>{invitedBy}</strong> has invited you to join{" "}
+              <strong>{invitedBy}</strong> has invited you to join{' '}
               <strong>{companyName}</strong> on <strong>Captable, Inc.</strong>.
             </Text>
 
@@ -55,7 +55,7 @@ export const MemberInviteEmail = ({
               </Button>
             </Section>
             <Text className="!text-[14px] leading-[24px] text-black">
-              or copy and paste this URL into your browser:{" "}
+              or copy and paste this URL into your browser:{' '}
               <Link
                 href={inviteLink}
                 className="break-all text-blue-600 no-underline"
@@ -75,13 +75,13 @@ export const MemberInviteEmail = ({
         </Body>
       </Tailwind>
     </Html>
-  );
-};
+  )
+}
 
 MemberInviteEmail.PreviewProps = {
-  invitedBy: "joker",
-  companyName: "Batmobile",
-  inviteLink: "https://captable.inc/...",
-} as MemberInviteEmailProps;
+  invitedBy: 'joker',
+  companyName: 'Batmobile',
+  inviteLink: 'https://captable.inc/...',
+} as MemberInviteEmailProps
 
-export default MemberInviteEmail;
+export default MemberInviteEmail

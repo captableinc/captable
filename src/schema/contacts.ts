@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const ShareContactSchema = z.object({
   id: z.string(),
@@ -9,11 +9,11 @@ export const ShareContactSchema = z.object({
   selected: z.boolean().optional(),
   institutionName: z.string().optional(),
   type: z.union([
-    z.literal("member"),
-    z.literal("stakeholder"),
-    z.literal("other"),
+    z.literal('member'),
+    z.literal('stakeholder'),
+    z.literal('other'),
   ]),
-});
+})
 
 export const ShareRecipientSchema = z.object({
   value: z.string(),
@@ -24,7 +24,7 @@ export const ShareRecipientSchema = z.object({
   institutionName: z.string().optional().nullable(),
   image: z.string().optional().nullable(),
   type: z.string().optional().nullable(),
-});
+})
 
-export type ShareContactType = z.infer<typeof ShareContactSchema>;
-export type ShareRecipientType = z.infer<typeof ShareRecipientSchema>;
+export type ShareContactType = z.infer<typeof ShareContactSchema>
+export type ShareRecipientType = z.infer<typeof ShareRecipientSchema>

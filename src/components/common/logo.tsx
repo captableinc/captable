@@ -1,6 +1,6 @@
-import logo from "@/assets/logo.svg";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
+import logo from '@/assets/logo.svg'
+import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 export const CaptableLogo = ({ className }: { className?: string }) => {
   return (
@@ -11,5 +11,5 @@ export const CaptableLogo = ({ className }: { className?: string }) => {
       src={logo}
       alt="Captable, Inc. Logo"
     />
-  );
-};
+  )
+}

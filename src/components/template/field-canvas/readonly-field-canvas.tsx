@@ -1,34 +1,34 @@
-"use client";
+'use client'
 
-import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
-import { useResizeObserver } from "@wojtekmaj/react-hooks";
-import { useCallback, useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
-import { ReadOnlyTemplateField } from "./readonly-template-field";
+import { type TemplateSigningFieldForm } from '@/providers/template-signing-field-provider'
+import { useResizeObserver } from '@wojtekmaj/react-hooks'
+import { useCallback, useState } from 'react'
+import { useFieldArray, useFormContext } from 'react-hook-form'
+import { ReadOnlyTemplateField } from './readonly-template-field'
 
-const resizeObserverOptions = {};
+const resizeObserverOptions = {}
 
 export function ReadOnlyFieldCanvas() {
-  const { control } = useFormContext<TemplateSigningFieldForm>();
+  const { control } = useFormContext<TemplateSigningFieldForm>()
   const { fields } = useFieldArray({
-    name: "fields",
+    name: 'fields',
     control,
-    keyName: "_id",
-  });
+    keyName: '_id',
+  })
 
-  const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
-  const [viewport, setViewport] = useState({ height: 0, width: 0 });
+  const [containerRef, setContainerRef] = useState<HTMLElement | null>(null)
+  const [viewport, setViewport] = useState({ height: 0, width: 0 })
 
   const onResize = useCallback<ResizeObserverCallback>((entries) => {
-    const [entry] = entries;
+    const [entry] = entries
 
     if (entry) {
-      const { height, width } = entry.contentRect;
-      setViewport({ height, width });
+      const { height, width } = entry.contentRect
+      setViewport({ height, width })
     }
-  }, []);
+  }, [])
 
-  useResizeObserver(containerRef, resizeObserverOptions, onResize);
+  useResizeObserver(containerRef, resizeObserverOptions, onResize)
 
   return (
     <>
@@ -57,5 +57,5 @@ export function ReadOnlyFieldCanvas() {
         />
       ))}
     </>
-  );
+  )
 }

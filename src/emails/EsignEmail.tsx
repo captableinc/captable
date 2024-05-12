@@ -1,4 +1,4 @@
-import type { TEmailPayload } from "@/jobs/esign-email";
+import type { TEmailPayload } from '@/jobs/esign-email'
 import {
   Body,
   Button,
@@ -14,14 +14,14 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
+} from 'jsx-email'
 import {
   ArrowRight,
   SignatureIcon,
   UserAvatarIcon,
-} from "../components/common/icons";
+} from '../components/common/icons'
 
-type TEsignEmailProps = TEmailPayload & { signingLink: string };
+type TEsignEmailProps = TEmailPayload & { signingLink: string }
 
 const EsignEmail = ({
   signingLink,
@@ -43,7 +43,7 @@ const EsignEmail = ({
             </Heading>
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
               <Text>
-                <strong>{sender?.name}</strong> has sent you a document{" "}
+                <strong>{sender?.name}</strong> has sent you a document{' '}
                 <strong>{`"${documentName}"`}</strong> to sign.
               </Text>
             </Heading>
@@ -59,8 +59,8 @@ const EsignEmail = ({
             ) : (
               <>
                 <Text className="text-[14px] leading-[24px] text-black">
-                  <strong>{sender?.name}</strong> from{" "}
-                  <strong>{company?.name}</strong> has sent you{" "}
+                  <strong>{sender?.name}</strong> from{' '}
+                  <strong>{company?.name}</strong> has sent you{' '}
                   <strong>{`"${documentName}"`}</strong>
                 </Text>
               </>
@@ -88,7 +88,7 @@ const EsignEmail = ({
               </Button>
             </Section>
             <Text className="!text-[14px] leading-[24px] text-black">
-              or copy and paste this URL into your browser:{" "}
+              or copy and paste this URL into your browser:{' '}
               <Link
                 href={signingLink}
                 className="break-all text-blue-600 no-underline"
@@ -105,18 +105,18 @@ const EsignEmail = ({
         </Body>
       </Tailwind>
     </Html>
-  );
-};
+  )
+}
 
 EsignEmail.PreviewProps = {
-  signingLink: "https://example.com",
+  signingLink: 'https://example.com',
   // message: "This is a test message",
-  documentName: "Test Document",
+  documentName: 'Test Document',
   recipient: {},
   sender: {
-    name: "John Doe",
+    name: 'John Doe',
   },
   company: {},
-} as TEsignEmailProps;
+} as TEsignEmailProps
 
-export default EsignEmail;
+export default EsignEmail

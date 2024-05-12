@@ -1,15 +1,15 @@
-"use server";
+'use server'
 
-import { type ExtendedRecipientType } from "@/components/common/share-modal";
-import { api } from "@/trpc/server";
-import type { Bucket, DataRoom } from "@prisma/client";
-import { notFound } from "next/navigation";
-import DataRoomFiles from "../components/data-room-files";
+import { type ExtendedRecipientType } from '@/components/common/share-modal'
+import { api } from '@/trpc/server'
+import type { Bucket, DataRoom } from '@prisma/client'
+import { notFound } from 'next/navigation'
+import DataRoomFiles from '../components/data-room-files'
 
 const DataRoomSettinsPage = async ({
   params: { publicId, dataRoomPublicId },
 }: {
-  params: { publicId: string; dataRoomPublicId: string };
+  params: { publicId: string; dataRoomPublicId: string }
 }) => {
   const { dataRoom, documents, recipients } =
     await api.dataRoom.getDataRoom.query({
@@ -19,11 +19,11 @@ const DataRoomSettinsPage = async ({
         recipients: true,
         documents: true,
       },
-    });
-  const contacts = await api.common.getContacts.query();
+    })
+  const contacts = await api.common.getContacts.query()
 
   if (!dataRoom) {
-    return notFound();
+    return notFound()
   }
 
   return (
@@ -34,7 +34,7 @@ const DataRoomSettinsPage = async ({
       documents={documents as Bucket[]}
       companyPublicId={publicId}
     />
-  );
-};
+  )
+}
 
-export default DataRoomSettinsPage;
+export default DataRoomSettinsPage

@@ -1,21 +1,21 @@
-import EmptyState from "@/components/common/empty-state";
-import { PageLayout } from "@/components/dashboard/page-layout";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
-import { api } from "@/trpc/server";
-import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
-import { type Metadata } from "next";
-import DocumentUploadModal from "./components/modal";
-import DocumentsTable from "./components/table";
+import EmptyState from '@/components/common/empty-state'
+import { PageLayout } from '@/components/dashboard/page-layout'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { withServerSession } from '@/server/auth'
+import { api } from '@/trpc/server'
+import { RiAddFill, RiUploadCloudLine } from '@remixicon/react'
+import { type Metadata } from 'next'
+import DocumentUploadModal from './components/modal'
+import DocumentsTable from './components/table'
 
 export const metadata: Metadata = {
-  title: "Documents",
-};
+  title: 'Documents',
+}
 
 const DocumentsPage = async () => {
-  const documents = await api.document.getAll.query();
-  const session = await withServerSession();
+  const documents = await api.document.getAll.query()
+  const session = await withServerSession()
 
   if (documents.length === 0) {
     return (
@@ -34,7 +34,7 @@ const DocumentsPage = async () => {
           }
         />
       </EmptyState>
-    );
+    )
   }
 
   return (
@@ -64,7 +64,7 @@ const DocumentsPage = async () => {
         </div>
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default DocumentsPage;
+export default DocumentsPage

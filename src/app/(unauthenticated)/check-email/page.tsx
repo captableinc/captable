@@ -1,8 +1,8 @@
-import { type Metadata } from "next";
-import CheckEmailComponent from "@/components/onboarding/check-email";
+import CheckEmailComponent from '@/components/onboarding/check-email'
+import { type Metadata } from 'next'
 export const metadata: Metadata = {
-  title: "Check Email",
-};
+  title: 'Check Email',
+}
 export default function CheckEmail() {
-  return <CheckEmailComponent />;
+  return <CheckEmailComponent />
 }

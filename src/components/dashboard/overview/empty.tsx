@@ -1,12 +1,12 @@
-import EmptyState from "@/components/common/empty-state";
-import { Button } from "@/components/ui/button";
-import { RiArrowRightLine, RiPieChartFill } from "@remixicon/react";
-import Link from "next/link";
+import EmptyState from '@/components/common/empty-state'
+import { Button } from '@/components/ui/button'
+import { RiArrowRightLine, RiPieChartFill } from '@remixicon/react'
+import Link from 'next/link'
 
 type EmptyOverviewProps = {
-  firstName: string | undefined;
-  publicCompanyId: string;
-};
+  firstName: string | undefined
+  publicCompanyId: string
+}
 
 const EmptyOverview = ({ firstName, publicCompanyId }: EmptyOverviewProps) => {
   return (
@@ -26,7 +26,7 @@ const EmptyOverview = ({ firstName, publicCompanyId }: EmptyOverviewProps) => {
         </Link>
       </Button>
     </EmptyState>
-  );
-};
+  )
+}
 
-export default EmptyOverview;
+export default EmptyOverview

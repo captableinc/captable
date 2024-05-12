@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import { dayjsExt } from "@/common/dayjs";
-import FileIcon from "@/components/common/file-icon";
-import { Card } from "@/components/ui/card";
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { RiMoreLine } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { dayjsExt } from '@/common/dayjs'
+import FileIcon from '@/components/common/file-icon'
+import { Card } from '@/components/ui/card'
+import { getPresignedGetUrl } from '@/server/file-uploads'
+import { RiMoreLine } from '@remixicon/react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-import DocumentShareModal from "@/components/documents/share/document-share-modal";
+import DocumentShareModal from '@/components/documents/share/document-share-modal'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 import {
   Table,
   TableBody,
@@ -24,27 +24,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { type RouterOutputs } from "@/trpc/shared";
+} from '@/components/ui/table'
+import { type RouterOutputs } from '@/trpc/shared'
 
-type DocumentType = RouterOutputs["document"]["getAll"];
+type DocumentType = RouterOutputs['document']['getAll']
 
 type DocumentTableProps = {
-  documents: DocumentType;
-  companyPublicId: string;
-};
+  documents: DocumentType
+  companyPublicId: string
+}
 
 const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
-  const router = useRouter();
+  const router = useRouter()
   const openFileOnTab = async (key: string) => {
-    const fileUrl = await getPresignedGetUrl(key);
-    window.open(fileUrl.url, "_blank");
-  };
+    const fileUrl = await getPresignedGetUrl(key)
+    window.open(fileUrl.url, '_blank')
+  }
 
-  const [openShareModal, setOpenShareModal] = useState(false);
+  const [openShareModal, setOpenShareModal] = useState(false)
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(
     null,
-  );
+  )
 
   return (
     <>
@@ -67,7 +67,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                   onClick={() => {
                     router.push(
                       `/${companyPublicId}/documents/${document.bucket.id}`,
-                    );
+                    )
                   }}
                 >
                   <div className="mr-3">
@@ -101,12 +101,12 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                           Share document
                         </DropdownMenuItem> */}
 
-                        {document.bucket.mimeType === "application/pdf" && (
+                        {document.bucket.mimeType === 'application/pdf' && (
                           <DropdownMenuItem
                             onClick={() => {
                               console.log(
-                                "TODO - Show recipient popup and redirect to template page.",
-                              );
+                                'TODO - Show recipient popup and redirect to template page.',
+                              )
                             }}
                           >
                             eSign
@@ -116,14 +116,14 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                           onClick={() => {
                             router.push(
                               `/${companyPublicId}/documents/${document.bucket.id}`,
-                            );
+                            )
                           }}
                         >
                           View
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={async () => {
-                            await openFileOnTab(document.bucket.key);
+                            await openFileOnTab(document.bucket.key)
                           }}
                         >
                           Download
@@ -146,7 +146,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
         documentId={selectedDocumentId}
       />
     </>
-  );
-};
+  )
+}
 
-export default DocumentsTable;
+export default DocumentsTable

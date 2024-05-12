@@ -1,53 +1,53 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const AuditSchema = z.object({
   companyId: z.string(),
   action: z.enum([
-    "user.signed-up",
-    "user.onboarded",
+    'user.signed-up',
+    'user.onboarded',
 
-    "company.created",
+    'company.created',
 
-    "member.invited",
-    "member.re-invited",
-    "member.accepted",
-    "member.updated",
-    "member.removed",
-    "member.revoked-invite",
-    "member.deactivated",
-    "member.activated",
+    'member.invited',
+    'member.re-invited',
+    'member.accepted',
+    'member.updated',
+    'member.removed',
+    'member.revoked-invite',
+    'member.deactivated',
+    'member.activated',
 
-    "shareClass.created",
-    "shareClass.updated",
-    "shareClass.deleted",
+    'shareClass.created',
+    'shareClass.updated',
+    'shareClass.deleted',
 
-    "equityPlan.created",
-    "equityPlan.updated",
-    "equityPlan.deleted",
+    'equityPlan.created',
+    'equityPlan.updated',
+    'equityPlan.deleted',
 
-    "document.created",
-    "document.deleted",
+    'document.created',
+    'document.deleted',
 
-    "option.created",
-    "option.deleted",
+    'option.created',
+    'option.deleted',
 
-    "safe.created",
-    "safe.imported",
-    "safe.sent",
-    "safe.signed",
-    "safe.deleted",
+    'safe.created',
+    'safe.imported',
+    'safe.sent',
+    'safe.signed',
+    'safe.deleted',
 
-    "documentShare.created",
+    'documentShare.created',
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
-    type: z.enum(["user", "company", "document", "option"]),
+    type: z.enum(['user', 'company', 'document', 'option']),
     id: z.string().optional().nullable(),
   }),
 
   target: z.array(
     z.object({
-      type: z.enum(["user", "company", "document", "option", "documentShare"]),
+      type: z.enum(['user', 'company', 'document', 'option', 'documentShare']),
       id: z.string().optional().nullable(),
     }),
   ),
@@ -58,23 +58,23 @@ export const AuditSchema = z.object({
   }),
 
   summary: z.string().optional(),
-});
+})
 
-export type AuditSchemaType = z.infer<typeof AuditSchema>;
+export type AuditSchemaType = z.infer<typeof AuditSchema>
 
 export const getActions = () => {
-  const actions = AuditSchema.shape.action.Values;
+  const actions = AuditSchema.shape.action.Values
   return Object.values(actions).map((action) => ({
     label: action,
     value: action,
-  }));
-};
+  }))
+}
 
 export const EsignAuditSchema = z.object({
   action: z.enum([
-    "document.complete",
-    "recipient.signed",
-    "document.email.sent",
+    'document.complete',
+    'recipient.signed',
+    'document.email.sent',
   ]),
   occurredAt: z.date().optional(),
   templateId: z.string(),
@@ -84,6 +84,6 @@ export const EsignAuditSchema = z.object({
   userAgent: z.string(),
   location: z.string(),
   summary: z.string(),
-});
+})
 
-export type TEsignAuditSchema = z.infer<typeof EsignAuditSchema>;
+export type TEsignAuditSchema = z.infer<typeof EsignAuditSchema>

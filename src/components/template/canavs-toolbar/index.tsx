@@ -1,48 +1,48 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/esign";
-import { type FieldTypes } from "@/prisma/enums";
-import * as Toolbar from "@radix-ui/react-toolbar";
-import { FieldTypeData } from "../field-type-data";
+import { Button } from '@/components/ui/button'
+import { COLORS } from '@/constants/esign'
+import { type FieldTypes } from '@/prisma/enums'
+import * as Toolbar from '@radix-ui/react-toolbar'
+import { FieldTypeData } from '../field-type-data'
 
-import { OptionalMessageModal } from "@/components/esign/optional-message-modal";
+import { OptionalMessageModal } from '@/components/esign/optional-message-modal'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { type RouterOutputs } from "@/trpc/shared";
-import { useCallback, useRef, useState } from "react";
-import { useFormContext } from "react-hook-form";
+} from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { type TemplateFieldForm } from '@/providers/template-field-provider'
+import { type RouterOutputs } from '@/trpc/shared'
+import { useCallback, useRef, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 
-type Recipients = RouterOutputs["template"]["get"]["recipients"];
+type Recipients = RouterOutputs['template']['get']['recipients']
 
 interface RecipientListProps {
-  recipients: Recipients;
+  recipients: Recipients
 }
 
 function RecipientList({ recipients }: RecipientListProps) {
-  const { control, getValues } = useFormContext<TemplateFieldForm>();
+  const { control, getValues } = useFormContext<TemplateFieldForm>()
 
-  const recipientColors = getValues("recipientColors");
+  const recipientColors = getValues('recipientColors')
 
   return (
     <FormField
@@ -64,14 +64,14 @@ function RecipientList({ recipients }: RecipientListProps) {
                     <span
                       aria-hidden
                       className={cn(
-                        "mr-2  rounded-full p-2",
+                        'mr-2  rounded-full p-2',
                         COLORS[
                           recipientColors[recipient.id] as keyof typeof COLORS
                         ]?.bg,
                       )}
                     />
                     <span className="flex flex-col items-start">
-                      {recipient.name && recipient.name !== "" && (
+                      {recipient.name && recipient.name !== '' && (
                         <span>{recipient.name}</span>
                       )}
                       <span>{recipient.email}</span>
@@ -85,35 +85,35 @@ function RecipientList({ recipients }: RecipientListProps) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 interface CanvasToolbarProps {
-  recipients: Recipients;
+  recipients: Recipients
 }
 
 export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
-  const [open, setOpen] = useState<boolean>(false);
-  const { control, setValue } = useFormContext<TemplateFieldForm>();
-  const submitRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState<boolean>(false)
+  const { control, setValue } = useFormContext<TemplateFieldForm>()
+  const submitRef = useRef<HTMLButtonElement>(null)
 
   const handleDraft = () => {
     if (submitRef.current) {
-      setValue("status", "DRAFT");
-      submitRef.current.click();
+      setValue('status', 'DRAFT')
+      submitRef.current.click()
     }
-  };
+  }
 
   const onSignatureRequest = useCallback((canSubmit: boolean) => {
     if (canSubmit && submitRef.current) {
-      setValue("status", "COMPLETE");
-      submitRef.current.click();
+      setValue('status', 'COMPLETE')
+      submitRef.current.click()
     }
-  }, []);
+  }, [])
 
   const openOptionalMessageModal = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   return (
     <>
@@ -128,7 +128,7 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
             render={({ field }) => (
               <Toolbar.ToggleGroup
                 onValueChange={(value) => {
-                  field.onChange(value as FieldTypes);
+                  field.onChange(value as FieldTypes)
                 }}
                 value={field.value}
                 className="flex gap-x-2"
@@ -190,5 +190,5 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
         )}
       </div>
     </>
-  );
+  )
 }

@@ -22,6 +22,7 @@ export const getAllDocumentsProcedure = withAuth.query(
           },
           bucket: {
             select: {
+              id: true,
               key: true,
               mimeType: true,
               size: true,

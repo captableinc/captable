@@ -106,6 +106,15 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
+                          onClick={() => {
+                            router.push(
+                              `/${companyPublicId}/documents/${document.bucket.id}`,
+                            );
+                          }}
+                        >
+                          View
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
                           onClick={async () => {
                             await openFileOnTab(document.bucket.key);
                           }}

@@ -56,6 +56,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-path: '${{ github.workspace }}/captable'
+          subject-name: '${{ github.workspace }}/captable'
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true

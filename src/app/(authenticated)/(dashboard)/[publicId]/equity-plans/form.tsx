@@ -1,14 +1,14 @@
 "use client";
 
-import { api } from "@/trpc/react";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@/trpc/react";
 import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
 import {
   EquityPlanMutationSchema,
@@ -17,12 +17,12 @@ import {
 
 import {
   Select,
-  SelectItem,
-  SelectGroup,
-  SelectLabel,
-  SelectValue,
-  SelectTrigger,
   SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
 import {

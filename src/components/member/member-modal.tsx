@@ -17,8 +17,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 
 import {
-  ZodInviteMemberMutationSchema,
   type TypeZodInviteMemberMutationSchema,
+  ZodInviteMemberMutationSchema,
 } from "@/trpc/routers/member-router/schema";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -106,6 +106,7 @@ const MemberModal = ({
       } else {
         await inviteMember.mutateAsync(values);
       }
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
     } catch (error) {}
   };
 

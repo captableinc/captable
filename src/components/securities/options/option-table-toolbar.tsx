@@ -1,9 +1,9 @@
-import { DataTableFacetedFilter } from "@/components/ui/data-table/data-table-faceted-filter";
-import { DataTableViewOptions } from "@/components/ui/data-table/data-table-view-options";
-import { statusValues } from "./data";
 import { useDataTable } from "@/components/ui/data-table/data-table";
 import { ResetButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableFacetedFilter } from "@/components/ui/data-table/data-table-faceted-filter";
+import { DataTableViewOptions } from "@/components/ui/data-table/data-table-view-options";
 import { Input } from "@/components/ui/input";
+import { statusValues } from "./data";
 
 export function OptionTableToolbar() {
   const { table } = useDataTable();

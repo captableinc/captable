@@ -1,7 +1,7 @@
 import {
+  type TPasswordResetPayloadSchema,
   sendPasswordResetEmail,
   triggerName,
-  type TPasswordResetPayloadSchema,
 } from "@/jobs/password-reset-email";
 import { generatePasswordResetToken } from "@/lib/token";
 import { getUserByEmail } from "@/server/user";

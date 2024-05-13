@@ -2,7 +2,7 @@
 
 import FilePreview from "@/components/file/preview";
 import { SharePageLayout } from "@/components/share/page-layout";
-import { decode, type JWTVerifyResult } from "@/lib/jwt";
+import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";

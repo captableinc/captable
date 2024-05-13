@@ -2,10 +2,10 @@
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-import { DonutChart } from "@tremor/react";
-import DonutSelector from "./donut-selector";
-import { useState, useEffect, Fragment } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { DonutChart } from "@tremor/react";
+import { Fragment, useEffect, useState } from "react";
+import DonutSelector from "./donut-selector";
 
 type DonutTooltipProps = {
   name: string;

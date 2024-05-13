@@ -8,12 +8,12 @@ import {
   type SortingState,
   type VisibilityState,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getFacetedUniqueValues,
-  getFacetedRowModel,
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -29,19 +29,19 @@ import {
 
 import { api } from "@/trpc/react";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import MemberModal from "@/components/member/member-modal";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { type RouterOutputs } from "@/trpc/shared";
+import { RiMoreLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { type RouterOutputs } from "@/trpc/shared";
-import { MemberTableToolbar } from "./member-table-toolbar";
-import { RiMoreLine } from "@remixicon/react";
-import { DataTableHeader } from "../ui/data-table/data-table-header";
-import { DataTableBody } from "../ui/data-table/data-table-body";
-import { DataTableContent } from "../ui/data-table/data-table-content";
 import { DataTable } from "../ui/data-table/data-table";
-import { DataTablePagination } from "../ui/data-table/data-table-pagination";
+import { DataTableBody } from "../ui/data-table/data-table-body";
 import { SortButton } from "../ui/data-table/data-table-buttons";
+import { DataTableContent } from "../ui/data-table/data-table-content";
+import { DataTableHeader } from "../ui/data-table/data-table-header";
+import { DataTablePagination } from "../ui/data-table/data-table-pagination";
+import { MemberTableToolbar } from "./member-table-toolbar";
 
 type Member = RouterOutputs["member"]["getMembers"]["data"];
 
@@ -187,6 +187,7 @@ export const columns: ColumnDef<Member[number]>[] = [
           }
 
           router.refresh();
+          // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         } catch (error) {}
       };
 
@@ -196,6 +197,7 @@ export const columns: ColumnDef<Member[number]>[] = [
             status: isActive ? "INACTIVE" : "ACTIVE",
             memberId,
           });
+          // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
         } catch (error) {}
       };
 

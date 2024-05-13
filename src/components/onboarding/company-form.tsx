@@ -19,8 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  ZodOnboardingMutationSchema,
   type TypeZodOnboardingMutationSchema,
+  ZodOnboardingMutationSchema,
 } from "@/trpc/routers/onboarding-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiArrowRightLine } from "@remixicon/react";
@@ -195,6 +195,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
       } else if (type === "edit") {
         await companySettingMutation.mutateAsync(values);
       }
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
     } catch (error) {}
   }
 

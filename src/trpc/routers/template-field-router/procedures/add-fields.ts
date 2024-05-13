@@ -112,9 +112,7 @@ export const addFieldProcedure = withAuth
 
         const fieldsList = [];
 
-        for (let index = 0; index < input.data.length; index++) {
-          const field = input.data[index];
-
+        for (const field of input.data) {
           if (field) {
             fieldsList.push({ ...field, templateId: template.id });
           }
@@ -147,9 +145,7 @@ export const addFieldProcedure = withAuth
             },
           });
 
-          for (let index = 0; index < recipientList.length; index++) {
-            const recipient = recipientList[index];
-
+          for (const recipient of recipientList) {
             if (!recipient) {
               throw new Error("not found");
             }

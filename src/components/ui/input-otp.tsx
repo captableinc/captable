@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { OTPInput, type SlotProps } from "input-otp";
 import { RiCrossLine } from "@remixicon/react";
+import { OTPInput, type SlotProps } from "input-otp";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 

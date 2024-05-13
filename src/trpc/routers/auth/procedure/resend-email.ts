@@ -1,7 +1,7 @@
 import {
+  type TAuthVerificationPayloadSchema,
   sendAuthVerificationEmail,
   triggerName,
-  type TAuthVerificationPayloadSchema,
 } from "@/jobs/auth-verification-email";
 
 import { generateVerificationToken } from "@/lib/token";

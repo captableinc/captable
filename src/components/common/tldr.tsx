@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { RiInformationLine } from "@remixicon/react";
+import Link from "next/link";
 
 type TldrProps = {
   message: string;

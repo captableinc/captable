@@ -1,4 +1,3 @@
-import { constants } from "../lib/constants";
 import {
   Body,
   Button,
@@ -14,6 +13,7 @@ import {
   Text,
 } from "jsx-email";
 import * as React from "react";
+import { constants } from "../lib/constants";
 
 interface PasswordResetEmailProps {
   resetLink: string;

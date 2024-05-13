@@ -1,7 +1,7 @@
-import OverviewCard from "@/components/dashboard/overview/top-card";
 import ActivitiesCard from "@/components/dashboard/overview/activities-card";
 import DonutCard from "@/components/dashboard/overview/donut-card";
 import SummaryTable from "@/components/dashboard/overview/summary-table";
+import OverviewCard from "@/components/dashboard/overview/top-card";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {

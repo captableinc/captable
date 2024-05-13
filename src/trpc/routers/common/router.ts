@@ -29,7 +29,6 @@ export const commonRouter = createTRPCRouter({
         companyId,
       },
     });
-
     (members || []).map((member) =>
       contacts.push({
         id: member.id,
@@ -40,7 +39,6 @@ export const commonRouter = createTRPCRouter({
         type: "member",
       }),
     );
-
     (stakeholders || []).map((stakeholder) =>
       contacts.push({
         id: stakeholder.id,

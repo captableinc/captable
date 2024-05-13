@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { dayjsExt } from "@/common/dayjs";
-import { getFileFromS3, uploadFile, type TUploadFile } from "@/common/uploads";
-import { generateRange, type Range } from "@/lib/pdf-positioning";
+import { type TUploadFile, getFileFromS3, uploadFile } from "@/common/uploads";
+import { type Range, generateRange } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
@@ -121,8 +121,7 @@ export async function generateEsignPdf({
   let cumulativePagesHeight = 0;
   const measurements = [];
 
-  for (let i = 0; i < pages.length; i++) {
-    const page = pages[i];
+  for (const page of pages) {
     if (page) {
       const height = page.getHeight();
       const width = page.getWidth();
@@ -207,8 +206,7 @@ export async function generateEsignPdf({
     const indices = auditPDFDoc.getPageIndices();
     const copiedPages = await pdfDoc.copyPages(auditPDFDoc, indices);
 
-    for (let index = 0; index < copiedPages.length; index++) {
-      const auditPage = copiedPages[index];
+    for (const auditPage of copiedPages) {
       if (auditPage) {
         pdfDoc.addPage(auditPage);
       }
@@ -284,7 +282,9 @@ export async function completeEsignDocuments({
       ip: requestIp,
       location: "",
       userAgent: userAgent,
-      summary: `"${templateName}" completely signed at ${dayjsExt(new Date()).format("lll")}`,
+      summary: `"${templateName}" completely signed at ${dayjsExt(
+        new Date(),
+      ).format("lll")}`,
     },
     db,
   );

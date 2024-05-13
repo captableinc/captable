@@ -3,10 +3,10 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import {
-  getServerSession,
   type DefaultSession,
   type NextAuthOptions,
   type Session,
+  getServerSession,
 } from "next-auth";
 
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -15,7 +15,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/env";
 import { type MemberStatusEnum } from "@/prisma/enums";
 
-import { db, type TPrismaOrTransaction } from "@/server/db";
+import { type TPrismaOrTransaction, db } from "@/server/db";
 
 import { getUserByEmail, getUserById } from "./user";
 

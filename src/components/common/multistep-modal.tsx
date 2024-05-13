@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { RiCheckLine } from "@remixicon/react";
 import { useEffect, useMemo, useState } from "react";
-import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
+import { FormProvider, type SubmitHandler, useForm } from "react-hook-form";
 import { type z } from "zod";
 
 export type stepsType = {
@@ -23,7 +23,7 @@ type MultiStepModalType = {
   trigger: React.ReactNode;
   steps: stepsType[];
   schema: z.AnyZodObject;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   onSubmit: SubmitHandler<any>;
   dialogProps: DialogProps;
 };
@@ -106,7 +106,9 @@ export default function MultiStepModal({
             {steps.map((step, stepIdx) => (
               <li
                 key={step.title}
-                className={`${stepIdx !== steps.length - 1 ? "pb-5" : ""} relative`}
+                className={`${
+                  stepIdx !== steps.length - 1 ? "pb-5" : ""
+                } relative`}
               >
                 {step.id < formStep ? (
                   <>

@@ -1,15 +1,15 @@
 import { Button } from "../button";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
 } from "../dropdown-menu";
 
-import { useDataTable } from "./data-table";
 import { RiArrowDownSLine } from "@remixicon/react";
+import { useDataTable } from "./data-table";
 
 export function DataTableViewOptions() {
   const { table } = useDataTable();

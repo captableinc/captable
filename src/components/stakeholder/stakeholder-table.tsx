@@ -1,5 +1,12 @@
 "use client";
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { type RouterOutputs } from "@/trpc/shared";
 import {
   type ColumnDef,
@@ -7,21 +14,14 @@ import {
   type SortingState,
   type VisibilityState,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  getFacetedUniqueValues,
-  getFacetedRowModel,
 } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import React from "react";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { DataTableContent } from "@/components/ui/data-table/data-table-content";
-import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { StakeholderTableToolbar } from "./stakeholder-table-toolbar";
 
 type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"]["data"];

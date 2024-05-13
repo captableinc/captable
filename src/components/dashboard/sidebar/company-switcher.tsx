@@ -2,21 +2,21 @@
 
 import {
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
-  SelectValue,
-  SelectSeparator,
   SelectItemStyle,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
 import { type TGetCompanyList } from "@/server/company";
 import { api } from "@/trpc/react";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { RiAddCircleLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import { useState } from "react";
-import * as SelectPrimitive from "@radix-ui/react-select";
-import { RiAddCircleLine } from "@remixicon/react";
 
 interface CompanySwitcherProps {
   companies: TGetCompanyList;

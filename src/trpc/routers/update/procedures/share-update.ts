@@ -1,8 +1,8 @@
 import { env } from "@/env";
 import {
+  type UpdateSharePayloadType,
   sendShareUpdateEmail,
   triggerName,
-  type UpdateSharePayloadType,
 } from "@/jobs/share-update-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";

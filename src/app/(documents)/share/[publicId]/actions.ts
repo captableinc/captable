@@ -1,9 +1,9 @@
 "use server";
 
-import { z } from "zod";
 import { db } from "@/server/db";
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
+import { z } from "zod";
 
 const schema = z.object({
   email: z.string().min(1, "Email is required").email(),

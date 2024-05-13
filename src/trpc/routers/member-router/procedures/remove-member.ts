@@ -3,8 +3,8 @@ import { checkMembership } from "@/server/auth";
 import { type TPrismaOrTransaction } from "@/server/db";
 import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
-  ZodRemoveMemberMutationSchema,
   type TypeZodRemoveMemberMutationSchema,
+  ZodRemoveMemberMutationSchema,
 } from "../schema";
 
 export const removeMemberProcedure = withAuth

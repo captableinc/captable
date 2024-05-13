@@ -2,17 +2,17 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import { sendEsignConfirmationEmail } from "@/jobs/esign-confirmation-email";
-import { sendEsignEmail, type TEsignEmailJob } from "@/jobs/esign-email";
+import { type TEsignEmailJob, sendEsignEmail } from "@/jobs/esign-email";
 import { type TESignPdfSchema } from "@/jobs/esign-pdf";
 import { EsignAudit } from "@/server/audit";
 import {
+  type TCompleteEsignDocumentsOptions,
+  type TGenerateEsignSignPdfOptions,
   completeEsignDocuments,
   generateEsignPdf,
   getEsignAudits,
   getEsignTemplate,
   uploadEsignDocuments,
-  type TCompleteEsignDocumentsOptions,
-  type TGenerateEsignSignPdfOptions,
   type uploadEsignDocumentsOptions,
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
@@ -78,7 +78,9 @@ export const signTemplateProcedure = withoutAuth
             ip: ctx.requestIp,
             location: "",
             userAgent: ctx.userAgent,
-            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            summary: `${recipient.name ? recipient.name : ""} signed "${
+              template.name
+            }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
           },
           tx,
         );
@@ -127,7 +129,9 @@ export const signTemplateProcedure = withoutAuth
               ip: ctx.requestIp,
               location: "",
               userAgent: ctx.userAgent,
-              summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+              summary: `${recipient.name ? recipient.name : ""} signed "${
+                template.name
+              }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
             },
             tx,
           );
@@ -160,7 +164,9 @@ export const signTemplateProcedure = withoutAuth
             ip: ctx.requestIp,
             location: "",
             userAgent: ctx.userAgent,
-            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            summary: `${recipient.name ? recipient.name : ""} signed "${
+              template.name
+            }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
           },
           tx,
         );
@@ -216,7 +222,11 @@ export const signTemplateProcedure = withoutAuth
               ip: ctx.requestIp,
               location: "",
               userAgent: ctx.userAgent,
-              summary: `${uploaderName ? uploaderName : ""} sent "${template.name}" to ${recipient.name ? recipient.name : ""} for eSignature at ${dayjsExt(new Date()).format("lll")}`,
+              summary: `${uploaderName ? uploaderName : ""} sent "${
+                template.name
+              }" to ${
+                recipient.name ? recipient.name : ""
+              } for eSignature at ${dayjsExt(new Date()).format("lll")}`,
             },
             tx,
           );

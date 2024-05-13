@@ -110,7 +110,7 @@ export const passkeyRouter = createTRPCRouter({
         throw new TRPCError({
           code: "BAD_REQUEST",
           message:
-            "We were unable to delete this passkey. Please try again later.",
+            "We were unable to delete this passkey, please reload the page and try again.",
         });
       }
     }),
@@ -124,7 +124,8 @@ export const passkeyRouter = createTRPCRouter({
       console.error(err);
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "We were unable to find . Please try again later.",
+        message:
+          "We were unable to find the passkey, please reload the page and try again.",
       });
     }
   }),

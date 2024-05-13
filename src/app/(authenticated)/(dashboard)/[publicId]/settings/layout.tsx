@@ -10,10 +10,10 @@ import {
   RiBankCardLine,
   RiBuildingFill,
   RiBuildingLine,
+  RiDoorLockFill,
+  RiDoorLockLine,
   RiGroup2Fill,
   RiGroup2Line,
-  RiLockFill,
-  RiLockLine,
   RiNotificationFill,
   RiNotificationLine,
 } from "@remixicon/react";
@@ -57,8 +57,8 @@ const accountNav = [
   {
     name: "Passkey",
     href: "/settings/passkey",
-    icon: RiLockLine,
-    activeIcon: RiLockFill,
+    icon: RiDoorLockLine,
+    activeIcon: RiDoorLockFill,
   },
 ];
 

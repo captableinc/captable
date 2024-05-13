@@ -80,6 +80,30 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
       <div className="grid w-full max-w-md grid-cols-1 gap-5 rounded-xl border bg-white p-10 shadow">
         <AuthFormHeader page="signup" />
         <>
+          {isGoogleAuthEnabled && (
+            <>
+              <Button
+                disabled={isSubmitting}
+                type="button"
+                onClick={signInWithGoogle}
+              >
+                <RiGoogleFill className="mr-2 h-4 w-4" />
+                Signup with <span className="font-bold">Google</span>
+              </Button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t"></span>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Or
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid gap-4">
@@ -177,30 +201,6 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
             </form>
           </Form>
 
-          {isGoogleAuthEnabled && (
-            <>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t"></span>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
-                </div>
-              </div>
-
-              <Button
-                disabled={isSubmitting}
-                variant="outline"
-                type="button"
-                onClick={signInWithGoogle}
-              >
-                <RiGoogleFill className="mr-2 h-4 w-4" />
-                Signup with Google
-              </Button>
-            </>
-          )}
           <span className="text-center text-sm text-gray-500">
             Already have an account?{" "}
             <Link

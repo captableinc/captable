@@ -19,8 +19,8 @@ import { type TPrismaOrTransaction, db } from "@/server/db";
 
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import {
-  ZAuthenticationResponseJSONSchema,
   type TAuthenticationResponseJSONSchema,
+  ZAuthenticationResponseJSONSchema,
 } from "@/lib/types";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { getUserByEmail, getUserById } from "./user";
@@ -221,7 +221,7 @@ export const authOptions: NextAuthOptions = {
             credentialId: Buffer.from(requestBodyCrediential.id),
           },
           include: {
-            User: {
+            user: {
               select: {
                 id: true,
                 email: true,
@@ -236,7 +236,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Cannot setup passkey.");
         }
 
-        const user = passkey.User;
+        const user = passkey.user;
 
         const { rpId, origin } = getAuthenticatorOptions();
 

@@ -15,7 +15,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiGoogleFill } from "@remixicon/react";
+import { RiDoorLockLine, RiGoogleFill } from "@remixicon/react";
 import {
   browserSupportsWebAuthn,
   startAuthentication,
@@ -25,7 +25,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { PasskeyIcon } from "../../common/icons";
 import { AuthFormHeader } from "../auth-form-header";
 
 const loginSchema = z.object({
@@ -112,7 +111,9 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       toast({
         title: "Error",
         //@ts-expect-error unknown
-        description: err?.message ?? "Something went out.",
+        description:
+          err?.message ??
+          "Something went wrong, please reload the page and try again.",
         duration: 10000,
         variant: "destructive",
       });
@@ -130,6 +131,38 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       <div className="grid w-full max-w-md grid-cols-1 gap-5 rounded-xl border bg-white p-10 shadow">
         <AuthFormHeader page="signin" />
         <>
+          <Button
+            disabled={isSubmitting}
+            loading={isPasskeyLoading}
+            type="button"
+            onClick={onSignInWithPasskey}
+          >
+            <RiDoorLockLine className="h-5 w-5" />
+            Login with <span className="font-bold">Passkey</span>
+          </Button>
+
+          {isGoogleAuthEnabled && (
+            <Button
+              disabled={isSubmitting}
+              type="button"
+              onClick={signInWithGoogle}
+            >
+              <RiGoogleFill className="mr-2 h-4 w-4" />
+              Login with <span className="font-bold">Google</span>
+            </Button>
+          )}
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t"></span>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or
+              </span>
+            </div>
+          </div>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid gap-4">
@@ -204,44 +237,6 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
               </div>
             </form>
           </Form>
-
-          {isGoogleAuthEnabled && (
-            <>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t"></span>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
-                </div>
-              </div>
-
-              <Button
-                disabled={isSubmitting}
-                variant="outline"
-                type="button"
-                onClick={signInWithGoogle}
-              >
-                <RiGoogleFill className="mr-2 h-4 w-4" />
-                Login with Google
-              </Button>
-            </>
-          )}
-
-          <Button
-            type="button"
-            size="lg"
-            variant="outline"
-            disabled={isSubmitting}
-            loading={isPasskeyLoading}
-            className="border bg-background text-muted-foreground"
-            onClick={onSignInWithPasskey}
-          >
-            <PasskeyIcon className="h-5 w-5" />
-            Passkey
-          </Button>
 
           <span className="text-center text-sm text-gray-500">
             Don{`'`}t have an account?{" "}

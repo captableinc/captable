@@ -111,7 +111,8 @@ const PasskeyModal = ({ title, subtitle, trigger }: PasskeyModalType) => {
       toast({
         title: "Error",
         variant: "destructive",
-        description: "Something went out.",
+        description:
+          "Something went wrong, please reload the page and try again.",
         duration: 5000,
       });
     }

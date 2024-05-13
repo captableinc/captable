@@ -18,7 +18,7 @@ export default async function PasskeysPage() {
   if (!isPasskeyEnabled) {
     redirect("/settings/security");
   }
-  console.log({ passkeys });
+
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">

@@ -92,7 +92,9 @@ const UpdatePasskeyNameModal = ({
       toast({
         title: "Error",
         // @ts-expect-error error
-        description: err?.message ?? "Something went out.",
+        description:
+          err?.message ??
+          "Something went wrong, please reload the page and try again.",
         duration: 5000,
       });
     }

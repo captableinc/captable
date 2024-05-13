@@ -55,27 +55,26 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  accounts      Account[]
-  sessions      Session[]
-  companies     Member[]
-  passkeys      Passkey[]
+  accounts          Account[]
+  sessions          Session[]
+  companies         Member[]
+  passkeys          Passkey[]
   verificationToken VerificationToken[]
 
-  lastSignedIn         DateTime             @default(now())
-  identityProvider     String?
+  lastSignedIn     DateTime @default(now())
+  identityProvider String?
 }
-             
+
 enum CredentialDeviceTypeEnum {
-  SINGLE_DEVICE    
+  SINGLE_DEVICE
   MULTI_DEVICE
 }
 
 model Passkey {
-  id                   String    @id @default(cuid())
-  userId               String
+  id                   String                   @id @default(cuid())
   name                 String
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @default(now())
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @default(now())
   lastUsedAt           DateTime?
   credentialId         Bytes
   credentialPublicKey  Bytes
@@ -84,7 +83,10 @@ model Passkey {
   credentialBackedUp   Boolean
   transports           String[]
 
-  User User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model PasskeyVerificationToken {
@@ -93,7 +95,7 @@ model PasskeyVerificationToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
-    
+
 model VerificationToken {
   id          Int      @id @default(autoincrement())
   secondaryId String   @unique @default(cuid())
@@ -101,13 +103,14 @@ model VerificationToken {
   token       String   @unique
   expires     DateTime
   createdAt   DateTime @default(now())
-  
-  userId      String?
-  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([identifier,token])
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([identifier, token])
+  @@index([userId])
 }
-                 
+
 model PasswordResetToken {
   id      String   @id @default(cuid())
   email   String

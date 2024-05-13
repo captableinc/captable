@@ -111,8 +111,7 @@ const PasskeyModal = ({ title, subtitle, trigger }: PasskeyModalType) => {
       toast({
         title: "Error",
         variant: "destructive",
-        //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        description: err?.message ?? "Something went out.",
+        description: "Something went out.",
         duration: 5000,
       });
     }

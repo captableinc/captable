@@ -1,17 +1,9 @@
 import { Audit } from "@/server/audit";
-<<<<<<< HEAD
 import { TPrismaOrTransaction } from "@/server/db";
 import { withAuth } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateBucketMutationSchema,
   ZodCreateBucketMutationSchema,
-=======
-import { type TPrismaOrTransaction } from "@/server/db";
-import { withAuth } from "@/trpc/api/trpc";
-import {
-  ZodCreateBucketMutationSchema,
-  type TypeZodCreateBucketMutationSchema,
->>>>>>> 9ef6a54 (fix: exporting create-bucket-handler function)
 } from "../schema";
 
 interface createBucketHandlerOptions {

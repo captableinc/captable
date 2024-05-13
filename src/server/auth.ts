@@ -100,7 +100,6 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token, trigger }) {
       if (trigger) {
-        console.log("Fetching member...................");
         const member = await db.member.findFirst({
           where: {
             userId: token.sub,

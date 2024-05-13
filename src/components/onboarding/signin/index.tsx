@@ -107,11 +107,10 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
         }
       }
     } catch (err) {
-      console.log({ err });
       toast({
         title: "Error",
-        //@ts-expect-error unknown
         description:
+          //@ts-expect-error unknown
           err?.message ??
           "Something went wrong, please reload the page and try again.",
         duration: 10000,

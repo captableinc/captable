@@ -5,35 +5,35 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 
-import Tldr from '@/components/common/tldr'
-import { Card } from '@/components/ui/card'
-import { type EquityPlanMutationType } from '@/trpc/routers/equity-plan/schema'
-import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
-import { RiEqualizer2Line } from '@remixicon/react'
-import EquityPlanModal from './modal'
-const formatter = new Intl.NumberFormat('en-US')
+import Tldr from "@/components/common/tldr";
+import { Card } from "@/components/ui/card";
+import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { RiEqualizer2Line } from "@remixicon/react";
+import EquityPlanModal from "./modal";
+const formatter = new Intl.NumberFormat("en-US");
 
 type EquityPlanTableProps = {
-  equityPlans: EquityPlanMutationType[]
-  shareClasses: ShareClassMutationType[]
-}
+  equityPlans: EquityPlanMutationType[];
+  shareClasses: ShareClassMutationType[];
+};
 
 const getCancelationBehavior = (behavior: string) => {
   switch (behavior) {
-    case 'RETIRE':
-      return 'Retire'
-    case 'RETURN_TO_POOL':
-      return 'Return to pool'
-    case 'HOLD_AS_CAPITAL_STOCK':
-      return 'Hold as capital stock'
-    case 'DEFINED_PER_PLAN_SECURITY':
-      return 'Defined per plan security'
+    case "RETIRE":
+      return "Retire";
+    case "RETURN_TO_POOL":
+      return "Return to pool";
+    case "HOLD_AS_CAPITAL_STOCK":
+      return "Hold as capital stock";
+    case "DEFINED_PER_PLAN_SECURITY":
+      return "Defined per plan security";
     default:
-      return 'None'
+      return "None";
   }
-}
+};
 
 const EquityPlanTable = ({
   equityPlans,
@@ -64,13 +64,13 @@ const EquityPlanTable = ({
               </TableCell>
               <TableCell>{`${new Date(
                 plan.boardApprovalDate,
-              ).toLocaleDateString('en-US')}`}</TableCell>
+              ).toLocaleDateString("en-US")}`}</TableCell>
               <TableCell>
                 {plan.planEffectiveDate
                   ? `${new Date(plan.planEffectiveDate).toLocaleDateString(
-                      'en-US',
+                      "en-US",
                     )}`
-                  : ''}
+                  : ""}
               </TableCell>
 
               <TableCell>
@@ -83,9 +83,9 @@ const EquityPlanTable = ({
                     <Tldr
                       message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
                       cta={{
-                        label: 'Learn more',
+                        label: "Learn more",
                         // TODO - this link should be updated to the correct URL
-                        href: 'https://captable.inc/help',
+                        href: "https://captable.inc/help",
                       }}
                     />
                   }
@@ -99,7 +99,7 @@ const EquityPlanTable = ({
         </TableBody>
       </Table>
     </Card>
-  )
-}
+  );
+};
 
-export default EquityPlanTable
+export default EquityPlanTable;

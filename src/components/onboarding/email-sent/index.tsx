@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { RiMailLine } from '@remixicon/react'
-import Link from 'next/link'
+import { Button } from "@/components/ui/button";
+import { RiMailLine } from "@remixicon/react";
+import Link from "next/link";
 
 const EmailSent = () => {
   return (
@@ -21,6 +21,6 @@ const EmailSent = () => {
         </Link>
       </div>
     </div>
-  )
-}
-export default EmailSent
+  );
+};
+export default EmailSent;

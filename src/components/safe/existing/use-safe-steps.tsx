@@ -1,4 +1,4 @@
-import { type stepsType } from '@/components/common/multistep-modal'
+import { type stepsType } from "@/components/common/multistep-modal";
 import {
   Documents,
   DocumentsFields,
@@ -6,35 +6,35 @@ import {
   GeneralDetailsFields,
   InvestorDetails,
   InvestorDetailsFields,
-} from './steps'
+} from "./steps";
 
 type SafeStepsType = {
-  companyId: string
-}
+  companyId: string;
+};
 
 const useSafeSteps = ({ companyId: string }: SafeStepsType) => {
   const steps: Array<stepsType> = [
     {
       id: 1,
-      title: 'General details',
+      title: "General details",
       component: GeneralDetails,
       fields: GeneralDetailsFields,
     },
     {
       id: 2,
-      title: 'Investment details',
+      title: "Investment details",
       component: InvestorDetails,
       fields: InvestorDetailsFields,
     },
     {
       id: 3,
-      title: 'Documents',
+      title: "Documents",
       component: Documents,
       fields: DocumentsFields,
     },
-  ]
+  ];
 
-  return steps
-}
+  return steps;
+};
 
-export default useSafeSteps
+export default useSafeSteps;

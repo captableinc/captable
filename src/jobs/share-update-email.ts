@@ -1,9 +1,9 @@
-import ShareUpdateEmail from '@/emails/ShareUpdateEmail'
-import { sendMail } from '@/server/mailer'
-import { client } from '@/trigger'
-import { eventTrigger } from '@trigger.dev/sdk'
-import { render } from 'jsx-email'
-import { z } from 'zod'
+import ShareUpdateEmail from "@/emails/ShareUpdateEmail";
+import { sendMail } from "@/server/mailer";
+import { client } from "@/trigger";
+import { eventTrigger } from "@trigger.dev/sdk";
+import { render } from "jsx-email";
+import { z } from "zod";
 
 const schema = z.object({
   update: z.object({
@@ -15,9 +15,9 @@ const schema = z.object({
   senderName: z.string(),
   senderEmail: z.string().nullish(),
   email: z.string(),
-})
+});
 
-export type UpdateSharePayloadType = z.infer<typeof schema>
+export type UpdateSharePayloadType = z.infer<typeof schema>;
 
 export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
   const {
@@ -28,7 +28,7 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
     senderName,
     email,
     senderEmail,
-  } = payload
+  } = payload;
   await sendMail({
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
@@ -42,23 +42,23 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
         link,
       }),
     ),
-  })
-}
+  });
+};
 
-export const triggerName = 'email.share-update-email'
+export const triggerName = "email.share-update-email";
 
 client.defineJob({
-  id: 'share-update-email',
-  name: 'Investor update share email',
-  version: '0.0.1',
+  id: "share-update-email",
+  name: "Investor update share email",
+  version: "0.0.1",
   trigger: eventTrigger({
     name: triggerName,
     schema,
   }),
 
   run: async (payload, io) => {
-    await io.runTask('Send investor update', async () => {
-      await sendShareUpdateEmail(payload)
-    })
+    await io.runTask("Send investor update", async () => {
+      await sendShareUpdateEmail(payload);
+    });
   },
-})
+});

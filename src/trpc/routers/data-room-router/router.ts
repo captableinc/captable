@@ -1,18 +1,18 @@
-import { generatePublicId } from '@/common/id'
-import { env } from '@/env'
+import { generatePublicId } from "@/common/id";
+import { env } from "@/env";
 import {
   type DataRoomEmailPayloadType,
   sendShareDataRoomEmail,
   triggerName,
-} from '@/jobs/share-data-room-email'
-import { encode } from '@/lib/jwt'
-import { ShareRecipientSchema } from '@/schema/contacts'
-import { checkMembership } from '@/server/auth'
-import { getTriggerClient } from '@/trigger'
-import { createTRPCRouter, withAuth } from '@/trpc/api/trpc'
-import type { DataRoom } from '@prisma/client'
-import { z } from 'zod'
-import { DataRoomSchema } from './schema'
+} from "@/jobs/share-data-room-email";
+import { encode } from "@/lib/jwt";
+import { ShareRecipientSchema } from "@/schema/contacts";
+import { checkMembership } from "@/server/auth";
+import { getTriggerClient } from "@/trigger";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import type { DataRoom } from "@prisma/client";
+import { z } from "zod";
+import { DataRoomSchema } from "./schema";
 
 export const dataRoomRouter = createTRPCRouter({
   getDataRoom: withAuth
@@ -33,17 +33,17 @@ export const dataRoomRouter = createTRPCRouter({
         recipients: [],
         company: {},
       } as {
-        dataRoom: object
-        documents: object[]
-        recipients: object[]
-        company: object
-      }
+        dataRoom: object;
+        documents: object[];
+        recipients: object[];
+        company: object;
+      };
 
-      const { db, session } = ctx
-      const { dataRoomPublicId, include } = input
+      const { db, session } = ctx;
+      const { dataRoomPublicId, include } = input;
 
       const { dataRoom } = await db.$transaction(async (tx) => {
-        const { companyId } = await checkMembership({ session, tx })
+        const { companyId } = await checkMembership({ session, tx });
 
         const dataRoom = await tx.dataRoom.findUniqueOrThrow({
           where: {
@@ -55,12 +55,12 @@ export const dataRoomRouter = createTRPCRouter({
             company: include.company,
             recipients: include.recipients,
           },
-        })
+        });
 
-        response.dataRoom = dataRoom
+        response.dataRoom = dataRoom;
 
         if (include.documents) {
-          const documentIds = dataRoom.documents.map((doc) => doc.id)
+          const documentIds = dataRoom.documents.map((doc) => doc.id);
 
           const dataRoomDocument = await tx.dataRoomDocument.findMany({
             where: {
@@ -75,7 +75,7 @@ export const dataRoomRouter = createTRPCRouter({
                 },
               },
             },
-          })
+          });
 
           response.documents = dataRoomDocument.map((doc) => ({
             id: doc.document.bucket.id,
@@ -85,7 +85,7 @@ export const dataRoomRouter = createTRPCRouter({
             size: doc.document.bucket.size,
             createdAt: doc.document.bucket.createdAt,
             updatedAt: doc.document.bucket.updatedAt,
-          }))
+          }));
         }
 
         if (include.recipients) {
@@ -98,28 +98,28 @@ export const dataRoomRouter = createTRPCRouter({
                 recipientId: recipient.id,
               }),
             })),
-          )
+          );
         }
 
-        return { dataRoom }
-      })
+        return { dataRoom };
+      });
 
       if (include.company) {
-        response.company = dataRoom.company
+        response.company = dataRoom.company;
       }
 
-      return response
+      return response;
     }),
 
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {
     try {
-      let room = {} as DataRoom
-      const { db, session } = ctx
+      let room = {} as DataRoom;
+      const { db, session } = ctx;
 
-      const { publicId } = input
+      const { publicId } = input;
 
       await db.$transaction(async (tx) => {
-        const { companyId } = await checkMembership({ tx, session })
+        const { companyId } = await checkMembership({ tx, session });
 
         if (!publicId) {
           room = await tx.dataRoom.create({
@@ -128,7 +128,7 @@ export const dataRoomRouter = createTRPCRouter({
               companyId,
               publicId: generatePublicId(),
             },
-          })
+          });
         } else {
           room = await tx.dataRoom.update({
             where: {
@@ -137,9 +137,9 @@ export const dataRoomRouter = createTRPCRouter({
             data: {
               name: input.name,
             },
-          })
+          });
 
-          const { documents, recipients } = input
+          const { documents, recipients } = input;
 
           if (documents) {
             await tx.dataRoomDocument.createMany({
@@ -147,7 +147,7 @@ export const dataRoomRouter = createTRPCRouter({
                 dataRoomId: room.id,
                 documentId: document.documentId,
               })),
-            })
+            });
           }
 
           if (recipients) {
@@ -159,22 +159,22 @@ export const dataRoomRouter = createTRPCRouter({
                 stakeholderId: recipient.stakeholderId,
                 expiresAt: recipient.expiresAt,
               })),
-            })
+            });
           }
         }
-      })
+      });
 
       return {
         success: true,
-        message: 'Successfully updated data room',
+        message: "Successfully updated data room",
         data: room,
-      }
+      };
     } catch (error) {
       return {
         success: false,
         message:
-          'Oops, something went wrong while saving data room. Please try again.',
-      }
+          "Oops, something went wrong while saving data room. Please try again.",
+      };
     }
   }),
 
@@ -187,10 +187,10 @@ export const dataRoomRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const trigger = getTriggerClient()
-      const { session, db } = ctx
-      const { dataRoomId, others, selectedContacts } = input
-      const { name: senderName, email: senderEmail, companyId } = session.user
+      const trigger = getTriggerClient();
+      const { session, db } = ctx;
+      const { dataRoomId, others, selectedContacts } = input;
+      const { name: senderName, email: senderEmail, companyId } = session.user;
 
       const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
@@ -201,30 +201,30 @@ export const dataRoomRouter = createTRPCRouter({
         include: {
           company: true,
         },
-      })
+      });
 
       if (!dataRoom) {
-        throw new Error('Data room not found')
+        throw new Error("Data room not found");
       }
 
-      const company = dataRoom.company
+      const company = dataRoom.company;
 
       const upsertManyRecipients = async () => {
-        const baseUrl = env.BASE_URL
-        const recipients = [...others, ...selectedContacts]
+        const baseUrl = env.BASE_URL;
+        const recipients = [...others, ...selectedContacts];
 
         for (const recipient of recipients) {
-          const email = (recipient.email || recipient.value).trim()
+          const email = (recipient.email || recipient.value).trim();
           if (!email) {
-            throw new Error('Email is required')
+            throw new Error("Email is required");
           }
 
           const memberOrStakeholderId =
-            recipient.type === 'member'
+            recipient.type === "member"
               ? { memberId: recipient.id }
-              : recipient.type === 'stakeholder'
+              : recipient.type === "stakeholder"
                 ? { stakeholderId: recipient.id }
-                : {}
+                : {};
 
           const recipientRecord = await db.dataRoomRecipient.upsert({
             where: {
@@ -243,15 +243,15 @@ export const dataRoomRouter = createTRPCRouter({
               name: recipient.name,
               ...memberOrStakeholderId,
             },
-          })
+          });
 
           const token = await encode({
             companyId,
             dataRoomId,
             recipientId: recipientRecord.id,
-          })
+          });
 
-          const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`
+          const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
 
           const payload: DataRoomEmailPayloadType = {
             senderName: senderName!,
@@ -261,22 +261,22 @@ export const dataRoomRouter = createTRPCRouter({
             link,
             email,
             senderEmail,
-          }
+          };
 
           if (trigger) {
-            await trigger.sendEvent({ name: triggerName, payload })
+            await trigger.sendEvent({ name: triggerName, payload });
           } else {
-            await sendShareDataRoomEmail(payload)
+            await sendShareDataRoomEmail(payload);
           }
         }
-      }
+      };
 
-      await upsertManyRecipients()
+      await upsertManyRecipients();
 
       return {
         success: true,
-        message: 'Data room successfully shared!',
-      }
+        message: "Data room successfully shared!",
+      };
     }),
 
   unShare: withAuth
@@ -287,19 +287,19 @@ export const dataRoomRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { session, db } = ctx
-      const { dataRoomId, recipientId } = input
-      const companyId = session.user.companyId
+      const { session, db } = ctx;
+      const { dataRoomId, recipientId } = input;
+      const companyId = session.user.companyId;
 
       const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
           id: dataRoomId,
           companyId,
         },
-      })
+      });
 
       if (!dataRoom) {
-        throw new Error('Data room not found')
+        throw new Error("Data room not found");
       }
 
       await db.dataRoomRecipient.delete({
@@ -307,11 +307,11 @@ export const dataRoomRouter = createTRPCRouter({
           id: recipientId,
           dataRoomId,
         },
-      })
+      });
 
       return {
         success: true,
-        message: 'Successfully removed access to data room!',
-      }
+        message: "Successfully removed access to data room!",
+      };
     }),
-})
+});

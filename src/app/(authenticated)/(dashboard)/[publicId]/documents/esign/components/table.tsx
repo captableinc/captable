@@ -1,6 +1,6 @@
-import { dayjsExt } from '@/common/dayjs'
-import FileIcon from '@/components/common/file-icon'
-import { buttonVariants } from '@/components/ui/button'
+import { dayjsExt } from "@/common/dayjs";
+import FileIcon from "@/components/common/file-icon";
+import { buttonVariants } from "@/components/ui/button";
 
 import {
   Table,
@@ -9,16 +9,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { type RouterOutputs } from '@/trpc/shared'
-import Link from 'next/link'
+} from "@/components/ui/table";
+import { type RouterOutputs } from "@/trpc/shared";
+import Link from "next/link";
 
-type DocumentsType = RouterOutputs['template']['all']['documents']
+type DocumentsType = RouterOutputs["template"]["all"]["documents"];
 
 type ESignTableProps = {
-  documents: DocumentsType
-  companyPublicId: string
-}
+  documents: DocumentsType;
+  companyPublicId: string;
+};
 
 export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
   return (
@@ -37,7 +37,7 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
           <TableRow key={item.id}>
             <TableCell className="flex items-center">
               <div className="mr-3">
-                <FileIcon type={'application/pdf'} />
+                <FileIcon type={"application/pdf"} />
               </div>
               <span className="flex">{item.name}</span>
             </TableCell>
@@ -47,7 +47,7 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
               {dayjsExt().to(item.createdAt)}
             </TableCell>
 
-            <TableCell>{item.completedOn ? 'Signed' : 'Not Signed'}</TableCell>
+            <TableCell>{item.completedOn ? "Signed" : "Not Signed"}</TableCell>
 
             <TableCell className="flex gap-x-2">
               <Link
@@ -57,7 +57,7 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
                 View
               </Link>
 
-              {item.status === 'DRAFT' && (
+              {item.status === "DRAFT" && (
                 <Link
                   className={buttonVariants()}
                   href={`/${companyPublicId}/documents/esign/${item.publicId}`}
@@ -70,5 +70,5 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
         ))}
       </TableBody>
     </Table>
-  )
-}
+  );
+};

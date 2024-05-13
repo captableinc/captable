@@ -1,17 +1,17 @@
-'use client'
+"use client";
 import {
   type TypeZodAcceptMemberMutationSchema,
   ZodAcceptMemberMutationSchema,
-} from '@/trpc/routers/member-router/schema'
-import { RiArrowRightLine } from '@remixicon/react'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
+} from "@/trpc/routers/member-router/schema";
+import { RiArrowRightLine } from "@remixicon/react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
-import { api } from '@/trpc/react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -19,37 +19,37 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form'
+} from "../ui/form";
 
 interface VerifyMemberFormProps {
-  memberId: string
-  token: string
+  memberId: string;
+  token: string;
 }
 
 export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
-  const { update } = useSession()
-  const router = useRouter()
+  const { update } = useSession();
+  const router = useRouter();
   const acceptMember = api.member.acceptMember.useMutation({
     onSuccess: async ({ publicId }) => {
-      await update()
-      router.push(`/${publicId}`)
+      await update();
+      router.push(`/${publicId}`);
     },
-  })
+  });
   const form = useForm<TypeZodAcceptMemberMutationSchema>({
     resolver: zodResolver(ZodAcceptMemberMutationSchema),
     defaultValues: {
-      name: '',
+      name: "",
       memberId,
       token,
-      workEmail: '',
+      workEmail: "",
     },
-  })
+  });
 
   async function onSubmit(values: TypeZodAcceptMemberMutationSchema) {
-    acceptMember.mutate(values)
+    acceptMember.mutate(values);
   }
 
-  const isSubmitting = form.formState.isSubmitting
+  const isSubmitting = form.formState.isSubmitting;
   return (
     <div className="flex min-h-screen w-full items-center justify-center">
       <div className="flex flex-col gap-y-4">
@@ -109,5 +109,5 @@ export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
         </Form>
       </div>
     </div>
-  )
+  );
 }

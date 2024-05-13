@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { Checkbox } from '@/components/ui/checkbox'
-import { DataTable } from '@/components/ui/data-table/data-table'
-import { DataTableBody } from '@/components/ui/data-table/data-table-body'
-import { SortButton } from '@/components/ui/data-table/data-table-buttons'
-import { DataTableContent } from '@/components/ui/data-table/data-table-content'
-import { DataTableHeader } from '@/components/ui/data-table/data-table-header'
-import { DataTablePagination } from '@/components/ui/data-table/data-table-pagination'
-import { type RouterOutputs } from '@/trpc/shared'
+import { Checkbox } from "@/components/ui/checkbox";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { type RouterOutputs } from "@/trpc/shared";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -20,64 +20,64 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table'
-import React from 'react'
-import { StakeholderTableToolbar } from './stakeholder-table-toolbar'
+} from "@tanstack/react-table";
+import React from "react";
+import { StakeholderTableToolbar } from "./stakeholder-table-toolbar";
 
-type Stakeholder = RouterOutputs['stakeholder']['getStakeholders']['data']
+type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"]["data"];
 
 type StakeholderTableType = {
-  stakeholders: Stakeholder
-}
+  stakeholders: Stakeholder;
+};
 
 const getStakeholderType = (type: string) => {
   switch (type) {
-    case 'INDIVIDUAL':
-      return 'Individual'
-    case 'INSTITUTION':
-      return 'Institution'
+    case "INDIVIDUAL":
+      return "Individual";
+    case "INSTITUTION":
+      return "Institution";
   }
-}
+};
 
 const getCurrentRelationship = (relationship: string) => {
   switch (relationship) {
-    case 'ADVISOR':
-      return 'Advisor'
-    case 'BOARD_MEMBER':
-      return 'Board member'
-    case 'CONSULTANT':
-      return 'Consultant'
-    case 'EMPLOYEE':
-      return 'Employee'
-    case 'EX_ADVISOR':
-      return 'Ex Advisor'
-    case 'EX_CONSULTANT':
-      return 'Ex Consultant'
-    case 'EX_EMPLOYEE':
-      return 'Ex Employee'
-    case 'EXECUTIVE':
-      return 'Executive'
-    case 'FOUNDER':
-      return 'Founder'
-    case 'INVESTOR':
-      return 'Investor'
-    case 'NON_US_EMPLOYEE':
-      return 'Non us employee'
-    case 'OFFICER':
-      return 'Officer'
-    case 'OTHER':
-      return 'Other'
+    case "ADVISOR":
+      return "Advisor";
+    case "BOARD_MEMBER":
+      return "Board member";
+    case "CONSULTANT":
+      return "Consultant";
+    case "EMPLOYEE":
+      return "Employee";
+    case "EX_ADVISOR":
+      return "Ex Advisor";
+    case "EX_CONSULTANT":
+      return "Ex Consultant";
+    case "EX_EMPLOYEE":
+      return "Ex Employee";
+    case "EXECUTIVE":
+      return "Executive";
+    case "FOUNDER":
+      return "Founder";
+    case "INVESTOR":
+      return "Investor";
+    case "NON_US_EMPLOYEE":
+      return "Non us employee";
+    case "OFFICER":
+      return "Officer";
+    case "OTHER":
+      return "Other";
   }
-}
+};
 
 export const columns: ColumnDef<Stakeholder[number]>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -94,82 +94,82 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
     enableHiding: false,
   },
   {
-    id: 'name',
+    id: "name",
     header: ({ column }) => {
       return (
         <SortButton
           label="Name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     accessorFn: (row) => row.name,
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue('name')}</div>
+      <div className="font-medium">{row.getValue("name")}</div>
     ),
   },
   {
-    accessorKey: 'email',
+    accessorKey: "email",
     header: ({ column }) => {
       return (
         <SortButton
           label="Email"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
-    cell: ({ row }) => <div>{row.getValue('email')}</div>,
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
   },
   {
-    accessorKey: 'Institution name',
+    accessorKey: "Institution name",
     header: ({ column }) => {
       return (
         <SortButton
           label="Institute name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
-    cell: ({ row }) => <div>{row.original.institutionName ?? 'None'}</div>,
+    cell: ({ row }) => <div>{row.original.institutionName ?? "None"}</div>,
   },
   {
-    accessorKey: 'Type',
+    accessorKey: "Type",
     header: ({ column }) => {
       return (
         <SortButton
           label="Type"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
       <div>{getStakeholderType(row.original.stakeholderType)}</div>
     ),
   },
   {
-    accessorKey: 'Association',
+    accessorKey: "Association",
     header: ({ column }) => {
       return (
         <SortButton
           label="Association"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
       <div>{getCurrentRelationship(row.original.currentRelationship)}</div>
     ),
   },
-]
+];
 
 const StakeholderTable = ({ stakeholders }: StakeholderTableType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data: stakeholders,
@@ -191,7 +191,7 @@ const StakeholderTable = ({ stakeholders }: StakeholderTableType) => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full p-6">
@@ -204,7 +204,7 @@ const StakeholderTable = ({ stakeholders }: StakeholderTableType) => {
         <DataTablePagination />
       </DataTable>
     </div>
-  )
-}
+  );
+};
 
-export default StakeholderTable
+export default StakeholderTable;

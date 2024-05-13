@@ -1,6 +1,6 @@
-'use client'
-import { CaptableLogo } from '@/components/common/logo'
-import { Button } from '@/components/ui/button'
+"use client";
+import { CaptableLogo } from "@/components/common/logo";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,48 +8,48 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { toast } from '@/components/ui/use-toast'
-import { api } from '@/trpc/react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 const ForgotPassword = () => {
-  const inputSchema = z.object({ email: z.string().email() })
+  const inputSchema = z.object({ email: z.string().email() });
 
   const form = useForm<z.infer<typeof inputSchema>>({
     resolver: zodResolver(inputSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
-  })
+  });
 
-  const isSubmitting = form.formState.isSubmitting
-  const router = useRouter()
+  const isSubmitting = form.formState.isSubmitting;
+  const router = useRouter();
 
   const { mutateAsync } = api.auth.forgotPassword.useMutation({
     onSuccess: async ({ message }) => {
       toast({
-        variant: 'default',
-        title: 'Reset email sent',
+        variant: "default",
+        title: "Reset email sent",
         description: message,
-      })
-      router.replace('/email-sent')
+      });
+      router.replace("/email-sent");
     },
     onError: ({ message }) => {
       toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
         description: message,
-      })
+      });
     },
-  })
+  });
   const onSubmit = async (values: z.infer<typeof inputSchema>) => {
-    await mutateAsync(values.email)
-  }
+    await mutateAsync(values.email);
+  };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -100,7 +100,7 @@ const ForgotPassword = () => {
             </form>
           </Form>
           <span className="text-center text-sm text-gray-500">
-            Remembered your password?{' '}
+            Remembered your password?{" "}
             <Link
               href="/login"
               className="underline underline-offset-4 hover:text-primary"
@@ -111,6 +111,6 @@ const ForgotPassword = () => {
         </>
       </div>
     </div>
-  )
-}
-export default ForgotPassword
+  );
+};
+export default ForgotPassword;

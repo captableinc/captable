@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 {
   /*  Usage:
@@ -19,26 +19,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 
-import { CaptableLogo } from '@/components/common/logo'
-import { cn } from '@/lib/utils'
-import { type DialogProps } from '@radix-ui/react-dialog'
+import { CaptableLogo } from "@/components/common/logo";
+import { cn } from "@/lib/utils";
+import { type DialogProps } from "@radix-ui/react-dialog";
 
 export type ModalProps = {
-  title: string | React.ReactNode
-  subtitle?: string | React.ReactNode
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl'
-  trigger: React.ReactNode
-  children: React.ReactNode
-  dialogProps?: DialogProps
-}
+  title: string | React.ReactNode;
+  subtitle?: string | React.ReactNode;
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+  dialogProps?: DialogProps;
+};
 
 const Modal = ({
   title,
   subtitle,
   trigger,
-  size = 'md',
+  size = "md",
   children,
   dialogProps,
 }: ModalProps) => {
@@ -47,15 +47,15 @@ const Modal = ({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         className={cn(
-          'mb-10 mt-10 gap-0 bg-white p-0',
-          size === 'sm' && 'sm:max-w-sm',
-          size === 'md' && 'sm:max-w-md',
-          size === 'lg' && 'sm:max-w-lg',
-          size === 'xl' && 'sm:max-w-xl',
-          size === '2xl' && 'sm:max-w-2xl',
-          size === '3xl' && 'sm:max-w-3xl',
-          size === '4xl' && 'sm:max-w-4xl',
-          size === '5xl' && 'sm:max-w-5xl',
+          "mb-10 mt-10 gap-0 bg-white p-0",
+          size === "sm" && "sm:max-w-sm",
+          size === "md" && "sm:max-w-md",
+          size === "lg" && "sm:max-w-lg",
+          size === "xl" && "sm:max-w-xl",
+          size === "2xl" && "sm:max-w-2xl",
+          size === "3xl" && "sm:max-w-3xl",
+          size === "4xl" && "sm:max-w-4xl",
+          size === "5xl" && "sm:max-w-5xl",
         )}
       >
         <div className="no-scrollbar max-h-[80vh] overflow-scroll">
@@ -81,7 +81,7 @@ const Modal = ({
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default Modal
+export default Modal;

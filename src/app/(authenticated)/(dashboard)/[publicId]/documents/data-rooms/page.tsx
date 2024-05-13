@@ -1,13 +1,13 @@
-'use server'
+"use server";
 
-import EmptyState from '@/components/common/empty-state'
-import { Button } from '@/components/ui/button'
-import { getServerAuthSession } from '@/server/auth'
-import { db } from '@/server/db'
-import { RiAddFill, RiFolderCheckFill } from '@remixicon/react'
-import { Fragment } from 'react'
-import DataRoomPopover from './components/data-room-popover'
-import Folders from './components/dataroom-folders'
+import EmptyState from "@/components/common/empty-state";
+import { Button } from "@/components/ui/button";
+import { getServerAuthSession } from "@/server/auth";
+import { db } from "@/server/db";
+import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
+import { Fragment } from "react";
+import DataRoomPopover from "./components/data-room-popover";
+import Folders from "./components/dataroom-folders";
 
 const getDataRooms = async (companyId: string) => {
   return db.dataRoom.findMany({
@@ -22,20 +22,20 @@ const getDataRooms = async (companyId: string) => {
     },
 
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
-  })
-}
+  });
+};
 
 const DataRoomPage = async () => {
-  const session = await getServerAuthSession()
+  const session = await getServerAuthSession();
 
   if (!session || !session.user) {
-    return null
+    return null;
   }
 
-  const { companyId, companyPublicId } = session?.user
-  const dataRooms = await getDataRooms(companyId)
+  const { companyId, companyPublicId } = session?.user;
+  const dataRooms = await getDataRooms(companyId);
 
   return (
     <Fragment>
@@ -60,7 +60,7 @@ const DataRoomPage = async () => {
         </Fragment>
       )}
     </Fragment>
-  )
-}
+  );
+};
 
-export default DataRoomPage
+export default DataRoomPage;

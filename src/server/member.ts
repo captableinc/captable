@@ -1,8 +1,8 @@
-import { env } from '@/env'
-import { createHash } from '@/lib/crypto'
-import { type Prisma } from '@prisma/client'
-import { nanoid } from 'nanoid'
-import { db } from './db'
+import { env } from "@/env";
+import { createHash } from "@/lib/crypto";
+import { type Prisma } from "@prisma/client";
+import { nanoid } from "nanoid";
+import { db } from "./db";
 
 export const checkVerificationToken = async (
   token: string,
@@ -13,62 +13,62 @@ export const checkVerificationToken = async (
     where: {
       token,
     },
-  })
-  const hasInvite = !!invite
-  const expired = invite ? invite.expires.valueOf() < Date.now() : undefined
-  const invalidInvite = !hasInvite || expired
+  });
+  const hasInvite = !!invite;
+  const expired = invite ? invite.expires.valueOf() < Date.now() : undefined;
+  const invalidInvite = !hasInvite || expired;
 
   if (invalidInvite) {
-    throw new Error('invalid invite or invite expired')
+    throw new Error("invalid invite or invite expired");
   }
 
-  const [email, memberId] = invite.identifier.split(':')
+  const [email, memberId] = invite.identifier.split(":");
 
   if (!memberId) {
-    throw new Error('member id not found')
+    throw new Error("member id not found");
   }
 
   if (!email) {
-    throw new Error('user email not found')
+    throw new Error("user email not found");
   }
 
   if (userEmail !== email) {
-    throw new Error('invalid email')
+    throw new Error("invalid email");
   }
 
-  return { memberId, email }
-}
+  return { memberId, email };
+};
 
 interface generateMemberIdentifierOptions {
-  email: string
-  memberId: string
+  email: string;
+  memberId: string;
 }
 
 export const generateMemberIdentifier = ({
   email,
   memberId,
 }: generateMemberIdentifierOptions) => {
-  return `${email}:${memberId}`
-}
+  return `${email}:${memberId}`;
+};
 
 export async function generateInviteToken() {
-  const token = nanoid(32)
+  const token = nanoid(32);
 
-  const secret = env.NEXTAUTH_SECRET
+  const secret = env.NEXTAUTH_SECRET;
 
-  const ONE_DAY_IN_SECONDS = 86400
-  const expires = new Date(Date.now() + ONE_DAY_IN_SECONDS * 1000)
+  const ONE_DAY_IN_SECONDS = 86400;
+  const expires = new Date(Date.now() + ONE_DAY_IN_SECONDS * 1000);
 
-  const memberInviteTokenHash = await createHash(`member-${nanoid(16)}`)
-  const authTokenHash = await createHash(`${token}${secret}`)
+  const memberInviteTokenHash = await createHash(`member-${nanoid(16)}`);
+  const authTokenHash = await createHash(`${token}${secret}`);
 
-  return { token, expires, memberInviteTokenHash, authTokenHash }
+  return { token, expires, memberInviteTokenHash, authTokenHash };
 }
 
 interface revokeExistingInviteTokensOptions {
-  memberId: string
-  email: string
-  tx?: Prisma.TransactionClient
+  memberId: string;
+  email: string;
+  tx?: Prisma.TransactionClient;
 }
 
 export async function revokeExistingInviteTokens({
@@ -76,23 +76,23 @@ export async function revokeExistingInviteTokens({
   memberId,
   tx,
 }: revokeExistingInviteTokensOptions) {
-  const dbClient = tx ?? db
+  const dbClient = tx ?? db;
 
   const identifier = generateMemberIdentifier({
     email,
     memberId,
-  })
+  });
 
   const verificationToken = await dbClient.verificationToken.findMany({
     where: {
       identifier,
     },
-  })
+  });
   await dbClient.verificationToken.deleteMany({
     where: {
       token: {
         in: verificationToken.map((item) => item.token),
       },
     },
-  })
+  });
 }

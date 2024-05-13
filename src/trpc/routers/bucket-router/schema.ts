@@ -1,12 +1,12 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const ZodCreateBucketMutationSchema = z.object({
   name: z.string(),
   key: z.string(),
   mimeType: z.string(),
   size: z.number(),
-})
+});
 
 export type TypeZodCreateBucketMutationSchema = z.infer<
   typeof ZodCreateBucketMutationSchema
->
+>;

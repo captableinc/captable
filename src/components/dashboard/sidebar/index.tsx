@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   RiEqualizer2Fill,
@@ -25,24 +25,24 @@ import {
   RiPieChartLine,
   RiSafeFill,
   RiSafeLine,
-} from '@remixicon/react'
+} from "@remixicon/react";
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
+} from "@/components/ui/accordion";
 
-import { CaptableLogo } from '@/components/common/logo'
-import { usePathname } from 'next/navigation'
+import { CaptableLogo } from "@/components/common/logo";
+import { usePathname } from "next/navigation";
 
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { cn } from '@/lib/utils'
-import { NavLink } from './nav-link'
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { NavLink } from "./nav-link";
 
-import { type TGetCompanyList } from '@/server/company'
-import { CompanySwitcher } from './company-switcher'
+import { type TGetCompanyList } from "@/server/company";
+import { CompanySwitcher } from "./company-switcher";
 
 const navigation = [
   // {
@@ -52,89 +52,89 @@ const navigation = [
   //   activeIcon: RiHome2Fill,
   // },
   {
-    name: 'Cap table',
-    href: '/',
+    name: "Cap table",
+    href: "/",
     icon: RiPieChartLine,
     activeIcon: RiPieChartFill,
   },
   {
-    name: 'Stakeholders',
-    href: '/stakeholders',
+    name: "Stakeholders",
+    href: "/stakeholders",
     icon: RiGroup2Line,
     activeIcon: RiGroup2Fill,
   },
   {
-    name: 'Share classes',
-    href: '/share-classes',
+    name: "Share classes",
+    href: "/share-classes",
     icon: RiFolderChart2Line,
     activeIcon: RiFolderChart2Fill,
   },
   {
-    name: 'Equity plans',
-    href: '/equity-plans',
+    name: "Equity plans",
+    href: "/equity-plans",
     icon: RiFolderChart2Line,
     activeIcon: RiFolderChart2Fill,
   },
   {
-    name: 'Securities',
-    href: '/securities',
+    name: "Securities",
+    href: "/securities",
     icon: RiSafeLine,
     activeIcon: RiSafeFill,
     subNav: [
       {
-        name: 'Shares',
-        href: '/shares',
+        name: "Shares",
+        href: "/shares",
       },
       {
-        name: 'Stock options',
-        href: '/options',
+        name: "Stock options",
+        href: "/options",
       },
       {
-        name: 'Transactions',
-        href: '/transactions',
+        name: "Transactions",
+        href: "/transactions",
       },
     ],
   },
   {
-    name: 'Fundraise',
-    href: '/fundraise',
+    name: "Fundraise",
+    href: "/fundraise",
     icon: RiMoneyDollarCircleLine,
     activeIcon: RiMoneyDollarCircleFill,
     subNav: [
       {
-        name: 'SAFEs',
-        href: '/safes',
+        name: "SAFEs",
+        href: "/safes",
       },
 
       {
-        name: 'Convertible notes',
-        href: '/convertible-notes',
+        name: "Convertible notes",
+        href: "/convertible-notes",
       },
 
       {
-        name: 'Investments',
-        href: '/investments',
+        name: "Investments",
+        href: "/investments",
       },
     ],
   },
 
   {
-    name: 'Documents',
-    href: '/documents',
+    name: "Documents",
+    href: "/documents",
     icon: RiFolder5Line,
     activeIcon: RiFolder5Fill,
     subNav: [
       {
-        name: 'Storage',
-        href: '/',
+        name: "Storage",
+        href: "/",
       },
       {
-        name: 'Data rooms',
-        href: '/data-rooms',
+        name: "Data rooms",
+        href: "/data-rooms",
       },
       {
-        name: 'eSign documents',
-        href: '/esign',
+        name: "eSign documents",
+        href: "/esign",
       },
       // {
       //   name: "Share documents",
@@ -144,74 +144,74 @@ const navigation = [
   },
 
   {
-    name: 'Updates',
-    href: '/updates',
+    name: "Updates",
+    href: "/updates",
     icon: RiMailSendLine,
     activeIcon: RiMailSendFill,
   },
 
   {
-    name: 'Reports',
-    href: '/reports',
+    name: "Reports",
+    href: "/reports",
     icon: RiFolderChartLine,
     activeIcon: RiFolderChartFill,
   },
 
   {
-    name: 'Audits',
-    href: '/audits',
+    name: "Audits",
+    href: "/audits",
     icon: RiListIndefinite,
     activeIcon: RiListCheck3,
   },
-]
+];
 
 const company = [
   {
     id: 1,
-    name: 'Team',
-    rootPath: '/settings/team',
-    href: '/settings/team',
+    name: "Team",
+    rootPath: "/settings/team",
+    href: "/settings/team",
     icon: RiGroup2Line,
     activeIcon: RiGroup2Fill,
   },
   {
     id: 2,
-    name: 'Settings',
-    rootPath: '/settings/company',
-    href: '/settings/company',
+    name: "Settings",
+    rootPath: "/settings/company",
+    href: "/settings/company",
     icon: RiEqualizer2Line,
     activeIcon: RiEqualizer2Fill,
   },
   {
     id: 3,
-    name: 'Form 3921',
-    href: '/3921',
+    name: "Form 3921",
+    href: "/3921",
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
   {
     id: 4,
-    name: '409A Valuation',
-    href: '/409a',
+    name: "409A Valuation",
+    href: "/409a",
     icon: RiFileTextLine,
     activeIcon: RiFileTextFill,
   },
-]
+];
 
 interface SideBarProps {
-  className?: string
-  publicId: string
-  companies: TGetCompanyList
+  className?: string;
+  publicId: string;
+  companies: TGetCompanyList;
 }
 
 export function SideBar({ className, publicId, companies }: SideBarProps) {
-  const currentPath = usePathname()
+  const currentPath = usePathname();
 
-  const basePath = `/${publicId}`
+  const basePath = `/${publicId}`;
 
   return (
     <ScrollArea className="h-screen px-3">
-      <div className={cn('pb-12', className)}>
+      <div className={cn("pb-12", className)}>
         <div className="fixed gap-y-4 py-4">
           <div className="flex items-center px-1 py-2">
             <CaptableLogo className="h-7 w-auto" />
@@ -222,11 +222,11 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
           <div className="overflow-auto py-2">
             <ul role="list" className="space-y-1">
               {navigation.map((item) => {
-                const href = basePath + item.href
+                const href = basePath + item.href;
                 const isActive =
                   currentPath === href ||
-                  (currentPath === basePath && item.href === '/') ||
-                  (currentPath.includes(`${item.href}/`) && item.href !== '/')
+                  (currentPath === basePath && item.href === "/") ||
+                  (currentPath.includes(`${item.href}/`) && item.href !== "/");
 
                 return (
                   <li key={item.name}>
@@ -237,18 +237,18 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                             {isActive ? (
                               <item.activeIcon
                                 className={cn(
-                                  'ml-1 mr-1 mt-1 inline-block',
-                                  'text-primary',
-                                  'h-6 w-6 shrink-0',
+                                  "ml-1 mr-1 mt-1 inline-block",
+                                  "text-primary",
+                                  "h-6 w-6 shrink-0",
                                 )}
                                 aria-hidden="true"
                               />
                             ) : (
                               <item.icon
                                 className={cn(
-                                  'ml-1 mr-1 mt-1 inline-block',
-                                  'text-gray-400 group-hover:text-primary',
-                                  'h-6 w-6 shrink-0',
+                                  "ml-1 mr-1 mt-1 inline-block",
+                                  "text-gray-400 group-hover:text-primary",
+                                  "h-6 w-6 shrink-0",
                                 )}
                                 aria-hidden="true"
                               />
@@ -257,9 +257,9 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                             <AccordionTrigger
                               className={cn(
                                 isActive
-                                  ? 'bg-gray-50 font-semibold text-primary'
-                                  : 'text-gray-700 hover:bg-gray-50 hover:text-primary',
-                                'group flex gap-x-3 rounded-md px-2 py-1 text-sm leading-6 hover:no-underline',
+                                  ? "bg-gray-50 font-semibold text-primary"
+                                  : "text-gray-700 hover:bg-gray-50 hover:text-primary",
+                                "group flex gap-x-3 rounded-md px-2 py-1 text-sm leading-6 hover:no-underline",
                               )}
                             >
                               {item.name}
@@ -269,13 +269,14 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                           <AccordionContent>
                             <ul role="list" className="space-y-1">
                               {item.subNav.map((subItem) => {
-                                const href = basePath + item.href + subItem.href
+                                const href =
+                                  basePath + item.href + subItem.href;
                                 const isActive =
-                                  (subItem.href != '/' &&
+                                  (subItem.href != "/" &&
                                     currentPath.includes(
                                       item.href + subItem.href,
                                     )) ||
-                                  href === `${currentPath}/`
+                                  href === `${currentPath}/`;
 
                                 return (
                                   <li key={subItem.name}>
@@ -286,7 +287,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                                       className="ml-9"
                                     />
                                   </li>
-                                )
+                                );
                               })}
                             </ul>
                           </AccordionContent>
@@ -301,7 +302,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                       />
                     )}
                   </li>
-                )
+                );
               })}
             </ul>
 
@@ -311,14 +312,14 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
               </div>
               <ul role="list" className="space-y-1">
                 {company.map((item) => {
-                  const href = basePath + item.href
+                  const href = basePath + item.href;
                   const isActive =
                     currentPath === href ||
-                    (currentPath === basePath && item.href === '/') ||
+                    (currentPath === basePath && item.href === "/") ||
                     (currentPath.includes(`/${item.href}/`) &&
-                      item.href !== '/') ||
+                      item.href !== "/") ||
                     (currentPath.includes(`${item.rootPath}`) &&
-                      item.href !== '/')
+                      item.href !== "/");
 
                   return (
                     <li key={item.name}>
@@ -329,7 +330,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                         icon={isActive ? item.activeIcon : item.icon}
                       />
                     </li>
-                  )
+                  );
                 })}
               </ul>
             </div>
@@ -337,5 +338,5 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
         </div>
       </div>
     </ScrollArea>
-  )
+  );
 }

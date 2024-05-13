@@ -1,9 +1,9 @@
-import { CompanyForm } from '@/components/onboarding/company-form'
-import { type Metadata } from 'next'
+import { CompanyForm } from "@/components/onboarding/company-form";
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'New',
-}
+  title: "New",
+};
 
 const OnboardingPage = async () => {
   return (
@@ -20,7 +20,7 @@ const OnboardingPage = async () => {
         <CompanyForm type="create" />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default OnboardingPage
+export default OnboardingPage;

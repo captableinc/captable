@@ -1,10 +1,10 @@
-import { type Metadata } from 'next'
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Notifications',
-}
+  title: "Notifications",
+};
 const NotificationsSettingsPage = () => {
-  return <div>Notifications settings page</div>
-}
+  return <div>Notifications settings page</div>;
+};
 
-export default NotificationsSettingsPage
+export default NotificationsSettingsPage;

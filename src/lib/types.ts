@@ -1,28 +1,28 @@
-import { type PayloadType } from './constants'
+import { type PayloadType } from "./constants";
 
 type ProfilePayload = {
-  type: PayloadType.PROFILE_DATA
+  type: PayloadType.PROFILE_DATA;
   payload: {
-    fullName: string
-    jobTitle: string
-    loginEmail: string
-    workEmail: string
-  }
-}
+    fullName: string;
+    jobTitle: string;
+    loginEmail: string;
+    workEmail: string;
+  };
+};
 
 type AvatarPayload = {
-  type: PayloadType.PROFILE_AVATAR
+  type: PayloadType.PROFILE_AVATAR;
   payload: {
-    avatarUrl: string
-  }
-}
+    avatarUrl: string;
+  };
+};
 
-export type RootPayload = ProfilePayload | AvatarPayload
+export type RootPayload = ProfilePayload | AvatarPayload;
 
 export type MemberProfile = {
-  fullName: string
-  jobTitle: string
-  loginEmail: string
-  workEmail: string
-  avatarUrl: string
-}
+  fullName: string;
+  jobTitle: string;
+  loginEmail: string;
+  workEmail: string;
+  avatarUrl: string;
+};

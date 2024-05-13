@@ -1,46 +1,46 @@
-'use client'
+"use client";
 
-import EmptyState from '@/components/common/empty-state'
+import EmptyState from "@/components/common/empty-state";
 import ShareModal, {
   type ExtendedRecipientType,
-} from '@/components/common/share-modal'
-import DataRoomFileExplorer from '@/components/documents/data-room/explorer'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { useToast } from '@/components/ui/use-toast'
-import type { ShareContactType, ShareRecipientType } from '@/schema/contacts'
-import { api } from '@/trpc/react'
+} from "@/components/common/share-modal";
+import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
+import { api } from "@/trpc/react";
 
-import type { Bucket, DataRoom } from '@prisma/client'
-import { RiShareLine } from '@remixicon/react'
-import { useRouter } from 'next/navigation'
-import { useDebounceCallback } from 'usehooks-ts'
+import type { Bucket, DataRoom } from "@prisma/client";
+import { RiShareLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useDebounceCallback } from "usehooks-ts";
 
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
   RiUploadCloudLine,
-} from '@remixicon/react'
-import { env } from 'next-runtime-env'
-import Link from 'next/link'
-import DataRoomUploader from './data-room-uploader'
+} from "@remixicon/react";
+import { env } from "next-runtime-env";
+import Link from "next/link";
+import DataRoomUploader from "./data-room-uploader";
 
 interface DataRoomType extends DataRoom {
   documents: {
-    id: string
-    name: string
-    url: string
-    createdAt: Date
-  }[]
+    id: string;
+    name: string;
+    url: string;
+    createdAt: Date;
+  }[];
 }
 
 type DataRoomFilesProps = {
-  dataRoom: DataRoom
-  documents: Bucket[]
-  recipients: ExtendedRecipientType[]
-  companyPublicId: string
-  contacts: ShareContactType[]
-}
+  dataRoom: DataRoom;
+  documents: Bucket[];
+  recipients: ExtendedRecipientType[];
+  companyPublicId: string;
+  contacts: ShareContactType[];
+};
 
 const DataRoomFiles = ({
   dataRoom,
@@ -49,57 +49,57 @@ const DataRoomFiles = ({
   recipients,
   companyPublicId,
 }: DataRoomFilesProps) => {
-  const router = useRouter()
-  const { toast } = useToast()
-  const baseUrl = env('NEXT_PUBLIC_BASE_URL')!
-  const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation()
+  const router = useRouter();
+  const { toast } = useToast();
+  const baseUrl = env("NEXT_PUBLIC_BASE_URL")!;
+  const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
   const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
     {
       onSuccess: () => {
-        router.refresh()
+        router.refresh();
 
         toast({
-          title: '✨ Complete',
-          description: 'Data room successfully shared.',
-        })
+          title: "✨ Complete",
+          description: "Data room successfully shared.",
+        });
       },
 
       onError: (error) => {
         toast({
           title: error.message,
-          description: '',
-          variant: 'destructive',
-        })
+          description: "",
+          variant: "destructive",
+        });
       },
     },
-  )
+  );
 
   const { mutateAsync: unShareDataRoomMutation } =
     api.dataRoom.unShare.useMutation({
       onSuccess: () => {
-        router.refresh()
+        router.refresh();
 
         toast({
-          title: '✨ Complete',
-          description: 'Successfully removed access to data room.',
-        })
+          title: "✨ Complete",
+          description: "Successfully removed access to data room.",
+        });
       },
 
       onError: (error) => {
         toast({
           title: error.message,
-          description: '',
-          variant: 'destructive',
-        })
+          description: "",
+          variant: "destructive",
+        });
       },
-    })
+    });
 
   const debounced = useDebounceCallback(async (name) => {
     await saveDataRoomMutation({
       name,
       publicId: dataRoom.publicId,
-    })
-  }, 500)
+    });
+  }, 500);
 
   return (
     <div className="mt-2">
@@ -126,8 +126,8 @@ const DataRoomFiles = ({
                 placeholder={`Data room's folder name`}
                 defaultValue={dataRoom.name}
                 onChange={async (e) => {
-                  const name = e.target.value
-                  await debounced(name)
+                  const name = e.target.value;
+                  await debounced(name);
                 }}
               />
             </div>
@@ -146,16 +146,16 @@ const DataRoomFiles = ({
                     dataRoomId: dataRoom.id,
                     selectedContacts: selectedContacts as ShareRecipientType[],
                     others: others as ShareRecipientType[],
-                  })
+                  });
                 }}
                 removeAccess={async ({ recipientId }) => {
                   await unShareDataRoomMutation({
                     dataRoomId: dataRoom.id,
                     recipientId,
-                  })
+                  });
                 }}
                 trigger={
-                  <Button variant={'outline'}>
+                  <Button variant={"outline"}>
                     <RiShareLine className="mr-2 h-5 w-5" />
                     Share
                   </Button>
@@ -206,7 +206,7 @@ const DataRoomFiles = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DataRoomFiles
+export default DataRoomFiles;

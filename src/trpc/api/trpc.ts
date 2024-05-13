@@ -7,13 +7,13 @@
  * need to use are documented accordingly near the end.
  */
 
-import { TRPCError, initTRPC } from '@trpc/server'
-import superjson from 'superjson'
-import { ZodError } from 'zod'
+import { TRPCError, initTRPC } from "@trpc/server";
+import superjson from "superjson";
+import { ZodError } from "zod";
 
-import { getIp, getUserAgent } from '@/lib/headers'
-import { getServerAuthSession } from '@/server/auth'
-import { db } from '@/server/db'
+import { getIp, getUserAgent } from "@/lib/headers";
+import { getServerAuthSession } from "@/server/auth";
+import { db } from "@/server/db";
 
 /**
  * 1. CONTEXT
@@ -28,7 +28,7 @@ import { db } from '@/server/db'
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const session = await getServerAuthSession()
+  const session = await getServerAuthSession();
 
   return {
     db,
@@ -36,26 +36,26 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     requestIp: getIp(opts.headers),
     userAgent: getUserAgent(opts.headers),
     ...opts,
-  }
-}
+  };
+};
 
 export type CreateTRPCContextType = Awaited<
   ReturnType<typeof createTRPCContext>
->
+>;
 
 const withAuthTrpcContext = ({ session, ...rest }: CreateTRPCContextType) => {
   if (!session || !session.user) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' })
+    throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
   return {
     ...rest,
     // infers the `session` as non-nullable
     session: { ...session, user: session.user },
-  }
-}
+  };
+};
 
-export type withAuthTrpcContextType = ReturnType<typeof withAuthTrpcContext>
+export type withAuthTrpcContextType = ReturnType<typeof withAuthTrpcContext>;
 
 /**
  * 2. INITIALIZATION
@@ -74,9 +74,9 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
         zodError:
           error.cause instanceof ZodError ? error.cause.flatten() : null,
       },
-    }
+    };
   },
-})
+});
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -90,7 +90,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  *
  * @see https://trpc.io/docs/router
  */
-export const createTRPCRouter = t.router
+export const createTRPCRouter = t.router;
 
 /**
  * Public (unauthenticated) procedure
@@ -99,7 +99,7 @@ export const createTRPCRouter = t.router
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const withoutAuth = t.procedure
+export const withoutAuth = t.procedure;
 
 /**
  * Protected (authenticated) procedure
@@ -110,9 +110,9 @@ export const withoutAuth = t.procedure
  * @see https://trpc.io/docs/procedures
  */
 export const withAuth = t.procedure.use(({ ctx: ctx_, next }) => {
-  const ctx = withAuthTrpcContext(ctx_)
+  const ctx = withAuthTrpcContext(ctx_);
 
   return next({
     ctx,
-  })
-})
+  });
+});

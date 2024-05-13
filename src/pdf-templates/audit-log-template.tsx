@@ -1,9 +1,9 @@
-import { Document, Font, Page, StyleSheet, Text } from '@react-pdf/renderer'
+import { Document, Font, Page, StyleSheet, Text } from "@react-pdf/renderer";
 
 Font.register({
-  family: 'Oswald',
-  src: 'https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf',
-})
+  family: "Oswald",
+  src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
+});
 
 const styles = StyleSheet.create({
   body: {
@@ -13,19 +13,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    textAlign: 'center',
-    fontFamily: 'Oswald',
+    textAlign: "center",
+    fontFamily: "Oswald",
   },
   text: {
     margin: 5,
     fontSize: 14,
-    textAlign: 'justify',
-    fontFamily: 'Times-Roman',
+    textAlign: "justify",
+    fontFamily: "Times-Roman",
   },
-})
+});
 
 export interface AuditLogTemplateProps {
-  audits: { id: string; summary: string }[]
+  audits: { id: string; summary: string }[];
 }
 
 export function AuditLogTemplate({ audits }: AuditLogTemplateProps) {
@@ -40,5 +40,5 @@ export function AuditLogTemplate({ audits }: AuditLogTemplateProps) {
         ))}
       </Page>
     </Document>
-  )
+  );
 }

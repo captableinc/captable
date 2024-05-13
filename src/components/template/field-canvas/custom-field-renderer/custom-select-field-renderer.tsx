@@ -1,35 +1,35 @@
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { type TemplateFieldForm } from '@/providers/template-field-provider'
-import { RiDeleteBinLine } from '@remixicon/react'
-import { nanoid } from 'nanoid'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { RiDeleteBinLine } from "@remixicon/react";
+import { nanoid } from "nanoid";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 interface CustomSelectFieldRendererProps {
-  index: number
+  index: number;
 }
 
 export function CustomSelectFieldRenderer({
   index,
 }: CustomSelectFieldRendererProps) {
-  const { control } = useFormContext<TemplateFieldForm>()
+  const { control } = useFormContext<TemplateFieldForm>();
   const { append, fields, remove } = useFieldArray({
     control,
     name: `fields.${index}.meta.options`,
-    keyName: '_id',
-  })
+    keyName: "_id",
+  });
 
   const handleAppend = () => {
-    append({ id: nanoid(7), value: '' })
-  }
+    append({ id: nanoid(7), value: "" });
+  };
 
-  const isDeleteDisabled = fields.length === 1
+  const isDeleteDisabled = fields.length === 1;
 
   return (
     <div className="flex flex-col gap-y-2 pt-2">
@@ -56,7 +56,7 @@ export function CustomSelectFieldRenderer({
             <Button
               disabled={isDeleteDisabled}
               onClick={() => {
-                remove(fieldIndex)
+                remove(fieldIndex);
               }}
               variant="ghost"
               size="sm"
@@ -77,5 +77,5 @@ export function CustomSelectFieldRenderer({
         </Button>
       </div>
     </div>
-  )
+  );
 }

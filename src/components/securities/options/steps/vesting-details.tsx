@@ -1,44 +1,44 @@
-'use client'
+"use client";
 
-import { SpinnerIcon } from '@/components/common/icons'
+import { SpinnerIcon } from "@/components/common/icons";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { VestingScheduleEnum } from '@/prisma/enums'
-import { api } from '@/trpc/react'
-import { useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
+} from "@/components/ui/select";
+import { VestingScheduleEnum } from "@/prisma/enums";
+import { api } from "@/trpc/react";
+import { useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 export const VestingDetailsFields = [
-  'vestingSchedule',
-  'equityPlanId',
-  'exercisePrice',
-  'stakeholderId',
-]
+  "vestingSchedule",
+  "equityPlanId",
+  "exercisePrice",
+  "stakeholderId",
+];
 
 export const VestingDetails = () => {
-  const form = useFormContext()
-  const stakeholders = api.stakeholder.getStakeholders.useQuery()
-  const equityPlans = api.equityPlan.getPlans.useQuery()
+  const form = useFormContext();
+  const stakeholders = api.stakeholder.getStakeholders.useQuery();
+  const equityPlans = api.equityPlan.getPlans.useQuery();
   const vestingSchedule = useMemo(
     () =>
       Object.values(VestingScheduleEnum).filter(
-        (value) => typeof value === 'string',
+        (value) => typeof value === "string",
       ),
     [],
-  )
+  );
 
   return (
     <div className="space-y-4">
@@ -151,5 +151,5 @@ export const VestingDetails = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};

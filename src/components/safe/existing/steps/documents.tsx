@@ -1,39 +1,39 @@
-'use client'
+"use client";
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import Uploader from '@/components/ui/uploader'
-import { useFormContext } from 'react-hook-form'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Uploader from "@/components/ui/uploader";
+import { useFormContext } from "react-hook-form";
 
 type Documents = {
-  bucketId: string
-  name: string
-}
+  bucketId: string;
+  name: string;
+};
 
-export const DocumentsFields = ['documents']
+export const DocumentsFields = ["documents"];
 
 export const Documents = () => {
-  const form = useFormContext()
+  const form = useFormContext();
   //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const documents: [Documents] = form.watch('documents')
+  const documents: [Documents] = form.watch("documents");
   // document=uploaders are happy format then //
   return (
     <>
       <Uploader
         multiple={true}
-        identifier={'safes'}
+        identifier={"safes"}
         keyPrefix="safes-key"
         onSuccess={async (bucketData) => {
-          form.setValue('documents', [
+          form.setValue("documents", [
             //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            ...(form.getValues('documents') || []),
+            ...(form.getValues("documents") || []),
             {
               bucketId: bucketData.id,
               name: bucketData.name,
             },
-          ])
+          ]);
         }}
         accept={{
-          'application/pdf': ['.pdf'],
+          "application/pdf": [".pdf"],
         }}
       />
       {documents?.length ? (
@@ -56,5 +56,5 @@ export const Documents = () => {
         </Alert>
       )}
     </>
-  )
-}
+  );
+};

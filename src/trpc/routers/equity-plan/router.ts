@@ -1,14 +1,14 @@
-import { Audit } from '@/server/audit'
-import { checkMembership } from '@/server/auth'
-import { createTRPCRouter, withAuth } from '@/trpc/api/trpc'
-import { EquityPlanMutationSchema } from './schema'
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
+import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { EquityPlanMutationSchema } from "./schema";
 
 export const equityPlanRouter = createTRPCRouter({
   getPlans: withAuth.query(async ({ ctx }) => {
-    const { db, session } = ctx
+    const { db, session } = ctx;
 
     const data = await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ session, tx })
+      const { companyId } = await checkMembership({ session, tx });
 
       const data = await tx.equityPlan.findMany({
         where: {
@@ -16,24 +16,24 @@ export const equityPlanRouter = createTRPCRouter({
         },
 
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
-      })
+      });
 
-      return data
-    })
+      return data;
+    });
 
-    return { data }
+    return { data };
   }),
 
   create: withAuth
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { userAgent, requestIp, session } = ctx
+      const { userAgent, requestIp, session } = ctx;
 
       try {
         await ctx.db.$transaction(async (tx) => {
-          const { companyId } = await checkMembership({ session, tx })
+          const { companyId } = await checkMembership({ session, tx });
 
           const data = {
             companyId,
@@ -46,32 +46,32 @@ export const equityPlanRouter = createTRPCRouter({
             shareClassId: input.shareClassId,
             comments: input.comments,
             defaultCancellatonBehavior: input.defaultCancellatonBehavior,
-          }
+          };
 
-          await tx.equityPlan.create({ data })
+          await tx.equityPlan.create({ data });
           await Audit.create(
             {
-              action: 'equityPlan.created',
+              action: "equityPlan.created",
               companyId,
-              actor: { type: 'user', id: ctx.session.user.id },
+              actor: { type: "user", id: ctx.session.user.id },
               context: {
                 requestIp,
                 userAgent,
               },
-              target: [{ type: 'company', id: companyId }],
+              target: [{ type: "company", id: companyId }],
               summary: `${ctx.session.user.name} created an equity plan - ${input.name}`,
             },
             tx,
-          )
-        })
+          );
+        });
 
-        return { success: true, message: 'Equity plan created successfully.' }
+        return { success: true, message: "Equity plan created successfully." };
       } catch (error) {
-        console.error('Error creating an equity plan:', error)
+        console.error("Error creating an equity plan:", error);
         return {
           success: false,
-          message: 'Oops, something went wrong. Please try again later.',
-        }
+          message: "Oops, something went wrong. Please try again later.",
+        };
       }
     }),
 
@@ -79,10 +79,10 @@ export const equityPlanRouter = createTRPCRouter({
     .input(EquityPlanMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const { userAgent, requestIp, session } = ctx
+        const { userAgent, requestIp, session } = ctx;
 
         await ctx.db.$transaction(async (tx) => {
-          const { companyId } = await checkMembership({ tx, session })
+          const { companyId } = await checkMembership({ tx, session });
 
           const data = {
             name: input.name,
@@ -94,36 +94,36 @@ export const equityPlanRouter = createTRPCRouter({
             shareClassId: input.shareClassId,
             comments: input.comments,
             defaultCancellatonBehavior: input.defaultCancellatonBehavior,
-          }
+          };
 
           await tx.equityPlan.update({
             where: { id: input.id },
             data,
-          })
+          });
 
           await Audit.create(
             {
-              action: 'equityPlan.updated',
+              action: "equityPlan.updated",
               companyId,
-              actor: { type: 'user', id: ctx.session.user.id },
+              actor: { type: "user", id: ctx.session.user.id },
               context: {
                 requestIp,
                 userAgent,
               },
-              target: [{ type: 'company', id: companyId }],
+              target: [{ type: "company", id: companyId }],
               summary: `${ctx.session.user.name} updated an equity plan - ${input.name}`,
             },
             tx,
-          )
-        })
+          );
+        });
 
-        return { success: true, message: 'Equity plan updated successfully.' }
+        return { success: true, message: "Equity plan updated successfully." };
       } catch (error) {
-        console.error('Error updating an equity plan:', error)
+        console.error("Error updating an equity plan:", error);
         return {
           success: false,
-          message: 'Oops, something went wrong. Please try again later.',
-        }
+          message: "Oops, something went wrong. Please try again later.",
+        };
       }
     }),
-})
+});

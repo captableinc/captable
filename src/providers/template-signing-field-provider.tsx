@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import { Form } from '@/components/ui/form'
-import { COLORS } from '@/constants/esign'
-import { type RouterOutputs } from '@/trpc/shared'
-import { type ReactNode } from 'react'
-import { useForm } from 'react-hook-form'
+import { Form } from "@/components/ui/form";
+import { COLORS } from "@/constants/esign";
+import { type RouterOutputs } from "@/trpc/shared";
+import { type ReactNode } from "react";
+import { useForm } from "react-hook-form";
 
-type Field = RouterOutputs['template']['getSigningFields']['fields'][number]
+type Field = RouterOutputs["template"]["getSigningFields"]["fields"][number];
 
 interface TemplateSigningFieldProviderProps {
-  children: ReactNode
-  fields?: Field[]
+  children: ReactNode;
+  fields?: Field[];
 }
 
 export type TemplateSigningFieldForm = {
-  fields: Field[]
-  fieldValues: Record<string, string>
-  recipientColors: Record<string, string>
-}
+  fields: Field[];
+  fieldValues: Record<string, string>;
+  recipientColors: Record<string, string>;
+};
 
 export const TemplateSigningFieldProvider = ({
   children,
@@ -28,21 +28,21 @@ export const TemplateSigningFieldProvider = ({
       fields: fields ?? [],
       fieldValues: fields
         ? fields.reduce<Record<string, string>>((prev, curr) => {
-            prev[curr.id] = curr?.prefilledValue || curr?.defaultValue || ''
-            return prev
+            prev[curr.id] = curr?.prefilledValue || curr?.defaultValue || "";
+            return prev;
           }, {})
         : {},
       recipientColors: fields
         ? fields.reduce<Record<string, string>>((prev, curr, index) => {
-            const color = Object.keys(COLORS)?.[index] ?? ''
+            const color = Object.keys(COLORS)?.[index] ?? "";
 
-            prev[curr.recipientId] = color
+            prev[curr.recipientId] = color;
 
-            return prev
+            return prev;
           }, {})
         : {},
     },
-  })
+  });
 
-  return <Form {...form}>{children}</Form>
-}
+  return <Form {...form}>{children}</Form>;
+};

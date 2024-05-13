@@ -8,11 +8,11 @@ import {
   Preview,
   Tailwind,
   Text,
-} from 'jsx-email'
+} from "jsx-email";
 
-import { type TConfirmationEmailPayload } from '../jobs/esign-confirmation-email'
+import { type TConfirmationEmailPayload } from "../jobs/esign-confirmation-email";
 
-type Payload = Omit<TConfirmationEmailPayload, 'fileUrl'>
+type Payload = Omit<TConfirmationEmailPayload, "fileUrl">;
 
 const ESignConfirmationEmail = ({
   documentName,
@@ -39,7 +39,7 @@ const ESignConfirmationEmail = ({
             </Text>
 
             <Text className="mt-5 text-[14px] leading-[24px] text-black">
-              All parties have completed and signed the document -{' '}
+              All parties have completed and signed the document -{" "}
               <strong>{documentName}</strong>. Please find the attached
               document.
             </Text>
@@ -56,14 +56,14 @@ const ESignConfirmationEmail = ({
         </Body>
       </Tailwind>
     </Html>
-  )
-}
+  );
+};
 
 ESignConfirmationEmail.PreviewProps = {
-  documentName: 'Document Name',
-  recipient: { name: 'Recipient Name', email: '' },
-  senderName: 'Sender Name',
-  company: { name: 'Company Name' },
-}
+  documentName: "Document Name",
+  recipient: { name: "Recipient Name", email: "" },
+  senderName: "Sender Name",
+  company: { name: "Company Name" },
+};
 
-export default ESignConfirmationEmail
+export default ESignConfirmationEmail;

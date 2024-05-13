@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   type ColumnDef,
@@ -12,11 +12,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table'
-import * as React from 'react'
+} from "@tanstack/react-table";
+import * as React from "react";
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,38 +24,38 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 
-import { api } from '@/trpc/react'
+import { api } from "@/trpc/react";
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { DataTable } from '@/components/ui/data-table/data-table'
-import { DataTableBody } from '@/components/ui/data-table/data-table-body'
-import { SortButton } from '@/components/ui/data-table/data-table-buttons'
-import { DataTableContent } from '@/components/ui/data-table/data-table-content'
-import { DataTableHeader } from '@/components/ui/data-table/data-table-header'
-import { DataTablePagination } from '@/components/ui/data-table/data-table-pagination'
-import { useToast } from '@/components/ui/use-toast'
-import { getPresignedGetUrl } from '@/server/file-uploads'
-import { type RouterOutputs } from '@/trpc/shared'
-import { RiFileDownloadLine, RiMoreLine } from '@remixicon/react'
-import { useRouter } from 'next/navigation'
-import { SafeTableToolbar } from './safe-table-toolbar'
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { useToast } from "@/components/ui/use-toast";
+import { getPresignedGetUrl } from "@/server/file-uploads";
+import { type RouterOutputs } from "@/trpc/shared";
+import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { SafeTableToolbar } from "./safe-table-toolbar";
 
-type Safe = RouterOutputs['safe']['getSafes']['data']
+type Safe = RouterOutputs["safe"]["getSafes"]["data"];
 
 type SafesType = {
-  safes: Safe
-}
+  safes: Safe;
+};
 
 export const columns: ColumnDef<Safe[number]>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -72,20 +72,20 @@ export const columns: ColumnDef<Safe[number]>[] = [
     enableHiding: false,
   },
   {
-    id: 'stakeholderName',
+    id: "stakeholderName",
     header: ({ column }) => {
       return (
         <SortButton
           label="Stakeholder"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     accessorFn: (row) => row?.stakeholder?.name,
     cell: ({ row }) => (
       <div className="flex">
         <Avatar className="h-10 w-10 rounded-full">
-          <AvatarImage src={'/avatar.svg'} />
+          <AvatarImage src={"/avatar.svg"} />
         </Avatar>
         <div className=" ml-2 pt-2">
           <p>{row?.original?.stakeholder?.name}</p>
@@ -94,113 +94,113 @@ export const columns: ColumnDef<Safe[number]>[] = [
     ),
   },
   {
-    accessorKey: 'capital',
+    accessorKey: "capital",
     header: ({ column }) => {
       return (
         <SortButton
           label="Capital"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('capital')}</div>
+      <div className="text-left">{row.getValue("capital")}</div>
     ),
   },
   {
-    accessorKey: 'valuationCap',
+    accessorKey: "valuationCap",
     header: ({ column }) => {
       return (
         <SortButton
           label="ValuationCap"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('valuationCap')}</div>
+      <div className="text-left">{row.getValue("valuationCap")}</div>
     ),
   },
   {
-    accessorKey: 'type',
+    accessorKey: "type",
     header: ({ column }) => {
       return (
         <SortButton
           label="Type"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
-    cell: ({ row }) => <div className="text-left">{row.getValue('type')}</div>,
+    cell: ({ row }) => <div className="text-left">{row.getValue("type")}</div>,
   },
   {
-    accessorKey: 'status',
+    accessorKey: "status",
     header: ({ column }) => {
       return (
         <SortButton
           label="Status"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('status')}</div>
+      <div className="text-left">{row.getValue("status")}</div>
     ),
   },
   {
-    accessorKey: 'discountRate',
+    accessorKey: "discountRate",
     header: ({ column }) => {
       return (
         <SortButton
           label="Discount Rate"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('discountRate')}</div>
+      <div className="text-left">{row.getValue("discountRate")}</div>
     ),
   },
   {
-    accessorKey: 'issueDate',
+    accessorKey: "issueDate",
     header: ({ column }) => {
       return (
         <SortButton
           label="Issue Date"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
       <div className="text-left">
-        {new Date().toLocaleDateString(row.getValue('issueDate'))}
+        {new Date().toLocaleDateString(row.getValue("issueDate"))}
       </div>
     ),
   },
   {
-    id: 'Documents',
+    id: "Documents",
     enableHiding: false,
     header: ({ column }) => {
       return (
         <SortButton
           label="Documents"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => {
       const openFileOnTab = async (key: string) => {
-        const fileUrl = await getPresignedGetUrl(key)
-        window.open(fileUrl.url, '_blank')
-      }
+        const fileUrl = await getPresignedGetUrl(key);
+        window.open(fileUrl.url, "_blank");
+      };
 
-      const documents = row?.original?.documents
+      const documents = row?.original?.documents;
 
       return (
         <DropdownMenu>
           <div className="items-end justify-end text-right">
             <DropdownMenuTrigger className="outline-none" asChild>
-              <Button variant={'outline'} className="h-7 w-12 px-2">
+              <Button variant={"outline"} className="h-7 w-12 px-2">
                 View
               </Button>
             </DropdownMenuTrigger>
@@ -213,7 +213,7 @@ export const columns: ColumnDef<Safe[number]>[] = [
                   key={doc.id}
                   className="hover:cursor-pointer"
                   onClick={async () => {
-                    await openFileOnTab(doc.bucket.key)
+                    await openFileOnTab(doc.bucket.key);
                   }}
                 >
                   <RiFileDownloadLine
@@ -233,43 +233,43 @@ export const columns: ColumnDef<Safe[number]>[] = [
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
   {
-    id: 'actions',
+    id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const router = useRouter()
+      const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const safe = row.original
+      const safe = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast()
+      const { toast } = useToast();
 
       const deleteSafeMutation = api.safe.deleteSafe.useMutation({
         onSuccess: () => {
           toast({
-            variant: 'default',
-            title: '🎉 Successfully deleted',
-            description: 'SAFEs agreement deleted',
-          })
-          router.refresh()
+            variant: "default",
+            title: "🎉 Successfully deleted",
+            description: "SAFEs agreement deleted",
+          });
+          router.refresh();
         },
         onError: () => {
           toast({
-            variant: 'destructive',
-            title: 'Failed deletion',
-            description: 'SAFEs agreement could not be deleted',
-          })
+            variant: "destructive",
+            title: "Failed deletion",
+            description: "SAFEs agreement could not be deleted",
+          });
         },
-      })
+      });
 
-      const deleteAction = 'Delete SAFE'
+      const deleteAction = "Delete SAFE";
 
       const handleDeleteSafe = async () => {
-        await deleteSafeMutation.mutateAsync({ safeId: safe.id })
-      }
+        await deleteSafeMutation.mutateAsync({ safeId: safe.id });
+      };
 
       return (
         <DropdownMenu>
@@ -299,19 +299,19 @@ export const columns: ColumnDef<Safe[number]>[] = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
 const SafeTable = ({ safes }: SafesType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data: safes ?? [],
@@ -333,7 +333,7 @@ const SafeTable = ({ safes }: SafesType) => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full p-6">
@@ -346,7 +346,7 @@ const SafeTable = ({ safes }: SafesType) => {
         <DataTablePagination />
       </DataTable>
     </div>
-  )
-}
+  );
+};
 
-export default SafeTable
+export default SafeTable;

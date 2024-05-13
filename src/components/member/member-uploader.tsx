@@ -1,79 +1,79 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { toast } from '@/components/ui/use-toast'
-import { parseInviteMembersCSV } from '@/lib/invite-team-members-csv-parser'
-import { api } from '@/trpc/react'
-import { type TypeZodInviteMemberArrayMutationSchema } from '@/trpc/routers/member-router/schema'
-import { RiUploadLine } from '@remixicon/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { parseInviteMembersCSV } from "@/lib/invite-team-members-csv-parser";
+import { api } from "@/trpc/react";
+import { type TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
+import { RiUploadLine } from "@remixicon/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 
 type TeamMemberUploaderType = {
-  setOpen: (val: boolean) => void
-}
+  setOpen: (val: boolean) => void;
+};
 
 const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
-  const [csvFile, setCSVFile] = useState<File[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [csvFile, setCSVFile] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
-      setOpen(false)
+      setOpen(false);
       toast({
-        variant: 'default',
-        title: '🎉 Invited!',
-        description: 'You have successfully invited the stakeholder.',
-      })
-      router.refresh()
+        variant: "default",
+        title: "🎉 Invited!",
+        description: "You have successfully invited the stakeholder.",
+      });
+      router.refresh();
     },
     onError: (error) => {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         title: error.message,
-        description: '',
-      })
+        description: "",
+      });
     },
-  })
+  });
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.currentTarget.files ?? [])
-    setCSVFile(files)
-  }
+    const files = Array.from(e.currentTarget.files ?? []);
+    setCSVFile(files);
+  };
 
   const onImport = async () => {
     try {
       if (!csvFile[0]) {
-        return
+        return;
       }
 
       const parsedData = (await parseInviteMembersCSV(
         csvFile[0],
-      )) as TypeZodInviteMemberArrayMutationSchema
+      )) as TypeZodInviteMemberArrayMutationSchema;
       await Promise.all(
         parsedData.map(async (data) => {
-          await inviteMember.mutateAsync(data)
+          await inviteMember.mutateAsync(data);
         }),
-      )
-      setOpen(false)
+      );
+      setOpen(false);
     } catch (error) {
-      console.error((error as Error).message)
+      console.error((error as Error).message);
       toast({
-        variant: 'destructive',
-        title: 'Something went wrong!',
+        variant: "destructive",
+        title: "Something went wrong!",
         description:
-          'Please check the CSV file and make sure its according to our format',
-      })
+          "Please check the CSV file and make sure its according to our format",
+      });
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
       <div className="text-sm leading-6 text-neutral-600">
-        Please download the{' '}
+        Please download the{" "}
         <Link
           download
           href="/sample-csv/captable-team-members-template.csv"
@@ -93,7 +93,7 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
       >
         <RiUploadLine className="h-7 w-7 text-neutral-500" />
         <span className="text-sm text-neutral-500">
-          {csvFile.length !== 0 ? csvFile[0]?.name : 'Click here to import'}
+          {csvFile.length !== 0 ? csvFile[0]?.name : "Click here to import"}
         </span>
         <input
           onChange={onFileInputChange}
@@ -108,11 +108,11 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
         <Link
           target="_blank"
           rel="noopener noreferrer"
-          href={''}
+          href={""}
           className="text-teal-700 underline"
         >
           Learn more
-        </Link>{' '}
+        </Link>{" "}
         about the sample csv format
       </div>
 
@@ -120,7 +120,7 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
         Import
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default TeamMemberUploader
+export default TeamMemberUploader;

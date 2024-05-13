@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,72 +8,72 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/ui/password-input'
-import { toast } from '@/components/ui/use-toast'
-import { api } from '@/trpc/react'
-import { ZPasswordSchema } from '@/trpc/routers/auth/schema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { RiGoogleFill } from '@remixicon/react'
-import { signIn } from 'next-auth/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
-import { AuthFormHeader } from '../auth-form-header'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
+import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RiGoogleFill } from "@remixicon/react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { AuthFormHeader } from "../auth-form-header";
 
 const ZSignUpFormSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   password: ZPasswordSchema,
-})
+});
 
 interface SignUpFormProps {
-  isGoogleAuthEnabled: boolean
+  isGoogleAuthEnabled: boolean;
 }
 
 const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
   const form = useForm<z.infer<typeof ZSignUpFormSchema>>({
     resolver: zodResolver(ZSignUpFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
+      name: "",
+      email: "",
+      password: "",
     },
-  })
-  const router = useRouter()
+  });
+  const router = useRouter();
 
   const { mutateAsync } = api.auth.signup.useMutation({
     onSuccess: async ({ message }) => {
       toast({
-        variant: 'default',
-        title: '🎉 Thanks for signing up!',
+        variant: "default",
+        title: "🎉 Thanks for signing up!",
         description: message,
-      })
+      });
     },
     onError: (err) => {
       toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
         description: err.message,
-      })
+      });
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof ZSignUpFormSchema>) {
     try {
-      await mutateAsync(values)
-      router.replace(`/check-email?email=${values.email}`)
+      await mutateAsync(values);
+      router.replace(`/check-email?email=${values.email}`);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   }
 
   async function signInWithGoogle() {
-    await signIn('google', { callbackUrl: '/onboarding' })
+    await signIn("google", { callbackUrl: "/onboarding" });
   }
-  const isSubmitting = form.formState.isSubmitting
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -202,7 +202,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
             </>
           )}
           <span className="text-center text-sm text-gray-500">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link
               href="/login"
               className="underline underline-offset-4 hover:text-primary "
@@ -213,7 +213,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
         </>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignUpForm
+export default SignUpForm;

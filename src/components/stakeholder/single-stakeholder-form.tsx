@@ -1,12 +1,12 @@
-'use client'
+"use client";
 import {
   type AddStakeholderMutationType,
   ZodAddStakeholderMutationSchema,
-} from '@/trpc/routers/stakeholder-router/schema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+} from "@/trpc/routers/stakeholder-router/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,48 +14,48 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { toast } from '@/components/ui/use-toast'
-import { api } from '@/trpc/react'
-import { useRouter } from 'next/navigation'
+} from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 type SingleStakeholderFormType = {
-  setOpen: (val: boolean) => void
-}
+  setOpen: (val: boolean) => void;
+};
 
 const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
   const form = useForm<AddStakeholderMutationType>({
     resolver: zodResolver(ZodAddStakeholderMutationSchema),
-  })
+  });
 
-  const isSubmitting = form.formState.isSubmitting
-  const router = useRouter()
+  const isSubmitting = form.formState.isSubmitting;
+  const router = useRouter();
 
   const { mutateAsync } = api.stakeholder.addStakeholders.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
-        variant: success ? 'default' : 'destructive',
+        variant: success ? "default" : "destructive",
         title: success
-          ? '🎉 Successfully created'
-          : 'Uh oh! Something went wrong.',
+          ? "🎉 Successfully created"
+          : "Uh oh! Something went wrong.",
         description: message,
-      })
+      });
 
-      router.refresh()
+      router.refresh();
     },
-  })
+  });
 
   const onSubmit = async (values: AddStakeholderMutationType) => {
-    await mutateAsync([values])
-    setOpen(false)
-  }
+    await mutateAsync([values]);
+    setOpen(false);
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -238,12 +238,12 @@ const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
         </div>
         <div className="mt-8 flex justify-end">
           <Button loading={isSubmitting} type="submit">
-            {isSubmitting ? 'Adding...' : 'Add'}
+            {isSubmitting ? "Adding..." : "Add"}
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default SingleStakeholderForm
+export default SingleStakeholderForm;

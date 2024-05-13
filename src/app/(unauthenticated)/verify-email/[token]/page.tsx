@@ -1,18 +1,18 @@
-import VerifyEmail from '@/components/onboarding/verify-email'
-import { type Metadata } from 'next'
+import VerifyEmail from "@/components/onboarding/verify-email";
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Verify Email',
-}
+  title: "Verify Email",
+};
 
 export type PageProps = {
   params: {
-    token: string
-  }
-}
+    token: string;
+  };
+};
 
 export default async function VerifyEmailPage({
   params: { token },
 }: PageProps) {
-  return <VerifyEmail token={token} />
+  return <VerifyEmail token={token} />;
 }

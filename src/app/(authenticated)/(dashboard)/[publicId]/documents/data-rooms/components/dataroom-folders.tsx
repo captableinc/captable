@@ -1,26 +1,26 @@
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import type { DataRoom } from '@prisma/client'
+import { PageLayout } from "@/components/dashboard/page-layout";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import type { DataRoom } from "@prisma/client";
 import {
   RiFolder3Fill as FolderIcon,
   RiMore2Line as MoreIcon,
   RiAddFill,
-} from '@remixicon/react'
-import Link from 'next/link'
-import DataRoomPopover from './data-room-popover'
+} from "@remixicon/react";
+import Link from "next/link";
+import DataRoomPopover from "./data-room-popover";
 
 interface DataRoomProps extends DataRoom {
   _count: {
-    documents: number
-  }
+    documents: number;
+  };
 }
 
 type FolderProps = {
-  companyPublicId: string
-  folders: DataRoomProps[]
-}
+  companyPublicId: string;
+  folders: DataRoomProps[];
+};
 
 const Folders = ({ companyPublicId, folders }: FolderProps) => {
   return (
@@ -55,7 +55,7 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
               >
                 <div
                   className={cn(
-                    'flex w-14 flex-shrink-0 items-center justify-center rounded-l-md border text-sm font-medium ',
+                    "flex w-14 flex-shrink-0 items-center justify-center rounded-l-md border text-sm font-medium ",
                   )}
                 >
                   <FolderIcon
@@ -90,7 +90,7 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
         </ul>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default Folders
+export default Folders;

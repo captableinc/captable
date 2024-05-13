@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import Modal from '@/components/common/modal'
-import { Button } from '@/components/ui/button'
+import Modal from "@/components/common/modal";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,32 +10,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
-import { Input } from '@/components/ui/input'
-import { useToast } from '@/components/ui/use-toast'
-import { api } from '@/trpc/react'
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
 
 import {
   type TypeZodInviteMemberMutationSchema,
   ZodInviteMemberMutationSchema,
-} from '@/trpc/routers/member-router/schema'
+} from "@/trpc/routers/member-router/schema";
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 type MemberModalType = {
-  title: string
-  subtitle: string
-  member: TypeZodInviteMemberMutationSchema
-  children: React.ReactNode
-} & editModeType
+  title: string;
+  subtitle: string;
+  member: TypeZodInviteMemberMutationSchema;
+  children: React.ReactNode;
+} & editModeType;
 
 type editModeType =
   | { isEditMode: true; memberId: string }
-  | { isEditMode?: false; memberId?: never }
+  | { isEditMode?: false; memberId?: never };
 
 const MemberModal = ({
   title,
@@ -44,57 +44,57 @@ const MemberModal = ({
   children,
   ...rest
 }: MemberModalType) => {
-  const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const { toast } = useToast()
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const { toast } = useToast();
   const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
-      setOpen(false)
+      setOpen(false);
       toast({
-        variant: 'default',
-        title: '🎉 Invited!',
-        description: 'You have successfully invited the stakeholder.',
-      })
-      router.refresh()
+        variant: "default",
+        title: "🎉 Invited!",
+        description: "You have successfully invited the stakeholder.",
+      });
+      router.refresh();
     },
     onError: (error) => {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         title: error.message,
-        description: '',
-      })
+        description: "",
+      });
     },
-  })
+  });
 
   const updateMember = api.member.updateMember.useMutation({
     onSuccess: () => {
-      setOpen(false)
+      setOpen(false);
       toast({
-        variant: 'default',
-        title: '🎉 Updated!',
-        description: 'You have successfully updated the stakeholder.',
-      })
-      router.refresh()
+        variant: "default",
+        title: "🎉 Updated!",
+        description: "You have successfully updated the stakeholder.",
+      });
+      router.refresh();
     },
     onError: (error) => {
       toast({
-        variant: 'destructive',
+        variant: "destructive",
         title: error.message,
-        description: '',
-      })
+        description: "",
+      });
     },
-  })
+  });
 
   const form = useForm<TypeZodInviteMemberMutationSchema>({
     resolver: zodResolver(ZodInviteMemberMutationSchema),
     defaultValues: {
-      name: member.name ?? '',
-      email: member.email ?? '',
-      title: member.title ?? '',
+      name: member.name ?? "",
+      email: member.email ?? "",
+      title: member.title ?? "",
     },
-  })
+  });
 
-  const isSubmitting = form.formState.isSubmitting
+  const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = async (values: TypeZodInviteMemberMutationSchema) => {
     try {
@@ -102,13 +102,13 @@ const MemberModal = ({
         await updateMember.mutateAsync({
           ...values,
           memberId: rest.memberId,
-        })
+        });
       } else {
-        await inviteMember.mutateAsync(values)
+        await inviteMember.mutateAsync(values);
       }
       // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
     } catch (error) {}
-  }
+  };
 
   return (
     <Modal
@@ -118,8 +118,8 @@ const MemberModal = ({
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val)
-          form.reset()
+          setOpen(val);
+          form.reset();
         },
       }}
     >
@@ -180,11 +180,11 @@ const MemberModal = ({
           <Button
             loading={isSubmitting}
             loadingText={
-              rest.isEditMode === true ? 'Updating...' : 'Sending invite...'
+              rest.isEditMode === true ? "Updating..." : "Sending invite..."
             }
             className="mt-5"
           >
-            {rest.isEditMode === true ? 'Update team member' : 'Send an invite'}
+            {rest.isEditMode === true ? "Update team member" : "Send an invite"}
           </Button>
 
           <p className="text-center text-xs text-gray-500">
@@ -194,7 +194,7 @@ const MemberModal = ({
         </form>
       </Form>
     </Modal>
-  )
-}
+  );
+};
 
-export default MemberModal
+export default MemberModal;

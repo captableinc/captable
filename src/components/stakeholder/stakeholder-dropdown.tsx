@@ -1,16 +1,16 @@
-'use client'
-import Tldr from '@/components/common/tldr'
-import MultipleStakeholdersModal from '@/components/stakeholder/multiple-stakeholders-modal'
-import SingleStakeholdersModal from '@/components/stakeholder/single-stakeholder-modal'
-import { Button } from '@/components/ui/button'
+"use client";
+import Tldr from "@/components/common/tldr";
+import MultipleStakeholdersModal from "@/components/stakeholder/multiple-stakeholders-modal";
+import SingleStakeholdersModal from "@/components/stakeholder/single-stakeholder-modal";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { RiAddFill, RiGroupLine, RiUserLine } from '@remixicon/react'
+} from "@/components/ui/dropdown-menu";
+import { RiAddFill, RiGroupLine, RiUserLine } from "@remixicon/react";
 
 export default function StakeholderDropdown() {
   return (
@@ -30,9 +30,9 @@ export default function StakeholderDropdown() {
                 message="Manage stakeholders by adding them. 
           Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                 cta={{
-                  label: 'Learn more',
+                  label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: 'https://captable.inc/help',
+                  href: "https://captable.inc/help",
                 }}
               />
             }
@@ -53,9 +53,9 @@ export default function StakeholderDropdown() {
                 message="Manage stakeholders by adding or importing them. 
           Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                 cta={{
-                  label: 'Learn more',
+                  label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: 'https://captable.inc/help',
+                  href: "https://captable.inc/help",
                 }}
               />
             }
@@ -69,5 +69,5 @@ export default function StakeholderDropdown() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

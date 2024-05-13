@@ -1,9 +1,9 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const DataRoomSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(3, {
-    message: 'Data room name is required',
+    message: "Data room name is required",
   }),
   publicId: z.string().optional(),
   public: z.boolean().default(false),
@@ -24,6 +24,6 @@ export const DataRoomSchema = z.object({
       }),
     )
     .optional(),
-})
+});
 
-export type DataRoomType = z.infer<typeof DataRoomSchema>
+export type DataRoomType = z.infer<typeof DataRoomSchema>;

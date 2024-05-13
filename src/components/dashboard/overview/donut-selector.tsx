@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   Select,
@@ -6,15 +6,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 type DonutSelectorProps = {
-  selected: string
-  onChange: (value: string) => void
-  className?: string
-}
+  selected: string;
+  onChange: (value: string) => void;
+  className?: string;
+};
 
 const DonutSelector: React.FC<DonutSelectorProps> = ({
   selected,
@@ -26,13 +26,13 @@ const DonutSelector: React.FC<DonutSelectorProps> = ({
       value={selected}
       onValueChange={async (newValue) => {
         if (newValue !== selected) {
-          onChange(newValue)
+          onChange(newValue);
         }
       }}
     >
       <SelectTrigger
         className={cn(
-          'text-normal -ml-2 h-5 w-[133px] cursor-pointer rounded border-none bg-transparent font-semibold text-primary underline',
+          "text-normal -ml-2 h-5 w-[133px] cursor-pointer rounded border-none bg-transparent font-semibold text-primary underline",
           className,
         )}
       >
@@ -43,7 +43,7 @@ const DonutSelector: React.FC<DonutSelectorProps> = ({
         <SelectItem value="stakeholder">Stakeholders</SelectItem>
       </SelectContent>
     </Select>
-  )
-}
+  );
+};
 
-export default DonutSelector
+export default DonutSelector;

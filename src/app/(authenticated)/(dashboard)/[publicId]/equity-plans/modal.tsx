@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import Modal from '@/components/common/modal'
-import { type EquityPlanMutationType } from '@/trpc/routers/equity-plan/schema'
-import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
-import { useState } from 'react'
-import EquityPlanForm from './form'
+import Modal from "@/components/common/modal";
+import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { useState } from "react";
+import EquityPlanForm from "./form";
 
 type EquityPlanType = {
-  type: string
-  title: string | React.ReactNode
-  subtitle: string | React.ReactNode
-  trigger: React.ReactNode
-  equityPlan?: EquityPlanMutationType
-  shareClasses: ShareClassMutationType[]
-}
+  type: string;
+  title: string | React.ReactNode;
+  subtitle: string | React.ReactNode;
+  trigger: React.ReactNode;
+  equityPlan?: EquityPlanMutationType;
+  shareClasses: ShareClassMutationType[];
+};
 
 const EquityPlanModal = ({
   title,
@@ -21,9 +21,9 @@ const EquityPlanModal = ({
   trigger,
   equityPlan,
   shareClasses,
-  type = 'create',
+  type = "create",
 }: EquityPlanType) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <Modal
@@ -34,7 +34,7 @@ const EquityPlanModal = ({
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val)
+          setOpen(val);
         },
       }}
     >
@@ -45,7 +45,7 @@ const EquityPlanModal = ({
         shareClasses={shareClasses}
       />
     </Modal>
-  )
-}
+  );
+};
 
-export default EquityPlanModal
+export default EquityPlanModal;

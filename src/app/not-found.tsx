@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function NotFoundPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-white">
@@ -18,5 +18,5 @@ export default function NotFoundPage() {
         Go back
       </Button>
     </div>
-  )
+  );
 }

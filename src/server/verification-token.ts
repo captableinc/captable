@@ -1,25 +1,25 @@
-import { db } from './db'
+import { db } from "./db";
 
 export const getVerificationTokenByToken = async (token: string) => {
   try {
     const verificationToken = await db.verificationToken.findUnique({
       where: { token },
-    })
+    });
 
-    return verificationToken
+    return verificationToken;
   } catch {
-    return null
+    return null;
   }
-}
+};
 
 export const getVerificationTokenByEmail = async (email: string) => {
   try {
     const verificationToken = await db.verificationToken.findFirst({
       where: { identifier: email },
-    })
+    });
 
-    return verificationToken
+    return verificationToken;
   } catch {
-    return null
+    return null;
   }
-}
+};

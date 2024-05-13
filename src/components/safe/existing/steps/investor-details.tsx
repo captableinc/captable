@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   FormControl,
@@ -6,8 +6,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -15,51 +15,51 @@ import {
   SelectItemStyle,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { api } from '@/trpc/react'
-import { SelectSeparator } from '@radix-ui/react-select'
-import * as SelectPrimitive from '@radix-ui/react-select'
-import { RiAddCircleLine } from '@remixicon/react'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
+} from "@/components/ui/select";
+import { api } from "@/trpc/react";
+import { SelectSeparator } from "@radix-ui/react-select";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import { RiAddCircleLine } from "@remixicon/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
-export const ADD_STAKEHOLDER = 'add-stakeholder'
+export const ADD_STAKEHOLDER = "add-stakeholder";
 
 export const InvestorDetailsFields = [
-  'capital',
-  'issueDate',
-  'boardApprovalDate',
-  'stakeholderId',
-  'investorName',
-  'investorEmail',
-  'investorInstitutionName',
-]
+  "capital",
+  "issueDate",
+  "boardApprovalDate",
+  "stakeholderId",
+  "investorName",
+  "investorEmail",
+  "investorInstitutionName",
+];
 
 export const InvestorDetails = () => {
-  const router = useRouter()
-  const form = useFormContext()
-  const { data: session } = useSession()
-  const stakeholders = api.stakeholder.getStakeholders.useQuery()
+  const router = useRouter();
+  const form = useFormContext();
+  const { data: session } = useSession();
+  const stakeholders = api.stakeholder.getStakeholders.useQuery();
 
-  const stakeholderId = form.watch('stakeholderId')
+  const stakeholderId = form.watch("stakeholderId");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentStakeholder = useMemo(
     () => stakeholders.data?.data?.find((sh) => sh.id === stakeholderId),
     [stakeholderId],
-  )
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    form.setValue('investorName', currentStakeholder?.name)
-    form.setValue('investorEmail', currentStakeholder?.email)
+    form.setValue("investorName", currentStakeholder?.name);
+    form.setValue("investorEmail", currentStakeholder?.email);
     form.setValue(
-      'investorInstitutionName',
-      currentStakeholder?.institutionName ?? 'No institution',
-    )
-  }, [stakeholderId])
+      "investorInstitutionName",
+      currentStakeholder?.institutionName ?? "No institution",
+    );
+  }, [stakeholderId]);
 
   return (
     <div className="grid-cols-2 space-y-4">
@@ -116,9 +116,9 @@ export const InvestorDetails = () => {
               value={field.value}
               onValueChange={(val) => {
                 if (val === ADD_STAKEHOLDER) {
-                  router.push(`/${session?.user.companyPublicId}/stakeholders`)
+                  router.push(`/${session?.user.companyPublicId}/stakeholders`);
                 } else {
-                  return form.setValue('stakeholderId', val)
+                  return form.setValue("stakeholderId", val);
                 }
               }}
             >
@@ -193,5 +193,5 @@ export const InvestorDetails = () => {
         )}
       />
     </div>
-  )
-}
+  );
+};

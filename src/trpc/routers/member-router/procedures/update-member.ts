@@ -1,20 +1,20 @@
-import { Audit } from '@/server/audit'
-import { checkMembership } from '@/server/auth'
-import { withAuth } from '@/trpc/api/trpc'
-import { ZodUpdateMemberMutationSchema } from '../schema'
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
+import { withAuth } from "@/trpc/api/trpc";
+import { ZodUpdateMemberMutationSchema } from "../schema";
 
 export const updateMemberProcedure = withAuth
   .input(ZodUpdateMemberMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
-    const { memberId, name, ...rest } = input
-    const user = session.user
+    const { memberId, name, ...rest } = input;
+    const user = session.user;
 
     await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ tx, session })
+      const { companyId } = await checkMembership({ tx, session });
 
       const member = await tx.member.update({
         where: {
-          status: 'ACTIVE',
+          status: "ACTIVE",
           id: memberId,
           companyId,
         },
@@ -34,23 +34,23 @@ export const updateMemberProcedure = withAuth
             },
           },
         },
-      })
+      });
 
       await Audit.create(
         {
-          action: 'member.updated',
+          action: "member.updated",
           companyId: user.companyId,
-          actor: { type: 'user', id: user.id },
+          actor: { type: "user", id: user.id },
           context: {
             requestIp,
             userAgent,
           },
-          target: [{ type: 'user', id: member.userId }],
+          target: [{ type: "user", id: member.userId }],
           summary: `${user.name} updated ${member.user?.name} details`,
         },
         tx,
-      )
-    })
+      );
+    });
 
-    return { success: true }
-  })
+    return { success: true };
+  });

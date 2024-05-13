@@ -2,8 +2,8 @@ import {
   getPresignedGetUrl,
   getPresignedPutUrl,
   type getPresignedUrlOptions,
-} from '@/server/file-uploads'
-import { env } from 'next-runtime-env'
+} from "@/server/file-uploads";
+import { env } from "next-runtime-env";
 /**
  * usage
  * ```js
@@ -22,36 +22,36 @@ export const uploadFile = async (
   file: File,
   options: Pick<
     getPresignedUrlOptions,
-    'expiresIn' | 'keyPrefix' | 'identifier'
+    "expiresIn" | "keyPrefix" | "identifier"
   >,
-  bucketMode: 'publicBucket' | 'privateBucket' = 'privateBucket',
+  bucketMode: "publicBucket" | "privateBucket" = "privateBucket",
 ) => {
   const { url, key, bucketUrl } = await getPresignedPutUrl({
     contentType: file.type,
     fileName: file.name,
     bucketMode,
     ...options,
-  })
-  const body = await file.arrayBuffer()
+  });
+  const body = await file.arrayBuffer();
   const res = await fetch(url, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/octet-stream',
+      "Content-Type": "application/octet-stream",
     },
     body,
-  })
+  });
   if (!res.ok) {
     throw new Error(
       `Failed to upload file "${file.name}", failed with status code ${res.status}`,
-    )
+    );
   }
 
-  const { name, type, size } = file
-  let fileUrl = bucketUrl
+  const { name, type, size } = file;
+  let fileUrl = bucketUrl;
 
-  const uploadDomain = env('NEXT_PUBLIC_UPLOAD_DOMAIN')
-  if (bucketMode === 'publicBucket' && uploadDomain) {
-    fileUrl = `${uploadDomain}/${key}`
+  const uploadDomain = env("NEXT_PUBLIC_UPLOAD_DOMAIN");
+  if (bucketMode === "publicBucket" && uploadDomain) {
+    fileUrl = `${uploadDomain}/${key}`;
   }
 
   return {
@@ -60,27 +60,27 @@ export const uploadFile = async (
     mimeType: type,
     size,
     fileUrl,
-  }
-}
+  };
+};
 
-export type TUploadFile = Awaited<ReturnType<typeof uploadFile>>
+export type TUploadFile = Awaited<ReturnType<typeof uploadFile>>;
 
 export const getFileFromS3 = async (key: string) => {
-  const { url } = await getPresignedGetUrl(key)
+  const { url } = await getPresignedGetUrl(key);
 
   const response = await fetch(url, {
-    method: 'GET',
-  })
+    method: "GET",
+  });
 
   if (!response.ok) {
     throw new Error(
       `Failed to get file "${key}", failed with status code ${response.status}`,
-    )
+    );
   }
 
-  const buffer = await response.arrayBuffer()
+  const buffer = await response.arrayBuffer();
 
-  const binaryData = new Uint8Array(buffer)
+  const binaryData = new Uint8Array(buffer);
 
-  return binaryData
-}
+  return binaryData;
+};

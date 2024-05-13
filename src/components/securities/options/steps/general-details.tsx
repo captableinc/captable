@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   FormControl,
@@ -6,44 +6,44 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { OptionStatusEnum, OptionTypeEnum } from '@/prisma/enums'
-import { useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
+} from "@/components/ui/select";
+import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
+import { useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 export const GeneralDetailsField = [
-  'grantId',
-  'grantType',
-  'quantity',
-  'status',
-]
+  "grantId",
+  "grantType",
+  "quantity",
+  "status",
+];
 
 export const GeneralDetails = () => {
-  const form = useFormContext()
+  const form = useFormContext();
 
   const types = useMemo(
     () =>
       Object.values(OptionTypeEnum).filter(
-        (value) => typeof value === 'string',
+        (value) => typeof value === "string",
       ),
     [],
-  ) as string[]
+  ) as string[];
 
   const status = useMemo(
     () =>
       Object.values(OptionStatusEnum).filter(
-        (value) => typeof value === 'string',
+        (value) => typeof value === "string",
       ),
     [],
-  ) as string[]
+  ) as string[];
 
   return (
     <div className="space-y-4">
@@ -131,5 +131,5 @@ export const GeneralDetails = () => {
         )}
       />
     </div>
-  )
-}
+  );
+};

@@ -1,20 +1,20 @@
-import { PayloadType } from '@/lib/constants'
-import { Audit } from '@/server/audit'
-import { withAuth } from '@/trpc/api/trpc'
-import { ZodUpdateProfileMutationSchema } from '../schema'
+import { PayloadType } from "@/lib/constants";
+import { Audit } from "@/server/audit";
+import { withAuth } from "@/trpc/api/trpc";
+import { ZodUpdateProfileMutationSchema } from "../schema";
 
 export const updateProfileProcedure = withAuth
   .input(ZodUpdateProfileMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
-    const user = session.user
+    const user = session.user;
 
     if (input.type === PayloadType.PROFILE_DATA) {
-      const { fullName, loginEmail, workEmail, jobTitle } = input.payload
+      const { fullName, loginEmail, workEmail, jobTitle } = input.payload;
 
       await db.$transaction(async (tx) => {
         const member = await tx.member.update({
           where: {
-            status: 'ACTIVE',
+            status: "ACTIVE",
             id: user.memberId,
             companyId: user.companyId,
           },
@@ -36,34 +36,34 @@ export const updateProfileProcedure = withAuth
               },
             },
           },
-        })
+        });
 
         await Audit.create(
           {
-            action: 'member.updated',
+            action: "member.updated",
             companyId: user.companyId,
-            actor: { type: 'user', id: user.id },
+            actor: { type: "user", id: user.id },
             context: {
               requestIp,
               userAgent,
             },
-            target: [{ type: 'user', id: member.userId }],
+            target: [{ type: "user", id: member.userId }],
             summary: `${user.name} updated the profile information.`,
           },
           tx,
-        )
-      })
+        );
+      });
 
-      return { success: true }
+      return { success: true };
     }
 
     if (input.type === PayloadType.PROFILE_AVATAR) {
-      const { avatarUrl } = input.payload
+      const { avatarUrl } = input.payload;
 
       await db.$transaction(async (tx) => {
         const member = await tx.member.update({
           where: {
-            status: 'ACTIVE',
+            status: "ACTIVE",
             id: user.memberId,
             companyId: user.companyId,
           },
@@ -82,24 +82,24 @@ export const updateProfileProcedure = withAuth
               },
             },
           },
-        })
+        });
 
         await Audit.create(
           {
-            action: 'member.updated',
+            action: "member.updated",
             companyId: user.companyId,
-            actor: { type: 'user', id: user.id },
+            actor: { type: "user", id: user.id },
             context: {
               requestIp,
               userAgent,
             },
-            target: [{ type: 'user', id: member.userId }],
+            target: [{ type: "user", id: member.userId }],
             summary: `${user.name} uploaded new profile image.`,
           },
           tx,
-        )
-      })
+        );
+      });
 
-      return { success: true }
+      return { success: true };
     }
-  })
+  });

@@ -1,29 +1,29 @@
-import { Input } from '@/components/ui/input'
+import { Input } from "@/components/ui/input";
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Checkbox } from '@/components/ui/checkbox'
+} from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form'
-import { type TemplateFieldForm } from '@/providers/template-field-provider'
-import { useFormContext } from 'react-hook-form'
+} from "@/components/ui/form";
+import { type TemplateFieldForm } from "@/providers/template-field-provider";
+import { useFormContext } from "react-hook-form";
 
 interface CustomTextFieldRendererProps {
-  index: number
+  index: number;
 }
 
 export function CustomTextFieldRenderer({
   index,
 }: CustomTextFieldRendererProps) {
-  const { control } = useFormContext<TemplateFieldForm>()
+  const { control } = useFormContext<TemplateFieldForm>();
 
   return (
     <Accordion type="single" collapsible>
@@ -67,5 +67,5 @@ export function CustomTextFieldRenderer({
         </AccordionContent>
       </AccordionItem>
     </Accordion>
-  )
+  );
 }

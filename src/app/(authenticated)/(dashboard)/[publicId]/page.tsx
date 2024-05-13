@@ -1,17 +1,17 @@
-import ActivitiesCard from '@/components/dashboard/overview/activities-card'
-import DonutCard from '@/components/dashboard/overview/donut-card'
-import SummaryTable from '@/components/dashboard/overview/summary-table'
-import OverviewCard from '@/components/dashboard/overview/top-card'
-import { type Metadata } from 'next'
+import ActivitiesCard from "@/components/dashboard/overview/activities-card";
+import DonutCard from "@/components/dashboard/overview/donut-card";
+import SummaryTable from "@/components/dashboard/overview/summary-table";
+import OverviewCard from "@/components/dashboard/overview/top-card";
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Overview',
-}
+  title: "Overview",
+};
 
 const OverviewPage = ({
   params: { publicId },
 }: {
-  params: { publicId: string }
+  params: { publicId: string };
 }) => {
   return (
     <>
@@ -62,7 +62,7 @@ const OverviewPage = ({
         <SummaryTable />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default OverviewPage
+export default OverviewPage;

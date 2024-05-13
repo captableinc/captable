@@ -1,11 +1,11 @@
-import EmptyState from '@/components/common/empty-state'
-import { Button } from '@/components/ui/button'
-import { RiPieChartFill } from '@remixicon/react'
-import { type Metadata } from 'next'
+import EmptyState from "@/components/common/empty-state";
+import { Button } from "@/components/ui/button";
+import { RiPieChartFill } from "@remixicon/react";
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Investments',
-}
+  title: "Investments",
+};
 
 const InvestmentsPage = () => {
   return (
@@ -16,7 +16,7 @@ const InvestmentsPage = () => {
     >
       <Button size="lg">Coming soon...</Button>
     </EmptyState>
-  )
-}
+  );
+};
 
-export default InvestmentsPage
+export default InvestmentsPage;

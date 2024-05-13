@@ -1,11 +1,11 @@
-import EmptyState from '@/components/common/empty-state'
-import { Button } from '@/components/ui/button'
-import { RiPieChartFill } from '@remixicon/react'
-import { type Metadata } from 'next'
+import EmptyState from "@/components/common/empty-state";
+import { Button } from "@/components/ui/button";
+import { RiPieChartFill } from "@remixicon/react";
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Cap table',
-}
+  title: "Cap table",
+};
 
 const CaptablePage = () => {
   return (
@@ -16,7 +16,7 @@ const CaptablePage = () => {
     >
       <Button size="lg">Import existing captable</Button>
     </EmptyState>
-  )
-}
+  );
+};
 
-export default CaptablePage
+export default CaptablePage;

@@ -15,7 +15,7 @@
     "postinstall": "prisma generate",
     "lint": "biome check --apply ./src",
     "start": "next start",
-    "format": "prettier --write \"**/*.{css,js,json,jsx,ts,tsx}\" && npx prisma format",
+    "format": "biome format --write ./src && npx prisma format",
     "email:dev": "mailpit",
     "email:preview": "email preview ./src/emails",
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",

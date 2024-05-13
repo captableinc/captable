@@ -1,10 +1,10 @@
-import { type Metadata } from 'next'
+import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Billing',
-}
+  title: "Billing",
+};
 const BillingPage = () => {
-  return <div>Billing page</div>
-}
+  return <div>Billing page</div>;
+};
 
-export default BillingPage
+export default BillingPage;

@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { PageLayout } from '@/components/dashboard/page-layout'
-import { NavLink } from '@/components/dashboard/sidebar/nav-link'
-import { Card } from '@/components/ui/card'
+import { PageLayout } from "@/components/dashboard/page-layout";
+import { NavLink } from "@/components/dashboard/sidebar/nav-link";
+import { Card } from "@/components/ui/card";
 import {
   RiAccountCircleFill,
   RiAccountCircleLine,
@@ -14,50 +14,50 @@ import {
   RiGroup2Line,
   RiNotificationFill,
   RiNotificationLine,
-} from '@remixicon/react'
-import { useSession } from 'next-auth/react'
-import { usePathname } from 'next/navigation'
+} from "@remixicon/react";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 const companyNav = [
   {
-    name: 'Company',
-    href: '/settings/company',
+    name: "Company",
+    href: "/settings/company",
     icon: RiBuildingLine,
     activeIcon: RiBuildingFill,
   },
   {
-    name: 'Team',
-    href: '/settings/team',
+    name: "Team",
+    href: "/settings/team",
     icon: RiGroup2Line,
     activeIcon: RiGroup2Fill,
   },
   {
-    name: 'Billing',
-    href: '/settings/billing',
+    name: "Billing",
+    href: "/settings/billing",
     icon: RiBankCardLine,
     activeIcon: RiBankCardFill,
   },
-]
+];
 
 const accountNav = [
   {
-    name: 'Profile',
-    href: '/settings/profile',
+    name: "Profile",
+    href: "/settings/profile",
     icon: RiAccountCircleLine,
     activeIcon: RiAccountCircleFill,
   },
   {
-    name: 'Notifications',
-    href: '/settings/notifications',
+    name: "Notifications",
+    href: "/settings/notifications",
     icon: RiNotificationLine,
     activeIcon: RiNotificationFill,
   },
-]
+];
 
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
-  const currentPath = usePathname()
-  const { data } = useSession()
-  const companyPublicId = data?.user.companyPublicId
+  const currentPath = usePathname();
+  const { data } = useSession();
+  const companyPublicId = data?.user.companyPublicId;
 
   return (
     <PageLayout title="Settings">
@@ -65,8 +65,8 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="col-span-12 md:col-span-3">
           <ul role="list" className="text-sm">
             {companyNav.map((item) => {
-              const href = `/${companyPublicId}${item.href}`
-              const isActive = currentPath === href
+              const href = `/${companyPublicId}${item.href}`;
+              const isActive = currentPath === href;
 
               return (
                 <li key={item.name} className="rounded py-1">
@@ -77,7 +77,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     icon={isActive ? item.activeIcon : item.icon}
                   />
                 </li>
-              )
+              );
             })}
 
             <div className="mt-3 text-xs font-semibold leading-6 text-gray-400">
@@ -85,8 +85,8 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             {accountNav.map((item) => {
-              const href = `/${companyPublicId}${item.href}`
-              const isActive = currentPath === href
+              const href = `/${companyPublicId}${item.href}`;
+              const isActive = currentPath === href;
 
               return (
                 <li key={item.name} className="rounded py-1">
@@ -97,7 +97,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     icon={isActive ? item.activeIcon : item.icon}
                   />
                 </li>
-              )
+              );
             })}
           </ul>
         </div>
@@ -106,7 +106,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </div>
     </PageLayout>
-  )
-}
+  );
+};
 
-export default SettingsLayout
+export default SettingsLayout;

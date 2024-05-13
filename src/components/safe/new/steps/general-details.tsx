@@ -1,32 +1,32 @@
-import { Checkbox } from '@/components/ui/checkbox'
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { SafeTemplateEnum } from '@/prisma/enums'
-import { useFormContext } from 'react-hook-form'
+} from "@/components/ui/select";
+import { SafeTemplateEnum } from "@/prisma/enums";
+import { useFormContext } from "react-hook-form";
 
 export const GeneralDetailsFields = [
-  'safeId',
-  'safeTemplate',
-  'valuationCap',
-  'discountRate',
-  'proRata',
-]
+  "safeId",
+  "safeTemplate",
+  "valuationCap",
+  "discountRate",
+  "proRata",
+];
 
 export const GeneralDetails = () => {
-  const form = useFormContext()
+  const form = useFormContext();
 
   return (
     <div className="space-y-4">
@@ -79,7 +79,7 @@ export const GeneralDetails = () => {
             <FormLabel>Valuation cap</FormLabel>
             <FormControl>
               <Input
-                type={'text'}
+                type={"text"}
                 {...field}
                 onChange={(e) => field.onChange(parseFloat(e.target.value))}
               />
@@ -125,5 +125,5 @@ export const GeneralDetails = () => {
         )}
       />
     </div>
-  )
-}
+  );
+};

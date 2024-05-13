@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import Modal from '@/components/common/modal'
-import Uploader, { type UploadReturn } from '@/components/ui/uploader'
-import { api } from '@/trpc/react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import Modal from "@/components/common/modal";
+import Uploader, { type UploadReturn } from "@/components/ui/uploader";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type DocumentUploadModalProps = {
-  trigger: React.ReactNode
-  companyPublicId: string
-}
+  trigger: React.ReactNode;
+  companyPublicId: string;
+};
 
 const DocumentUploadModal = ({
   trigger,
   companyPublicId,
 }: DocumentUploadModalProps) => {
-  const router = useRouter()
-  const [open, setOpen] = useState(false)
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
 
-  const { mutateAsync } = api.document.create.useMutation()
+  const { mutateAsync } = api.document.create.useMutation();
 
   return (
     <Modal
@@ -28,7 +28,7 @@ const DocumentUploadModal = ({
       dialogProps={{
         open,
         onOpenChange: (val) => {
-          setOpen(val)
+          setOpen(val);
         },
       }}
     >
@@ -39,14 +39,14 @@ const DocumentUploadModal = ({
           await mutateAsync({
             name: uploadedData.name,
             bucketId: uploadedData.id,
-          })
+          });
 
-          router.refresh()
-          setOpen(false)
+          router.refresh();
+          setOpen(false);
         }}
       />
     </Modal>
-  )
-}
+  );
+};
 
-export default DocumentUploadModal
+export default DocumentUploadModal;

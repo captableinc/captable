@@ -1,13 +1,13 @@
-import { RiInformationLine } from '@remixicon/react'
-import Link from 'next/link'
+import { RiInformationLine } from "@remixicon/react";
+import Link from "next/link";
 
 type TldrProps = {
-  message: string
+  message: string;
   cta: {
-    label: string
-    href: string
-  }
-}
+    label: string;
+    href: string;
+  };
+};
 
 const Tldr = ({ message, cta }: TldrProps) => {
   return (
@@ -40,7 +40,7 @@ const Tldr = ({ message, cta }: TldrProps) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Tldr
+export default Tldr;

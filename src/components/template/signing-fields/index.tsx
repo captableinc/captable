@@ -1,15 +1,15 @@
-import { Button } from '@/components/ui/button'
-import { type RouterOutputs } from '@/trpc/shared'
-import { SigningFieldForm } from '../signing-field-form'
-import { FieldRenderer } from './field-renderer'
+import { Button } from "@/components/ui/button";
+import { type RouterOutputs } from "@/trpc/shared";
+import { SigningFieldForm } from "../signing-field-form";
+import { FieldRenderer } from "./field-renderer";
 
-type Fields = RouterOutputs['template']['getSigningFields']['fields']
+type Fields = RouterOutputs["template"]["getSigningFields"]["fields"];
 
 interface SigningFieldsProps {
-  fields: Fields
-  companyPublicId: string | undefined
-  recipientId: string
-  templateId: string
+  fields: Fields;
+  companyPublicId: string | undefined;
+  recipientId: string;
+  templateId: string;
 }
 
 export function SigningFields({
@@ -39,5 +39,5 @@ export function SigningFields({
 
       <Button type="submit">Complete signing</Button>
     </SigningFieldForm>
-  )
+  );
 }

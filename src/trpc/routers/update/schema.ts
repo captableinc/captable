@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const UpdateMutationSchema = z.object({
   id: z.string().optional(),
@@ -8,6 +8,6 @@ export const UpdateMutationSchema = z.object({
   html: z.string(),
   isPublic: z.boolean().optional(),
   recipients: z.array(z.string()).optional(),
-})
+});
 
-export type UpdateMutationType = z.infer<typeof UpdateMutationSchema>
+export type UpdateMutationType = z.infer<typeof UpdateMutationSchema>;

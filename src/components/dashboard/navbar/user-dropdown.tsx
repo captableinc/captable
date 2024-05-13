@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,26 +11,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { signOut, useSession } from 'next-auth/react'
-import Link from 'next/link'
+} from "@/components/ui/dropdown-menu";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 type UserDropdownProps = {
-  companyPublicId: string
-}
+  companyPublicId: string;
+};
 
 export function UserDropdown({ companyPublicId }: UserDropdownProps) {
-  const { data } = useSession()
-  const name = data?.user.name
-  const email = data?.user.email
-  const image = data?.user.image
+  const { data } = useSession();
+  const name = data?.user.name;
+  const email = data?.user.email;
+  const image = data?.user.image;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9 rounded-full">
-            <AvatarImage src={image || '/placeholders/user.svg'} />
+            <AvatarImage src={image || "/placeholders/user.svg"} />
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -67,7 +67,7 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {
-            await signOut()
+            await signOut();
           }}
         >
           Sign out
@@ -75,5 +75,5 @@ export function UserDropdown({ companyPublicId }: UserDropdownProps) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

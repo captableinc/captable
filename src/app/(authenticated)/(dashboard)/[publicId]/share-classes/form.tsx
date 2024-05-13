@@ -1,21 +1,21 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useToast } from '@/components/ui/use-toast'
-import { api } from '@/trpc/react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { NumericFormat } from 'react-number-format'
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import {
   ShareClassMutationSchema,
   type ShareClassMutationType,
-} from '@/trpc/routers/share-class/schema'
+} from "@/trpc/routers/share-class/schema";
 
 import {
   Select,
@@ -25,7 +25,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 
 import {
   Form,
@@ -34,26 +34,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
-const formSchema = ShareClassMutationSchema
+const formSchema = ShareClassMutationSchema;
 
 type ShareClassFormType = {
-  type?: string
-  className?: string
-  setOpen: (val: boolean) => void
-  shareClass?: ShareClassMutationType
-  shareClasses: ShareClassMutationType[]
-}
+  type?: string;
+  className?: string;
+  setOpen: (val: boolean) => void;
+  shareClass?: ShareClassMutationType;
+  shareClasses: ShareClassMutationType[];
+};
 
 const ShareClassForm = ({
   setOpen,
-  type = 'create',
+  type = "create",
   shareClasses,
   shareClass = {
-    id: '',
-    name: '',
-    classType: 'COMMON',
+    id: "",
+    name: "",
+    classType: "COMMON",
     initialSharesAuthorized: 0,
     boardApprovalDate: new Date(),
     stockholderApprovalDate: new Date(),
@@ -61,8 +61,8 @@ const ShareClassForm = ({
     parValue: 0,
     pricePerShare: 0,
     seniority: 0,
-    conversionRights: 'CONVERTS_TO_FUTURE_ROUND',
-    convertsToShareClassId: '',
+    conversionRights: "CONVERTS_TO_FUTURE_ROUND",
+    convertsToShareClassId: "",
     liquidationPreferenceMultiple: 0,
     participationCapMultiple: 0,
   },
@@ -70,60 +70,60 @@ const ShareClassForm = ({
   const form = useForm<ShareClassMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: shareClass,
-  })
+  });
 
-  const { watch } = form
-  const router = useRouter()
-  const { toast } = useToast()
-  const isSubmitting = form.formState.isSubmitting
-  const watchConversionRights = watch('conversionRights') as string
-  const [renderShareClassInput, setRenderShareClassInput] = useState(false)
+  const { watch } = form;
+  const router = useRouter();
+  const { toast } = useToast();
+  const isSubmitting = form.formState.isSubmitting;
+  const watchConversionRights = watch("conversionRights") as string;
+  const [renderShareClassInput, setRenderShareClassInput] = useState(false);
 
   useEffect(() => {
-    if (watchConversionRights === 'CONVERTS_TO_SHARE_CLASS_ID') {
-      setRenderShareClassInput(true)
+    if (watchConversionRights === "CONVERTS_TO_SHARE_CLASS_ID") {
+      setRenderShareClassInput(true);
     } else {
-      setRenderShareClassInput(false)
+      setRenderShareClassInput(false);
     }
-  }, [watchConversionRights])
+  }, [watchConversionRights]);
 
   const createMutation = api.shareClass.create.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
-        variant: success ? 'default' : 'destructive',
+        variant: success ? "default" : "destructive",
         title: success
-          ? '🎉 Successfully created'
-          : 'Uh oh! Something went wrong.',
+          ? "🎉 Successfully created"
+          : "Uh oh! Something went wrong.",
         description: message,
-      })
+      });
 
-      form.reset()
-      setOpen(false)
-      router.refresh()
+      form.reset();
+      setOpen(false);
+      router.refresh();
     },
-  })
+  });
 
   const updateMutation = api.shareClass.update.useMutation({
     onSuccess: async ({ success, message }) => {
       toast({
-        variant: success ? 'default' : 'destructive',
+        variant: success ? "default" : "destructive",
         title: success
-          ? '🎉 Successfully updated'
-          : 'Uh oh! Something went wrong.',
+          ? "🎉 Successfully updated"
+          : "Uh oh! Something went wrong.",
         description: message,
-      })
+      });
 
-      form.reset()
-      setOpen(false)
-      router.refresh()
+      form.reset();
+      setOpen(false);
+      router.refresh();
     },
-  })
+  });
 
   const onSubmit = async (values: ShareClassMutationType) => {
-    type === 'create'
+    type === "create"
       ? await createMutation.mutateAsync(values)
-      : await updateMutation.mutateAsync(values)
-  }
+      : await updateMutation.mutateAsync(values);
+  };
 
   return (
     <Form {...form}>
@@ -177,7 +177,7 @@ const ShareClassForm = ({
               control={form.control}
               name="initialSharesAuthorized"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Authorized shares</FormLabel>
@@ -188,14 +188,14 @@ const ShareClassForm = ({
                         decimalScale={0}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -213,8 +213,8 @@ const ShareClassForm = ({
                       {...field}
                       value={
                         field.value
-                          ? new Date(field.value).toISOString().split('T')[0]
-                          : ''
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
                       }
                     />
                   </FormControl>
@@ -237,8 +237,8 @@ const ShareClassForm = ({
                       {...field}
                       value={
                         field.value
-                          ? new Date(field.value).toISOString().split('T')[0]
-                          : ''
+                          ? new Date(field.value).toISOString().split("T")[0]
+                          : ""
                       }
                     />
                   </FormControl>
@@ -253,26 +253,26 @@ const ShareClassForm = ({
               control={form.control}
               name="votesPerShare"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Votes per share</FormLabel>
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        allowedDecimalSeparators={['%']}
+                        allowedDecimalSeparators={["%"]}
                         decimalScale={2}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -282,27 +282,27 @@ const ShareClassForm = ({
               control={form.control}
               name="parValue"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Par value</FormLabel>
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        allowedDecimalSeparators={['%']}
+                        allowedDecimalSeparators={["%"]}
                         decimalScale={2}
-                        prefix={'$  '}
+                        prefix={"$  "}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -312,27 +312,27 @@ const ShareClassForm = ({
               control={form.control}
               name="pricePerShare"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Price per share</FormLabel>
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        allowedDecimalSeparators={['%']}
+                        allowedDecimalSeparators={["%"]}
                         decimalScale={2}
-                        prefix={'$  '}
+                        prefix={"$  "}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -342,7 +342,7 @@ const ShareClassForm = ({
               control={form.control}
               name="seniority"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Seniority</FormLabel>
@@ -353,14 +353,14 @@ const ShareClassForm = ({
                         decimalScale={0}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -370,26 +370,26 @@ const ShareClassForm = ({
               control={form.control}
               name="liquidationPreferenceMultiple"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Liquidation preference multiple</FormLabel>
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        allowedDecimalSeparators={['%']}
+                        allowedDecimalSeparators={["%"]}
                         decimalScale={2}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -399,26 +399,26 @@ const ShareClassForm = ({
               control={form.control}
               name="participationCapMultiple"
               render={({ field }) => {
-                const { onChange, ...rest } = field
+                const { onChange, ...rest } = field;
                 return (
                   <FormItem>
                     <FormLabel>Participation cap multiple</FormLabel>
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        allowedDecimalSeparators={['%']}
+                        allowedDecimalSeparators={["%"]}
                         decimalScale={2}
                         {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
-                          const { floatValue } = values
-                          onChange(floatValue)
+                          const { floatValue } = values;
+                          onChange(floatValue);
                         }}
                       />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
-                )
+                );
               }}
             />
           </div>
@@ -484,8 +484,8 @@ const ShareClassForm = ({
                             <SelectGroup>
                               <SelectLabel>
                                 {shareClasses.length > 0
-                                  ? 'Share classes'
-                                  : 'No share classes'}
+                                  ? "Share classes"
+                                  : "No share classes"}
                               </SelectLabel>
 
                               {shareClasses.map((shareClass) => (
@@ -517,15 +517,15 @@ const ShareClassForm = ({
           >
             {
               {
-                create: 'Create share class',
-                update: 'Update share class',
+                create: "Create share class",
+                update: "Update share class",
               }[type]
             }
           </Button>
         </div>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default ShareClassForm
+export default ShareClassForm;

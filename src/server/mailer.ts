@@ -3,12 +3,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import { env } from '@/env'
-import { type SendMailOptions, createTransport } from 'nodemailer'
+import { env } from "@/env";
+import { type SendMailOptions, createTransport } from "nodemailer";
 
 const getTransport = () => {
   if (env.EMAIL_SERVER) {
-    return createTransport(env.EMAIL_SERVER)
+    return createTransport(env.EMAIL_SERVER);
   }
 
   return createTransport({
@@ -22,13 +22,13 @@ const getTransport = () => {
           pass: env.EMAIL_SERVER_PASSWORD,
         },
       }),
-  })
-}
+  });
+};
 
-export const sendMail = (options: Omit<SendMailOptions, 'from'>) => {
-  const transport = getTransport()
+export const sendMail = (options: Omit<SendMailOptions, "from">) => {
+  const transport = getTransport();
   return transport.sendMail({
     from: env.EMAIL_FROM,
     ...options,
-  })
-}
+  });
+};

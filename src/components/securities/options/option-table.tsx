@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   type ColumnDef,
@@ -12,11 +12,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table'
-import * as React from 'react'
+} from "@tanstack/react-table";
+import * as React from "react";
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,38 +24,38 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 
-import { api } from '@/trpc/react'
+import { api } from "@/trpc/react";
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { DataTable } from '@/components/ui/data-table/data-table'
-import { DataTableBody } from '@/components/ui/data-table/data-table-body'
-import { SortButton } from '@/components/ui/data-table/data-table-buttons'
-import { DataTableContent } from '@/components/ui/data-table/data-table-content'
-import { DataTableHeader } from '@/components/ui/data-table/data-table-header'
-import { DataTablePagination } from '@/components/ui/data-table/data-table-pagination'
-import { useToast } from '@/components/ui/use-toast'
-import { getPresignedGetUrl } from '@/server/file-uploads'
-import { type RouterOutputs } from '@/trpc/shared'
-import { RiFileDownloadLine, RiMoreLine } from '@remixicon/react'
-import { useRouter } from 'next/navigation'
-import { OptionTableToolbar } from './option-table-toolbar'
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { useToast } from "@/components/ui/use-toast";
+import { getPresignedGetUrl } from "@/server/file-uploads";
+import { type RouterOutputs } from "@/trpc/shared";
+import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { OptionTableToolbar } from "./option-table-toolbar";
 
-type Option = RouterOutputs['securities']['getOptions']['data']
+type Option = RouterOutputs["securities"]["getOptions"]["data"];
 
 type OptionsType = {
-  options: Option
-}
+  options: Option;
+};
 
 export const columns: ColumnDef<Option[number]>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -72,20 +72,20 @@ export const columns: ColumnDef<Option[number]>[] = [
     enableHiding: false,
   },
   {
-    id: 'stakeholderName',
+    id: "stakeholderName",
     header: ({ column }) => {
       return (
         <SortButton
           label="Stakeholder"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     accessorFn: (row) => row?.stakeholder?.name,
     cell: ({ row }) => (
       <div className="flex">
         <Avatar className="rounded-full">
-          <AvatarImage src={'/placeholders/user.svg'} />
+          <AvatarImage src={"/placeholders/user.svg"} />
         </Avatar>
         <div className=" ml-2 pt-2">
           <p>{row?.original?.stakeholder?.name}</p>
@@ -94,111 +94,111 @@ export const columns: ColumnDef<Option[number]>[] = [
     ),
   },
   {
-    accessorKey: 'quantity',
+    accessorKey: "quantity",
     header: ({ column }) => {
       return (
         <SortButton
           label="Quantity"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('quantity')}</div>
+      <div className="text-left">{row.getValue("quantity")}</div>
     ),
   },
   {
-    accessorKey: 'grantId',
+    accessorKey: "grantId",
     header: ({ column }) => {
       return (
         <SortButton
           label="GrantId"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('grantId')}</div>
+      <div className="text-left">{row.getValue("grantId")}</div>
     ),
   },
   {
-    accessorKey: 'exercisePrice',
+    accessorKey: "exercisePrice",
     header: ({ column }) => {
       return (
         <SortButton
           label="Exercise Price"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('exercisePrice')}</div>
+      <div className="text-left">{row.getValue("exercisePrice")}</div>
     ),
   },
   {
-    accessorKey: 'type',
+    accessorKey: "type",
     header: ({ column }) => {
       return (
         <SortButton
           label="Type"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
-    cell: ({ row }) => <div className="text-left">{row.getValue('type')}</div>,
+    cell: ({ row }) => <div className="text-left">{row.getValue("type")}</div>,
   },
   {
-    accessorKey: 'status',
+    accessorKey: "status",
     header: ({ column }) => {
       return (
         <SortButton
           label="Status"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
-      <div className="text-left">{row.getValue('status')}</div>
+      <div className="text-left">{row.getValue("status")}</div>
     ),
   },
   {
-    accessorKey: 'issueDate',
+    accessorKey: "issueDate",
     header: ({ column }) => {
       return (
         <SortButton
           label="Issue Date"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => (
       <div className="text-left">
-        {new Date().toLocaleDateString(row.getValue('issueDate'))}
+        {new Date().toLocaleDateString(row.getValue("issueDate"))}
       </div>
     ),
   },
   {
-    id: 'Documents',
+    id: "Documents",
     enableHiding: false,
     header: ({ column }) => {
       return (
         <SortButton
           label="Documents"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     cell: ({ row }) => {
       const openFileOnTab = async (key: string) => {
-        const fileUrl = await getPresignedGetUrl(key)
-        window.open(fileUrl.url, '_blank')
-      }
+        const fileUrl = await getPresignedGetUrl(key);
+        window.open(fileUrl.url, "_blank");
+      };
 
       return (
         <DropdownMenu>
           <div className="items-end justify-end text-right">
             <DropdownMenuTrigger className="outline-none" asChild>
-              <Button variant={'outline'} className="h-7 w-12 px-2">
+              <Button variant={"outline"} className="h-7 w-12 px-2">
                 View
               </Button>
             </DropdownMenuTrigger>
@@ -210,7 +210,7 @@ export const columns: ColumnDef<Option[number]>[] = [
                 key={doc.id}
                 className="hover:cursor-pointer"
                 onClick={async () => {
-                  await openFileOnTab(doc.bucket.key)
+                  await openFileOnTab(doc.bucket.key);
                 }}
               >
                 <RiFileDownloadLine
@@ -225,43 +225,43 @@ export const columns: ColumnDef<Option[number]>[] = [
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
   {
-    id: 'actions',
+    id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const router = useRouter()
+      const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const option = row.original
+      const option = row.original;
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast()
+      const { toast } = useToast();
 
       const deleteOptionMutation = api.securities.deleteOption.useMutation({
         onSuccess: () => {
           toast({
-            variant: 'default',
-            title: '🎉 Successfully deleted',
-            description: 'Stock option for stakeholder deleted',
-          })
-          router.refresh()
+            variant: "default",
+            title: "🎉 Successfully deleted",
+            description: "Stock option for stakeholder deleted",
+          });
+          router.refresh();
         },
         onError: () => {
           toast({
-            variant: 'destructive',
-            title: 'Failed deletion',
-            description: 'Stock option for stakeholder could not be deleted',
-          })
+            variant: "destructive",
+            title: "Failed deletion",
+            description: "Stock option for stakeholder could not be deleted",
+          });
         },
-      })
+      });
 
-      const deleteAction = 'Delete Option'
+      const deleteAction = "Delete Option";
 
       const handleDeleteOption = async () => {
-        await deleteOptionMutation.mutateAsync({ optionId: option.id })
-      }
+        await deleteOptionMutation.mutateAsync({ optionId: option.id });
+      };
 
       return (
         <DropdownMenu>
@@ -291,19 +291,19 @@ export const columns: ColumnDef<Option[number]>[] = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
 const OptionTable = ({ options }: OptionsType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data: options ?? [],
@@ -325,7 +325,7 @@ const OptionTable = ({ options }: OptionsType) => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full p-6">
@@ -338,7 +338,7 @@ const OptionTable = ({ options }: OptionsType) => {
         <DataTablePagination />
       </DataTable>
     </div>
-  )
-}
+  );
+};
 
-export default OptionTable
+export default OptionTable;

@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { DropdownButton } from '@/components/ui/dropdown-button'
-import { api } from '@/trpc/react'
-import { RiAddFill } from '@remixicon/react'
-import { useRouter } from 'next/navigation'
-import { Fragment } from 'react'
-import CreateExistingSafe from './existing/modal'
-import CreateNewSafeModal from './new/modal'
+import { Button } from "@/components/ui/button";
+import { DropdownButton } from "@/components/ui/dropdown-button";
+import { api } from "@/trpc/react";
+import { RiAddFill } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { Fragment } from "react";
+import CreateExistingSafe from "./existing/modal";
+import CreateNewSafeModal from "./new/modal";
 
 interface SafeActionsProps {
-  companyPublicId: string
+  companyPublicId: string;
 }
 
 const SafeActions = ({ companyPublicId }: SafeActionsProps) => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const { mutateAsync } = api.template.create.useMutation()
+  const { mutateAsync } = api.template.create.useMutation();
 
   return (
     <DropdownButton
@@ -54,7 +54,7 @@ const SafeActions = ({ companyPublicId }: SafeActionsProps) => {
         </li>
       </ul>
     </DropdownButton>
-  )
-}
+  );
+};
 
-export default SafeActions
+export default SafeActions;

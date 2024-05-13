@@ -1,14 +1,14 @@
-import { createTRPCRouter } from '@/trpc/api/trpc'
-import { cloneUpdateProcedure } from './procedures/clone-update'
+import { createTRPCRouter } from "@/trpc/api/trpc";
+import { cloneUpdateProcedure } from "./procedures/clone-update";
 import {
   getRecipientsProcedure,
   getUpdatesProcedure,
-} from './procedures/get-updates'
-import { saveUpdateProcedure } from './procedures/save-update'
+} from "./procedures/get-updates";
+import { saveUpdateProcedure } from "./procedures/save-update";
 import {
   shareUpdateProcedure,
   unshareUpdateProcedure,
-} from './procedures/share-update'
+} from "./procedures/share-update";
 
 export const updateRouter = createTRPCRouter({
   save: saveUpdateProcedure,
@@ -17,4 +17,4 @@ export const updateRouter = createTRPCRouter({
   clone: cloneUpdateProcedure,
   share: shareUpdateProcedure,
   unShare: unshareUpdateProcedure,
-})
+});

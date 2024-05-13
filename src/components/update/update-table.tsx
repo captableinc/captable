@@ -1,22 +1,22 @@
-'use client'
+"use client";
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { DataTable } from '@/components/ui/data-table/data-table'
-import { DataTableBody } from '@/components/ui/data-table/data-table-body'
-import { SortButton } from '@/components/ui/data-table/data-table-buttons'
-import { DataTableContent } from '@/components/ui/data-table/data-table-content'
-import { DataTableHeader } from '@/components/ui/data-table/data-table-header'
-import { DataTablePagination } from '@/components/ui/data-table/data-table-pagination'
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { type RouterOutputs } from '@/trpc/shared'
-import { RiAddCircleLine } from '@remixicon/react'
+} from "@/components/ui/dropdown-menu";
+import { type RouterOutputs } from "@/trpc/shared";
+import { RiAddCircleLine } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -29,35 +29,35 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-import React from 'react'
-import { UpdateTableToolbar } from './update-table-toolbar'
+} from "@tanstack/react-table";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import React from "react";
+import { UpdateTableToolbar } from "./update-table-toolbar";
 
-type Update = RouterOutputs['update']['get']['data']
+type Update = RouterOutputs["update"]["get"]["data"];
 
 type UpdateTableType = {
-  updates: Update
-}
+  updates: Update;
+};
 
 const getUpdateStatus = (status: string) => {
   switch (status) {
-    case 'DRAFT':
-      return <Badge variant="warning">Draft</Badge>
-    case 'PUBLIC':
-      return <Badge variant="success">Public</Badge>
-    case 'PRIVATE':
-      return <Badge variant="outline">Private</Badge>
+    case "DRAFT":
+      return <Badge variant="warning">Draft</Badge>;
+    case "PUBLIC":
+      return <Badge variant="success">Public</Badge>;
+    case "PRIVATE":
+      return <Badge variant="outline">Private</Badge>;
   }
-}
+};
 
 const UpdateActions = (row: {
-  original: { publicId: string; status: string }
+  original: { publicId: string; status: string };
 }) => {
-  const { publicId, status } = row.original
-  const { data } = useSession()
-  const companyPublicId = data?.user.companyPublicId
+  const { publicId, status } = row.original;
+  const { data } = useSession();
+  const companyPublicId = data?.user.companyPublicId;
 
   return (
     <DropdownMenu>
@@ -68,7 +68,7 @@ const UpdateActions = (row: {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        {status === 'DRAFT' && (
+        {status === "DRAFT" && (
           <DropdownMenuItem>
             <Link href={`/${companyPublicId}/updates/${publicId}`}>
               Edit this update
@@ -76,24 +76,24 @@ const UpdateActions = (row: {
           </DropdownMenuItem>
         )}
         <DropdownMenuItem>Share this update</DropdownMenuItem>
-        {status !== 'DRAFT' && (
+        {status !== "DRAFT" && (
           <DropdownMenuItem>
-            {status === 'PUBLIC' ? 'Make it private' : 'Make it public'}
+            {status === "PUBLIC" ? "Make it private" : "Make it public"}
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};
 
 export const columns: ColumnDef<Update[number]>[] = [
   {
-    id: 'select',
+    id: "select",
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
+          (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -110,44 +110,44 @@ export const columns: ColumnDef<Update[number]>[] = [
     enableHiding: false,
   },
   {
-    id: 'title',
+    id: "title",
     header: ({ column }) => {
       return (
         <SortButton
           label="Title"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         />
-      )
+      );
     },
     accessorFn: (row) => row.title,
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue('title')}</div>
+      <div className="font-medium">{row.getValue("title")}</div>
     ),
   },
   {
-    accessorKey: 'status',
+    accessorKey: "status",
     header: () => {
-      return <div>Sharing status</div>
+      return <div>Sharing status</div>;
     },
     cell: ({ row }) => <div>{getUpdateStatus(row.original.status)}</div>,
   },
   {
-    accessorKey: 'actions',
+    accessorKey: "actions",
     header: () => {
-      return <div>Actions</div>
+      return <div>Actions</div>;
     },
     cell: ({ row }) => <div>{UpdateActions(row)}</div>,
   },
-]
+];
 
 const UpdateTable = ({ updates }: UpdateTableType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
-  )
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data: updates,
@@ -169,7 +169,7 @@ const UpdateTable = ({ updates }: UpdateTableType) => {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full p-6">
@@ -182,7 +182,7 @@ const UpdateTable = ({ updates }: UpdateTableType) => {
         <DataTablePagination />
       </DataTable>
     </div>
-  )
-}
+  );
+};
 
-export default UpdateTable
+export default UpdateTable;

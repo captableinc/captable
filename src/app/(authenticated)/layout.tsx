@@ -1,15 +1,15 @@
-import { getServerAuthSession } from '@/server/auth'
-import { redirect } from 'next/navigation'
+import { getServerAuthSession } from "@/server/auth";
+import { redirect } from "next/navigation";
 
 export default async function AuthenticatedLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const session = await getServerAuthSession()
+  const session = await getServerAuthSession();
 
   if (!session) {
-    redirect('/login')
+    redirect("/login");
   }
-  return <>{children}</>
+  return <>{children}</>;
 }

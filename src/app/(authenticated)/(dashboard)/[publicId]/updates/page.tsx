@@ -1,22 +1,22 @@
-import EmptyState from '@/components/common/empty-state'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import UpdateTable from '@/components/update/update-table'
-import { api } from '@/trpc/server'
-import { RiAddFill, RiMailSendLine } from '@remixicon/react'
-import { type Metadata } from 'next'
-import Link from 'next/link'
+import EmptyState from "@/components/common/empty-state";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import UpdateTable from "@/components/update/update-table";
+import { api } from "@/trpc/server";
+import { RiAddFill, RiMailSendLine } from "@remixicon/react";
+import { type Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Updates',
-}
+  title: "Updates",
+};
 
 const UpdatesPage = async ({
   params: { publicId },
 }: {
-  params: { publicId: string }
+  params: { publicId: string };
 }) => {
-  const updates = await api.update.get.query()
+  const updates = await api.update.get.query();
 
   if (updates.data.length === 0) {
     return (
@@ -32,7 +32,7 @@ const UpdatesPage = async ({
           </Button>
         </Link>
       </EmptyState>
-    )
+    );
   }
 
   return (
@@ -59,7 +59,7 @@ const UpdatesPage = async ({
         <UpdateTable updates={updates.data} />
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default UpdatesPage
+export default UpdatesPage;

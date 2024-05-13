@@ -1,21 +1,21 @@
-'use client'
+"use client";
 
-import { Form } from '@/components/ui/form'
-import { COLORS } from '@/constants/esign'
-import { FieldTypes, TemplateStatus } from '@/prisma/enums'
-import { type RouterOutputs } from '@/trpc/shared'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { type ReactNode } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { Form } from "@/components/ui/form";
+import { COLORS } from "@/constants/esign";
+import { FieldTypes, TemplateStatus } from "@/prisma/enums";
+import { type RouterOutputs } from "@/trpc/shared";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type ReactNode } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-type Field = RouterOutputs['template']['get']['fields'][number]
-type recipients = RouterOutputs['template']['get']['recipients'][number]
+type Field = RouterOutputs["template"]["get"]["fields"][number];
+type recipients = RouterOutputs["template"]["get"]["recipients"][number];
 
 interface TemplateFieldProviderProps {
-  children: ReactNode
-  fields?: Field[]
-  recipients: recipients[]
+  children: ReactNode;
+  fields?: Field[];
+  recipients: recipients[];
 }
 
 const formSchema = z.object({
@@ -52,9 +52,9 @@ const formSchema = z.object({
   recipient: z.string(),
   recipientColors: z.record(z.string()),
   message: z.string().optional(),
-})
+});
 
-export type TemplateFieldForm = z.infer<typeof formSchema>
+export type TemplateFieldForm = z.infer<typeof formSchema>;
 
 export const TemplateFieldProvider = ({
   children,
@@ -63,22 +63,22 @@ export const TemplateFieldProvider = ({
 }: TemplateFieldProviderProps) => {
   const form = useForm<TemplateFieldForm>({
     defaultValues: {
-      status: 'DRAFT',
+      status: "DRAFT",
       fields: fields ?? [],
       fieldType: undefined,
       recipient: recipients?.[0]?.id,
       recipientColors: recipients
         ? recipients.reduce<Record<string, string>>((prev, curr, index) => {
-            const color = Object.keys(COLORS)?.[index] ?? ''
+            const color = Object.keys(COLORS)?.[index] ?? "";
 
-            prev[curr.id] = color
+            prev[curr.id] = color;
 
-            return prev
+            return prev;
           }, {})
         : {},
     },
     resolver: zodResolver(formSchema),
-  })
+  });
 
-  return <Form {...form}>{children}</Form>
-}
+  return <Form {...form}>{children}</Form>;
+};

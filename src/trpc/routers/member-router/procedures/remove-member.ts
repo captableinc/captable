@@ -1,11 +1,11 @@
-import { Audit } from '@/server/audit'
-import { checkMembership } from '@/server/auth'
-import { type TPrismaOrTransaction } from '@/server/db'
-import { withAuth, type withAuthTrpcContextType } from '@/trpc/api/trpc'
+import { Audit } from "@/server/audit";
+import { checkMembership } from "@/server/auth";
+import { type TPrismaOrTransaction } from "@/server/db";
+import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
   type TypeZodRemoveMemberMutationSchema,
   ZodRemoveMemberMutationSchema,
-} from '../schema'
+} from "../schema";
 
 export const removeMemberProcedure = withAuth
   .input(ZodRemoveMemberMutationSchema)
@@ -14,29 +14,29 @@ export const removeMemberProcedure = withAuth
       const data = await removeMemberHandler({
         ...args,
         ctx: { ...args.ctx, db },
-      })
+      });
 
-      return data
-    })
+      return data;
+    });
 
-    return data
-  })
+    return data;
+  });
 
 interface removeMemberHandlerOptions {
-  input: TypeZodRemoveMemberMutationSchema
-  ctx: Omit<withAuthTrpcContextType, 'db'> & {
-    db: TPrismaOrTransaction
-  }
+  input: TypeZodRemoveMemberMutationSchema;
+  ctx: Omit<withAuthTrpcContextType, "db"> & {
+    db: TPrismaOrTransaction;
+  };
 }
 
 export async function removeMemberHandler({
   ctx: { db, session, requestIp, userAgent },
   input,
 }: removeMemberHandlerOptions) {
-  const user = session.user
-  const { memberId } = input
+  const user = session.user;
+  const { memberId } = input;
 
-  const { companyId } = await checkMembership({ session, tx: db })
+  const { companyId } = await checkMembership({ session, tx: db });
 
   const member = await db.member.delete({
     where: {
@@ -56,22 +56,22 @@ export async function removeMemberHandler({
         },
       },
     },
-  })
+  });
 
   await Audit.create(
     {
-      action: 'member.removed',
+      action: "member.removed",
       companyId,
-      actor: { type: 'user', id: user.id },
+      actor: { type: "user", id: user.id },
       context: {
         requestIp,
         userAgent,
       },
-      target: [{ type: 'user', id: member.userId }],
+      target: [{ type: "user", id: member.userId }],
       summary: `${user.name} removed ${member.user?.name} from ${member?.company?.name}`,
     },
     db,
-  )
+  );
 
-  return { success: true }
+  return { success: true };
 }

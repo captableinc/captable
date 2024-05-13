@@ -1,28 +1,28 @@
-'use client'
+"use client";
 
-import Modal from '@/components/common/modal'
+import Modal from "@/components/common/modal";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form";
 
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import React, { type SetStateAction } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import React, { type SetStateAction } from "react";
+import { useFormContext } from "react-hook-form";
 
 type OptionalMessageModalProps = {
-  callback: (canSubmit: boolean) => void
-  title: string
-  subtitle: string
+  callback: (canSubmit: boolean) => void;
+  title: string;
+  subtitle: string;
   dialogProps: {
-    open: boolean
-    onOpenChange: React.Dispatch<SetStateAction<boolean>>
-  }
-}
+    open: boolean;
+    onOpenChange: React.Dispatch<SetStateAction<boolean>>;
+  };
+};
 
 export const OptionalMessageModal = ({
   title,
@@ -30,10 +30,10 @@ export const OptionalMessageModal = ({
   dialogProps,
   callback,
 }: OptionalMessageModalProps) => {
-  const form = useFormContext()
-  const isSubmitting = form.formState.isSubmitting
+  const form = useFormContext();
+  const isSubmitting = form.formState.isSubmitting;
 
-  const onSendSignature = () => callback(true)
+  const onSendSignature = () => callback(true);
 
   return (
     <Modal
@@ -77,5 +77,5 @@ export const OptionalMessageModal = ({
         the document.
       </p>
     </Modal>
-  )
-}
+  );
+};

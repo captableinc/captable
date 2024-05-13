@@ -1,34 +1,34 @@
-import EmptyState from '@/components/common/empty-state'
-import Tldr from '@/components/common/tldr'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { withServerSession } from '@/server/auth'
-import { db } from '@/server/db'
-import { type ShareClassMutationType } from '@/trpc/routers/share-class/schema'
-import { RiAddFill, RiPieChart2Line } from '@remixicon/react'
-import { type Metadata } from 'next'
-import ShareClassModal from './modal'
-import ShareClassTable from './table'
+import EmptyState from "@/components/common/empty-state";
+import Tldr from "@/components/common/tldr";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { withServerSession } from "@/server/auth";
+import { db } from "@/server/db";
+import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { RiAddFill, RiPieChart2Line } from "@remixicon/react";
+import { type Metadata } from "next";
+import ShareClassModal from "./modal";
+import ShareClassTable from "./table";
 
 export const metadata: Metadata = {
-  title: 'Share classes',
-}
+  title: "Share classes",
+};
 
 const getShareClasses = async (companyId: string) => {
   return await db.shareClass.findMany({
     where: { companyId },
-  })
-}
+  });
+};
 
 const SharesPage = async () => {
-  const session = await withServerSession()
-  const companyId = session?.user?.companyId
-  let shareClasses: ShareClassMutationType[] = []
+  const session = await withServerSession();
+  const companyId = session?.user?.companyId;
+  let shareClasses: ShareClassMutationType[] = [];
 
   if (companyId) {
     shareClasses = (await getShareClasses(
       companyId,
-    )) as unknown as ShareClassMutationType[]
+    )) as unknown as ShareClassMutationType[];
   }
 
   if (shareClasses.length === 0) {
@@ -45,9 +45,9 @@ const SharesPage = async () => {
             <Tldr
               message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
               cta={{
-                label: 'Learn more',
+                label: "Learn more",
                 // TODO - this link should be updated to the correct URL
-                href: 'https://captable.inc/help',
+                href: "https://captable.inc/help",
               }}
             />
           }
@@ -59,7 +59,7 @@ const SharesPage = async () => {
           }
         />
       </EmptyState>
-    )
+    );
   }
 
   return (
@@ -81,9 +81,9 @@ const SharesPage = async () => {
               <Tldr
                 message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
                 cta={{
-                  label: 'Learn more',
+                  label: "Learn more",
                   // TODO - this link should be updated to the correct URL
-                  href: 'https://captable.inc/help',
+                  href: "https://captable.inc/help",
                 }}
               />
             }
@@ -103,7 +103,7 @@ const SharesPage = async () => {
         </div>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default SharesPage
+export default SharesPage;

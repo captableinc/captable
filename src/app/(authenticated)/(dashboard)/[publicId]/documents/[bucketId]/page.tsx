@@ -1,22 +1,22 @@
-import FileIcon from '@/components/common/file-icon'
-import FilePreview from '@/components/file/preview'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { withServerSession } from '@/server/auth'
-import { db } from '@/server/db'
-import { getPresignedGetUrl } from '@/server/file-uploads'
-import { RiArrowLeftSLine } from '@remixicon/react'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { Fragment } from 'react'
+import FileIcon from "@/components/common/file-icon";
+import FilePreview from "@/components/file/preview";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { withServerSession } from "@/server/auth";
+import { db } from "@/server/db";
+import { getPresignedGetUrl } from "@/server/file-uploads";
+import { RiArrowLeftSLine } from "@remixicon/react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Fragment } from "react";
 
 const DocumentPreview = async ({
   params: { publicId, bucketId },
 }: {
-  params: { publicId: string; bucketId: string }
+  params: { publicId: string; bucketId: string };
 }) => {
-  const session = await withServerSession()
-  const companyId = session?.user?.companyId
+  const session = await withServerSession();
+  const companyId = session?.user?.companyId;
   const document = await db.document.findFirst({
     where: {
       bucketId,
@@ -24,14 +24,14 @@ const DocumentPreview = async ({
     },
 
     include: { bucket: true },
-  })
+  });
 
   if (!document || !document.bucket) {
-    return notFound()
+    return notFound();
   }
 
-  const file = document.bucket
-  const remoteFile = await getPresignedGetUrl(file.key)
+  const file = document.bucket;
+  const remoteFile = await getPresignedGetUrl(file.key);
 
   return (
     <Fragment>
@@ -61,7 +61,7 @@ const DocumentPreview = async ({
         />
       </Card>
     </Fragment>
-  )
-}
+  );
+};
 
-export default DocumentPreview
+export default DocumentPreview;

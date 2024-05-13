@@ -1,16 +1,16 @@
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Card } from '@/components/ui/card'
-import Link from 'next/link'
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Card } from "@/components/ui/card";
+import Link from "next/link";
 
 type SharePageLayoutProps = {
-  medium: string
+  medium: string;
   company: {
-    name: string
-    logo: string | null
-  }
-  title: React.ReactNode
-  children: React.ReactNode
-}
+    name: string;
+    logo: string | null;
+  };
+  title: React.ReactNode;
+  children: React.ReactNode;
+};
 
 export const SharePageLayout = ({
   company,
@@ -22,7 +22,7 @@ export const SharePageLayout = ({
     <div className="mx-auto flex w-[1080px] max-w-sm flex-col sm:max-w-4xl">
       <div className="mb-16 flex items-center gap-3">
         <Avatar className="h-12 w-12 rounded">
-          <AvatarImage src={company.logo || '/placeholders/company.svg'} />
+          <AvatarImage src={company.logo || "/placeholders/company.svg"} />
         </Avatar>
 
         <span className="text-lg font-semibold">{company.name}</span>
@@ -34,7 +34,7 @@ export const SharePageLayout = ({
 
       <div className="my-10 text-center text-sm text-muted-foreground">
         <p>
-          Powered by{' '}
+          Powered by{" "}
           <Link
             href={`https://captable.inc?utm_source=${company.name}&utm_medium=${medium}&utm_campaign=powered_by`}
             target="_blank"
@@ -47,6 +47,6 @@ export const SharePageLayout = ({
       </div>
     </div>
   </div>
-)
+);
 
-export default SharePageLayout
+export default SharePageLayout;

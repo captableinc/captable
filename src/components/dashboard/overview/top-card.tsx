@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from "@/components/ui/card";
 
 type Props = {
-  title: string
-  amount: number
-  prefix?: string
-  format?: boolean
-}
+  title: string;
+  amount: number;
+  prefix?: string;
+  format?: boolean;
+};
 
 const OverviewCard = ({ title, amount, prefix, format = true }: Props) => {
-  const formatter = Intl.NumberFormat('en', {
-    notation: 'compact',
-    compactDisplay: 'short',
+  const formatter = Intl.NumberFormat("en", {
+    notation: "compact",
+    compactDisplay: "short",
     minimumIntegerDigits: 1,
     minimumFractionDigits: 2,
-  })
+  });
 
   return (
     <Card>
@@ -32,7 +32,7 @@ const OverviewCard = ({ title, amount, prefix, format = true }: Props) => {
         </CardTitle>
       </CardHeader>
     </Card>
-  )
-}
+  );
+};
 
-export default OverviewCard
+export default OverviewCard;

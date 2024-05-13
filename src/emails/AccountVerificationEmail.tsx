@@ -11,12 +11,12 @@ import {
   Section,
   Tailwind,
   Text,
-} from 'jsx-email'
-import * as React from 'react'
-import { constants } from '../lib/constants'
+} from "jsx-email";
+import * as React from "react";
+import { constants } from "../lib/constants";
 
 interface AccountVerificationEmailProps {
-  verifyLink: string
+  verifyLink: string;
 }
 
 export const AccountVerificationEmail = ({
@@ -42,7 +42,7 @@ export const AccountVerificationEmail = ({
             </Section>
           </Section>
           <Text className="!text-[14px] leading-[24px] text-black">
-            or copy and paste this URL into your browser:{' '}
+            or copy and paste this URL into your browser:{" "}
             <Link
               href={verifyLink}
               className="break-all text-blue-600 no-underline"
@@ -61,5 +61,5 @@ export const AccountVerificationEmail = ({
       </Body>
     </Tailwind>
   </Html>
-)
-export default AccountVerificationEmail
+);
+export default AccountVerificationEmail;

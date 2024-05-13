@@ -24,6 +24,11 @@ jobs:
           file: "fly.toml"
           field: "app"
 
+      # move Dockerfile to root
+      - name: 🚚 Move Dockerfile
+        run: |
+          mv ./docker/Dockerfile ./Dockerfile
+
       - name: 🚀 Deploy Staging
         run:
           flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}

@@ -17,6 +17,11 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
+      # move Dockerfile to root
+      - name: 🚚 Move Dockerfile
+        run: |
+          mv ./docker/Dockerfile ./Dockerfile
+
       - name: 🚀 Deploy Production
         run: flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
         env:

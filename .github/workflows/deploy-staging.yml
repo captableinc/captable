@@ -34,9 +34,9 @@ jobs:
 
       - name: 🚀 Deploy Staging
         run:
-          flyctl deploy --app datasette-demo \
+          flyctl deploy\
+          --app ${{ steps.app_name.outputs.value }}\
           --image ghcr.io/captableinc/captable:latest
-          --app ${{ steps.app_name.outputs.value }}
         # run:
         #   flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
         #   --app ${{ steps.app_name.outputs.value }}-staging

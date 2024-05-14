@@ -1,6 +1,6 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { initPgBoss } = await import("./lib/pg-boss");
+    const { initPgBoss } = await import("./lib/pg-boss-init");
 
     await initPgBoss();
   }

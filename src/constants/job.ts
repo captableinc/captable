@@ -1,1 +1,1 @@
-export const JOB_TYPES = ["auth-verification-email"] as const;
+export const JOB_TYPES = { email: ["auth-verify"] } as const;

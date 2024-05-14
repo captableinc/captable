@@ -6,7 +6,7 @@ on:
   #     types: [published]
   push:
     branches:
-      - "disabled/**"
+      - "fly-deploy"
 
 jobs:
   deploy:

@@ -5,18 +5,18 @@ on:
     branches: ["main"]
 
 jobs:
-  build_app:
-    name: Build App
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
+  # build_app:
+  #   name: Build App
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 2
 
-      - uses: ./.github/actions/node-setup
+  #     - uses: ./.github/actions/node-setup
 
-      - uses: ./.github/actions/build-app
+  #     - uses: ./.github/actions/build-app
 
   build_docker:
     name: Build Docker Image

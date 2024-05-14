@@ -34,9 +34,7 @@ jobs:
 
       - name: 🚀 Deploy Staging
         run:
-          flyctl deploy \
-            -a ${{ steps.app_name.outputs.value }} \
-            -i ghcr.io/captableinc/captable:latest
+          flyctl deploy -a ${{ steps.app_name.outputs.value }} -i ghcr.io/captableinc/captable:latest
         # run:
         #   flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
         #   --app ${{ steps.app_name.outputs.value }}-staging

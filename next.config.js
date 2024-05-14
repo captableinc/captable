@@ -30,6 +30,9 @@ const config = {
 
     return config;
   },
+  experimental: {
+    instrumentationHook: true,
+  },
 };
 
 export default config;

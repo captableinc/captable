@@ -26,7 +26,7 @@ cpus = 1
 
 [deploy]
 strategy = "canary"
-release_command = "npx prisma migrate deploy"
+release_command = 'bash -c "node_modules/.bin/prisma migrate deploy"'
 
 [env]
 NODE_ENV = "production"

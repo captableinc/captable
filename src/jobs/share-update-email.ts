@@ -46,6 +46,6 @@ export class ShareUpdateEmailJob extends BaseJob<UpdateSharePayloadType> {
   readonly type = "email.share-update";
 
   async work(job: Job<UpdateSharePayloadType>): Promise<void> {
-    sendShareUpdateEmail(job.data);
+    await sendShareUpdateEmail(job.data);
   }
 }

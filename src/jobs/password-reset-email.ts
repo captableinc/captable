@@ -35,6 +35,6 @@ export class PasswordResetEmailJob extends BaseJob<TPasswordResetPayloadSchema> 
   readonly type = "email.password-reset";
 
   async work(job: Job<TPasswordResetPayloadSchema>): Promise<void> {
-    sendPasswordResetEmail(job.data);
+    await sendPasswordResetEmail(job.data);
   }
 }

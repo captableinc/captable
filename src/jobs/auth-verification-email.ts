@@ -35,6 +35,6 @@ export class AuthVerificationEmailJob extends BaseJob<TAuthVerificationPayloadSc
   readonly type = "email.auth-verify";
 
   async work(job: Job<TAuthVerificationPayloadSchema>): Promise<void> {
-    sendAuthVerificationEmail(job.data);
+    await sendAuthVerificationEmail(job.data);
   }
 }

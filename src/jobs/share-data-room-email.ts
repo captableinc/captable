@@ -46,6 +46,6 @@ export class ShareDataRoomEmailJob extends BaseJob<DataRoomEmailPayloadType> {
   readonly type = "email.share-data-room";
 
   async work(job: Job<DataRoomEmailPayloadType>): Promise<void> {
-    sendShareDataRoomEmail(job.data);
+    await sendShareDataRoomEmail(job.data);
   }
 }

@@ -1,6 +1,6 @@
 name: captable
 services:
-  database:
+  pg:
     image: postgres:15
     container_name: captable-database
     environment:
@@ -12,14 +12,13 @@ services:
     volumes:
       - postgres_raw:/var/lib/postgresql/data  
 
-  inbucket:
-    image: inbucket/inbucket
-    container_name: captable-mailserver
+  smtp:
+    image: axllent/mailpit
+    container_name: captable-smtp
     ports:
-      - 9000:9000
-      - 2500:2500
-      - 1100:1100
-  
+      - 8025:8025
+      - 1025:1025
+
   minio:
     image: minio/minio
     container_name: captable-minio
@@ -34,6 +33,19 @@ services:
     entrypoint: sh
     command: -c 'minio server /data --console-address ":9001" --address ":9002"'
 
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    container_name: captable-app
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    depends_on:
+      - pg
+      - smtp
+      - minio
 
   mc:
     image: minio/mc

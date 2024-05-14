@@ -1,8 +1,4 @@
-import {
-  type TAuthVerificationPayloadSchema,
-  sendAuthVerificationEmail,
-  triggerName,
-} from "@/jobs/auth-verification-email";
+import { AuthVerificationEmailJob } from "@/jobs/auth-verification-email";
 
 import { generateVerificationToken } from "@/lib/token";
 import { getTriggerClient } from "@/trigger";
@@ -42,16 +38,10 @@ export const signupProcedure = withoutAuth
     });
     const verificationToken = await generateVerificationToken(email);
 
-    const payload: TAuthVerificationPayloadSchema = {
+    await new AuthVerificationEmailJob().emit({
       email: verificationToken.identifier,
       token: verificationToken.token,
-    };
-
-    if (trigger) {
-      await trigger.sendEvent({ name: triggerName, payload });
-    } else {
-      await sendAuthVerificationEmail(payload);
-    }
+    });
 
     return {
       success: true,

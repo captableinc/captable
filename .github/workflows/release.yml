@@ -1,11 +1,8 @@
 name: Publish Docker image
 
 on:
-  # release:
-  #   types: [published]
-  push:
-    branches:
-      - "fly-deploy"
+  release:
+    types: [published]
 
 jobs:
   push_to_registries:

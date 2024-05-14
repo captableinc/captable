@@ -1,23 +1,20 @@
 import ShareUpdateEmail from "@/emails/ShareUpdateEmail";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
-import { z } from "zod";
+import { Job } from "pg-boss";
 
-const schema = z.object({
-  update: z.object({
-    title: z.string(),
-  }),
-  link: z.string(),
-  companyName: z.string(),
-  recipientName: z.string().nullish(),
-  senderName: z.string(),
-  senderEmail: z.string().nullish(),
-  email: z.string(),
-});
-
-export type UpdateSharePayloadType = z.infer<typeof schema>;
+export type UpdateSharePayloadType = {
+  update: {
+    title: string;
+  };
+  link: string;
+  companyName: string;
+  senderName: string;
+  email: string;
+  recipientName?: string | null | undefined;
+  senderEmail?: string | null | undefined;
+};
 
 export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
   const {
@@ -45,20 +42,10 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
   });
 };
 
-export const triggerName = "email.share-update-email";
+export class ShareUpdateEmailJob extends BaseJob<UpdateSharePayloadType> {
+  readonly type = "email.share-update";
 
-client.defineJob({
-  id: "share-update-email",
-  name: "Investor update share email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: triggerName,
-    schema,
-  }),
-
-  run: async (payload, io) => {
-    await io.runTask("Send investor update", async () => {
-      await sendShareUpdateEmail(payload);
-    });
-  },
-});
+  async work(job: Job<UpdateSharePayloadType>): Promise<void> {
+    sendShareUpdateEmail(job.data);
+  }
+}

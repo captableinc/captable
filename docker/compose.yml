@@ -18,7 +18,6 @@ services:
     ports:
       - 8025:8025
       - 1025:1025
-
   minio:
     image: minio/minio
     container_name: captable-minio
@@ -33,19 +32,25 @@ services:
     entrypoint: sh
     command: -c 'minio server /data --console-address ":9001" --address ":9002"'
 
-  app:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    container_name: captable-app
-    ports:
-      - 3000:3000
-    env_file:
-      - .env
-    depends_on:
-      - pg
-      - smtp
-      - minio
+  # app:
+  #   build:
+  #     dockerfile: ./Dockerfile
+  #   container_name: captable-app
+  #   command: ['run', 'dev']
+  #   ports:
+  #     - 3000:3000
+  #   env_file:
+  #     - "../.env.example"
+  #     - "../.env"
+  #   volumes:
+  #     - ./:/opt/captable
+  #     - node_modules:/opt/captable/node_modules
+  #     - dist:/opt/captable/dist
+
+  #   depends_on:
+  #     - pg
+  #     - smtp
+  #     - minio
 
   mc:
     image: minio/mc
@@ -64,3 +69,5 @@ services:
 volumes:
   minio:
   postgres_raw:
+  node_modules:
+  dist:

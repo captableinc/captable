@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "next build",
-    "docker:start": "docker-compose -f docker/compose.yml up -d",
+    "dx": "docker-compose -f docker/compose.yml up -d",
     "db:push": "npx prisma db push",
     "db:studio": "npx prisma studio",
     "db:migrate": "npx prisma migrate dev",

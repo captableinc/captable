@@ -4,7 +4,8 @@ env:
 on:
   push:
     branches:
-      - main
+      # - main
+      - "fly-deploy"
 
 jobs:
   deploy:

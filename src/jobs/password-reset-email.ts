@@ -1,17 +1,14 @@
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 import { env } from "@/env";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
-import { z } from "zod";
+import { Job } from "pg-boss";
 
-const schema = z.object({
-  email: z.string().email(),
-  token: z.string(),
-});
-
-export type TPasswordResetPayloadSchema = z.infer<typeof schema>;
+export type TPasswordResetPayloadSchema = {
+  email: string;
+  token: string;
+};
 
 export const sendPasswordResetEmail = async (
   payload: TPasswordResetPayloadSchema,
@@ -34,20 +31,10 @@ export const sendPasswordResetEmail = async (
   });
 };
 
-export const triggerName = "email.password-reset";
+export class PasswordResetEmailJob extends BaseJob<TPasswordResetPayloadSchema> {
+  readonly type = "email.password-reset";
 
-client.defineJob({
-  id: "password-reset-email",
-  name: "password reset email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: triggerName,
-    schema,
-  }),
-
-  run: async (payload, io) => {
-    await io.runTask("send password reset email", async () => {
-      await sendPasswordResetEmail(payload);
-    });
-  },
-});
+  async work(job: Job<TPasswordResetPayloadSchema>): Promise<void> {
+    sendPasswordResetEmail(job.data);
+  }
+}

@@ -9,6 +9,6 @@ runs:
 
     - name: 🏗 Build
       shell: bash
-      run: npx prisma generate && npm run build
+      run: npx prisma generate && pnpm build
       env:
         SKIP_ENV_VALIDATION: 1

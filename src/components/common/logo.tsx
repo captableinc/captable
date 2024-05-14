@@ -1,15 +1,30 @@
-import logo from "@/assets/logo.svg";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 export const CaptableLogo = ({ className }: { className?: string }) => {
   return (
-    <Image
-      className={cn(className)}
-      height={500}
-      width={500}
-      src={logo}
-      alt="Captable, Inc. Logo"
-    />
+    <svg
+      width="1200"
+      height="1200"
+      viewBox="0 0 1200 1200"
+      fill="none"
+      className={cn(className, "rounded")}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="1200" height="1200" rx="24" fill="#18181B" />
+      <path
+        d="M200 599.561C200 387.376 364.852 213.737 573.333 200V414.583C482.872 427.536 413.333 505.419 413.333 599.561C413.333 702.767 496.907 786.434 600 786.434C641.93 786.434 680.63 772.589 711.792 749.225L863.36 900.964C793.003 962.626 700.86 1000 600 1000C379.086 1000 200 820.716 200 599.561Z"
+        fill="white"
+      />
+      <path
+        d="M901.072 863.211C962.672 792.771 1000 700.53 1000 599.561C1000 544.38 988.848 491.806 968.683 443.973L773.611 530.767C782.037 552.058 786.667 575.268 786.667 599.561C786.667 641.535 772.843 680.277 749.504 711.473L901.072 863.211Z"
+        fill="white"
+        fillOpacity="0.75"
+      />
+      <path
+        d="M626.667 414.583V200C762.219 208.932 879.323 285.46 944.672 396.23L746.885 484.23C717.9 447.286 675.308 421.548 626.667 414.583Z"
+        fill="white"
+        fillOpacity="0.5"
+      />
+    </svg>
   );
 };

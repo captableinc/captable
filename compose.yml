@@ -34,14 +34,14 @@ services:
 
   # app:
   #   build:
-  #     dockerfile: ./Dockerfile
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile.dev
   #   container_name: captable-app
-  #   command: ['run', 'dev']
   #   ports:
   #     - 3000:3000
   #   env_file:
-  #     - "../.env.example"
-  #     - "../.env"
+  #     - ".env.example"
+  #     - ".env"
   #   volumes:
   #     - ./:/opt/captable
   #     - node_modules:/opt/captable/node_modules
@@ -52,6 +52,7 @@ services:
   #     - smtp
   #     - minio
 
+  # minio client - is expected to be run once to setup minio buckets. It'll exit 0 after setup
   mc:
     image: minio/mc
     container_name: captable-minio-client

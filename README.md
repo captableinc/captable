@@ -79,7 +79,7 @@ cp .env.example .env
   * SMTP server 
 
 ```sh
-npm run docker:start
+npm run dx
 ```
 
 Generate tables and the Prisma client.

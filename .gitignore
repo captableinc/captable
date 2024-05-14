@@ -42,7 +42,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 yarn.lock
-pnpm-lock.yaml
 
 #local
 /local

@@ -62,7 +62,7 @@ Follow the steps below to stand the app up locally.
 **1. Install dependencies.**
 
 ```sh
-npm i
+pnpm i
 ```
 
 **2. Copy `.env.example`**
@@ -79,7 +79,7 @@ cp .env.example .env
   * SMTP server 
 
 ```sh
-npm run dx
+pnpm dx
 ```
 
 Generate tables and the Prisma client.
@@ -91,20 +91,20 @@ npx prisma migrate dev
 To see what's in your database, run Prisma Studio:
 
 ```sh
-npm run db:studio
+pnpm db:studio
 
 ```
 
 **4. Seed some data (For dev environment)**
 
 ```sh
-npm run db:seed
+pnpm db:seed
 ```
 
 **5. Run the web app**
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 **6. Install and run SMTP server**
@@ -114,7 +114,7 @@ npm run dev
 > [Mailpit](https://github.com/axllent/mailpit) or something similar can be used intercept emails in development.
 
 ```sh
-npm run email:dev
+pnpm email:dev
 ```
 
 Open your browser to the URLs given by the web app and studio processes. You're up and running, good job! 🎉

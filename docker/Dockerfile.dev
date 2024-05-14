@@ -1,11 +1,17 @@
-FROM node:20-alpine
+ARG NODE_VERSION=20
 
+# Alpine image
+FROM node:${NODE_VERSION}-alpine AS alpine
+FROM alpine AS dependencies
 WORKDIR /app
 
-COPY ../package.json ./
-
-RUN npm install
-
+# Copy dependencies
 COPY . .
 
-CMD ["npm", "run", "dev"]
+# Install dependencies
+RUN npm i -g pnpm
+RUN pnpm install
+
+# Run the dev server
+EXPOSE 3000
+CMD [ "pnpm", "dev" ]

@@ -7,8 +7,8 @@ interface LoginFormHeaderProps {
 export function AuthFormHeader({ page }: LoginFormHeaderProps) {
   return (
     <div className="flex flex-col gap-y-2 text-center">
-      <div className="center">
-        <CaptableLogo className="mb-3 h-10 w-10 rounded-md" />
+      <div className="flex justify-center">
+        <CaptableLogo className="mb-3 h-10 w-auto" />
       </div>
 
       <h1 className="mb-2 text-2xl font-semibold tracking-tight">

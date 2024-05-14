@@ -10,7 +10,7 @@ services:
     ports:
       - 54321:5432
     volumes:
-      - postgres_raw:/var/lib/postgresql/data  
+      - postgres:/var/lib/postgresql/data  
 
   smtp:
     image: axllent/mailpit
@@ -32,25 +32,25 @@ services:
     entrypoint: sh
     command: -c 'minio server /data --console-address ":9001" --address ":9002"'
 
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/Dockerfile.dev
-  #   container_name: captable-app
-  #   ports:
-  #     - 3000:3000
-  #   env_file:
-  #     - ".env.example"
-  #     - ".env"
-  #   volumes:
-  #     - ./:/opt/captable
-  #     - node_modules:/opt/captable/node_modules
-  #     - dist:/opt/captable/dist
-
-  #   depends_on:
-  #     - pg
-  #     - smtp
-  #     - minio
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.dev
+    container_name: captable-app
+    restart: always
+    ports:
+      - 3000:3000
+    env_file:
+      - ".env.example"
+      - ".env"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - pg
+      - smtp
+      - minio
 
   # minio client - is expected to be run once to setup minio buckets. It'll exit 0 after setup
   mc:
@@ -69,6 +69,4 @@ services:
 
 volumes:
   minio:
-  postgres_raw:
-  node_modules:
-  dist:
+  postgres:

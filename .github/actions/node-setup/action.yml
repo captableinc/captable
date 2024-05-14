@@ -7,23 +7,35 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: ⎔ Setup node ${{ inputs.node_version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node_version }}
-        cache: npm
+    - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: 📥 Cache deps
-      uses: actions/cache@v4
-      id: cache-node-modules
-      with:
-        path: node_modules
-        key: modules-${{ hashFiles('package-lock.json') }}
+      - name: ❇️ Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - name: 📥 Install deps
-      if: steps.cache-node-modules.outputs.cache-hit != 'true'
-      shell: bash
-      run: npm ci --no-audit
+      - uses: pnpm/action-setup@v4
+        name: 🗃️ Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: 📦 Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: ⛅ Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: ✅ Install dependencies
+        run: pnpm install
 
       env:
         HUSKY: "0"

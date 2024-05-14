@@ -60,8 +60,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Only copy prisma and migrate script if the FLY_DEPLOY argument is true
 ARG FLY_DEPLOY
 RUN if [ "$FLY_DEPLOY" = "true" ]; then \
-    COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.sh ./scripts/migrate.sh && \
-    COPY --from=builder --chown=nextjs:nodejs /app/prisma ./; \
+    cp /app/scripts/migrate.sh ./scripts/migrate.sh && \
+    cp /app/prisma ./; \
 fi
 
 USER nextjs

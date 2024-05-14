@@ -23,10 +23,14 @@ jobs:
           file: "fly.toml"
           field: "app"
 
-      # move Dockerfile to root
-      - name: 🚚 Move Dockerfile
+      - name: 🚚 Move Dockerfile to root
         run: |
           mv ./docker/Dockerfile ./Dockerfile
+
+      - name: 🪰 Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: latest
 
       - name: 🚀 Deploy Staging
         run:

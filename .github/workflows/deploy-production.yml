@@ -17,10 +17,14 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4
 
-      # move Dockerfile to root
-      - name: 🚚 Move Dockerfile
+      - name: 🚚 Move Dockerfile to root
         run: |
           mv ./docker/Dockerfile ./Dockerfile
+      
+      - name: 🪰 Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: latest
 
       - name: 🚀 Deploy Production
         run: flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}

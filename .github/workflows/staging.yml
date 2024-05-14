@@ -23,9 +23,9 @@ jobs:
           file: "fly.toml"
           field: "app"
 
-      # - name: 🚚 Move Dockerfile to root
-      #   run: |
-      #     mv ./docker/Dockerfile ./Dockerfile
+      - name: 🚚 Move Dockerfile to root
+        run: |
+          mv ./docker/Dockerfile ./Dockerfile
 
       - name: 🪰 Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
@@ -34,9 +34,7 @@ jobs:
 
       - name: 🚀 Deploy Staging
         run:
-          flyctl deploy -a ${{ steps.app_name.outputs.value }} -i ghcr.io/captableinc/captable:latest
-        # run:
-        #   flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
-        #   --app ${{ steps.app_name.outputs.value }}-staging
+          flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
+          --app ${{ steps.app_name.outputs.value }}-staging
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

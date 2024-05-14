@@ -34,14 +34,14 @@ services:
 
   # app:
   #   build:
-  #     dockerfile: ./Dockerfile
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile.dev
   #   container_name: captable-app
-  #   command: ['run', 'dev']
   #   ports:
   #     - 3000:3000
   #   env_file:
-  #     - "../.env.example"
-  #     - "../.env"
+  #     - ".env.example"
+  #     - ".env"
   #   volumes:
   #     - ./:/opt/captable
   #     - node_modules:/opt/captable/node_modules

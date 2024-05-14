@@ -1,27 +1,24 @@
 import MemberInviteEmail from "@/emails/MemberInviteEmail";
 import { env } from "@/env";
 import { constants } from "@/lib/constants";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
-import { z } from "zod";
+import { Job } from "pg-boss";
 
-const schema = z.object({
-  email: z.string().email(),
-  token: z.string(),
-  verificationToken: z.string(),
-  company: z.object({
-    name: z.string(),
-    id: z.string(),
-  }),
-  user: z.object({
-    email: z.string().email().nullish(),
-    name: z.string().nullish(),
-  }),
-});
-
-type TSchema = z.infer<typeof schema>;
+type TSchema = {
+  email: string;
+  token: string;
+  user: {
+    email?: string | null | undefined;
+    name?: string | null | undefined;
+  };
+  verificationToken: string;
+  company: {
+    name: string;
+    id: string;
+  };
+};
 
 export const sendMemberInviteEmail = async (payload: TSchema) => {
   const { email, token, verificationToken, company, user } = payload;
@@ -50,18 +47,10 @@ export const sendMemberInviteEmail = async (payload: TSchema) => {
   });
 };
 
-client.defineJob({
-  id: "member-inivte-email",
-  name: "member invite email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: "email.member-invite",
-    schema,
-  }),
+export class SendMemberInviteEmailJob extends BaseJob<TSchema> {
+  readonly type = "email.password-reset";
 
-  run: async (payload, io) => {
-    await io.runTask("send member invite email", async () => {
-      await sendMemberInviteEmail(payload);
-    });
-  },
-});
+  async work(job: Job<TSchema>): Promise<void> {
+    await sendMemberInviteEmail(job.data);
+  }
+}

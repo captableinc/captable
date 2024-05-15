@@ -3,12 +3,14 @@
 import { PdfViewer } from "@/components/ui/pdf-viewer";
 import { type PageMeasurement } from "@/lib/pdf-positioning";
 import { type RouterOutputs } from "@/trpc/shared";
-import type { PDFDocumentProxy } from "pdfjs-dist";
+
 import { memo, useCallback, useState } from "react";
+import { DocumentProps } from "react-pdf";
 import { FieldCanvas } from "../field-canvas";
 import { ReadOnlyFieldCanvas } from "../field-canvas/readonly-field-canvas";
 
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
+type LoadCallback = Required<DocumentProps>["onLoadSuccess"];
 
 type PdfCanvasProps =
   | {
@@ -29,7 +31,7 @@ export function PdfCanvas({ url, mode = "edit", recipients }: PdfCanvasProps) {
 
   const [measurements, setPageHeights] = useState<PageMeasurement>([]);
 
-  const onDocumentLoadSuccess = useCallback(async (e: PDFDocumentProxy) => {
+  const onDocumentLoadSuccess: LoadCallback = useCallback(async (e) => {
     const measurements: PageMeasurement = [];
 
     for (let index = 0; index < e.numPages; index++) {

@@ -18,8 +18,8 @@
   <a href="https://twitter.com/captableinc">
     <img src="https://img.shields.io/twitter/follow/captableinc?style=flat&label=%40Captable, Inc.&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
   </a>
-  <a href="https://github.com/captableinc/captable/actions/workflows/deploy.yml">
-    <img src="https://github.com/captableinc/captable/actions/workflows/deploy.yml/badge.svg?branch=main&title=CI" alt="CI" />
+  <a href="https://github.com/captableinc/captable/actions/workflows/release.yml">
+    <img src="https://github.com/captableinc/captable/actions/workflows/release.yml/badge.svg?branch=main&title=CI" alt="CI" />
   </a>
   <a href="https://github.com/captableinc/captable/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/captableinc/captable?label=license&logo=github&color=f80&logoColor=fff" alt="License" />

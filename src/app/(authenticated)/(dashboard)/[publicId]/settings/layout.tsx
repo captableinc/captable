@@ -10,6 +10,8 @@ import {
   RiBankCardLine,
   RiBuildingFill,
   RiBuildingLine,
+  RiDoorLockFill,
+  RiDoorLockLine,
   RiGroup2Fill,
   RiGroup2Line,
   RiNotificationFill,
@@ -51,6 +53,12 @@ const accountNav = [
     href: "/settings/notifications",
     icon: RiNotificationLine,
     activeIcon: RiNotificationFill,
+  },
+  {
+    name: "Passkey",
+    href: "/settings/passkey",
+    icon: RiDoorLockLine,
+    activeIcon: RiDoorLockFill,
   },
 ];
 

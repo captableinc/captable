@@ -59,11 +59,6 @@ export const env = createEnv({
     // google
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
-
-    // trigger.dev
-    TRIGGER_API_ID: z.string(),
-    TRIGGER_API_KEY: z.string().optional(),
-    TRIGGER_API_URL: z.string().optional(),
   },
 
   /**
@@ -76,7 +71,6 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_NODE_ENV: z.string().default("development"),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
-    NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY: z.string().optional(),
   },
 
   /**
@@ -111,12 +105,6 @@ export const env = createEnv({
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-
-    TRIGGER_API_ID: process.env.TRIGGER_API_ID,
-    TRIGGER_API_KEY: process.env.TRIGGER_API_KEY,
-    TRIGGER_API_URL: process.env.TRIGGER_API_URL,
-    NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY:
-      process.env.NEXT_PUBLIC_TRIGGER_PUBLIC_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

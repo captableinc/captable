@@ -1,14 +1,13 @@
 tasks:
   - init: |
-      yarn &&
+      pnpm install &&
       cp .env.example .env &&
       export NEXTAUTH_SECRET="$(openssl rand -base64 32)" &&
       export BASE_URL="$(gp url 3000)" &&
       export NEXT_PUBLIC_BASE_URL="$(gp url 3000)" &&
       export EMAIL_SERVER_PORT=2500 &&
-      yarn docker:start &&
       npx prisma migrate dev
-    command: yarn dev
+    command: pnpm dx
 
 ports:
   - port: 3000

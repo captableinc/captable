@@ -1,3 +1,3 @@
 #!/bin/sh
 
-pnpx prisma migrate deploy
+npx prisma migrate deploy

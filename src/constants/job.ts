@@ -4,6 +4,8 @@ export const JOB_TYPES = {
     "share-update",
     "share-data-room",
     "password-reset",
-    "esign",
+    "esign-confirmation",
+    "esign-notification",
   ],
+  generate: ["esign-pdf"],
 } as const;

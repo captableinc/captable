@@ -2,7 +2,9 @@ name: "Build docker image"
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["disabled"]
+  # pull_request:
+  #   branches: ["main"]
 
 jobs:
   build_docker:

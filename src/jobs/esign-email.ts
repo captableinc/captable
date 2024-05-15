@@ -48,7 +48,7 @@ export const sendEsignEmail = async (payload: TEsignEmailJob) => {
 };
 
 export class EsignNotificationEmailJob extends BaseJob<TEsignEmailJob> {
-  readonly type = "email.esign";
+  readonly type = "email.esign-notification";
 
   async work(job: Job<TEsignEmailJob>): Promise<void> {
     await db.esignRecipient.update({

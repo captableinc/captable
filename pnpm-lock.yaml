@@ -188,9 +188,6 @@ dependencies:
   pdf-lib:
     specifier: ^1.17.1
     version: 1.17.1
-  pdfjs-dist:
-    specifier: ^4.2.67
-    version: 4.2.67
   prisma-json-types-generator:
     specifier: ^3.0.4
     version: 3.0.4(prisma@5.14.0)(typescript@5.4.5)
@@ -210,8 +207,8 @@ dependencies:
     specifier: ^5.3.4
     version: 5.3.4(react-dom@18.2.0)(react@18.3.1)
   react-pdf:
-    specifier: ^7.7.0
-    version: 7.7.3(@types/react@18.3.2)(react-dom@18.2.0)(react@18.3.1)
+    specifier: ^8.0.2
+    version: 8.0.2(@types/react@18.3.2)(react-dom@18.2.0)(react@18.3.1)
   server-only:
     specifier: ^0.0.1
     version: 0.0.1
@@ -9701,13 +9698,6 @@ packages:
     dev: false
     optional: true
 
-  /path2d@0.2.0:
-    resolution: {integrity: sha512-KdPAykQX6kmLSOO6Jpu2KNcCED7CKjmaBNGGNuctOsG0hgYO1OdYQaan6cYXJiG0WmXOwZZPILPBimu5QAIw3A==}
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /pbkdf2@3.1.2:
     resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
     engines: {node: '>=0.12'}
@@ -9734,17 +9724,6 @@ packages:
     optionalDependencies:
       canvas: 2.11.2
       path2d-polyfill: 2.0.1
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-
-  /pdfjs-dist@4.2.67:
-    resolution: {integrity: sha512-rJmuBDFpD7cqC8WIkQUEClyB4UAH05K4AsyewToMTp2gSy3Rrx8c1ydAVqlJlGv3yZSOrhEERQU/4ScQQFlLHA==}
-    engines: {node: '>=18'}
-    optionalDependencies:
-      canvas: 2.11.2
-      path2d: 0.2.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -10238,12 +10217,12 @@ packages:
       react-dom: 18.2.0(react@18.3.1)
     dev: false
 
-  /react-pdf@7.7.3(@types/react@18.3.2)(react-dom@18.2.0)(react@18.3.1):
-    resolution: {integrity: sha512-a2VfDl8hiGjugpqezBTUzJHYLNB7IS7a2t7GD52xMI9xHg8LdVaTMsnM9ZlNmKadnStT/tvX5IfV0yLn+JvYmw==}
+  /react-pdf@8.0.2(@types/react@18.3.2)(react-dom@18.2.0)(react@18.3.1):
+    resolution: {integrity: sha512-C0PFC+j9vmEIZ82Iq0c85xUWkgsZTUS05syqOk8NC+7PAanyWlVi/ImYkGQe27zYAlBA6IidRYEt1DAAXKq1Ow==}
     peerDependencies:
-      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -10255,7 +10234,6 @@ packages:
       make-event-props: 1.6.2
       merge-refs: 1.3.0(@types/react@18.3.2)
       pdfjs-dist: 3.11.174
-      prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.2.0(react@18.3.1)
       tiny-invariant: 1.3.3

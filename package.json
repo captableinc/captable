@@ -11,11 +11,11 @@
     "dx:restart": "docker-compose -f compose.yml restart",
     "dx:migrate": "docker compose run app pnpm db:migrate",
     "dx:seed": "docker compose run app pnpm db:seed",
-    "db:push": "npx prisma db push",
-    "db:studio": "npx prisma studio",
-    "db:migrate": "npx prisma migrate dev",
-    "db:generate": "npx prisma generate",
-    "db:seed": "NODE_ENV='test' npx tsx prisma/seeds/index.ts",
+    "db:push": "pnpx prisma db push",
+    "db:studio": "pnpx prisma studio",
+    "db:migrate": "pnpx prisma migrate dev",
+    "db:generate": "pnpx prisma generate",
+    "db:seed": "NODE_ENV='test' pnpx tsx prisma/seeds/index.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -23,10 +23,10 @@
     "prepare": "husky install",
     "lint": "biome check --apply ./src",
     "email:dev": "mailpit",
-    "format": "biome format --write ./src && npx prisma format",
+    "format": "biome format --write ./src && pnpx prisma format",
     "email:preview": "email preview ./src/emails",
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",
-    "trigger": "npx @trigger.dev/cli@latest dev"
+    "trigger": "pnpx @trigger.dev/cli@latest dev"
   },
   "dependencies": {
     "@ark-ui/react": "^2.2.3",
@@ -109,6 +109,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
+    "@blocknote/core": "^0.13.2",
     "@faker-js/faker": "^8.4.0",
     "@flydotio/dockerfile": "^0.5.4",
     "@tailwindcss/typography": "^0.5.12",

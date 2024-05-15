@@ -1,5 +1,7 @@
 import { AuthVerificationEmailJob } from "@/jobs/auth-verification-email";
+import { EsignConfirmationEmailJob } from "@/jobs/esign-confirmation-email";
 import { EsignNotificationEmailJob } from "@/jobs/esign-email";
+import { EsignPdfJob } from "@/jobs/esign-pdf";
 import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
 import { PasswordResetEmailJob } from "@/jobs/password-reset-email";
 import { ShareDataRoomEmailJob } from "@/jobs/share-data-room-email";
@@ -13,7 +15,9 @@ export async function initPgBoss() {
     .register(ShareDataRoomEmailJob)
     .register(SendMemberInviteEmailJob)
     .register(PasswordResetEmailJob)
-    .register(EsignNotificationEmailJob);
+    .register(EsignNotificationEmailJob)
+    .register(EsignConfirmationEmailJob)
+    .register(EsignPdfJob);
 
   await jobs.start();
 }

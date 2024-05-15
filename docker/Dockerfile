@@ -13,8 +13,8 @@ COPY prisma ./prisma
 
 ENV HUSKY 0
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+# Install dependencies
+COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable pnpm && pnpm i --frozen-lockfile
 
 ##### BUILDER

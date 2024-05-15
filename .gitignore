@@ -41,7 +41,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-yarn.lock
 
 #local
 /local

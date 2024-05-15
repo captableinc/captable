@@ -1,5 +1,5 @@
-import { api } from "@/trpc/server";
 import { ProfileSettings } from "@/components/member/member-profile";
+import { api } from "@/trpc/server";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {

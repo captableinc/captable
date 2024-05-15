@@ -1,6 +1,6 @@
+import { generatePublicId } from "@/common/id";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "./schema";
-import { generatePublicId } from "@/common/id";
 
 import { Audit } from "@/server/audit";
 

@@ -1,7 +1,7 @@
 "use client";
 import {
-  ZodAcceptMemberMutationSchema,
   type TypeZodAcceptMemberMutationSchema,
+  ZodAcceptMemberMutationSchema,
 } from "@/trpc/routers/member-router/schema";
 import { RiArrowRightLine } from "@remixicon/react";
 import { Button } from "../ui/button";

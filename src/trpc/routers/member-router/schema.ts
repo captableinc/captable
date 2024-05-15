@@ -1,6 +1,6 @@
-import { string, z } from "zod";
 import { PayloadType } from "@/lib/constants";
 import { AvatarUploadInput, ProfileUpdateInput } from "@/lib/zodSchemas";
+import { string, z } from "zod";
 
 export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),

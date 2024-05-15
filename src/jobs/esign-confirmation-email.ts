@@ -4,7 +4,7 @@ import { client } from "@/trigger";
 import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
 
-export interface TypeGeneralPayload {
+export type TConfirmationEmailPayload = {
   fileUrl: string;
   documentName: string;
   senderName: string | null;
@@ -12,26 +12,12 @@ export interface TypeGeneralPayload {
     name: string;
     logo?: string | null;
   };
-}
-
-export interface TConfirmationEmailPayload extends TypeGeneralPayload {
-  recipient: { name: string | null; email: string };
-}
-
-export type TRecipientsKind = TypeGeneralPayload & {
-  kind: "RECIPIENTS";
-  recipients: { id: string; name: string | null; email: string }[];
+  recipient: { name?: string | null; email: string };
 };
 
-export type TRecipientKind = TypeGeneralPayload & {
-  kind: "RECIPIENT";
-  recipient: { id: string; name: string | null; email: string };
-};
-
-export type TConfirmationEmailJobPayload = TRecipientKind | TRecipientsKind;
-
-type Payload = TConfirmationEmailPayload;
-export const sendEsignConfirmationEmail = async (payload: Payload) => {
+export const sendEsignConfirmationEmail = async (
+  payload: TConfirmationEmailPayload,
+) => {
   const html = await render(
     ESignConfirmationEmail({
       documentName: payload.documentName,
@@ -42,11 +28,11 @@ export const sendEsignConfirmationEmail = async (payload: Payload) => {
   );
   await sendMail({
     to: payload.recipient.email,
-    subject: "Completed e-signed documents from all partiess",
+    subject: "Completed e-signed documents from all parties",
     html,
     attachments: [
       {
-        filename: "signed_document.pdf",
+        filename: payload.documentName,
         path: payload.fileUrl,
       },
     ],
@@ -61,40 +47,9 @@ client.defineJob({
     name: "esign.send-confirmation",
   }),
 
-  run: async (payload: TConfirmationEmailJobPayload, io) => {
-    if (payload.kind === "RECIPIENT") {
-      await io.runTask(
-        `send-confirmation-email-${payload.recipient.id}`,
-        async () => {
-          await sendEsignConfirmationEmail({
-            documentName: payload.documentName,
-            senderName: payload.senderName,
-            company: payload.company,
-            fileUrl: payload.fileUrl,
-            recipient: {
-              name: payload.recipient?.name,
-              email: payload.recipient.email,
-            },
-          });
-        },
-      );
-    }
-
-    if (payload.kind === "RECIPIENTS") {
-      for (const recipient of payload.recipients) {
-        await io.runTask(`recpient-${recipient.id}`, async () => {
-          await sendEsignConfirmationEmail({
-            documentName: payload.documentName,
-            senderName: payload.senderName,
-            company: payload.company,
-            fileUrl: payload.fileUrl,
-            recipient: {
-              name: recipient?.name,
-              email: recipient.email,
-            },
-          });
-        });
-      }
-    }
+  run: async (payload: TConfirmationEmailPayload, io) => {
+    await io.runTask("send confirmation email", async () => {
+      await sendEsignConfirmationEmail(payload);
+    });
   },
 });

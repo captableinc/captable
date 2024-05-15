@@ -5,9 +5,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import React, { useCallback, useState } from "react";
 import {
-  useDropzone,
   type DropzoneOptions,
   type FileWithPath,
+  useDropzone,
 } from "react-dropzone";
 import { Button } from "./button";
 
@@ -78,7 +78,7 @@ export function Uploader({
           const data = await mutateAsync({ key, mimeType, name, size });
 
           if (onSuccess) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
             await onSuccess(data as any);
           }
 
@@ -90,7 +90,7 @@ export function Uploader({
         }
       } else {
         if (onSuccess) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
           await onSuccess(acceptedFiles as any);
         }
         toast({

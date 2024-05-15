@@ -1,9 +1,9 @@
 import { generatePublicId } from "@/common/id";
 import { env } from "@/env";
 import {
+  type DataRoomEmailPayloadType,
   sendShareDataRoomEmail,
   triggerName,
-  type DataRoomEmailPayloadType,
 } from "@/jobs/share-data-room-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";

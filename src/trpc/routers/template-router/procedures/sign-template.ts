@@ -1,26 +1,18 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { dayjsExt } from "@/common/dayjs";
-import {
-  sendEsignConfirmationEmail,
-  type TRecipientKind,
-  type TRecipientsKind,
-} from "@/jobs/esign-confirmation-email";
-import { sendEsignEmail } from "@/jobs/esign-email";
-import {
-  CompleteSignDocumentJob,
-  type TESignPdfSchema,
-} from "@/jobs/esign-pdf";
+import { sendEsignConfirmationEmail } from "@/jobs/esign-confirmation-email";
+import { type TEsignEmailJob, sendEsignEmail } from "@/jobs/esign-email";
+import { type TESignPdfSchema } from "@/jobs/esign-pdf";
 import { EsignAudit } from "@/server/audit";
 import {
+  type TCompleteEsignDocumentsOptions,
+  type TGenerateEsignSignPdfOptions,
   completeEsignDocuments,
   generateEsignPdf,
-  getEmailSpecificInfoFromTemplate,
   getEsignAudits,
   getEsignTemplate,
   uploadEsignDocuments,
-  type TCompleteEsignDocumentsOptions,
-  type TGenerateEsignSignPdfOptions,
   type uploadEsignDocumentsOptions,
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
@@ -86,19 +78,29 @@ export const signTemplateProcedure = withoutAuth
             ip: ctx.requestIp,
             location: "",
             userAgent: ctx.userAgent,
-            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            summary: `${recipient.name ? recipient.name : ""} signed "${
+              template.name
+            }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
           },
           tx,
         );
 
-        const signableRecepients = await tx.esignRecipient.count({
+        const allRecipients = await tx.esignRecipient.findMany({
           where: {
             templateId: template.id,
-            status: "PENDING",
+          },
+          select: {
+            email: true,
+            name: true,
+            status: true,
           },
         });
 
-        if (signableRecepients === 0) {
+        const signableRecipients = allRecipients.filter(
+          (item) => item.status !== "SIGNED",
+        ).length;
+
+        if (signableRecipients === 0) {
           const values = await tx.templateField.findMany({
             where: {
               templateId: template.id,
@@ -127,7 +129,9 @@ export const signTemplateProcedure = withoutAuth
               ip: ctx.requestIp,
               location: "",
               userAgent: ctx.userAgent,
-              summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+              summary: `${recipient.name ? recipient.name : ""} signed "${
+                template.name
+              }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
             },
             tx,
           );
@@ -143,6 +147,11 @@ export const signTemplateProcedure = withoutAuth
             db: tx,
             requestIp,
             userAgent,
+            company: template.company,
+            recipients: allRecipients.map((item) => ({
+              email: item.email,
+              name: item.name,
+            })),
           });
         }
       } else {
@@ -155,7 +164,9 @@ export const signTemplateProcedure = withoutAuth
             ip: ctx.requestIp,
             location: "",
             userAgent: ctx.userAgent,
-            summary: `${recipient.name ? recipient.name : ""} signed "${template.name}" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            summary: `${recipient.name ? recipient.name : ""} signed "${
+              template.name
+            }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
           },
           tx,
         );
@@ -171,6 +182,13 @@ export const signTemplateProcedure = withoutAuth
           db: tx,
           requestIp,
           userAgent,
+          recipients: [
+            {
+              email: recipient.email,
+              name: recipient.name,
+            },
+          ],
+          company: template.company,
         });
       }
 
@@ -183,6 +201,7 @@ export const signTemplateProcedure = withoutAuth
           select: {
             id: true,
             email: true,
+            name: true,
           },
         });
         if (nextDelivery) {
@@ -203,18 +222,32 @@ export const signTemplateProcedure = withoutAuth
               ip: ctx.requestIp,
               location: "",
               userAgent: ctx.userAgent,
-              summary: `${uploaderName ? uploaderName : ""} sent "${template.name}" to ${recipient.name ? recipient.name : ""} for eSignature at ${dayjsExt(new Date()).format("lll")}`,
+              summary: `${uploaderName ? uploaderName : ""} sent "${
+                template.name
+              }" to ${
+                recipient.name ? recipient.name : ""
+              } for eSignature at ${dayjsExt(new Date()).format("lll")}`,
             },
             tx,
           );
 
+          const payload: TEsignEmailJob = {
+            email,
+            token,
+            message: template.message,
+            documentName: template.name,
+            recipient: nextDelivery,
+            company: template.company,
+            sender: template.uploader.user,
+          };
+
           if (triggerClient) {
             await triggerClient.sendEvent({
               name: "email.esign",
-              payload: { token, email },
+              payload,
             });
           } else {
-            await sendEsignEmail({ token, email });
+            await sendEsignEmail(payload);
           }
         }
       }
@@ -228,6 +261,11 @@ interface TSignPdfOptions
     Omit<uploadEsignDocumentsOptions, "buffer">,
     Omit<TCompleteEsignDocumentsOptions, "bucketData"> {
   templateId: string;
+  company: {
+    name: string;
+    logo?: string | null;
+  };
+  recipients: { name: string | null; email: string }[];
 }
 
 async function signPdf({
@@ -241,6 +279,8 @@ async function signPdf({
   fields,
   uploaderName,
   templateId,
+  recipients,
+  company,
 }: TSignPdfOptions) {
   const trigger = getTriggerClient();
 
@@ -258,9 +298,14 @@ async function signPdf({
       templateName,
       uploaderName,
       userAgent,
+      recipients,
+      company,
     };
 
-    await CompleteSignDocumentJob.invoke({ ...payload });
+    await trigger.sendEvent({
+      name: "esign.sign-pdf",
+      payload,
+    });
   } else {
     const modifiedPdfBytes = await generateEsignPdf({
       bucketKey,
@@ -288,50 +333,17 @@ async function signPdf({
       userAgent,
     });
 
-    const payload = await getEmailSpecificInfoFromTemplate(templateId, db);
+    const file = await getPresignedGetUrl(bucketData.key);
 
-    const FILE_URL = await getPresignedGetUrl(bucketData.key);
-
-    await sendConfirmationEmail({ ...payload, fileUrl: FILE_URL.url });
-  }
-}
-
-type TSendConfirmationEmail = Omit<TRecipientsKind, "kind">;
-type TMail = TRecipientKind;
-
-async function sendConfirmationEmail({
-  fileUrl,
-  recipients,
-  documentName,
-  senderName,
-  company,
-}: TSendConfirmationEmail) {
-  const mails: TMail[] = [];
-
-  for (let index = 0; index < recipients.length; index++) {
-    const recipient = recipients[index];
-
-    if (!recipient) {
-      throw new Error("not found");
-    }
-
-    mails.push({
-      fileUrl,
-      documentName,
-      senderName,
-      company,
-      kind: "RECIPIENT",
-      recipient: {
-        id: recipient.id,
-        name: recipient.name,
-        email: recipient.email,
-      },
-    });
-  }
-  if (mails.length) {
     await Promise.all(
-      mails.map((payload) =>
-        sendEsignConfirmationEmail({ ...payload, fileUrl }),
+      recipients.map((recipient) =>
+        sendEsignConfirmationEmail({
+          fileUrl: file.url,
+          senderName: uploaderName,
+          documentName: templateName,
+          company,
+          recipient,
+        }),
       ),
     );
   }

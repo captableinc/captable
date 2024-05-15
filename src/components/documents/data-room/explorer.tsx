@@ -47,11 +47,9 @@ const DataRoomFileExplorer = ({
                   <span className="font-medium text-gray-900 hover:text-gray-600">
                     {document.name}
                   </span>
-                  <p className="text-xs text-gray-500">{`${(
-                    document.size /
-                    1024 /
-                    1024
-                  ).toFixed(2)} MB`}</p>
+                  <p className="text-xs text-gray-500">{`${
+                    document.mimeType
+                  } - ${(document.size / 1024 / 1024).toFixed(2)} MB`}</p>
                 </div>
               </div>
             </Link>

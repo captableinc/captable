@@ -45,9 +45,9 @@ export const toggleActivation = withAuth
             userAgent,
           },
           target: [{ type: "user", id: member.userId }],
-          summary: `${user.name} ${
-            status ? "activated" : "deactivated"
-          } ${member.user?.name} from ${member?.company.name}`,
+          summary: `${user.name} ${status ? "activated" : "deactivated"} ${
+            member.user?.name
+          } from ${member?.company.name}`,
         },
         tx,
       );

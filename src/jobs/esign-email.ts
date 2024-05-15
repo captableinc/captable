@@ -1,6 +1,5 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
-import { EsignRecipientStatus } from "@/prisma/enums";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { client } from "@/trigger";
@@ -9,8 +8,8 @@ import { render } from "jsx-email";
 
 export interface TEmailPayload {
   documentName?: string;
-  message?: string;
-  recipient?: {
+  message?: string | null;
+  recipient: {
     id: string;
     name: string | null | undefined;
     email: string;
@@ -57,18 +56,19 @@ client.defineJob({
   }),
 
   run: async (payload: TEsignEmailJob, io) => {
-    await io.runTask(`send esign email`, async () => {
+    await io.runTask("send esign email", async () => {
       await sendEsignEmail(payload);
-      if (payload?.recipient?.id) {
-        await db.esignRecipient.update({
-          where: {
-            id: payload.recipient.id,
-          },
-          data: {
-            status: EsignRecipientStatus.SENT,
-          },
-        });
-      }
+    });
+
+    await io.runTask("update recipient status", async () => {
+      await db.esignRecipient.update({
+        where: {
+          id: payload.recipient.id,
+        },
+        data: {
+          status: "SENT",
+        },
+      });
     });
   },
 });

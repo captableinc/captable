@@ -14,10 +14,10 @@ ports:
   - port: 3000
     visibility: public
     onOpen: open-preview
-  - port: 9000
+  - port: 8025
     visibility: public
     onOpen: ignore
-  - port: 1100
+  - port: 1025
     visibility: private
     onOpen: ignore
   - port: 2500

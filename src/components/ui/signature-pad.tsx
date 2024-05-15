@@ -4,7 +4,7 @@
 import { mergeRefs } from "@/lib/dom";
 import { cn } from "@/lib/utils";
 import { toPng } from "html-to-image";
-import { forwardRef, useRef, useState, type MouseEvent } from "react";
+import { type MouseEvent, forwardRef, useRef, useState } from "react";
 
 interface Point {
   x: number;

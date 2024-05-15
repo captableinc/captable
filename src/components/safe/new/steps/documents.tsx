@@ -1,9 +1,9 @@
 "use client";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Uploader from "@/components/ui/uploader";
 import React from "react";
 import { useFormContext } from "react-hook-form";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 type Documents = {
   bucketId: string;

@@ -95,9 +95,13 @@ export const addFieldProcedure = withAuth
           },
         });
 
+        const recipientIdList = input.data.map((item) => item.recipientId);
         const recipientList = await tx.esignRecipient.findMany({
           where: {
             templateId: template.id,
+            id: {
+              in: recipientIdList,
+            },
           },
           select: {
             id: true,
@@ -108,9 +112,7 @@ export const addFieldProcedure = withAuth
 
         const fieldsList = [];
 
-        for (let index = 0; index < input.data.length; index++) {
-          const field = input.data[index];
-
+        for (const field of input.data) {
           if (field) {
             fieldsList.push({ ...field, templateId: template.id });
           }
@@ -131,9 +133,19 @@ export const addFieldProcedure = withAuth
         });
 
         if (input.status === "COMPLETE") {
-          for (let index = 0; index < recipientList.length; index++) {
-            const recipient = recipientList[index];
+          const nonDeletableRecipientIdList = recipientList.map(
+            (item) => item.id,
+          );
+          await tx.esignRecipient.deleteMany({
+            where: {
+              templateId: template.id,
+              id: {
+                notIn: nonDeletableRecipientIdList,
+              },
+            },
+          });
 
+          for (const recipient of recipientList) {
             if (!recipient) {
               throw new Error("not found");
             }
@@ -182,6 +194,16 @@ export const addFieldProcedure = withAuth
           );
         } else {
           await Promise.all(mails.map((payload) => sendEsignEmail(payload)));
+          await ctx.db.$transaction(
+            mails.map((payload) =>
+              ctx.db.esignRecipient.update({
+                where: {
+                  id: payload.recipient.id,
+                },
+                data: { status: "SENT" },
+              }),
+            ),
+          );
         }
       }
 
@@ -195,7 +217,6 @@ export const addFieldProcedure = withAuth
             : "Your template fields has been created.",
       };
     } catch (error) {
-      console.log({ error });
       if (error instanceof TRPCError) {
         return {
           success: false,

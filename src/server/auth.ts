@@ -3,10 +3,10 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import {
-  getServerSession,
   type DefaultSession,
   type NextAuthOptions,
   type Session,
+  getServerSession,
 } from "next-auth";
 
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -15,8 +15,14 @@ import GoogleProvider from "next-auth/providers/google";
 import { env } from "@/env";
 import { type MemberStatusEnum } from "@/prisma/enums";
 
-import { db, type TPrismaOrTransaction } from "@/server/db";
+import { type TPrismaOrTransaction, db } from "@/server/db";
 
+import { getAuthenticatorOptions } from "@/lib/authenticator";
+import {
+  type TAuthenticationResponseJSONSchema,
+  ZAuthenticationResponseJSONSchema,
+} from "@/lib/types";
+import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { getUserByEmail, getUserById } from "./user";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
@@ -121,7 +127,6 @@ export const authOptions: NextAuthOptions = {
             },
           },
         });
-
         if (member) {
           token.status = member.status;
           token.name = member.user?.name;
@@ -138,7 +143,6 @@ export const authOptions: NextAuthOptions = {
           token.companyPublicId = "";
         }
       }
-
       return token;
     },
   },
@@ -168,6 +172,105 @@ export const authOptions: NextAuthOptions = {
           if (passwordsMatch) return user;
         }
         return null;
+      },
+    }),
+
+    CredentialsProvider({
+      id: "webauthn",
+      name: "Keypass",
+      credentials: {
+        csrfToken: { label: "csrfToken", type: "csrfToken" },
+      },
+      async authorize(credentials, req) {
+        const csrfToken = credentials?.csrfToken;
+
+        if (typeof csrfToken !== "string" || csrfToken.length === 0) {
+          throw new Error("Invalid csrfToken");
+        }
+
+        let requestBodyCrediential: TAuthenticationResponseJSONSchema | null =
+          null;
+
+        try {
+          //eslint-disable-next-line  @typescript-eslint/no-unsafe-argument
+          const parsedBodyCredential = JSON.parse(req.body?.credential);
+          requestBodyCrediential =
+            ZAuthenticationResponseJSONSchema.parse(parsedBodyCredential);
+        } catch {
+          throw new Error("Invalid request");
+        }
+
+        const challengeToken = await db.passkeyVerificationToken
+          .delete({
+            where: {
+              id: csrfToken,
+            },
+          })
+          .catch(() => null);
+
+        if (!challengeToken) {
+          return null;
+        }
+
+        if (challengeToken.expiresAt < new Date()) {
+          throw new Error("Challenge token has expired.");
+        }
+
+        const passkey = await db.passkey.findFirst({
+          where: {
+            credentialId: Buffer.from(requestBodyCrediential.id),
+          },
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                emailVerified: true,
+              },
+            },
+          },
+        });
+
+        if (!passkey) {
+          throw new Error("Cannot setup passkey.");
+        }
+
+        const user = passkey.user;
+
+        const { rpId, origin } = getAuthenticatorOptions();
+
+        const verification = await verifyAuthenticationResponse({
+          response: requestBodyCrediential,
+          expectedChallenge: challengeToken.token,
+          expectedOrigin: origin,
+          expectedRPID: rpId,
+          authenticator: {
+            //@ts-expect-error error
+            credentialID: new Uint8Array(Array.from(passkey.credentialId)),
+            credentialPublicKey: new Uint8Array(passkey.credentialPublicKey),
+            counter: Number(passkey.counter),
+          },
+        }).catch(() => null);
+
+        //@TODO (Add audits for verification.verified event)
+
+        await db.passkey.update({
+          where: {
+            id: passkey.id,
+          },
+          data: {
+            lastUsedAt: new Date(),
+            counter: verification?.authenticationInfo.newCounter,
+          },
+        });
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          emailVerified: user.emailVerified?.toISOString() ?? null,
+        };
       },
     }),
     /**

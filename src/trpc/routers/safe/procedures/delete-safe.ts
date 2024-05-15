@@ -2,8 +2,8 @@ import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
-  ZodDeleteSafesMutationSchema,
   type TypeZodDeleteSafesMutationSchema,
+  ZodDeleteSafesMutationSchema,
 } from "../schema";
 
 export const deleteSafeProcedure = withAuth

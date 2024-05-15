@@ -1,6 +1,6 @@
 import { generatePublicId } from "@/common/id";
-import { UpdateMutationSchema } from "../schema";
 import { withAuth } from "@/trpc/api/trpc";
+import { UpdateMutationSchema } from "../schema";
 
 export const saveUpdateProcedure = withAuth
   .input(UpdateMutationSchema)

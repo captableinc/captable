@@ -1,0 +1,14 @@
+name: "Build captable app"
+
+runs:
+  using: "composite"
+  steps:
+    - name: 🏄 Copy example env vars
+      shell: bash
+      run: cp .env.example .env
+
+    - name: 🏗 Build
+      shell: bash
+      run: npx prisma generate && npm run build
+      env:
+        SKIP_ENV_VALIDATION: 1

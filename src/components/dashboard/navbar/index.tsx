@@ -1,7 +1,7 @@
+import { type TGetCompanyList } from "@/server/company";
 import { CommandMenu } from "./command-menu";
 import { MobileDrawer } from "./mobile-drawer";
 import { UserDropdown } from "./user-dropdown";
-import { type TGetCompanyList } from "@/server/company";
 
 interface SideBarProps {
   publicId: string;

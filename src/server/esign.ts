@@ -1,18 +1,14 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { dayjsExt } from "@/common/dayjs";
-import { getFileFromS3, uploadFile, type TUploadFile } from "@/common/uploads";
-import { generateRange, type Range } from "@/lib/pdf-positioning";
+import { type TUploadFile, getFileFromS3, uploadFile } from "@/common/uploads";
+import { type Range, generateRange } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
-import { EsignRecipientStatus } from "@/prisma/enums";
 import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { EsignAudit } from "./audit";
-import {
-  type TPrismaOrTransaction,
-  type PrismaTransactionalClient,
-} from "./db";
+import { type PrismaTransactionalClient } from "./db";
 
 interface getEsignAuditsOptions {
   templateId: string;
@@ -61,8 +57,16 @@ export function getEsignTemplate({ tx, templateId }: getEsignTemplateOptions) {
           user: {
             select: {
               name: true,
+              email: true,
             },
           },
+        },
+      },
+      message: true,
+      company: {
+        select: {
+          name: true,
+          logo: true,
         },
       },
     },
@@ -117,8 +121,7 @@ export async function generateEsignPdf({
   let cumulativePagesHeight = 0;
   const measurements = [];
 
-  for (let i = 0; i < pages.length; i++) {
-    const page = pages[i];
+  for (const page of pages) {
     if (page) {
       const height = page.getHeight();
       const width = page.getWidth();
@@ -203,8 +206,7 @@ export async function generateEsignPdf({
     const indices = auditPDFDoc.getPageIndices();
     const copiedPages = await pdfDoc.copyPages(auditPDFDoc, indices);
 
-    for (let index = 0; index < copiedPages.length; index++) {
-      const auditPage = copiedPages[index];
+    for (const auditPage of copiedPages) {
       if (auditPage) {
         pdfDoc.addPage(auditPage);
       }
@@ -280,7 +282,9 @@ export async function completeEsignDocuments({
       ip: requestIp,
       location: "",
       userAgent: userAgent,
-      summary: `"${templateName}" completely signed at ${dayjsExt(new Date()).format("lll")}`,
+      summary: `"${templateName}" completely signed at ${dayjsExt(
+        new Date(),
+      ).format("lll")}`,
     },
     db,
   );
@@ -298,71 +302,4 @@ export async function completeEsignDocuments({
     companyId,
     uploaderName,
   });
-}
-
-export async function getEmailSpecificInfoFromTemplate(
-  templateId: string,
-  db: TPrismaOrTransaction,
-) {
-  const template = await db.template.findFirstOrThrow({
-    where: {
-      id: templateId,
-    },
-    select: {
-      name: true,
-      eSignRecipient: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          status: true,
-        },
-      },
-      uploader: {
-        select: {
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-      company: {
-        select: {
-          name: true,
-          logo: true,
-        },
-      },
-    },
-  });
-
-  const allRecipientsEmailStatus = template.eSignRecipient.map(
-    (recp) => recp.status,
-  );
-
-  const isLegalRecipients = allRecipientsEmailStatus.every(
-    (status) => status === EsignRecipientStatus.SIGNED,
-  );
-
-  if (!isLegalRecipients) {
-    throw new Error("Not an elligible condition for sending signed documents.");
-  }
-
-  const company = template.company;
-  const senderName = template.uploader.user.name;
-  const allRecipients =
-    template.eSignRecipient.map((recp) => {
-      return {
-        id: recp.id,
-        name: recp.name,
-        email: recp.email,
-      };
-    }) ?? [];
-
-  return {
-    recipients: allRecipients,
-    documentName: template.name,
-    senderName,
-    company,
-  };
 }

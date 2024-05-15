@@ -1,8 +1,14 @@
-import DocumentViewer from "@/components/documents/common/viewer";
+import FileIcon from "@/components/common/file-icon";
+import FilePreview from "@/components/file/preview";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { RiArrowLeftSLine } from "@remixicon/react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 
 const DocumentPreview = async ({
   params: { publicId, bucketId },
@@ -26,17 +32,36 @@ const DocumentPreview = async ({
 
   const file = document.bucket;
   const remoteFile = await getPresignedGetUrl(file.key);
-  const buffer = await fetch(remoteFile.url).then((res) => res.arrayBuffer());
-  const blob = new Blob([buffer], { type: file.mimeType });
-  const blobText = URL.createObjectURL(blob);
 
-  // console.log({ blobText })
+  return (
+    <Fragment>
+      <div className="mb-5 flex">
+        <Link href={`/${publicId}/documents`}>
+          <Button
+            variant="outline"
+            size="icon"
+            className="-mt-1 mr-3 flex items-center rounded-full"
+          >
+            <RiArrowLeftSLine className="h-5 w-5" />
+          </Button>
+        </Link>
 
-  // return (
-  //   <>File</>
-  // )
+        <FileIcon type={file.mimeType} />
 
-  return <DocumentViewer uri={blobText} type={file.mimeType} />;
+        <h1 className="ml-3 text-2xl font-semibold tracking-tight">
+          <span className="text-primary/60">{file.name}</span>
+        </h1>
+      </div>
+
+      <Card className="p-5">
+        <FilePreview
+          name={file.name}
+          url={remoteFile.url}
+          mimeType={file.mimeType}
+        />
+      </Card>
+    </Fragment>
+  );
 };
 
 export default DocumentPreview;

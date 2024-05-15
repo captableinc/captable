@@ -4,7 +4,7 @@ import { dayjsExt } from "@/common/dayjs";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import UpdateRenderer from "@/components/update/renderer";
-import { decode, type JWTVerifyResult } from "@/lib/jwt";
+import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import { db } from "@/server/db";
 import { render } from "jsx-email";
 import { notFound } from "next/navigation";

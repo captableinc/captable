@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import { env } from "@/env";
-import { createTransport, type SendMailOptions } from "nodemailer";
+import { type SendMailOptions, createTransport } from "nodemailer";
 
 const getTransport = () => {
   if (env.EMAIL_SERVER) {

@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
 
 import { db } from "@/server/db";
-import { getVerificationTokenByEmail } from "@/server/verification-token";
 import { getPasswordResetokenByEmail } from "@/server/password-reset-token";
+import { getVerificationTokenByEmail } from "@/server/verification-token";
 
 export const generateVerificationToken = async (email: string) => {
   const token = nanoid(32);

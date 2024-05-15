@@ -33,7 +33,7 @@ export const TemplateFieldForm = ({
       });
 
       if (status === "COMPLETE") {
-        router.push(`/${companyPublicId}/documents`);
+        router.push(`/${companyPublicId}/documents/esign`);
       }
     },
   });

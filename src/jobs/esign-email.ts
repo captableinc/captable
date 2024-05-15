@@ -1,10 +1,9 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
-import { db } from "@/server/db";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
+import { Job } from "pg-boss";
 
 export interface TEmailPayload {
   documentName?: string;
@@ -47,28 +46,10 @@ export const sendEsignEmail = async (payload: TEsignEmailJob) => {
   });
 };
 
-client.defineJob({
-  id: "esign-notification-email",
-  name: "E-sign notification email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: "email.esign",
-  }),
+export class EsignNotificationEmailJob extends BaseJob<TEsignEmailJob> {
+  readonly type = "email.esign";
 
-  run: async (payload: TEsignEmailJob, io) => {
-    await io.runTask("send esign email", async () => {
-      await sendEsignEmail(payload);
-    });
-
-    await io.runTask("update recipient status", async () => {
-      await db.esignRecipient.update({
-        where: {
-          id: payload.recipient.id,
-        },
-        data: {
-          status: "SENT",
-        },
-      });
-    });
-  },
-});
+  async work(job: Job<TEsignEmailJob>): Promise<void> {
+    await sendEsignEmail(job.data);
+  }
+}

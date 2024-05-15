@@ -11,7 +11,6 @@
     "dx:restart": "docker-compose -f compose.yml restart",
     "dx:migrate": "docker compose run app pnpm db:migrate",
     "dx:seed": "docker compose run app pnpm db:seed",
-
     "db:push": "npx prisma db push",
     "db:studio": "npx prisma studio",
     "db:migrate": "npx prisma migrate dev",
@@ -91,6 +90,7 @@
     "nodemailer": "^6.9.8",
     "papaparse": "^5.4.1",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^4.2.67",
     "prisma-json-types-generator": "^3.0.4",
     "react": "18.3.1",
     "react-dom": "18.2.0",

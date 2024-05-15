@@ -5,7 +5,7 @@
 
 <h1 align="center">Captable, Inc.</h1>
 <p align="center">
-  #1 Open-source Cap tabler management platform, an alternative to Carta, Pulley, Angelist and others.
+  #1 Open-source Cap table management platform, an alternative to Carta, Pulley, Angelist and others.
 </p>
 <p align="center">
   <a href="https://captable.inc"><strong>Learn more »</strong></a>
@@ -32,22 +32,20 @@
 
 <h2 id="features">✨ Key features</h2>
 
-> [!NOTE]  
+> [!IMPORTANT]  
 > We envision a world where cap table management is accessible, secure, and empowering for all. Captable, Inc. aims to democratize the handling of cap tables, securities, and stakeholder interactions. Through cutting-edge technology and a commitment to openness, we strive to be the catalyst for positive change in financial ecosystems.
 
-[ ] 1. **Incorporation** - Captable, Inc. helps you incorporate your company in minutes, with all the necessary legal documents and filings taken care of. (coming soon...)
+👷 **Incorporation** - Captable, Inc. helps you incorporate your company in minutes, with all the necessary legal documents and filings taken care of. (coming soon...)
 
-[ ] 2. **Cap table management** - Captable, Inc. helps you keep track of your company’s ownership structure, including who owns what percentage of the company, how much stock has been issued, and more. (work in progress...)
+👷 **Cap table management** - Captable, Inc. helps you keep track of your company’s ownership structure, including who owns what percentage of the company, how much stock/options has been issued, and more. (work in progress...)
 
-[ ] 3. **Stock options** - Captable, Inc. makes it easy to issue stock to employees, contractors, and other stakeholders. You can create new stock grants, track vesting schedules, and more. (work in progress...)
+✅ **Fundraise** - Captable, Inc. can help you raise capital, whether its signing standard or custom SAFE or creating and managing fundraising rounds, tracking investor commitments, and more.
 
-[x] 4. **Fundraise** - Captable, Inc. can help you raise capital, whether its signing standard or custom SAFE or creating and managing fundraising rounds, tracking investor commitments, and more.
+✅ **Investor updates** - Delight your investors and team members by sending them regular updates on your company’s progress.
 
-[x] 5. **Investor updates** - Delight your investors and team members by sending them regular updates on your company’s progress.
+✅ **eSign Documents** - Sign SAFE, NDA, contracts, offere letters or any type of documents with Captable Sign.
 
-[x] 6. **eSign Documents** - Sign SAFE, NDA, contracts, offere letters or any type of documents with Captable Sign.
-
-[x] 7. **Data rooms** - Captable, Inc. provides a secure virtual data room where you can store important documents and share them with investors, employees, and other stakeholders.
+✅ **Data rooms** - Captable, Inc. provides a secure virtual data room where you can store important documents and share them with investors, employees, and other stakeholders.
 
 <br />
 
@@ -65,7 +63,8 @@ We have a community of developers, designers, and entrepreneurs who are passiona
 - Please show us some support by giving it a ⭐️
 - We are looking for contributors to help us build the future of cap table management.
 - Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
-- Any contributions you make are truly appreciated. Please follow this [Contribution guideline](https://github.com/envless/envless/blob/main/CONTRIBUTING.md) to get started.
+- Any contributions you make are truly appreciated.
+- Please follow this [Contribution guideline](https://github.com/captableinc/captable/blob/main/CONTRIBUTING.md) to get started.
 
 <br />
 

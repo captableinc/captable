@@ -2,11 +2,12 @@
 
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { useCallback, useState } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import { Document, DocumentProps, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import type { PDFDocumentProxy } from "pdfjs-dist";
+type LoadCallback = Required<DocumentProps>["onLoadSuccess"];
+type PDFDocumentProxy = Parameters<LoadCallback>[0];
 
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
 
@@ -40,7 +41,7 @@ export const PdfViewer = ({
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
-  const onDocumentLoadSuccess = async (event: PDFDocumentProxy) => {
+  const onDocumentLoadSuccess: LoadCallback = async (event) => {
     if (_onDocumentLoadSuccess) {
       await _onDocumentLoadSuccess(event);
     }

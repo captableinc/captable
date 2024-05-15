@@ -1,8 +1,8 @@
 import ESignConfirmationEmail from "@/emails/EsignConfirmationEmail";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
+import { Job } from "pg-boss";
 
 export type TConfirmationEmailPayload = {
   fileUrl: string;
@@ -39,17 +39,10 @@ export const sendEsignConfirmationEmail = async (
   });
 };
 
-client.defineJob({
-  id: "esign-confirmation-email",
-  name: "esign confirmation email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: "esign.send-confirmation",
-  }),
+export class EsignConfirmationEmailJob extends BaseJob<TConfirmationEmailPayload> {
+  readonly type = "email.esign-confirmation";
 
-  run: async (payload: TConfirmationEmailPayload, io) => {
-    await io.runTask("send confirmation email", async () => {
-      await sendEsignConfirmationEmail(payload);
-    });
-  },
-});
+  async work(job: Job<TConfirmationEmailPayload>): Promise<void> {
+    await sendEsignConfirmationEmail(job.data);
+  }
+}

@@ -36,6 +36,11 @@ export abstract class BaseJob<T extends object> implements Job<T> {
   async emit(data: T): Promise<void> {
     await this.boss.send(this.type, data, this.options);
   }
+  async bulkEmit(data: Omit<pgBoss.JobInsert<T>, "name">[]): Promise<void> {
+    await this.boss.insert(
+      data.map((items) => ({ ...items, name: this.type })),
+    );
+  }
 }
 
 export class JobManager {

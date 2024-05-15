@@ -1,11 +1,11 @@
 <a href="https://captable.inc" alt="Captable, Inc.">
-  <img alt="Captable, Inc. cover image" src=".github/images/cover.png?v=0">
+  <img alt="Captable, Inc. cover image" src="https://captable.inc/og.png">
 </a>
 
 
 <h1 align="center">Captable, Inc.</h1>
 <p align="center">
-  An open source alternative to <strong>Carta</strong>, <strong>Pulley</strong>, <strong>Angelist</strong> and others.
+  #1 Open-source Cap tabler management platform, an alternative to Carta, Pulley, Angelist and others.
 </p>
 <p align="center">
   <a href="https://captable.inc"><strong>Learn more »</strong></a>
@@ -13,8 +13,9 @@
 
 <p align="center">
   <a href="https://github.com/captableinc/captable/stargazers">
-    <img src="https://img.shields.io/github/stars/captableinc/captable??style=flat&label=captable&logo=github&color=2dd4bf&logoColor=fff" alt="Github" />
+    <img src="https://img.shields.io/github/stars/captableinc/captable??style=flat&label=captable&logo=Github&color=2dd4bf&logoColor=fff" alt="Github" />
   </a>
+  
   <a href="https://twitter.com/captableinc">
     <img src="https://img.shields.io/twitter/follow/captableinc?style=flat&label=%40Captable, Inc.&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
   </a>
@@ -29,16 +30,46 @@
   </a>
 </p>
 
+<h2 id="features">✨ Key features</h2>
 
-<strong>Captable, Inc.</strong> will follow the [Open Cap Table Coalition](https://www.opencaptablecoalition.com/format) format, an open source standard to prevent lock-in and keep lawyer fees low. No promises.
+> [!NOTE]  
+> We envision a world where cap table management is accessible, secure, and empowering for all. Captable, Inc. aims to democratize the handling of cap tables, securities, and stakeholder interactions. Through cutting-edge technology and a commitment to openness, we strive to be the catalyst for positive change in financial ecosystems.
 
-<h2 id="contributors">✨ Contributors</h2>
+[ ] 1. **Incorporation** - Captable, Inc. helps you incorporate your company in minutes, with all the necessary legal documents and filings taken care of. (coming soon...)
 
-- Don't forget to leave a star ⭐️
-- We ❤️ contributors! Feel free to contribute to this project!.
-- Any contributions you make are truly appreciated.
-- Let's continue contributing to keep the community active and growing.
+[ ] 2. **Cap table management** - Captable, Inc. helps you keep track of your company’s ownership structure, including who owns what percentage of the company, how much stock has been issued, and more. (work in progress...)
+
+[ ] 3. **Stock options** - Captable, Inc. makes it easy to issue stock to employees, contractors, and other stakeholders. You can create new stock grants, track vesting schedules, and more. (work in progress...)
+
+[x] 4. **Fundraise** - Captable, Inc. can help you raise capital, whether its signing standard or custom SAFE or creating and managing fundraising rounds, tracking investor commitments, and more.
+
+[x] 5. **Investor updates** - Delight your investors and team members by sending them regular updates on your company’s progress.
+
+[x] 6. **eSign Documents** - Sign SAFE, NDA, contracts, offere letters or any type of documents with Captable Sign.
+
+[x] 7. **Data rooms** - Captable, Inc. provides a secure virtual data room where you can store important documents and share them with investors, employees, and other stakeholders.
+
+<br />
+
+<h2 id="contributors">🤝 Community</h2>
+We have a community of developers, designers, and entrepreneurs who are passionate about building the future of finance. Join us on Discord to connect with like-minded individuals, share your ideas, and collaborate on projects.
+
+* [Join us on Discord](https://discord.gg/rCpqnD6G6p)
+* [Follow us on Twitter](https://twitter.com/captableinc)
+* [Meet the Founder](https://captable.inc/schedule)
+
+<br />
+
+<h2 id="contributing">🫡 Contributing</h2>
+
+- Please show us some support by giving it a ⭐️
+- We are looking for contributors to help us build the future of cap table management.
 - Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
+- Any contributions you make are truly appreciated. Please follow this [Contribution guideline](https://github.com/envless/envless/blob/main/CONTRIBUTING.md) to get started.
+
+<br />
+
+<h2 id="contributors">❤️ Contributors</h2>
 
 <a href="https://github.com/captableinc/captable/graphs/contributors">
   <p>
@@ -48,99 +79,7 @@
 
 ## Stack
 - [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
 - [@shadcn/ui](https://ui.shadcn.com/)
-
-## Developers
-
-### With Docker
-Follow the steps below to stand the app up locally.
-
-**1. Install dependencies.**
-
-```sh
-pnpm i
-```
-
-**2. Copy `.env.example`**
-
-```sh
-cp .env.example .env
-```
-
-**3. Run docker to setup**
-> If you prefer to run the app without docker, you can skip this step and configure the following services manually:
-
-  * Postgres database
-  * Minio storage
-  * SMTP server 
-
-```sh
-pnpm dx
-```
-
-Generate tables and the Prisma client.
-
-```sh
-npx prisma migrate dev
-```
-
-To see what's in your database, run Prisma Studio:
-
-```sh
-pnpm db:studio
-
-```
-
-**4. Seed some data (For dev environment)**
-
-```sh
-pnpm db:seed
-```
-
-**5. Run the web app**
-
-```sh
-pnpm dev
-```
-
-**6. Install and run SMTP server**
-
-> If you have setup database using docker, this step is optional.
-
-> [Mailpit](https://github.com/axllent/mailpit) or something similar can be used intercept emails in development.
-
-```sh
-pnpm email:dev
-```
-
-Open your browser to the URLs given by the web app and studio processes. You're up and running, good job! 🎉
-
-#### Gitpod Setup
-
-- Click the button below to open this project in Gitpod.
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/captableinc/captable)
-
-### One-click deploy
-
-_Coming soon to a PaaS near you:_
-
-### Vercel
-
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/captableinc/captable)
-
-### Render
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/captableinc/captable)
-
-### Railway
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new?template=)
-
-### Netlify
-
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/captableinc/captable)

@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-SKIP_ENV_VALIDATION=true npx lint-staged
+SKIP_ENV_VALIDATION=true pnpx lint-staged

@@ -1,6 +1,7 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
 import { BaseJob } from "@/lib/pg-boss-base";
+import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
 import { Job } from "pg-boss";
@@ -50,6 +51,15 @@ export class EsignNotificationEmailJob extends BaseJob<TEsignEmailJob> {
   readonly type = "email.esign";
 
   async work(job: Job<TEsignEmailJob>): Promise<void> {
+    await db.esignRecipient.update({
+      where: {
+        id: job.data.recipient.id,
+      },
+      data: {
+        status: "SENT",
+      },
+    });
+
     await sendEsignEmail(job.data);
   }
 }

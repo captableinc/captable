@@ -9,7 +9,7 @@ import { z } from "zod";
 
 const schema = z.object({
   email: z.string().email(),
-  token: z.string(),
+  passwordResetToken: z.string(),
   verificationToken: z.string(),
   company: z.object({
     name: z.string(),
@@ -24,18 +24,17 @@ const schema = z.object({
 type TSchema = z.infer<typeof schema>;
 
 export const sendMemberInviteEmail = async (payload: TSchema) => {
-  const { email, token, verificationToken, company, user } = payload;
+  const { email, passwordResetToken, verificationToken, company, user } =
+    payload;
 
   const baseUrl = env.BASE_URL;
-  const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
 
   const params = new URLSearchParams({
-    callbackUrl,
-    token,
+    passwordResetToken,
     email,
   });
 
-  const inviteLink = `${baseUrl}/api/auth/callback/email?${params.toString()}`;
+  const inviteLink = `${baseUrl}/verify-member/${verificationToken}?${params.toString()}`;
 
   await sendMail({
     to: email,

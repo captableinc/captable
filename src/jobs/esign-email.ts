@@ -29,9 +29,10 @@ interface AdditionalPayloadType {
   token: string;
 }
 
-export type ExtendedPayloadType = EsignEmailPayloadType & AdditionalPayloadType;
+export type ExtendedEsignPayloadType = EsignEmailPayloadType &
+  AdditionalPayloadType;
 
-export const sendEsignEmail = async (payload: ExtendedPayloadType) => {
+export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
   const { email, token, ...rest } = payload;
   const baseUrl = env.BASE_URL;
   const html = await render(
@@ -47,10 +48,10 @@ export const sendEsignEmail = async (payload: ExtendedPayloadType) => {
   });
 };
 
-export class EsignNotificationEmailJob extends BaseJob<ExtendedPayloadType> {
+export class EsignNotificationEmailJob extends BaseJob<ExtendedEsignPayloadType> {
   readonly type = "email.esign-notification";
 
-  async work(job: Job<ExtendedPayloadType>): Promise<void> {
+  async work(job: Job<ExtendedEsignPayloadType>): Promise<void> {
     await db.esignRecipient.update({
       where: {
         id: job.data.recipient.id,

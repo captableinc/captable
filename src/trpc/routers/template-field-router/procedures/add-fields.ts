@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
-import { withAuth } from "@/trpc/api/trpc";
-import { ZodAddFieldMutationSchema } from "../schema";
-
-import type { TEsignEmailJob } from "@/jobs/esign-email";
-import { EsignNotificationEmailJob } from "@/jobs/esign-email";
+import {
+  EsignNotificationEmailJob,
+  type ExtendedEsignPayloadType,
+} from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
+import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { ZodAddFieldMutationSchema } from "../schema";
 
 const emailTokenPayloadSchema = z.object({
   id: z.string(),
@@ -44,7 +45,7 @@ export const addFieldProcedure = withAuth
     try {
       const user = ctx.session.user;
 
-      const mails: TEsignEmailJob[] = [];
+      const mails: ExtendedEsignPayloadType[] = [];
 
       if (input.status === "COMPLETE" && (!user.email || !user.name)) {
         return {
@@ -203,18 +204,12 @@ export const addFieldProcedure = withAuth
             : "Your template fields has been created.",
       };
     } catch (error) {
-      if (error instanceof TRPCError) {
-        return {
-          success: false,
-          title: "Bad request",
-          message: error.message,
-        };
-      } else {
-        return {
-          success: false,
-          title: "Error",
-          message: "Uh ohh! Something went wrong. Please try again later.",
-        };
-      }
+      console.error(error);
+
+      return {
+        success: false,
+        title: "Error",
+        message: "Uh ohh! Something went wrong. Please try again later.",
+      };
     }
   });

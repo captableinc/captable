@@ -1,11 +1,6 @@
-import {
-  type TAuthVerificationPayloadSchema,
-  sendAuthVerificationEmail,
-  triggerName,
-} from "@/jobs/auth-verification-email";
+import { AuthVerificationEmailJob } from "@/jobs/auth-verification-email";
 
 import { generateVerificationToken } from "@/lib/token";
-import { getTriggerClient } from "@/trigger";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
@@ -14,8 +9,6 @@ import { ZSignUpMutationSchema } from "../schema";
 export const signupProcedure = withoutAuth
   .input(ZSignUpMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    const trigger = getTriggerClient();
-
     const { name, email, password } = input;
 
     const userExists = await ctx.db.user.findFirst({
@@ -42,16 +35,10 @@ export const signupProcedure = withoutAuth
     });
     const verificationToken = await generateVerificationToken(email);
 
-    const payload: TAuthVerificationPayloadSchema = {
+    await new AuthVerificationEmailJob().emit({
       email: verificationToken.identifier,
       token: verificationToken.token,
-    };
-
-    if (trigger) {
-      await trigger.sendEvent({ name: triggerName, payload });
-    } else {
-      await sendAuthVerificationEmail(payload);
-    }
+    });
 
     return {
       success: true,

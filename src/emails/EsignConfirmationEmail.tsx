@@ -10,9 +10,9 @@ import {
   Text,
 } from "jsx-email";
 
-import { type TConfirmationEmailPayload } from "../jobs/esign-confirmation-email";
+import type { ConfirmationEmailPayloadType } from "../jobs/esign-confirmation-email";
 
-type Payload = Omit<TConfirmationEmailPayload, "fileUrl">;
+type Payload = Omit<ConfirmationEmailPayloadType, "fileUrl">;
 
 const ESignConfirmationEmail = ({
   documentName,

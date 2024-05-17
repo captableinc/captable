@@ -1,21 +1,18 @@
 import ShareDataRoomEmail from "@/emails/ShareDataRoomEmail";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
-import { z } from "zod";
+import { Job } from "pg-boss";
 
-const schema = z.object({
-  dataRoom: z.string(),
-  link: z.string(),
-  companyName: z.string(),
-  recipientName: z.string().nullish(),
-  senderName: z.string(),
-  senderEmail: z.string().nullish(),
-  email: z.string(),
-});
-
-export type DataRoomEmailPayloadType = z.infer<typeof schema>;
+export type DataRoomEmailPayloadType = {
+  link: string;
+  dataRoom: string;
+  email: string;
+  senderName: string;
+  companyName: string;
+  recipientName?: string | null | undefined;
+  senderEmail?: string | null | undefined;
+};
 
 export const sendShareDataRoomEmail = async (
   payload: DataRoomEmailPayloadType,
@@ -45,20 +42,10 @@ export const sendShareDataRoomEmail = async (
   });
 };
 
-export const triggerName = "email.share-data-room-email";
+export class ShareDataRoomEmailJob extends BaseJob<DataRoomEmailPayloadType> {
+  readonly type = "email.share-data-room";
 
-client.defineJob({
-  id: "share-data-room-email",
-  name: "data room share email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: triggerName,
-    schema,
-  }),
-
-  run: async (payload, io) => {
-    await io.runTask("send data room share email", async () => {
-      await sendShareDataRoomEmail(payload);
-    });
-  },
-});
+  async work(job: Job<DataRoomEmailPayloadType>): Promise<void> {
+    await sendShareDataRoomEmail(job.data);
+  }
+}

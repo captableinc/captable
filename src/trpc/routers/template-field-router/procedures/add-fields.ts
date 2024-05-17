@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
-import { withAuth } from "@/trpc/api/trpc";
-import { ZodAddFieldMutationSchema } from "../schema";
-
-import type { TEsignEmailJob } from "@/jobs/esign-email";
-import { sendEsignEmail } from "@/jobs/esign-email";
+import {
+  EsignNotificationEmailJob,
+  type ExtendedEsignPayloadType,
+} from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
 import { checkMembership } from "@/server/auth";
-import { getTriggerClient } from "@/trigger";
+import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { ZodAddFieldMutationSchema } from "../schema";
 
 const emailTokenPayloadSchema = z.object({
   id: z.string(),
@@ -44,9 +44,8 @@ export const addFieldProcedure = withAuth
   .mutation(async ({ ctx, input }) => {
     try {
       const user = ctx.session.user;
-      const triggerClient = getTriggerClient();
 
-      const mails: TEsignEmailJob[] = [];
+      const mails: ExtendedEsignPayloadType[] = [];
 
       if (input.status === "COMPLETE" && (!user.email || !user.name)) {
         return {
@@ -56,7 +55,7 @@ export const addFieldProcedure = withAuth
         };
       }
 
-      await ctx.db.$transaction(async (tx) => {
+      const template = await ctx.db.$transaction(async (tx) => {
         const { companyId } = await checkMembership({
           tx,
           session: ctx.session,
@@ -182,29 +181,17 @@ export const addFieldProcedure = withAuth
             }
           }
         }
+
+        return template;
       });
 
       if (mails.length) {
-        if (triggerClient) {
-          await triggerClient.sendEvents(
-            mails.map((payload) => ({
-              name: "email.esign",
-              payload,
-            })),
-          );
-        } else {
-          await Promise.all(mails.map((payload) => sendEsignEmail(payload)));
-          await ctx.db.$transaction(
-            mails.map((payload) =>
-              ctx.db.esignRecipient.update({
-                where: {
-                  id: payload.recipient.id,
-                },
-                data: { status: "SENT" },
-              }),
-            ),
-          );
-        }
+        new EsignNotificationEmailJob().bulkEmit(
+          mails.map((data) => ({
+            data,
+            singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,
+          })),
+        );
       }
 
       return {
@@ -217,18 +204,12 @@ export const addFieldProcedure = withAuth
             : "Your template fields has been created.",
       };
     } catch (error) {
-      if (error instanceof TRPCError) {
-        return {
-          success: false,
-          title: "Bad request",
-          message: error.message,
-        };
-      } else {
-        return {
-          success: false,
-          title: "Error",
-          message: "Uh ohh! Something went wrong. Please try again later.",
-        };
-      }
+      console.error(error);
+
+      return {
+        success: false,
+        title: "Error",
+        message: "Uh ohh! Something went wrong. Please try again later.",
+      };
     }
   });

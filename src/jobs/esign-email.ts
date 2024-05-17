@@ -1,12 +1,12 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
+import { BaseJob } from "@/lib/pg-boss-base";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
-import { client } from "@/trigger";
-import { eventTrigger } from "@trigger.dev/sdk";
 import { render } from "jsx-email";
+import type { Job } from "pg-boss";
 
-export interface TEmailPayload {
+export interface EsignEmailPayloadType {
   documentName?: string;
   message?: string | null;
   recipient: {
@@ -24,14 +24,15 @@ export interface TEmailPayload {
   };
 }
 
-interface TCorePayload {
+interface AdditionalPayloadType {
   email: string;
   token: string;
 }
 
-export type TEsignEmailJob = TEmailPayload & TCorePayload;
+export type ExtendedEsignPayloadType = EsignEmailPayloadType &
+  AdditionalPayloadType;
 
-export const sendEsignEmail = async (payload: TEsignEmailJob) => {
+export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
   const { email, token, ...rest } = payload;
   const baseUrl = env.BASE_URL;
   const html = await render(
@@ -42,33 +43,24 @@ export const sendEsignEmail = async (payload: TEsignEmailJob) => {
   );
   await sendMail({
     to: email,
-    subject: "esign Link",
+    subject: "eSign Link",
     html,
   });
 };
 
-client.defineJob({
-  id: "esign-notification-email",
-  name: "E-sign notification email",
-  version: "0.0.1",
-  trigger: eventTrigger({
-    name: "email.esign",
-  }),
+export class EsignNotificationEmailJob extends BaseJob<ExtendedEsignPayloadType> {
+  readonly type = "email.esign-notification";
 
-  run: async (payload: TEsignEmailJob, io) => {
-    await io.runTask("send esign email", async () => {
-      await sendEsignEmail(payload);
+  async work(job: Job<ExtendedEsignPayloadType>): Promise<void> {
+    await db.esignRecipient.update({
+      where: {
+        id: job.data.recipient.id,
+      },
+      data: {
+        status: "SENT",
+      },
     });
 
-    await io.runTask("update recipient status", async () => {
-      await db.esignRecipient.update({
-        where: {
-          id: payload.recipient.id,
-        },
-        data: {
-          status: "SENT",
-        },
-      });
-    });
-  },
-});
+    await sendEsignEmail(job.data);
+  }
+}

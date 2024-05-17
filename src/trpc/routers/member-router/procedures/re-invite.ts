@@ -1,4 +1,4 @@
-import { sendMemberInviteEmail } from "@/jobs/member-inivite-email";
+import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import {
@@ -6,7 +6,6 @@ import {
   generateMemberIdentifier,
   revokeExistingInviteTokens,
 } from "@/server/member";
-import { getTriggerClient } from "@/trigger";
 import { withAuth } from "@/trpc/api/trpc";
 import { ZodReInviteMutationSchema } from "../schema";
 
@@ -14,7 +13,6 @@ export const reInviteProcedure = withAuth
   .input(ZodReInviteMutationSchema)
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
-    const trigger = getTriggerClient();
 
     const { authTokenHash, expires, memberInviteTokenHash, token } =
       await generateInviteToken();
@@ -113,11 +111,7 @@ export const reInviteProcedure = withAuth
       },
     };
 
-    if (trigger) {
-      await trigger.sendEvent({ name: "email.member-invite", payload });
-    } else {
-      await sendMemberInviteEmail(payload);
-    }
+    await new SendMemberInviteEmailJob().emit(payload);
 
     return { success: true };
   });

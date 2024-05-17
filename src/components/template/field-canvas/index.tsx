@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  type PageMeasurement,
-  generateRange,
-  getPageNumber,
-} from "@/lib/pdf-positioning";
-
 import { type TemplateFieldForm } from "@/providers/template-field-provider";
 import { type RouterOutputs } from "@/trpc/shared";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
@@ -18,18 +12,13 @@ import { TemplateField } from "./template-field";
 type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface FieldCanvasProp {
-  mode?: "readonly" | "edit";
-  measurements: PageMeasurement;
+  pageNumber: number;
   recipients: Recipients;
 }
 
 const resizeObserverOptions = {};
 
-export function FieldCanvas({
-  mode = "edit",
-  measurements,
-  recipients,
-}: FieldCanvasProp) {
+export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
   const { append, fields, remove } = useFieldArray({
     name: "fields",
@@ -52,8 +41,6 @@ export function FieldCanvas({
   }, []);
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
-
-  const heightRange = generateRange(measurements, viewport.width);
 
   const recipient = getValues("recipient");
   const recipientColors = getValues("recipientColors");
@@ -111,8 +98,6 @@ export function FieldCanvas({
             const width = Math.abs(endPos.x - startPos.x);
             const height = Math.abs(endPos.y - startPos.y);
 
-            const pageNum = getPageNumber(top, heightRange);
-
             append({
               id,
               name: `Untitled #${fields.length + 1}`,
@@ -126,7 +111,7 @@ export function FieldCanvas({
               required: true,
               viewportHeight: viewport.height,
               viewportWidth: viewport.width,
-              page: pageNum,
+              page: pageNumber,
               recipientId: recipient,
               ...(fieldType === "SELECT" && {
                 meta: { options: [{ id: nanoid(7), value: "" }] },
@@ -145,24 +130,26 @@ export function FieldCanvas({
         />
       )}
 
-      {fields.map((field, index) => (
-        <TemplateField
-          recipients={recipients}
-          viewportWidth={field.viewportWidth}
-          viewportHeight={field.viewportHeight}
-          currentViewportWidth={viewport.width}
-          currentViewportHeight={viewport.height}
-          key={field._id}
-          height={field.height}
-          left={field.left}
-          top={field.top}
-          width={field.width}
-          index={index}
-          handleDelete={() => {
-            remove(index);
-          }}
-        />
-      ))}
+      {fields
+        .filter((item) => item.page === pageNumber)
+        .map((field, index) => (
+          <TemplateField
+            recipients={recipients}
+            viewportWidth={field.viewportWidth}
+            viewportHeight={field.viewportHeight}
+            currentViewportWidth={viewport.width}
+            currentViewportHeight={viewport.height}
+            key={field._id}
+            height={field.height}
+            left={field.left}
+            top={field.top}
+            width={field.width}
+            index={index}
+            handleDelete={() => {
+              remove(index);
+            }}
+          />
+        ))}
     </>
   );
 }

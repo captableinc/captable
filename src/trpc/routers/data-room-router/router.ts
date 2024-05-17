@@ -2,13 +2,11 @@ import { generatePublicId } from "@/common/id";
 import { env } from "@/env";
 import {
   type DataRoomEmailPayloadType,
-  sendShareDataRoomEmail,
-  triggerName,
+  ShareDataRoomEmailJob,
 } from "@/jobs/share-data-room-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
 import { checkMembership } from "@/server/auth";
-import { getTriggerClient } from "@/trigger";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
 import { z } from "zod";
@@ -169,7 +167,7 @@ export const dataRoomRouter = createTRPCRouter({
         message: "Successfully updated data room",
         data: room,
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         success: false,
         message:
@@ -187,7 +185,6 @@ export const dataRoomRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const trigger = getTriggerClient();
       const { session, db } = ctx;
       const { dataRoomId, others, selectedContacts } = input;
       const { name: senderName, email: senderEmail, companyId } = session.user;
@@ -254,6 +251,7 @@ export const dataRoomRouter = createTRPCRouter({
           const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
 
           const payload: DataRoomEmailPayloadType = {
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
             senderName: senderName!,
             recipientName: recipient.name,
             companyName: company.name,
@@ -263,11 +261,7 @@ export const dataRoomRouter = createTRPCRouter({
             senderEmail,
           };
 
-          if (trigger) {
-            await trigger.sendEvent({ name: triggerName, payload });
-          } else {
-            await sendShareDataRoomEmail(payload);
-          }
+          await new ShareDataRoomEmailJob().emit(payload);
         }
       };
 

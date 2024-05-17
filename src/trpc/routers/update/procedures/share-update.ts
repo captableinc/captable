@@ -1,12 +1,10 @@
 import { env } from "@/env";
 import {
+  ShareUpdateEmailJob,
   type UpdateSharePayloadType,
-  sendShareUpdateEmail,
-  triggerName,
 } from "@/jobs/share-update-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
-import { getTriggerClient } from "@/trigger";
 import { withAuth } from "@/trpc/api/trpc";
 import { z } from "zod";
 
@@ -19,7 +17,6 @@ export const shareUpdateProcedure = withAuth
     }),
   )
   .mutation(async ({ ctx, input }) => {
-    const trigger = getTriggerClient();
     const { session, db } = ctx;
     const { updateId, others, selectedContacts } = input;
     const { name: senderName, email: senderEmail, companyId } = session.user;
@@ -87,6 +84,7 @@ export const shareUpdateProcedure = withAuth
         const link = `${baseUrl}/updates/${update.publicId}?token=${token}`;
 
         const payload: UpdateSharePayloadType = {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
           senderName: senderName!,
           recipientName: recipient.name,
           companyName: company.name,
@@ -98,11 +96,7 @@ export const shareUpdateProcedure = withAuth
           senderEmail,
         };
 
-        if (trigger) {
-          await trigger.sendEvent({ name: triggerName, payload });
-        } else {
-          await sendShareUpdateEmail(payload);
-        }
+        await new ShareUpdateEmailJob().emit(payload);
       }
     };
 

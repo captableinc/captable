@@ -1,12 +1,11 @@
-// .lintstagedrc.cjs
-const path = require('path')
+const path = require("node:path");
 
 const buildBiomeCommand = (filenames) =>
   `biome check --apply --no-errors-on-unmatched ${filenames
     .map((f) => path.relative(process.cwd(), f))
-    .join(' ')}`
+    .join(" ")}`;
 
 /** @type {import('lint-staged').Config} */
 module.exports = {
-  '*.{js,jsx,ts,tsx,json,cjs,mjs}': [buildBiomeCommand],
-}
+  "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [buildBiomeCommand],
+};

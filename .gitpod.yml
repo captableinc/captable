@@ -5,9 +5,8 @@ tasks:
       export NEXTAUTH_SECRET="$(openssl rand -base64 32)" &&
       export BASE_URL="$(gp url 3000)" &&
       export NEXT_PUBLIC_BASE_URL="$(gp url 3000)" &&
-      export EMAIL_SERVER_PORT=2500 &&
-      npx prisma migrate dev
-    command: pnpm dx
+      export EMAIL_SERVER_PORT=2500
+    command: pnpm db:migrate && pnpm dx
 
 ports:
   - port: 3000

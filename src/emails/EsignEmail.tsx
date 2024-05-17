@@ -1,4 +1,4 @@
-import type { TEmailPayload } from "@/jobs/esign-email";
+import type { EsignEmailPayloadType } from "@/jobs/esign-email";
 import {
   Body,
   Button,
@@ -21,7 +21,7 @@ import {
   UserAvatarIcon,
 } from "../components/common/icons";
 
-type TEsignEmailProps = TEmailPayload & { signingLink: string };
+type TEsignEmailProps = EsignEmailPayloadType & { signingLink: string };
 
 const EsignEmail = ({
   signingLink,

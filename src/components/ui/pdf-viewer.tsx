@@ -1,7 +1,8 @@
 "use client";
 
+import { createReactContext } from "@/react-utils/create-context";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
-import { useCallback, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { Document, DocumentProps, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
@@ -72,3 +73,65 @@ export const PdfViewer = ({
     </div>
   );
 };
+
+const providerName = "PdfViewer";
+
+const [Provider, useValue] = createReactContext<{
+  containerWidth: number;
+  numPages: number;
+}>(providerName);
+export interface PdfViewerRootProps
+  extends Omit<DocumentProps, "onDocumentLoadSuccess" | "children"> {
+  onDocumentLoadSuccess?: (e: PDFDocumentProxy) => Promise<void> | void;
+  children?: ReactNode;
+  rootClassName?: string;
+}
+
+export function PdfViewerRoot({
+  onDocumentLoadSuccess: _onDocumentLoadSuccess,
+  children,
+  rootClassName,
+  ...rest
+}: PdfViewerRootProps) {
+  const [numPages, setNumPages] = useState<number>(0);
+  const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+
+  const onResize = useCallback<ResizeObserverCallback>((entries) => {
+    const [entry] = entries;
+
+    if (entry) {
+      setContainerWidth(entry.contentRect.width);
+    }
+  }, []);
+
+  useResizeObserver(containerRef, resizeObserverOptions, onResize);
+
+  const onDocumentLoadSuccess: LoadCallback = async (event) => {
+    if (_onDocumentLoadSuccess) {
+      await _onDocumentLoadSuccess(event);
+    }
+
+    const nextNumPages = event.numPages;
+
+    setNumPages(nextNumPages);
+  };
+
+  return (
+    <Provider numPages={numPages} containerWidth={containerWidth}>
+      <div className={rootClassName} ref={setContainerRef}>
+        <Document
+          onLoadSuccess={onDocumentLoadSuccess}
+          options={options}
+          {...rest}
+        >
+          {children}
+        </Document>
+      </div>
+    </Provider>
+  );
+}
+
+export const usePdfValue = () => useValue(providerName);
+
+export const PdfViewerPage = Page;

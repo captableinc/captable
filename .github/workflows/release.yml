@@ -1,4 +1,4 @@
-name: Publish Docker image
+name: Production
 
 on:
   release:
@@ -6,8 +6,11 @@ on:
 
 jobs:
   push_to_registries:
-    name: Push Docker image to multiple registries
+    name: Publish docker image & deploy to production
     runs-on: ubuntu-latest
+    concurrency:
+      group: release
+      cancel-in-progress: true
     permissions:
       packages: write
       contents: read
@@ -48,3 +51,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: 🪰 Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: latest
+
+      - name: 🚀 Deploy Production
+        run: flyctl deploy --remote-only --image captable/captable:latest
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

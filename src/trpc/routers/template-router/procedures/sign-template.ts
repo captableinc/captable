@@ -1,32 +1,24 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { dayjsExt } from "@/common/dayjs";
-import { sendEsignConfirmationEmail } from "@/jobs/esign-confirmation-email";
-import { type TEsignEmailJob, sendEsignEmail } from "@/jobs/esign-email";
-import { type TESignPdfSchema } from "@/jobs/esign-pdf";
+import { EsignNotificationEmailJob } from "@/jobs/esign-email";
+import { EsignPdfJob } from "@/jobs/esign-pdf";
 import { EsignAudit } from "@/server/audit";
 import {
-  type TCompleteEsignDocumentsOptions,
-  type TGenerateEsignSignPdfOptions,
-  completeEsignDocuments,
-  generateEsignPdf,
+  type CompleteEsignDocumentsOptionsType,
+  type GenerateEsignSignPdfOptionsType,
   getEsignAudits,
   getEsignTemplate,
-  uploadEsignDocuments,
   type uploadEsignDocumentsOptions,
 } from "@/server/esign";
-import { getPresignedGetUrl } from "@/server/file-uploads";
-import { getTriggerClient } from "@/trigger";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
-import { ZodSignTemplateMutationSchema } from "../schema";
+import { SignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth
-  .input(ZodSignTemplateMutationSchema)
+  .input(SignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { db, requestIp, userAgent } = ctx;
-
-    const triggerClient = getTriggerClient();
 
     await db.$transaction(async (tx) => {
       const template = await getEsignTemplate({
@@ -141,7 +133,7 @@ export const signTemplateProcedure = withoutAuth
             companyId,
             templateName,
             fields: template.fields,
-            uploaderName: "open cap",
+            uploaderName: "Captable, Inc.",
             data,
             templateId: template.id,
             db: tx,
@@ -231,7 +223,7 @@ export const signTemplateProcedure = withoutAuth
             tx,
           );
 
-          const payload: TEsignEmailJob = {
+          await new EsignNotificationEmailJob().emit({
             email,
             token,
             message: template.message,
@@ -239,16 +231,7 @@ export const signTemplateProcedure = withoutAuth
             recipient: nextDelivery,
             company: template.company,
             sender: template.uploader.user,
-          };
-
-          if (triggerClient) {
-            await triggerClient.sendEvent({
-              name: "email.esign",
-              payload,
-            });
-          } else {
-            await sendEsignEmail(payload);
-          }
+          });
         }
       }
     });
@@ -257,9 +240,9 @@ export const signTemplateProcedure = withoutAuth
   });
 
 interface TSignPdfOptions
-  extends Omit<TGenerateEsignSignPdfOptions, "audits">,
+  extends Omit<GenerateEsignSignPdfOptionsType, "audits">,
     Omit<uploadEsignDocumentsOptions, "buffer">,
-    Omit<TCompleteEsignDocumentsOptions, "bucketData"> {
+    Omit<CompleteEsignDocumentsOptionsType, "bucketData"> {
   templateId: string;
   company: {
     name: string;
@@ -282,69 +265,20 @@ async function signPdf({
   recipients,
   company,
 }: TSignPdfOptions) {
-  const trigger = getTriggerClient();
-
   const audits = await getEsignAudits({ templateId, tx: db });
 
-  if (trigger) {
-    const payload: TESignPdfSchema = {
-      bucketKey,
-      data,
-      fields,
-      audits,
-      companyId,
-      requestIp,
-      templateId,
-      templateName,
-      uploaderName,
-      userAgent,
-      recipients,
-      company,
-    };
-
-    await trigger.sendEvent({
-      name: "esign.sign-pdf",
-      payload,
-    });
-  } else {
-    const modifiedPdfBytes = await generateEsignPdf({
-      bucketKey,
-      data,
-      fields,
-      audits,
-    });
-
-    const pdfBuffer = Buffer.from(modifiedPdfBytes);
-
-    const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
-      buffer: pdfBuffer,
-      companyId,
-      templateName,
-    });
-
-    await completeEsignDocuments({
-      bucketData,
-      companyId,
-      db,
-      requestIp,
-      templateId,
-      templateName,
-      uploaderName,
-      userAgent,
-    });
-
-    const file = await getPresignedGetUrl(bucketData.key);
-
-    await Promise.all(
-      recipients.map((recipient) =>
-        sendEsignConfirmationEmail({
-          fileUrl: file.url,
-          senderName: uploaderName,
-          documentName: templateName,
-          company,
-          recipient,
-        }),
-      ),
-    );
-  }
+  await new EsignPdfJob().emit({
+    bucketKey,
+    data,
+    fields,
+    audits,
+    companyId,
+    requestIp,
+    templateId,
+    templateName,
+    uploaderName,
+    userAgent,
+    recipients,
+    company,
+  });
 }

@@ -34,8 +34,8 @@
 
 - <a href="#features">Features</a>
 - <a href="#community">Community</a>
-- <a href="#hosting">Self hosting</a>
 - <a href="#contributing">Contibuting</a>
+- <a href="https://github.com/captableinc/captable/blob/main/SELF-HOSTING.md" target="_blank">Self hosting</a>
 
 <h2 id="features">✨ Key features</h2>
 

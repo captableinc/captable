@@ -17,7 +17,7 @@ export const ZodGetTemplateQuerySchema = z.object({
   isDraftOnly: z.boolean(),
 });
 
-export const ZodSignTemplateMutationSchema = z.object({
+export const SignTemplateMutationSchema = z.object({
   templateId: z.string(),
   data: z.record(z.string()),
   recipientId: z.string(),

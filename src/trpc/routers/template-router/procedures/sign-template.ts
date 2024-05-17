@@ -5,18 +5,18 @@ import { EsignNotificationEmailJob } from "@/jobs/esign-email";
 import { EsignPdfJob } from "@/jobs/esign-pdf";
 import { EsignAudit } from "@/server/audit";
 import {
-  type TCompleteEsignDocumentsOptions,
-  type TGenerateEsignSignPdfOptions,
+  type CompleteEsignDocumentsOptionsType,
+  type GenerateEsignSignPdfOptionsType,
   getEsignAudits,
   getEsignTemplate,
   type uploadEsignDocumentsOptions,
 } from "@/server/esign";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
-import { ZodSignTemplateMutationSchema } from "../schema";
+import { SignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth
-  .input(ZodSignTemplateMutationSchema)
+  .input(SignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { db, requestIp, userAgent } = ctx;
 
@@ -133,7 +133,7 @@ export const signTemplateProcedure = withoutAuth
             companyId,
             templateName,
             fields: template.fields,
-            uploaderName: "open cap",
+            uploaderName: "Captable, Inc.",
             data,
             templateId: template.id,
             db: tx,
@@ -240,9 +240,9 @@ export const signTemplateProcedure = withoutAuth
   });
 
 interface TSignPdfOptions
-  extends Omit<TGenerateEsignSignPdfOptions, "audits">,
+  extends Omit<GenerateEsignSignPdfOptionsType, "audits">,
     Omit<uploadEsignDocumentsOptions, "buffer">,
-    Omit<TCompleteEsignDocumentsOptions, "bucketData"> {
+    Omit<CompleteEsignDocumentsOptionsType, "bucketData"> {
   templateId: string;
   company: {
     name: string;

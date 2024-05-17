@@ -99,7 +99,7 @@ export const getFieldValue = ({ type, id, data, meta }: TGetFieldValue) => {
     : undefined;
 };
 
-export interface TGenerateEsignSignPdfOptions {
+export interface GenerateEsignSignPdfOptionsType {
   bucketKey: string;
   data: Record<string, string>;
   fields: EsignGetTemplateType["fields"];
@@ -111,7 +111,7 @@ export async function generateEsignPdf({
   data,
   fields,
   audits,
-}: TGenerateEsignSignPdfOptions) {
+}: GenerateEsignSignPdfOptionsType) {
   const docBuffer = await getFileFromS3(bucketKey);
   const pdfDoc = await PDFDocument.load(docBuffer);
 
@@ -243,7 +243,7 @@ export async function uploadEsignDocuments({
   return data;
 }
 
-export interface TCompleteEsignDocumentsOptions {
+export interface CompleteEsignDocumentsOptionsType {
   templateName: string;
   companyId: string;
   db: PrismaTransactionalClient;
@@ -263,7 +263,7 @@ export async function completeEsignDocuments({
   uploaderName,
   userAgent,
   bucketData,
-}: TCompleteEsignDocumentsOptions) {
+}: CompleteEsignDocumentsOptionsType) {
   await db.template.update({
     where: {
       id: templateId,

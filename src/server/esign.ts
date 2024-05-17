@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { dayjsExt } from "@/common/dayjs";
 import { type TUploadFile, getFileFromS3, uploadFile } from "@/common/uploads";
-import { type Range, generateRange } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
@@ -117,23 +116,9 @@ export async function generateEsignPdf({
 
   const pages = pdfDoc.getPages();
 
-  let cumulativePagesHeight = 0;
-  const measurements = [];
-
-  for (const page of pages) {
-    if (page) {
-      const height = page.getHeight();
-      const width = page.getWidth();
-      cumulativePagesHeight += height;
-      measurements.push({ height, width });
-    }
-  }
-
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontSize = 8;
   const textHeight = font.heightAtSize(fontSize);
-
-  const pageRangeCache: Record<string, Range[]> = {};
 
   for (const field of fields) {
     const value = getFieldValue({
@@ -144,8 +129,7 @@ export async function generateEsignPdf({
     });
 
     if (value) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const pageNumber: number = field.page;
+      const pageNumber = field.page - 1;
 
       const page = pages.at(pageNumber);
 
@@ -153,27 +137,15 @@ export async function generateEsignPdf({
         throw new Error("page not found");
       }
 
-      const cacheKey = String(field.viewportHeight);
-      let pagesRange = pageRangeCache?.[cacheKey];
-
-      if (!pagesRange) {
-        const range = generateRange(measurements, field.viewportWidth);
-        pageRangeCache[cacheKey] = range;
-        pagesRange = range;
-      }
-
       const { width: pageWidth, height: pageHeight } = page.getSize();
-      const topMargin = pagesRange?.[pageNumber]?.[0] ?? 0;
 
       const widthRatio = pageWidth / field.viewportWidth;
-
-      const totalHeightRatio = cumulativePagesHeight / field.viewportHeight;
+      const heightRatio = pageHeight / field.viewportHeight;
 
       const fieldX = field.left * widthRatio;
 
-      const top = field.top - topMargin;
-      const fieldY = top * widthRatio;
-      const height = field.height * totalHeightRatio;
+      const fieldY = field.top * heightRatio;
+      const height = field.height * heightRatio;
       const width = height;
 
       if (field.type === "SIGNATURE") {
@@ -189,6 +161,7 @@ export async function generateEsignPdf({
         });
       } else {
         const padding = (height + textHeight) / 2;
+
         page.drawText(value, {
           x: fieldX,
           y: pageHeight - fieldY - padding,

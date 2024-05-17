@@ -11,6 +11,7 @@ export function createReactContext<ContextValueType extends object | null>(
   function Provider(props: ContextValueType & { children: React.ReactNode }) {
     const { children, ...context } = props;
     // Only re-memoize when prop values change
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     const value = useMemo(
       () => context,
       Object.values(context),
@@ -28,6 +29,6 @@ export function createReactContext<ContextValueType extends object | null>(
     );
   }
 
-  Provider.displayName = rootComponentName + "Provider";
+  Provider.displayName = `${rootComponentName}Provider`;
   return [Provider, useReactContext] as const;
 }

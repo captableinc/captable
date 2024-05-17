@@ -1,4 +1,4 @@
-name: Release docker image
+name: Production release (Docker & Deploy)
 
 # on:
 #   release:

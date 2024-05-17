@@ -10,7 +10,9 @@ jobs:
   deploy:
     name: 🚀 Deploy
     runs-on: ubuntu-latest
-    concurrency: deploy-group # optional: ensure only one action runs at a time
+    concurrency:
+      group: staging
+      cancel-in-progress: true
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v4

@@ -2,9 +2,9 @@ import ESignConfirmationEmail from "@/emails/EsignConfirmationEmail";
 import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
-import { Job } from "pg-boss";
+import type { Job } from "pg-boss";
 
-export type TConfirmationEmailPayload = {
+export type ConfirmationEmailPayloadType = {
   fileUrl: string;
   documentName: string;
   senderName: string | null;
@@ -16,7 +16,7 @@ export type TConfirmationEmailPayload = {
 };
 
 export const sendEsignConfirmationEmail = async (
-  payload: TConfirmationEmailPayload,
+  payload: ConfirmationEmailPayloadType,
 ) => {
   const html = await render(
     ESignConfirmationEmail({
@@ -39,10 +39,10 @@ export const sendEsignConfirmationEmail = async (
   });
 };
 
-export class EsignConfirmationEmailJob extends BaseJob<TConfirmationEmailPayload> {
+export class EsignConfirmationEmailJob extends BaseJob<ConfirmationEmailPayloadType> {
   readonly type = "email.esign-confirmation";
 
-  async work(job: Job<TConfirmationEmailPayload>): Promise<void> {
+  async work(job: Job<ConfirmationEmailPayloadType>): Promise<void> {
     await sendEsignConfirmationEmail(job.data);
   }
 }

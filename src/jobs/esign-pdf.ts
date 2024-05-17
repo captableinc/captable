@@ -1,20 +1,20 @@
 import { BaseJob } from "@/lib/pg-boss-base";
 import { db } from "@/server/db";
 import {
-  type TEsignGetTemplate,
+  type EsignGetTemplateType,
   completeEsignDocuments,
   generateEsignPdf,
   uploadEsignDocuments,
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { Job } from "pg-boss";
+import type { Job } from "pg-boss";
 import {
+  type ConfirmationEmailPayloadType,
   EsignConfirmationEmailJob,
-  type TConfirmationEmailPayload,
 } from "./esign-confirmation-email";
 
-export type TESignPdfSchema = {
-  fields: TEsignGetTemplate["fields"];
+export type EsignPdfPayloadType = {
+  fields: EsignGetTemplateType["fields"];
   company: {
     name: string;
     logo?: string | null | undefined;
@@ -34,10 +34,10 @@ export type TESignPdfSchema = {
   recipients: { email: string; name?: string | null }[];
 };
 
-export class EsignPdfJob extends BaseJob<TESignPdfSchema> {
+export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
   readonly type = "generate.esign-pdf";
 
-  async work(job: Job<TESignPdfSchema>): Promise<void> {
+  async work(job: Job<EsignPdfPayloadType>): Promise<void> {
     const {
       bucketKey,
       data,
@@ -80,8 +80,8 @@ export class EsignPdfJob extends BaseJob<TESignPdfSchema> {
 
     const file = await getPresignedGetUrl(bucketData.key);
 
-    const recipientData: { data: TConfirmationEmailPayload }[] = recipients.map(
-      (recipient) => ({
+    const recipientData: { data: ConfirmationEmailPayloadType }[] =
+      recipients.map((recipient) => ({
         data: {
           fileUrl: file.url,
           documentName: templateName,
@@ -89,8 +89,7 @@ export class EsignPdfJob extends BaseJob<TESignPdfSchema> {
           company,
           senderName: uploaderName,
         },
-      }),
-    );
+      }));
 
     await new EsignConfirmationEmailJob().bulkEmit(recipientData);
   }

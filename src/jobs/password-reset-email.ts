@@ -3,15 +3,15 @@ import { env } from "@/env";
 import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
-import { Job } from "pg-boss";
+import type { Job } from "pg-boss";
 
-export type TPasswordResetPayloadSchema = {
+export type PasswordResetPayloadType = {
   email: string;
   token: string;
 };
 
 export const sendPasswordResetEmail = async (
-  payload: TPasswordResetPayloadSchema,
+  payload: PasswordResetPayloadType,
 ) => {
   const { email, token } = payload;
   const baseUrl = env.BASE_URL;
@@ -31,10 +31,10 @@ export const sendPasswordResetEmail = async (
   });
 };
 
-export class PasswordResetEmailJob extends BaseJob<TPasswordResetPayloadSchema> {
+export class PasswordResetEmailJob extends BaseJob<PasswordResetPayloadType> {
   readonly type = "email.password-reset";
 
-  async work(job: Job<TPasswordResetPayloadSchema>): Promise<void> {
+  async work(job: Job<PasswordResetPayloadType>): Promise<void> {
     await sendPasswordResetEmail(job.data);
   }
 }

@@ -8,7 +8,7 @@ import { createDocumentHandler } from "@/trpc/routers/document-router/procedures
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 import { EsignAudit } from "./audit";
-import { type PrismaTransactionalClient } from "./db";
+import type { PrismaTransactionalClient } from "./db";
 
 interface getEsignAuditsOptions {
   templateId: string;
@@ -73,9 +73,9 @@ export function getEsignTemplate({ tx, templateId }: getEsignTemplateOptions) {
   });
 }
 
-export type TEsignGetTemplate = Awaited<ReturnType<typeof getEsignTemplate>>;
+export type EsignGetTemplateType = Awaited<ReturnType<typeof getEsignTemplate>>;
 
-type Field = TEsignGetTemplate["fields"][number];
+type Field = EsignGetTemplateType["fields"][number];
 interface TGetFieldValue {
   type: Field["type"];
   id: Field["id"];
@@ -86,10 +86,9 @@ interface TGetFieldValue {
 export const getFieldValue = ({ type, id, data, meta }: TGetFieldValue) => {
   const value = data?.[id];
 
-  const selectValue =
-    meta && meta.options
-      ? meta.options.find((val) => val.id === value)?.value
-      : undefined;
+  const selectValue = meta?.options
+    ? meta.options.find((val) => val.id === value)?.value
+    : undefined;
 
   return value
     ? type === "DATE"
@@ -103,7 +102,7 @@ export const getFieldValue = ({ type, id, data, meta }: TGetFieldValue) => {
 export interface TGenerateEsignSignPdfOptions {
   bucketKey: string;
   data: Record<string, string>;
-  fields: TEsignGetTemplate["fields"];
+  fields: EsignGetTemplateType["fields"];
   audits: TGetEsignAudits;
 }
 

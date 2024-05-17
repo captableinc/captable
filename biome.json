@@ -1,40 +1,47 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.7.3/schema.json",
-	"organizeImports": {
-		"enabled": true,
-		"ignore": [
-			"node_modules",
-			".next",
-			"dist",
-			"public/pdf.worker.min.js",
-			"./prisma/enums.ts"
-		]
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"suspicious": {
-				"useAwait": "error"
-			},
-			"correctness": { "noUnusedVariables": "warn" },
-			"style": { "useImportType": "error" }
-		},
-		"ignore": [
-			"node_modules",
-			".next",
-			"dist",
-			"public/pdf.worker.min.js",
-			"./prisma/enums.ts"
-		]
-	},
-	"formatter": {
-		"ignore": [
-			"node_modules",
-			".next",
-			"dist",
-			"public/pdf.worker.min.js",
-			"./prisma/enums.ts"
-		]
-	}
+  "$schema": "https://biomejs.dev/schemas/1.7.3/schema.json",
+  "organizeImports": {
+    "enabled": true,
+    "ignore": [
+      "node_modules",
+      ".next",
+      "dist",
+      "public/pdf.worker.min.js",
+      "./prisma/enums.ts"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "useAwait": "error"
+      },
+      "correctness": { "noUnusedVariables": "warn" },
+      "style": { "useImportType": "error" }
+    },
+    "ignore": [
+      "node_modules",
+      ".next",
+      "dist",
+      "public/pdf.worker.min.js",
+      "./prisma/enums.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 80,
+    "attributePosition": "auto",
+    "ignore": [
+      "node_modules",
+      ".next",
+      "dist",
+      "public/pdf.worker.min.js",
+      "./prisma/enums.ts"
+    ]
+  }
 }

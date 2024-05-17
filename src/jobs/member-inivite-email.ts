@@ -4,9 +4,9 @@ import { constants } from "@/lib/constants";
 import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
-import { Job } from "pg-boss";
+import type { Job } from "pg-boss";
 
-type TSchema = {
+type MemberInvitePayloadType = {
   email: string;
   token: string;
   user: {
@@ -20,7 +20,9 @@ type TSchema = {
   };
 };
 
-export const sendMemberInviteEmail = async (payload: TSchema) => {
+export const sendMemberInviteEmail = async (
+  payload: MemberInvitePayloadType,
+) => {
   const { email, token, verificationToken, company, user } = payload;
 
   const baseUrl = env.BASE_URL;
@@ -41,16 +43,16 @@ export const sendMemberInviteEmail = async (payload: TSchema) => {
       MemberInviteEmail({
         inviteLink,
         companyName: company.name,
-        invitedBy: (user.name ?? user.email)!,
+        invitedBy: `${user.name || user.email}`,
       }),
     ),
   });
 };
 
-export class SendMemberInviteEmailJob extends BaseJob<TSchema> {
+export class SendMemberInviteEmailJob extends BaseJob<MemberInvitePayloadType> {
   readonly type = "email.password-reset";
 
-  async work(job: Job<TSchema>): Promise<void> {
+  async work(job: Job<MemberInvitePayloadType>): Promise<void> {
     await sendMemberInviteEmail(job.data);
   }
 }

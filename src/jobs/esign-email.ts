@@ -4,9 +4,9 @@ import { BaseJob } from "@/lib/pg-boss-base";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
-import { Job } from "pg-boss";
+import type { Job } from "pg-boss";
 
-export interface TEmailPayload {
+export interface EsignEmailPayloadType {
   documentName?: string;
   message?: string | null;
   recipient: {
@@ -24,14 +24,14 @@ export interface TEmailPayload {
   };
 }
 
-interface TCorePayload {
+interface AdditionalPayloadType {
   email: string;
   token: string;
 }
 
-export type TEsignEmailJob = TEmailPayload & TCorePayload;
+export type ExtendedPayloadType = EsignEmailPayloadType & AdditionalPayloadType;
 
-export const sendEsignEmail = async (payload: TEsignEmailJob) => {
+export const sendEsignEmail = async (payload: ExtendedPayloadType) => {
   const { email, token, ...rest } = payload;
   const baseUrl = env.BASE_URL;
   const html = await render(
@@ -42,15 +42,15 @@ export const sendEsignEmail = async (payload: TEsignEmailJob) => {
   );
   await sendMail({
     to: email,
-    subject: "esign Link",
+    subject: "eSign Link",
     html,
   });
 };
 
-export class EsignNotificationEmailJob extends BaseJob<TEsignEmailJob> {
+export class EsignNotificationEmailJob extends BaseJob<ExtendedPayloadType> {
   readonly type = "email.esign-notification";
 
-  async work(job: Job<TEsignEmailJob>): Promise<void> {
+  async work(job: Job<ExtendedPayloadType>): Promise<void> {
     await db.esignRecipient.update({
       where: {
         id: job.data.recipient.id,

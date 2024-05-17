@@ -53,6 +53,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: 🪰 Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: latest
+
       - name: 🚀 Deploy Production
         run: flyctl deploy --remote-only --image captable/captable:latest
         env:

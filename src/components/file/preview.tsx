@@ -1,6 +1,8 @@
 import EmptyState from "@/components/common/empty-state";
+import { OfficeViewer } from "@/components/file/office-viewer";
 import { Button } from "@/components/ui/button";
 import { PdfViewer } from "@/components/ui/pdf-viewer";
+import { fileType } from "@/lib/mime";
 import { RiFileUnknowFill as UnknownFileIcon } from "@remixicon/react";
 
 type FilePreviewProps = {
@@ -34,7 +36,7 @@ const VideoPreview = ({ url, name, mimeType }: FilePreviewProps) => {
 const UnknownPreview = ({ url, name, mimeType }: FilePreviewProps) => {
   return (
     <EmptyState
-      title="File type not supported"
+      title="Preview not available"
       subtitle={`This file type - ${mimeType} is not yet supported by the previewer. You can download the file by clicking the button below.`}
       icon={<UnknownFileIcon />}
     >
@@ -47,16 +49,21 @@ const UnknownPreview = ({ url, name, mimeType }: FilePreviewProps) => {
 
 const FilePreview = ({ url, name, mimeType }: FilePreviewProps) => {
   mimeType = mimeType || "";
+  const type = fileType(mimeType);
 
-  switch (true) {
-    case mimeType.includes("pdf"):
+  switch (type) {
+    case "pdf":
       return <PdfViewer file={url} />;
-    case mimeType.startsWith("image"):
+    case "image":
       return <ImagePreview url={url} name={name} />;
-    case mimeType.startsWith("audio"):
+    case "audio":
       return <AuditPreview url={url} name={name} mimeType={mimeType} />;
-    case mimeType.startsWith("video"):
+    case "video":
       return <VideoPreview url={url} name={name} mimeType={mimeType} />;
+    case "doc":
+    case "excel":
+    case "powerpoint":
+      return <OfficeViewer url={url} />;
     default:
       return <UnknownPreview url={url} name={name} mimeType={mimeType} />;
   }

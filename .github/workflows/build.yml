@@ -5,6 +5,10 @@ on:
     branches: ["main"]
     types: [opened, synchronize, reopened, ready_for_review]
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_docker:
     name: Build Docker Image

@@ -30,6 +30,13 @@
   </a>
 </p>
 
+<h3 id="toc">Table of contents</h3>
+
+- <a href="#features">Features</a>
+- <a href="#community">Community</a>
+- <a href="#hosting">Self hosting</a>
+- <a href="#contributing">Contibuting</a>
+
 <h2 id="features">✨ Key features</h2>
 
 > [!IMPORTANT]  
@@ -48,7 +55,7 @@
 ✅ **Data rooms** - Captable, Inc. provides a secure virtual data room where you can store important documents and share them with investors, employees, and other stakeholders.
 
 
-<h2 id="contributors">🤝 Community</h2>
+<h2 id="community">🤝 Community</h2>
 We have a community of developers, designers, and entrepreneurs who are passionate about building the future of finance. Join us on Discord to connect with like-minded individuals, share your ideas, and collaborate on projects.
 
 * [Join us on Discord](https://discord.gg/rCpqnD6G6p)
@@ -63,15 +70,6 @@ We have a community of developers, designers, and entrepreneurs who are passiona
 - Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
 - Any contributions you make are truly appreciated.
 - Please follow this [Contribution guideline](https://github.com/captableinc/captable/blob/main/CONTRIBUTING.md) to get started.
-
-<h3 id="stack">Table of contents</h3>
-
-- <a href="#stack">Stack</a>
-- <a href="#start">Getting started</a>
-- <a href="#setup">Setup development environment</a>
-- <a href="#changes">Implement your changes</a>
-- <a href="#pr">Open a pull request</a>
-- <a href="#community">Join our community</a>
 
 
 <h3 id="stack">Stack</h3>
@@ -107,17 +105,9 @@ When contributing to **Captable, Inc.**, whether on GitHub or in other community
 
 <h4 id="with-docker">Development environment with Docker</h4>
 
-- [Install Docker](https://docs.docker.com/get-docker/) on your machine.
-- [Install Docker Compose](https://docs.docker.com/compose/install/) on your machine.
-- [Fork the repository](https://github.com/captableinc/captable/fork)
-- [Install node and pnpm](https://pnpm.io/installation) on your machine. (optional)
-
-- Clone the repository
-
-  ```bash
-  git clone https://github.com/<your-github-name>/captable.git
-  ```
-
+- <a href="https://docs.docker.com/get-docker/" target="_blank">Install Docker</a> & <a href="https://docs.docker.com/compose/install/" target="_blank">Docker Compose</a>
+- <a href="https://github.com/captableinc/captable/fork" target="_blank">Fork</a> & clone the forked repository
+- <a href="https://pnpm.io/installation" target="_blank">Install node and pnpm</a>. (optional)
 - Copy `.env.example` to `.env`
 
   ```bash
@@ -221,7 +211,7 @@ When contributing to **Captable, Inc.**, whether on GitHub or in other community
   - `pnpm db:migrate` - Run database migrations
   - `pnpm db:seed` - Seed the database
 
-<h2 id="changes">Implement your changes</h2>
+<h4 id="changes">Implement your changes</h4>
 
 When making commits, make sure to follow the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) guidelines, i.e. prepending the message with `feat:`, `fix:`, `chore:`, `docs:`, etc...
 

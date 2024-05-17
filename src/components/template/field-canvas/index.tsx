@@ -1,7 +1,7 @@
 "use client";
 
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { TemplateFieldForm } from "@/providers/template-field-provider";
+import type { RouterOutputs } from "@/trpc/shared";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { nanoid } from "nanoid";
 import { useCallback, useState } from "react";
@@ -41,10 +41,6 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
   }, []);
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
-
-  const recipient = getValues("recipient");
-  const recipientColors = getValues("recipientColors");
-  const color = recipientColors?.[recipient] ?? "";
 
   return (
     <>
@@ -98,9 +94,12 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
             const width = Math.abs(endPos.x - startPos.x);
             const height = Math.abs(endPos.y - startPos.y);
 
+            const recipient = getValues("recipient");
+            const fieldValues = getValues("fields");
+
             append({
               id,
-              name: `Untitled #${fields.length + 1}`,
+              name: `Untitled #${fieldValues.length + 1}`,
               left,
               top,
               width,
@@ -122,7 +121,6 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
       />
       {isDrawing && (
         <DrawingField
-          color={color}
           left={Math.min(startPos.x, endPos.x)}
           top={Math.min(startPos.y, endPos.y)}
           height={Math.abs(endPos.y - startPos.y)}
@@ -130,9 +128,8 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
         />
       )}
 
-      {fields
-        .filter((item) => item.page === pageNumber)
-        .map((field, index) => (
+      {fields.map((field, index) =>
+        field.page === pageNumber ? (
           <TemplateField
             recipients={recipients}
             viewportWidth={field.viewportWidth}
@@ -149,7 +146,8 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
               remove(index);
             }}
           />
-        ))}
+        ) : null,
+      )}
     </>
   );
 }

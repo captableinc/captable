@@ -1,6 +1,6 @@
 import AccountVerificationEmail from "@/emails/AccountVerificationEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/lib/pg-boss-base";
+import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
 import type { Job } from "pg-boss";

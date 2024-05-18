@@ -1,4 +1,5 @@
 import { AuthVerificationEmailJob } from "@/jobs/auth-verification-email";
+import { JobManager, boss } from "@/jobs/base";
 import { EsignConfirmationEmailJob } from "@/jobs/esign-confirmation-email";
 import { EsignNotificationEmailJob } from "@/jobs/esign-email";
 import { EsignPdfJob } from "@/jobs/esign-pdf";
@@ -6,9 +7,8 @@ import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
 import { PasswordResetEmailJob } from "@/jobs/password-reset-email";
 import { ShareDataRoomEmailJob } from "@/jobs/share-data-room-email";
 import { ShareUpdateEmailJob } from "@/jobs/share-update-email";
-import { JobManager, boss } from "./pg-boss-base";
 
-export async function initPgBoss() {
+export async function startJobs() {
   const jobs = new JobManager(boss)
     .register(AuthVerificationEmailJob)
     .register(ShareUpdateEmailJob)

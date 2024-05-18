@@ -143,7 +143,7 @@ export const GeneralDetails = () => {
                         </SelectItem>
                       ))
                     ) : (
-                      <LoadingSpinner />
+                      <LoadingSpinner className="mx-auto" />
                     )}
                   </SelectContent>
                 </Select>

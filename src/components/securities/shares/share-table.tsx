@@ -70,13 +70,13 @@ const humanizeShareStatus = (type: string) => {
 const StatusColorProvider = (type: string) => {
   switch (type) {
     case "ACTIVE":
-      return "bg-green-50 text-green-400 ring-green-600/20";
+      return "bg-green-50 text-green-600 ring-green-600/20";
     case "DRAFT":
-      return "bg-yellow-50 text-yellow-400 ring-yellow-600/20";
+      return "bg-yellow-50 text-yellow-600 ring-yellow-600/20";
     case "SIGNED":
-      return "bg-blue-50 text-blue-400 ring-blue-600/20";
+      return "bg-blue-50 text-blue-600 ring-blue-600/20";
     case "PENDING":
-      return "bg-gray-50 text-gray-400 ring-gray-600/20";
+      return "bg-gray-50 text-gray-600 ring-gray-600/20";
     default:
       return "";
   }

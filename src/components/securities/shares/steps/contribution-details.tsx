@@ -52,7 +52,7 @@ export const ContributionDetails = () => {
                     </SelectItem>
                   ))
                 ) : (
-                  <LoadingSpinner />
+                  <LoadingSpinner className="mx-auto" />
                 )}
               </SelectContent>
             </Select>

@@ -40,6 +40,7 @@ const ShareModal = ({ title, subtitle, trigger }: ShareModalProps) => {
           : "Failed adding a share. Please try again.",
       });
       if (success) {
+        setOpen(false);
         router.refresh();
       }
     },

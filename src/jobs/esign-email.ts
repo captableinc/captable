@@ -1,6 +1,6 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/lib/pg-boss-base";
+import { BaseJob } from "@/jobs/base";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";

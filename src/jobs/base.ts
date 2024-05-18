@@ -1,8 +1,7 @@
-import { JOB_TYPES } from "@/constants/job";
+import type { JOB_TYPES } from "@/constants/job";
 import { env } from "@/env";
+import { singleton } from "@/lib/singleton";
 import pgBoss from "pg-boss";
-
-import { singleton } from "./singleton";
 
 type JobTypes = typeof JOB_TYPES;
 

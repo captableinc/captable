@@ -1,8 +1,8 @@
 import ShareDataRoomEmail from "@/emails/ShareDataRoomEmail";
-import { BaseJob } from "@/lib/pg-boss-base";
+import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
-import { Job } from "pg-boss";
+import type { Job } from "pg-boss";
 
 export type DataRoomEmailPayloadType = {
   link: string;

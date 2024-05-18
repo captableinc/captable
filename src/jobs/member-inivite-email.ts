@@ -1,7 +1,7 @@
 import MemberInviteEmail from "@/emails/MemberInviteEmail";
 import { env } from "@/env";
+import { BaseJob } from "@/jobs/base";
 import { constants } from "@/lib/constants";
-import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
 import type { Job } from "pg-boss";

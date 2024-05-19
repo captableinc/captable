@@ -39,6 +39,27 @@ UPLOAD_BUCKET_PUBLIC="public-bucket-name"
 UPLOAD_BUCKET_PRIVATE="private-bucket-name"
 ```
 
+- **Run the docker container**:
+
+```bash
+docker run -d \
+  -e NODE_ENV="replace" \
+  -e DATABASE_URL="replace" \
+  -e NEXTAUTH_SECRET="replace" \
+  -e NEXTAUTH_URL="replace" \
+  -e NEXT_PUBLIC_BASE_URL="replace" \
+  -e EMAIL_FROM="replace" \
+  -e EMAIL_SERVER="replace" \
+  -e UPLOAD_REGION="replace" \
+  -e UPLOAD_ENDPOINT="replace" \
+  -e UPLOAD_ACCESS_KEY_ID="replace" \
+  -e UPLOAD_SECRET_ACCESS_KEY="replace" \
+  -e UPLOAD_BUCKET_PUBLIC="replace" \
+  -e UPLOAD_BUCKET_PRIVATE="replace" \
+  -p 3000:3000 \
+  captable/captable
+```
+
 - **Setup CORS for file uploads**:\
   Some of the services including Cloudflare R2 may require you to setup CORS for file uploads.\
   
@@ -63,3 +84,18 @@ UPLOAD_BUCKET_PRIVATE="private-bucket-name"
   }
 ]
 ```
+
+- **Run database migrations**:
+
+```bash
+docker exec -it <container_id> npx prisma migrate deploy
+```
+
+<!-- Ready -->
+- **Access the application**:\
+  Open your browser and navigate to `https://your-domain.com`
+
+- **Questions?**\
+  If you have any questions, please schedule a call with us, and we will help you set up your own instance.
+
+  <a href="https://captable.inc/schedule/"><img alt="Book us" src="https://cal.com/book-with-cal-dark.svg" /></a>

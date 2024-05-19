@@ -18,6 +18,8 @@ export const sendAuthVerificationEmail = async (
 
   const confirmLink = `${baseUrl}/verify-email/${token}`;
 
+  console.log("Sending email to ", email, "with link ", confirmLink);
+
   const html = await render(
     AccountVerificationEmail({
       verifyLink: confirmLink,

@@ -1,8 +1,11 @@
 name: Production
 
 on:
-  release:
-    types: [published]
+  # release:
+  #   types: [published]
+  push:
+    branches:
+      - debug
 
 jobs:
   push_to_registries:
@@ -58,6 +61,6 @@ jobs:
           version: latest
 
       - name: 🚀 Deploy Production
-        run: flyctl deploy --remote-only --image captable/captable:latest
+        run: flyctl deploy --remote-only --image captable/captable:debug
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

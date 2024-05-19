@@ -25,7 +25,7 @@ export const sendMemberInviteEmail = async (
 ) => {
   const { email, token, verificationToken, company, user } = payload;
 
-  const baseUrl = env.BASE_URL;
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
   const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
 
   const params = new URLSearchParams({

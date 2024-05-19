@@ -14,7 +14,7 @@ export const sendPasswordResetEmail = async (
   payload: PasswordResetPayloadType,
 ) => {
   const { email, token } = payload;
-  const baseUrl = env.BASE_URL;
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const confirmLink = `${baseUrl}/reset-password/${token}`;
 

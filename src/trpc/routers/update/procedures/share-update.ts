@@ -39,7 +39,7 @@ export const shareUpdateProcedure = withAuth
     const company = update.company;
 
     const upsertManyRecipients = async () => {
-      const baseUrl = env.BASE_URL;
+      const baseUrl = env.NEXT_PUBLIC_BASE_URL;
       const recipients = [...others, ...selectedContacts];
 
       for (const recipient of recipients) {
@@ -84,8 +84,7 @@ export const shareUpdateProcedure = withAuth
         const link = `${baseUrl}/updates/${update.publicId}?token=${token}`;
 
         const payload: UpdateSharePayloadType = {
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          senderName: senderName!,
+          senderName: `${senderName}`,
           recipientName: recipient.name,
           companyName: company.name,
           update: {

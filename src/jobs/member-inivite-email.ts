@@ -1,7 +1,7 @@
 import MemberInviteEmail from "@/emails/MemberInviteEmail";
 import { env } from "@/env";
+import { BaseJob } from "@/jobs/base";
 import { constants } from "@/lib/constants";
-import { BaseJob } from "@/lib/pg-boss-base";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
 import type { Job } from "pg-boss";
@@ -26,7 +26,7 @@ export const sendMemberInviteEmail = async (
   const { email, passwordResetToken, verificationToken, company, user } =
     payload;
 
-  const baseUrl = env.BASE_URL;
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const params = new URLSearchParams({
     passwordResetToken,

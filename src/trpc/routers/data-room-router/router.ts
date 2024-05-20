@@ -167,7 +167,8 @@ export const dataRoomRouter = createTRPCRouter({
         message: "Successfully updated data room",
         data: room,
       };
-    } catch (_error) {
+    } catch (error) {
+      console.error(error);
       return {
         success: false,
         message:
@@ -207,7 +208,7 @@ export const dataRoomRouter = createTRPCRouter({
       const company = dataRoom.company;
 
       const upsertManyRecipients = async () => {
-        const baseUrl = env.BASE_URL;
+        const baseUrl = env.NEXT_PUBLIC_BASE_URL;
         const recipients = [...others, ...selectedContacts];
 
         for (const recipient of recipients) {
@@ -251,8 +252,7 @@ export const dataRoomRouter = createTRPCRouter({
           const link = `${baseUrl}/data-rooms/${dataRoom.publicId}?token=${token}`;
 
           const payload: DataRoomEmailPayloadType = {
-            // biome-ignore lint/style/noNonNullAssertion: <explanation>
-            senderName: senderName!,
+            senderName: `${senderName}`,
             recipientName: recipient.name,
             companyName: company.name,
             dataRoom: dataRoom.name,

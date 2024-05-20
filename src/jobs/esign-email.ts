@@ -1,6 +1,6 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/lib/pg-boss-base";
+import { BaseJob } from "@/jobs/base";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
@@ -34,7 +34,7 @@ export type ExtendedEsignPayloadType = EsignEmailPayloadType &
 
 export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
   const { email, token, ...rest } = payload;
-  const baseUrl = env.BASE_URL;
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
   const html = await render(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,

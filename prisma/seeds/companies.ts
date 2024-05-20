@@ -1,8 +1,8 @@
 import { generatePublicId } from "@/common/id";
-import { faker } from "@faker-js/faker";
 import { db } from "@/server/db";
-import { sample } from "lodash-es";
+import { faker } from "@faker-js/faker";
 import colors from "colors";
+import { sample } from "lodash-es";
 colors.enable();
 
 type CompanyType = {
@@ -17,8 +17,8 @@ type CompanyType = {
   city: string;
   state: string;
   zipcode: string;
+  country: string;
 };
-
 const seedCompanies = async (count = 4) => {
   const companies: CompanyType[] = [];
 
@@ -35,6 +35,7 @@ const seedCompanies = async (count = 4) => {
       city: faker.location.city(),
       state: faker.location.state({ abbreviated: true }),
       zipcode: faker.location.zipCode(),
+      country: faker.location.countryCode(),
     });
   }
 

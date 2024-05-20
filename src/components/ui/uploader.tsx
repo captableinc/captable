@@ -1,9 +1,10 @@
 "use client";
 
-import { uploadFile } from "@/common/uploads";
+import { uploadFiles } from "@/common/uploads";
 import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
-import React, { useCallback, useState } from "react";
+import type React from "react";
+import { useCallback, useState } from "react";
 import {
   type DropzoneOptions,
   type FileWithPath,
@@ -11,7 +12,7 @@ import {
 } from "react-dropzone";
 import { Button } from "./button";
 
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
 
@@ -37,6 +38,7 @@ type Props = {
   identifier: string;
 
   keyPrefix: string;
+  tags: string[];
 
   multiple?: boolean;
 } & DocumentUploadDropzone &
@@ -46,6 +48,7 @@ export function Uploader({
   header,
   identifier,
   keyPrefix,
+  tags,
   onSuccess,
   multiple = false,
   shouldUpload = true,
@@ -55,6 +58,7 @@ export function Uploader({
   const [uploading, setUploading] = useState(false);
   const { mutateAsync } = api.bucket.create.useMutation();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: warnings
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     try {
       if (!multiple && acceptedFiles.length > 1) {
@@ -69,25 +73,23 @@ export function Uploader({
       setUploading(true);
 
       if (shouldUpload) {
-        for (const file of acceptedFiles) {
-          const { key, mimeType, name, size } = await uploadFile(file, {
-            identifier,
-            keyPrefix,
-          });
-
-          const data = await mutateAsync({ key, mimeType, name, size });
-
-          if (onSuccess) {
-            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-            await onSuccess(data as any);
-          }
-
-          toast({
-            variant: "default",
-            title: "🎉 Successfully uploaded",
-            description: "Your document(s) has been uploaded.",
-          });
+        const bucketData = await uploadFiles(acceptedFiles, {
+          identifier,
+          keyPrefix,
+        });
+        const bucketDataWithTags = bucketData.map(
+          ({ fileUrl: _, ...rest }) => ({ ...rest, tags }),
+        );
+        const allBucketIdAndName = await mutateAsync(bucketDataWithTags);
+        if (onSuccess) {
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          await onSuccess(allBucketIdAndName as any);
         }
+        toast({
+          variant: "default",
+          title: "🎉 Successfully uploaded",
+          description: "Your document(s) has been uploaded.",
+        });
       } else {
         if (onSuccess) {
           // biome-ignore lint/suspicious/noExplicitAny: <explanation>

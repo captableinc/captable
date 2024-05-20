@@ -24,7 +24,7 @@ dependencies:
     specifier: ^1.0.7
     version: 1.0.7(@prisma/client@5.14.0)(next-auth@4.24.7)
   '@prisma/client':
-    specifier: ^5.13.0
+    specifier: ^5.14.0
     version: 5.14.0(prisma@5.14.0)
   '@prisma/generator-helper':
     specifier: ^5.9.1
@@ -293,7 +293,7 @@ devDependencies:
     specifier: ^8.4.38
     version: 8.4.38
   prisma:
-    specifier: ^5.13.0
+    specifier: ^5.14.0
     version: 5.14.0
   tailwindcss:
     specifier: ^3.4.3

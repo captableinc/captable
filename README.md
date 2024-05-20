@@ -69,7 +69,6 @@ We have a community of developers, designers, and entrepreneurs who are passiona
 - We are looking for contributors to help us build the future of cap table management.
 - Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
 - Any contributions you make are truly appreciated.
-- Please follow this [Contribution guideline](https://github.com/captableinc/captable/blob/main/CONTRIBUTING.md) to get started.
 
 
 <h3 id="stack">Stack</h3>

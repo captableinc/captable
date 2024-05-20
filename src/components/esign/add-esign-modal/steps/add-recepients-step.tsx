@@ -16,6 +16,7 @@ import {
   StepperPrev,
   StepperStep,
 } from "@/components/ui/stepper";
+import { TAG } from "@/constants/bucket-tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,20 +72,28 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
       keyPrefix: "EsignDocs",
     });
 
-    const { id: bucketId, name: templateName } = await handleBucketUpload({
-      key,
-      mimeType,
-      name,
-      size,
-    });
+    const returnedBucket = await handleBucketUpload([
+      {
+        key,
+        mimeType,
+        name,
+        size,
+        tags: [TAG.ESIGN],
+      },
+    ]);
 
-    const template = await handleTemplateCreation({
-      bucketId,
-      name: templateName,
-      ...data,
-    });
+    if (returnedBucket.length > 0 && returnedBucket[0]) {
+      const bucketId = returnedBucket[0].id;
+      const templateName = returnedBucket[0].name;
 
-    router.push(`/${companyPublicId}/documents/esign/${template.publicId}`);
+      const template = await handleTemplateCreation({
+        bucketId,
+        name: templateName,
+        ...data,
+      });
+
+      router.push(`/${companyPublicId}/documents/esign/${template.publicId}`);
+    }
   };
 
   const isDeleteDisabled = fields.length === 1;

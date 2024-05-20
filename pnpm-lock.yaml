@@ -12,8 +12,8 @@ dependencies:
     specifier: ^3.574.0
     version: 3.576.0
   '@aws-sdk/s3-request-presigner':
-    specifier: ^3.554.0
-    version: 3.576.0
+    specifier: ^3.577.0
+    version: 3.577.0
   '@blocknote/react':
     specifier: ^0.12.2
     version: 0.12.4(@tiptap/pm@2.4.0)(@types/react@18.3.2)(react-dom@18.2.0)(react@18.3.1)
@@ -102,8 +102,8 @@ dependencies:
     specifier: ^8.16.0
     version: 8.17.3(react-dom@18.2.0)(react@18.3.1)
   '@tremor/react':
-    specifier: ^3.15.1
-    version: 3.16.2(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3)
+    specifier: ^3.17.0
+    version: 3.17.0(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3)
   '@trpc/client':
     specifier: ^10.43.6
     version: 10.45.2(@trpc/server@10.45.2)
@@ -171,8 +171,8 @@ dependencies:
     specifier: ^2.3.11
     version: 2.3.12
   next-runtime-env:
-    specifier: ^3.2.1
-    version: 3.2.1(next@14.2.3)(react@18.3.1)
+    specifier: ^3.2.2
+    version: 3.2.2(next@14.2.3)(react@18.3.1)
   nodemailer:
     specifier: ^6.9.8
     version: 6.9.13
@@ -902,6 +902,21 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@aws-sdk/middleware-sdk-s3@3.577.0:
+    resolution: {integrity: sha512-/t8Shvy6lGIRdTEKG6hA8xy+oon/CDF5H8Ksms/cd/uvIy/MYbNjOJ/Arwk8H5W6LB4DP/1O+tOzOpGx1MCufA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@aws-sdk/types': 3.577.0
+      '@aws-sdk/util-arn-parser': 3.568.0
+      '@smithy/node-config-provider': 3.0.0
+      '@smithy/protocol-http': 4.0.0
+      '@smithy/signature-v4': 3.0.0
+      '@smithy/smithy-client': 3.0.1
+      '@smithy/types': 3.0.0
+      '@smithy/util-config-provider': 3.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@aws-sdk/middleware-signing@3.575.0:
     resolution: {integrity: sha512-frpGG7i3YngWwrYIeDq8/nbat3Gfl803qasaS112rmlPU0ezmYS1SPxpXjpIKxUUYofbzaFtRBAOHU1u7GnWew==}
     engines: {node: '>=16.0.0'}
@@ -947,13 +962,13 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/s3-request-presigner@3.576.0:
-    resolution: {integrity: sha512-ajoTWCFw3nm8QoF3antv05TltkKlnopPyISZmSMJDYv62dRzyDTmEhaCvMhikvza+rrBNzr1w/5cRws+HsWhCg==}
+  /@aws-sdk/s3-request-presigner@3.577.0:
+    resolution: {integrity: sha512-mlcf//A/gFSnKnY4Kc/zCt/zvRiFLeDfaH4t5vpwdBhNjZCRJcHwh6eJeC27/8R+IkRVU5s2CVXrUM5RyeLDWg==}
     engines: {node: '>=16.0.0'}
     dependencies:
-      '@aws-sdk/signature-v4-multi-region': 3.575.0
-      '@aws-sdk/types': 3.575.0
-      '@aws-sdk/util-format-url': 3.575.0
+      '@aws-sdk/signature-v4-multi-region': 3.577.0
+      '@aws-sdk/types': 3.577.0
+      '@aws-sdk/util-format-url': 3.577.0
       '@smithy/middleware-endpoint': 3.0.0
       '@smithy/protocol-http': 4.0.0
       '@smithy/smithy-client': 3.0.1
@@ -967,6 +982,18 @@ packages:
     dependencies:
       '@aws-sdk/middleware-sdk-s3': 3.575.0
       '@aws-sdk/types': 3.575.0
+      '@smithy/protocol-http': 4.0.0
+      '@smithy/signature-v4': 3.0.0
+      '@smithy/types': 3.0.0
+      tslib: 2.6.2
+    dev: false
+
+  /@aws-sdk/signature-v4-multi-region@3.577.0:
+    resolution: {integrity: sha512-mMykGRFBYmlDcMhdbhNM0z1JFUaYYZ8r9WV7Dd0T2PWELv2brSAjDAOBHdJLHObDMYRnM6H0/Y974qTl3icEcQ==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@aws-sdk/middleware-sdk-s3': 3.577.0
+      '@aws-sdk/types': 3.577.0
       '@smithy/protocol-http': 4.0.0
       '@smithy/signature-v4': 3.0.0
       '@smithy/types': 3.0.0
@@ -995,6 +1022,14 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@aws-sdk/types@3.577.0:
+    resolution: {integrity: sha512-FT2JZES3wBKN/alfmhlo+3ZOq/XJ0C7QOZcDNrpKjB0kqYoKjhVKZ/Hx6ArR0czkKfHzBBEs6y40ebIHx2nSmA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@smithy/types': 3.0.0
+      tslib: 2.6.2
+    dev: false
+
   /@aws-sdk/util-arn-parser@3.568.0:
     resolution: {integrity: sha512-XUKJWWo+KOB7fbnPP0+g/o5Ulku/X53t7i/h+sPHr5xxYTJJ9CYnbToo95mzxe7xWvkLrsNtJ8L+MnNn9INs2w==}
     engines: {node: '>=16.0.0'}
@@ -1012,11 +1047,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@aws-sdk/util-format-url@3.575.0:
-    resolution: {integrity: sha512-i9qxRgcHgJvLB6rutQohMouhPCSRkvWAoKSj/6WAOWbE8M+a/znq/2UYGE3F/sAKpEDMXpOo5GXKcKNVpy03Jw==}
+  /@aws-sdk/util-format-url@3.577.0:
+    resolution: {integrity: sha512-SyEGC2J+y/krFRuPgiF02FmMYhqbiIkOjDE6k4nYLJQRyS6XEAGxZoG+OHeOVEM+bsDgbxokXZiM3XKGu6qFIg==}
     engines: {node: '>=16.0.0'}
     dependencies:
-      '@aws-sdk/types': 3.575.0
+      '@aws-sdk/types': 3.577.0
       '@smithy/querystring-builder': 3.0.0
       '@smithy/types': 3.0.0
       tslib: 2.6.2
@@ -4911,8 +4946,8 @@ packages:
       react-dom: 18.2.0(react@18.3.1)
     dev: false
 
-  /@tremor/react@3.16.2(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3):
-    resolution: {integrity: sha512-Isdc+Sf4WHlnrAAO8Hk/nK84HiXzCZvb6ZFRHrzOkF+APm6nDhvKPRorXcXZ2BKSS5T5L0QVsid5fIxly8kRdA==}
+  /@tremor/react@3.17.0(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3):
+    resolution: {integrity: sha512-OzKhA4Y5pLTSsb/bwDt0oF/ncvtABFizPDkms9Bh2IlqO3KsGHmRodsKceMrxtqL4DfxrT/GmyjYVdz4cle1iQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: '>=16.6.0'
@@ -4920,9 +4955,9 @@ packages:
       '@floating-ui/react': 0.19.2(react-dom@18.2.0)(react@18.3.1)
       '@headlessui/react': 1.7.19(react-dom@18.2.0)(react@18.3.1)
       '@headlessui/tailwindcss': 0.2.0(tailwindcss@3.4.3)
-      date-fns: 2.30.0
+      date-fns: 3.6.0
       react: 18.3.1
-      react-day-picker: 8.10.1(date-fns@2.30.0)(react@18.3.1)
+      react-day-picker: 8.10.1(date-fns@3.6.0)(react@18.3.1)
       react-dom: 18.2.0(react@18.3.1)
       react-transition-state: 2.1.1(react-dom@18.2.0)(react@18.3.1)
       recharts: 2.12.7(react-dom@18.2.0)(react@18.3.1)
@@ -6735,11 +6770,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
-    dependencies:
-      '@babel/runtime': 7.24.5
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
     dev: false
 
   /dayjs@1.11.11:
@@ -9096,8 +9128,8 @@ packages:
       nprogress: 0.2.0
     dev: false
 
-  /next-runtime-env@3.2.1(next@14.2.3)(react@18.3.1):
-    resolution: {integrity: sha512-vyuTpUMwnGUA9GjOGXNnuosqFQOa52IcKmu4mnTaQi4EqeFoCy3aYUxSF6mLaKkQ5yNC8yLa/gFjny74czpc9Q==}
+  /next-runtime-env@3.2.2(next@14.2.3)(react@18.3.1):
+    resolution: {integrity: sha512-S5S6NxIf3XeaVc9fLBN2L5Jzu+6dLYCXeOaPQa1RzKRYlG2BBayxXOj6A4VsciocyNkJMazW1VAibtbb1/ZjAw==}
     peerDependencies:
       next: ^14
       react: ^18
@@ -10069,13 +10101,13 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /react-day-picker@8.10.1(date-fns@2.30.0)(react@18.3.1):
+  /react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
     resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
     peerDependencies:
       date-fns: ^2.28.0 || ^3.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      date-fns: 2.30.0
+      date-fns: 3.6.0
       react: 18.3.1
     dev: false
 

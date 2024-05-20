@@ -62,8 +62,21 @@ export const uploadFile = async (
     fileUrl,
   };
 };
-
 export type TUploadFile = Awaited<ReturnType<typeof uploadFile>>;
+
+export const uploadFiles = async (
+  files: File[],
+  options: Pick<
+    getPresignedUrlOptions,
+    "expiresIn" | "keyPrefix" | "identifier"
+  >,
+  bucketMode: "publicBucket" | "privateBucket" = "privateBucket",
+) => {
+  const uploadPromises = files.map((file) =>
+    uploadFile(file, options, bucketMode),
+  );
+  return await Promise.all(uploadPromises);
+};
 
 export const getFileFromS3 = async (key: string) => {
   const { url } = await getPresignedGetUrl(key);

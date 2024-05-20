@@ -28,7 +28,7 @@ export abstract class BaseJob<T extends object> implements Job<T> {
   }
 
   async start(): Promise<void> {
-    await this.boss.work(this.type, this.work);
+    await this.boss.work(this.type, this.work.bind(this));
   }
 
   abstract work(job: pgBoss.Job<T>): Promise<void>;

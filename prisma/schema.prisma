@@ -135,6 +135,7 @@ model Company {
   city          String
   state         String
   zipcode       String
+  country       String
 
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt

@@ -2,6 +2,8 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Uploader from "@/components/ui/uploader";
+import { TAG } from "@/constants/bucket-tags";
+import { useSession } from "next-auth/react";
 import { useFormContext } from "react-hook-form";
 
 type Documents = {
@@ -10,24 +12,23 @@ type Documents = {
 };
 
 export const Documents = () => {
+  const { data: session } = useSession();
   const form = useFormContext();
   //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const documents: [Documents] = form.watch("documents");
-
   return (
     <>
       <Uploader
         multiple={true}
-        identifier={"documenter"}
+        //biome-ignore lint/style/noNonNullAssertion: Forbidden non-null assertion
+        identifier={session?.user.companyPublicId!}
+        tags={[TAG.EQUITY]}
         keyPrefix="equity-doc"
         onSuccess={async (bucketData) => {
           form.setValue("documents", [
             //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             ...(form.getValues("documents") || []),
-            {
-              bucketId: bucketData.id,
-              name: bucketData.name,
-            },
+            ...bucketData.map(({ id, name }) => ({ bucketId: id, name })),
           ]);
         }}
         accept={{

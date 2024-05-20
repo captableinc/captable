@@ -1,24 +1,32 @@
-import { type TPrismaOrTransaction } from "@/server/db";
+import type { TPrismaOrTransaction } from "@/server/db";
 import { withAuth } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateBucketMutationSchema,
   ZodCreateBucketMutationSchema,
 } from "../schema";
 
-interface createBucketHandlerOptions {
+interface createBucketsHandlerOptions {
   input: TypeZodCreateBucketMutationSchema;
   db: TPrismaOrTransaction;
 }
 
-export const createBucketHandler = ({
+export const createBucketsHandler = async ({
   db,
-  input,
-}: createBucketHandlerOptions) => {
-  return db.bucket.create({ data: input });
+  input: bucketData,
+}: createBucketsHandlerOptions) => {
+  // https://github.com/prisma/prisma/releases @version 5.14.0(stable)
+  return await db.bucket.createManyAndReturn({
+    data: bucketData,
+    skipDuplicates: true,
+    select: {
+      id: true,
+      name: true,
+    },
+  });
 };
 
 export const createBucketProcedure = withAuth
   .input(ZodCreateBucketMutationSchema)
   .mutation(async ({ ctx: { db }, input }) => {
-    return createBucketHandler({ input, db });
+    return await createBucketsHandler({ input, db });
   });

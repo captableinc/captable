@@ -1,7 +1,8 @@
 "use client";
 
 import Modal from "@/components/common/modal";
-import Uploader, { type UploadReturn } from "@/components/ui/uploader";
+import Uploader from "@/components/ui/uploader";
+import { TAG } from "@/constants/bucket-tags";
 import { api } from "@/trpc/react";
 import type { DataRoom } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -40,24 +41,25 @@ const DataRoomUploader = ({
         multiple={true}
         identifier={companyPublicId}
         keyPrefix={`data-room/${dataRoom.publicId}/file`}
-        onSuccess={async (upload: UploadReturn) => {
-          const document = await documentMutation.mutateAsync({
-            name: upload.name,
-            bucketId: upload.id,
-          });
+        tags={[TAG.DATA_ROOM]}
+        onSuccess={async (bucketData) => {
+          if (bucketData.length > 0 && bucketData[0]) {
+            const returnedDocuments = await documentMutation.mutateAsync([
+              ...bucketData.map(({ id, name }) => ({ bucketId: id, name })),
+            ]);
 
-          await dataRoomMutation.mutateAsync({
-            name: dataRoom.name,
-            publicId: dataRoom.publicId,
-            documents: [
-              {
-                documentId: document.id,
-              },
-            ],
-          });
+            const documentIds = returnedDocuments.map(({ id }) => ({
+              documentId: id,
+            }));
 
-          router.refresh();
-          // setOpen(false);
+            await dataRoomMutation.mutateAsync({
+              name: dataRoom.name,
+              publicId: dataRoom.publicId,
+              documents: documentIds,
+            });
+            router.refresh();
+            // setOpen(false);
+          }
         }}
       />
     </Modal>

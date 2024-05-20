@@ -60,7 +60,7 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-table": "^8.16.0",
-    "@tremor/react": "^3.15.1",
+    "@tremor/react": "^3.17.0",
     "@trpc/client": "^10.43.6",
     "@trpc/next": "^10.45.2",
     "@trpc/react-query": "^10.43.6",

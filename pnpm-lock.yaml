@@ -102,8 +102,8 @@ dependencies:
     specifier: ^8.16.0
     version: 8.17.3(react-dom@18.2.0)(react@18.3.1)
   '@tremor/react':
-    specifier: ^3.15.1
-    version: 3.16.2(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3)
+    specifier: ^3.17.0
+    version: 3.17.0(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3)
   '@trpc/client':
     specifier: ^10.43.6
     version: 10.45.2(@trpc/server@10.45.2)
@@ -4911,8 +4911,8 @@ packages:
       react-dom: 18.2.0(react@18.3.1)
     dev: false
 
-  /@tremor/react@3.16.2(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3):
-    resolution: {integrity: sha512-Isdc+Sf4WHlnrAAO8Hk/nK84HiXzCZvb6ZFRHrzOkF+APm6nDhvKPRorXcXZ2BKSS5T5L0QVsid5fIxly8kRdA==}
+  /@tremor/react@3.17.0(react-dom@18.2.0)(react@18.3.1)(tailwindcss@3.4.3):
+    resolution: {integrity: sha512-OzKhA4Y5pLTSsb/bwDt0oF/ncvtABFizPDkms9Bh2IlqO3KsGHmRodsKceMrxtqL4DfxrT/GmyjYVdz4cle1iQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: '>=16.6.0'
@@ -4920,9 +4920,9 @@ packages:
       '@floating-ui/react': 0.19.2(react-dom@18.2.0)(react@18.3.1)
       '@headlessui/react': 1.7.19(react-dom@18.2.0)(react@18.3.1)
       '@headlessui/tailwindcss': 0.2.0(tailwindcss@3.4.3)
-      date-fns: 2.30.0
+      date-fns: 3.6.0
       react: 18.3.1
-      react-day-picker: 8.10.1(date-fns@2.30.0)(react@18.3.1)
+      react-day-picker: 8.10.1(date-fns@3.6.0)(react@18.3.1)
       react-dom: 18.2.0(react@18.3.1)
       react-transition-state: 2.1.1(react-dom@18.2.0)(react@18.3.1)
       recharts: 2.12.7(react-dom@18.2.0)(react@18.3.1)
@@ -6735,11 +6735,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
-    dependencies:
-      '@babel/runtime': 7.24.5
+  /date-fns@3.6.0:
+    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
     dev: false
 
   /dayjs@1.11.11:
@@ -10069,13 +10066,13 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /react-day-picker@8.10.1(date-fns@2.30.0)(react@18.3.1):
+  /react-day-picker@8.10.1(date-fns@3.6.0)(react@18.3.1):
     resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==}
     peerDependencies:
       date-fns: ^2.28.0 || ^3.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      date-fns: 2.30.0
+      date-fns: 3.6.0
       react: 18.3.1
     dev: false
 

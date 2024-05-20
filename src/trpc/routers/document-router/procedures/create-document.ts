@@ -1,7 +1,7 @@
 import { generatePublicId } from "@/common/id";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
-import { type TPrismaOrTransaction } from "@/server/db";
+import type { TPrismaOrTransaction } from "@/server/db";
 import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateDocumentMutationSchema,
@@ -26,16 +26,26 @@ export const createDocumentHandler = async ({
   uploaderName,
   uploaderId,
 }: createDocumentHandlerOptions) => {
-  const publicId = generatePublicId();
+  const bulkDocuments = input.map((doc) => ({
+    ...doc,
+    companyId,
+    uploaderId,
+    publicId: generatePublicId(),
+  }));
 
-  const document = await db.document.create({
-    data: {
-      companyId,
-      uploaderId,
-      publicId,
-      ...input,
-    },
+  const returnedDocuments = await db.document.createManyAndReturn({
+    data: bulkDocuments,
+    select: { id: true },
   });
+
+  const allDocIds = returnedDocuments.map(({ id }) => id);
+  let finalAuditId: string;
+
+  if (allDocIds.length > 1) {
+    finalAuditId = allDocIds.join("-");
+  } else {
+    finalAuditId = allDocIds[0] as string;
+  }
 
   await Audit.create(
     {
@@ -46,13 +56,13 @@ export const createDocumentHandler = async ({
         requestIp,
         userAgent,
       },
-      target: [{ type: "document", id: document.id }],
-      summary: `${uploaderName} uploaded a document: ${document.name}`,
+      target: [{ type: "document", id: finalAuditId }],
+      summary: `${uploaderName} uploaded ${bulkDocuments.length} document(s).`,
     },
     db,
   );
 
-  return document;
+  return returnedDocuments;
 };
 
 export const createDocumentProcedure = withAuth

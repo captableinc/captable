@@ -1,9 +1,11 @@
 import { z } from "zod";
 
-export const ZodCreateDocumentMutationSchema = z.object({
-  name: z.string(),
-  bucketId: z.string(),
-});
+export const ZodCreateDocumentMutationSchema = z.array(
+  z.object({
+    name: z.string(),
+    bucketId: z.string(),
+  }),
+);
 
 export type TypeZodCreateDocumentMutationSchema = z.infer<
   typeof ZodCreateDocumentMutationSchema

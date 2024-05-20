@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "EquityPlan" ALTER COLUMN "comments" DROP NOT NULL,
-ALTER COLUMN "comments" DROP DEFAULT,
-ALTER COLUMN "comments" SET DATA TYPE TEXT;

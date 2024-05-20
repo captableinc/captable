@@ -7,6 +7,7 @@ services:
       - POSTGRES_USER=captable
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=captable
+      - POSTGRES_EXTENSIONS=pgcrypto
     ports:
       - 54321:5432
     volumes:

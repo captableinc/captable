@@ -1,4 +1,4 @@
-import { BaseJob } from "@/lib/pg-boss-base";
+import { BaseJob } from "@/jobs/base";
 import { db } from "@/server/db";
 import {
   type EsignGetTemplateType,

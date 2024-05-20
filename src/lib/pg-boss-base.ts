@@ -10,15 +10,15 @@ export type JobType = {
   [Key in keyof JobTypes]: `${Key}.${JobTypes[Key][number]}`;
 }[keyof JobTypes];
 
-interface Job<T extends object> {
+interface Job<T extends object, U = void> {
   type: JobType;
   options: pgBoss.SendOptions;
   start: () => Promise<void>;
-  work: (job: pgBoss.Job<T>) => Promise<void>;
+  work: (job: pgBoss.Job<T>) => Promise<U>;
   emit: (data: T) => Promise<void>;
 }
 
-export abstract class BaseJob<T extends object> implements Job<T> {
+export abstract class BaseJob<T extends object, U = void> implements Job<T, U> {
   protected boss: pgBoss;
   abstract readonly type: JobType;
   readonly options = { retryLimit: 3, retryDelay: 1000 };
@@ -31,7 +31,7 @@ export abstract class BaseJob<T extends object> implements Job<T> {
     await this.boss.work(this.type, this.work.bind(this));
   }
 
-  abstract work(job: pgBoss.Job<T>): Promise<void>;
+  abstract work(job: pgBoss.Job<T>): Promise<U>;
 
   async emit(data: T, options?: pgBoss.SendOptions): Promise<void> {
     await this.boss.send(this.type, data, options ?? this.options);

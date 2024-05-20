@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { dayjsExt } from "@/common/dayjs";
 import { type TUploadFile, getFileFromS3, uploadFile } from "@/common/uploads";
+import { TAG } from "@/constants/bucket-tags";
 import { type Range, generateRange } from "@/lib/pdf-positioning";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
-import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
+import { createBucketsHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { PDFDocument, StandardFonts } from "pdf-lib";
@@ -288,17 +289,20 @@ export async function completeEsignDocuments({
     db,
   );
 
-  const { id: bucketId, name } = await createBucketHandler({
+  const returnedBucket = await createBucketsHandler({
     db,
-    input: bucketData,
+    input: [{ ...bucketData, tags: [TAG.ESIGN] }],
   });
-
-  await createDocumentHandler({
-    input: { bucketId, name },
-    requestIp,
-    db,
-    userAgent,
-    companyId,
-    uploaderName,
-  });
+  if (returnedBucket.length > 0 && returnedBucket[0]) {
+    const bucketId = returnedBucket[0].id;
+    const name = returnedBucket[0].name;
+    await createDocumentHandler({
+      input: [{ bucketId, name }],
+      requestIp,
+      db,
+      userAgent,
+      companyId,
+      uploaderName,
+    });
+  }
 }

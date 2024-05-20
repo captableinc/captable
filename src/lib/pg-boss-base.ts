@@ -1,4 +1,4 @@
-import { JOB_TYPES } from "@/constants/job";
+import type { JOB_TYPES } from "@/constants/job";
 import { env } from "@/env";
 import pgBoss from "pg-boss";
 
@@ -33,8 +33,8 @@ export abstract class BaseJob<T extends object> implements Job<T> {
 
   abstract work(job: pgBoss.Job<T>): Promise<void>;
 
-  async emit(data: T): Promise<void> {
-    await this.boss.send(this.type, data, this.options);
+  async emit(data: T, options?: pgBoss.SendOptions): Promise<void> {
+    await this.boss.send(this.type, data, options ?? this.options);
   }
   async bulkEmit(data: Omit<pgBoss.JobInsert<T>, "name">[]): Promise<void> {
     await this.boss.insert(

@@ -1,4 +1,4 @@
-import { AuthVerificationEmailJob } from "@/jobs/auth-verification-email";
+import { sendAuthVerificationEmail } from "@/jobs/auth-verification-email";
 
 import { generateVerificationToken } from "@/lib/token";
 import { withoutAuth } from "@/trpc/api/trpc";
@@ -35,7 +35,7 @@ export const signupProcedure = withoutAuth
     });
     const verificationToken = await generateVerificationToken(email);
 
-    await new AuthVerificationEmailJob().emit({
+    await sendAuthVerificationEmail({
       email: verificationToken.identifier,
       token: verificationToken.token,
     });

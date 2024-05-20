@@ -12,17 +12,17 @@ import { DropdownButton } from "@/components/ui/dropdown-button";
 import { useToast } from "@/components/ui/use-toast";
 import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
-import { type Block } from "@blocknote/core";
+import type { Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
-import { env } from "@/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
+import { env } from "next-runtime-env";
 
 type UpdatesEditorProps = {
   update?: Update;
@@ -41,7 +41,7 @@ const UpdatesEditor = ({
 }: UpdatesEditorProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = env("NEXT_PUBLIC_BASE_URL");
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");
@@ -181,7 +181,7 @@ const UpdatesEditor = ({
   });
 
   const draftMutation = api.update.save.useMutation({
-    onSuccess: async ({ publicId, success, message }) => {
+    onSuccess: ({ publicId, success, message }) => {
       toast({
         variant: success ? "default" : "destructive",
         title: success
@@ -213,7 +213,7 @@ const UpdatesEditor = ({
   });
 
   const cloneMutation = api.update.clone.useMutation({
-    onSuccess: async ({ publicId, success, message }) => {
+    onSuccess: ({ publicId, success, message }) => {
       toast({
         variant: success ? "default" : "destructive",
         title: success
@@ -240,7 +240,7 @@ const UpdatesEditor = ({
     },
   });
 
-  const saveAsDraft = async () => {
+  const saveAsDraft = () => {
     setLoading(true);
 
     const data = {
@@ -253,7 +253,7 @@ const UpdatesEditor = ({
     draftMutation.mutate(data);
   };
 
-  const cloneUpdate = async () => {
+  const cloneUpdate = () => {
     setLoading(true);
 
     const data = {
@@ -261,6 +261,7 @@ const UpdatesEditor = ({
       html,
       content,
     };
+
     cloneMutation.mutate(data);
   };
 
@@ -367,11 +368,11 @@ const UpdatesEditor = ({
                 </Button>
               </li> */}
 
-              {update && mode === "edit" && (
+              {update && mode === "edit" && recipients && contacts && (
                 <li>
                   <ShareModal
-                    recipients={recipients!}
-                    contacts={contacts!}
+                    recipients={recipients}
+                    contacts={contacts}
                     baseLink={`${baseUrl}/updates/${update?.publicId}`}
                     title={`Share - "${title}"`}
                     subtitle="Share this update with team members, stakeholders and others."

@@ -3,7 +3,6 @@ import {
   getPresignedPutUrl,
   type getPresignedUrlOptions,
 } from "@/server/file-uploads";
-import { env } from "next-runtime-env";
 /**
  * usage
  * ```js
@@ -47,12 +46,7 @@ export const uploadFile = async (
   }
 
   const { name, type, size } = file;
-  let fileUrl = bucketUrl;
-
-  const uploadDomain = env("NEXT_PUBLIC_UPLOAD_DOMAIN");
-  if (bucketMode === "publicBucket" && uploadDomain) {
-    fileUrl = `${uploadDomain}/${key}`;
-  }
+  const fileUrl = bucketUrl;
 
   return {
     key,

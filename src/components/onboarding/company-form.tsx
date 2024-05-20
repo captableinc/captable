@@ -33,7 +33,7 @@ import { useToast } from "@/components/ui/use-toast";
 import countries from "@/lib/countries";
 import { cn, isFileExists, validateFile } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
@@ -316,6 +316,100 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
 
             <hr />
 
+            <h2 className="text-xl">Company address</h2>
+            <p className="-mt-5 text-sm text-muted-foreground">
+              Please provide your company{`'`}s address.
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="company.streetAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Street address</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="company.city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="company.state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="company.zipcode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Postal code</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="company.country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Country</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select country" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {countries.map(
+                          (country: { code: string; name: string }) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              {country.name}
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <hr />
+
             <h2 className="text-xl">Company incorporation details</h2>
             <p className="-mt-5 text-sm text-muted-foreground">
               Please provide your company{`'`}s incorporation details. Your
@@ -337,10 +431,17 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="llc">
-                          Limited Liability Company
+                          LLC - Limited Liability Company
                         </SelectItem>
-                        <SelectItem value="c-corp">C Corporation</SelectItem>
-                        <SelectItem value="s-corp">S Corporation</SelectItem>
+                        <SelectItem value="c-corp">
+                          C-Corp - C Corporation
+                        </SelectItem>
+                        <SelectItem value="s-corp">
+                          S-Corp - S Corporation
+                        </SelectItem>
+                        <SelectItem value="other">
+                          Others or International
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage className="text-xs font-light" />
@@ -397,72 +498,6 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Incorporation state</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/*  */}
-            <h2 className="text-xl">Company address</h2>
-            <p className="-mt-5 text-sm text-muted-foreground">
-              Please provide your company{`'`}s address.
-            </p>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="company.streetAddress"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Street address</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="company.city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="company.state"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>State</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="company.zipcode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Zipcode</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

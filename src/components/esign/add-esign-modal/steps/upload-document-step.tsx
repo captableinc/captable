@@ -4,6 +4,7 @@ import {
   useStepper,
 } from "@/components/ui/stepper";
 import Uploader from "@/components/ui/uploader";
+import { TAG } from "@/constants/bucket-tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 
 export function UploadDocumentStep() {
@@ -15,9 +16,10 @@ export function UploadDocumentStep() {
       <StepperModalContent>
         <Uploader
           identifier={""}
+          tags={[TAG.ESIGN]}
           shouldUpload={false}
           keyPrefix="equity-doc"
-          onSuccess={async (file) => {
+          onSuccess={(file) => {
             setValue({ document: file });
             next();
           }}

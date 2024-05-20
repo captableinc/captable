@@ -1,7 +1,8 @@
 "use client";
 
 import Modal from "@/components/common/modal";
-import Uploader, { type UploadReturn } from "@/components/ui/uploader";
+import Uploader from "@/components/ui/uploader";
+import { TAG } from "@/constants/bucket-tags";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -35,14 +36,19 @@ const DocumentUploadModal = ({
       <Uploader
         identifier={companyPublicId}
         keyPrefix="generic-document"
-        onSuccess={async (uploadedData: UploadReturn) => {
-          await mutateAsync({
-            name: uploadedData.name,
-            bucketId: uploadedData.id,
-          });
+        tags={[TAG.GENERIC]}
+        onSuccess={async (bucketData) => {
+          if (bucketData.length > 0 && bucketData[0]) {
+            await mutateAsync([
+              {
+                name: bucketData[0].name,
+                bucketId: bucketData[0].id,
+              },
+            ]);
 
-          router.refresh();
-          setOpen(false);
+            router.refresh();
+            setOpen(false);
+          }
         }}
       />
     </Modal>

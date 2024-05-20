@@ -28,6 +28,8 @@ NEXT_PUBLIC_BASE_URL="https://your-domain.com"
 
 # Email server environment variables
 EMAIL_FROM="your@email.com"
+
+# Please use encrypted/TLS connection for SMTP server.
 EMAIL_SERVER="smtp://username:password@host:port"
 
 # File uplod environment variables

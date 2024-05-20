@@ -1,11 +1,8 @@
 name: Production
 
 on:
-  # release:
-  #   types: [published]
-  push:
-    branches:
-      - debug
+  release:
+    types: [published]
 
 jobs:
   push_to_registries:

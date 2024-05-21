@@ -7,7 +7,7 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -24,7 +24,7 @@ import {
 import React from "react";
 import { StakeholderTableToolbar } from "./stakeholder-table-toolbar";
 
-type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"]["data"];
+type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"];
 
 type StakeholderTableType = {
   stakeholders: Stakeholder;

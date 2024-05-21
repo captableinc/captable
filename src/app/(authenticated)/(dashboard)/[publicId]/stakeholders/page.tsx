@@ -4,7 +4,7 @@ import StakeholderTable from "@/components/stakeholder/stakeholder-table";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";
 import { RiGroup2Fill } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Stakeholders",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const StakeholdersPage = async () => {
   const stakeholders = await api.stakeholder.getStakeholders.query();
 
-  if (stakeholders.data.length === 0) {
+  if (stakeholders.length === 0) {
     return (
       <EmptyState
         icon={<RiGroup2Fill />}
@@ -41,7 +41,7 @@ const StakeholdersPage = async () => {
       </div>
 
       <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-        <StakeholderTable stakeholders={stakeholders.data} />
+        <StakeholderTable stakeholders={stakeholders} />
       </Card>
     </div>
   );

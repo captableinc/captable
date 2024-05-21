@@ -119,7 +119,7 @@ export function StepperRoot({ children }: StepperRootProps) {
   );
 }
 
-type StepperModalProps = ModalProps;
+export type StepperModalProps = ModalProps;
 
 function StepList() {
   const steps = useDescendants(StepperDescendantContext);
@@ -192,7 +192,7 @@ export function StepperModal({
             aria-label="Progress"
             className="red col-span-3 hidden max-w-64 md:block"
           >
-            <ol role="list" className="overflow-hidden">
+            <ol className="overflow-hidden">
               <StepList />
             </ol>
           </nav>

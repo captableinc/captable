@@ -21,8 +21,8 @@ export const addExistingSafeProcedure = withAuth
           publicId: generatePublicId(),
           capital: input.capital,
           valuationCap: input.valuationCap,
-          discountRate: input.discountRate,
-          proRata: input.proRata,
+          discountRate: input.discountRate ?? 0,
+          proRata: input.proRata ?? false,
           issueDate: new Date(input.issueDate),
           boardApprovalDate: new Date(input.boardApprovalDate),
         };

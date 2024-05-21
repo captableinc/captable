@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { parseStrakeholdersCSV } from "@/lib/stakeholders-csv-parser";
 import { api } from "@/trpc/react";
-import { type TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
+import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
 import { RiUploadLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
 
   const { mutateAsync, isLoading } =
     api.stakeholder.addStakeholders.useMutation({
-      onSuccess: async ({ success, message }) => {
+      onSuccess: ({ success, message }) => {
         toast({
           variant: success ? "default" : "destructive",
           title: success
@@ -78,6 +78,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
         , complete and upload it to import your existing or new stakeholders.
       </div>
 
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <> */}
       <div
         className="flex h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-gray-300"
         onClick={() => fileInputRef.current?.click()}

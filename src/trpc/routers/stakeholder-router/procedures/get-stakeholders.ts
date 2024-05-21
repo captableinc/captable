@@ -19,5 +19,5 @@ export const getStakeholdersProcedure = withAuth.query(async ({ ctx }) => {
     return stakeholder;
   });
 
-  return { data };
+  return data;
 });

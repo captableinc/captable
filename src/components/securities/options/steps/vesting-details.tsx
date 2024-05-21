@@ -59,6 +59,7 @@ export const VestingDetails = () => {
                 <SelectContent>
                   {vestingSchedule?.length &&
                     vestingSchedule.map((vs, index) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <ignore>
                       <SelectItem key={index} value={vs}>
                         {vs}
                       </SelectItem>
@@ -131,8 +132,8 @@ export const VestingDetails = () => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {stakeholders?.data?.data?.length ? (
-                    stakeholders?.data?.data?.map((sh) => (
+                  {stakeholders?.data?.length ? (
+                    stakeholders?.data?.map((sh) => (
                       <SelectItem key={sh.id} value={sh.id}>
                         {sh.name}
                       </SelectItem>

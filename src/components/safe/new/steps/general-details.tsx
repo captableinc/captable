@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { SafeTemplateEnum } from "@/prisma/enums";
 import { useFormContext } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 export const GeneralDetailsFields = [
   "safeId",
@@ -71,35 +72,49 @@ export const GeneralDetails = () => {
           </FormItem>
         )}
       />
+
       <FormField
         control={form.control}
         name="valuationCap"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Valuation cap</FormLabel>
-            <FormControl>
-              <Input
-                type={"text"}
-                {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
+        render={({ field }) => {
+          const { onChange, ...rest } = field;
+          return (
+            <FormItem>
+              <FormLabel>Valuation cap</FormLabel>
+              <FormControl>
+                <NumericFormat
+                  thousandSeparator
+                  allowedDecimalSeparators={["%"]}
+                  decimalScale={2}
+                  prefix={"$  "}
+                  {...rest}
+                  customInput={Input}
+                  onValueChange={(values) => {
+                    const { floatValue } = values;
+                    onChange(floatValue);
+                  }}
+                />
+              </FormControl>
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          );
+        }}
       />
+
       <FormField
         control={form.control}
         name="discountRate"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Discount rate</FormLabel>
+            <FormLabel>Discount rate (optional)</FormLabel>
             <FormControl>
               {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
               <Input
                 type="text"
                 {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                onChange={(e) =>
+                  field.onChange(Number.parseFloat(e.target.value))
+                }
               />
             </FormControl>
             <FormMessage className="text-xs font-light" />
@@ -119,7 +134,7 @@ export const GeneralDetails = () => {
               />
             </FormControl>
             <FormLabel className="space-y-1 leading-none">
-              Pro-rata rights
+              Pro-rata rights (optional)
             </FormLabel>
           </FormItem>
         )}

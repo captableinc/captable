@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toTitleCase } from "@/lib/string";
 import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,7 +29,10 @@ export const GeneralDetailsField = [
   "status",
 ];
 
-const STATUSES = Object.values(OptionStatusEnum);
+const STATUSES = Object.values(OptionStatusEnum).map((val) => ({
+  label: toTitleCase(val),
+  value: val,
+}));
 const TYPES = Object.values(OptionTypeEnum);
 
 const formSchema = z.object({
@@ -117,8 +121,8 @@ export const GeneralDetails = () => {
                 </FormControl>
                 <SelectContent>
                   {STATUSES.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status}
+                    <SelectItem key={status.label} value={status.value}>
+                      {status.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

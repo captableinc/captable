@@ -9,7 +9,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { robotoMono, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { PublicEnvScript } from "next-runtime-env";
 import { cookies } from "next/headers";
 
@@ -31,6 +31,8 @@ export default async function RootLayout({
 }) {
   const session = await getServerAuthSession();
 
+  const nodeEnv = process.env.NODE_ENV;
+
   return (
     <html lang="en" className={cn(satoshi.variable, robotoMono.variable)}>
       <head>
@@ -42,9 +44,7 @@ export default async function RootLayout({
             <TRPCReactProvider cookies={cookies().toString()}>
               <main>{children}</main>
               <Toaster />
-              {process.env.NEXT_PUBLIC_NODE_ENV === "development" && (
-                <ScreenSize />
-              )}
+              {nodeEnv === "development" && <ScreenSize />}
             </TRPCReactProvider>
           </NextAuthProvider>
         </ProgressBarProvider>

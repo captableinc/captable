@@ -43,6 +43,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_BASE_URL: z.string(),
+    NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
     NEXT_PUBLIC_NODE_ENV: z.string().default("development"),
   },
 
@@ -66,6 +67,7 @@ export const env = createEnv({
     UPLOAD_BUCKET_PRIVATE: process.env.UPLOAD_BUCKET_PRIVATE,
     UPLOAD_ACCESS_KEY_ID: process.env.UPLOAD_ACCESS_KEY_ID,
     UPLOAD_SECRET_ACCESS_KEY: process.env.UPLOAD_SECRET_ACCESS_KEY,
+    NEXT_PUBLIC_UPLOAD_DOMAIN: process.env.NEXT_PUBLIC_UPLOAD_DOMAIN,
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,

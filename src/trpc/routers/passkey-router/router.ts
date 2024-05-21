@@ -76,7 +76,9 @@ export const passkeyRouter = createTRPCRouter({
   createSigninOptions: withoutAuth.mutation(async ({ ctx }) => {
     const cookies = ctx.headers.get("cookie");
     const parsedCookies = cookie.parse(cookies || "") as Record<string, string>;
-    const sessionIdToken = parsedCookies["next-auth.csrf-token"];
+    const sessionIdToken =
+      parsedCookies["__Host-next-auth.csrf-token"] ||
+      parsedCookies["next-auth.csrf-token"];
 
     if (!sessionIdToken) {
       throw new Error("Missing CSRF token");

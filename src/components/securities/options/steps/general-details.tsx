@@ -22,13 +22,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const GeneralDetailsField = [
-  "grantId",
-  "grantType",
-  "quantity",
-  "status",
-];
-
 const STATUSES = Object.values(OptionStatusEnum).map((val) => ({
   label: toTitleCase(val),
   value: val,

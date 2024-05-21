@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -16,8 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
-import { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export const GeneralDetailsField = [
   "grantId",
@@ -26,110 +28,106 @@ export const GeneralDetailsField = [
   "status",
 ];
 
+const STATUSES = Object.values(OptionStatusEnum);
+const TYPES = Object.values(OptionTypeEnum);
+
+const formSchema = z.object({
+  grantId: z.string(),
+  type: z.nativeEnum(OptionStatusEnum),
+  quantity: z.coerce.number(),
+  status: z.nativeEnum(OptionTypeEnum),
+});
+
+type TFormSchema = z.infer<typeof formSchema>;
+
 export const GeneralDetails = () => {
-  const form = useFormContext();
-
-  const types = useMemo(
-    () =>
-      Object.values(OptionTypeEnum).filter(
-        (value) => typeof value === "string",
-      ),
-    [],
-  ) as string[];
-
-  const status = useMemo(
-    () =>
-      Object.values(OptionStatusEnum).filter(
-        (value) => typeof value === "string",
-      ),
-    [],
-  ) as string[];
+  const form = useForm<TFormSchema>({
+    resolver: zodResolver(formSchema),
+  });
 
   return (
-    <div className="space-y-4">
-      <FormField
-        control={form.control}
-        name="grantId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Grant ID</FormLabel>
-            <FormControl>
-              <Input type="text" {...field} />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Grant type</FormLabel>
-            {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-            <Select onValueChange={field.onChange} value={field.value}>
+    <Form {...form}>
+      <div className="space-y-4">
+        <FormField
+          control={form.control}
+          name="grantId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Grant ID</FormLabel>
               <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
+                <Input type="text" {...field} />
               </FormControl>
-              <SelectContent>
-                {types
-                  ? types.map((t, index) => (
-                      <SelectItem key={index} value={t}>
-                        {t}
-                      </SelectItem>
-                    ))
-                  : null}
-              </SelectContent>
-            </Select>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="quantity"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Quantity</FormLabel>
-            <FormControl>
-              <Input type="email" {...field} />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Grant type</FormLabel>
 
-      <FormField
-        control={form.control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-            <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="quantity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantity</FormLabel>
               <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
+                <Input type="number" {...field} />
               </FormControl>
-              <SelectContent>
-                {status
-                  ? status.map((s, index) => (
-                      <SelectItem key={index} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))
-                  : null}
-              </SelectContent>
-            </Select>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
-    </div>
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {STATUSES.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          )}
+        />
+      </div>
+    </Form>
   );
 };

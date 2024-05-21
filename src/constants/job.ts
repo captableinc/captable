@@ -4,6 +4,7 @@ export const JOB_TYPES = {
     "share-update",
     "share-data-room",
     "password-reset",
+    "member-invite",
     "esign-confirmation",
     "esign-notification",
   ],

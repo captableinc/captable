@@ -49,7 +49,7 @@ export const sendMemberInviteEmail = async (
 };
 
 export class SendMemberInviteEmailJob extends BaseJob<MemberInvitePayloadType> {
-  readonly type = "email.password-reset";
+  readonly type = "email.member-invite";
 
   async work(job: Job<MemberInvitePayloadType>): Promise<void> {
     await sendMemberInviteEmail(job.data);

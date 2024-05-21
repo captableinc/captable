@@ -34,6 +34,7 @@ export const sendMemberInviteEmail = async (
   });
 
   const inviteLink = `${baseUrl}/verify-member/${verificationToken}?${params.toString()}`;
+  console.log("sending invite email to", email, ": ", inviteLink);
 
   await sendMail({
     to: email,

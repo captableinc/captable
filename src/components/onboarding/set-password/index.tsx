@@ -148,7 +148,7 @@ export const SetPasswordForm = ({
                 )}
               />
               <Button type="submit" size="lg" loading={isSubmitting}>
-                {isSubmitting ? "Resetting Password..." : "Reset Password"}
+                {isSubmitting ? "Setting Password..." : "Set Password"}
               </Button>
             </div>
           </form>

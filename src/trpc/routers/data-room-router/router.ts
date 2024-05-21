@@ -1,5 +1,5 @@
 import { generatePublicId } from "@/common/id";
-import { env } from "@/env";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
 import {
   type DataRoomEmailPayloadType,
   ShareDataRoomEmailJob,
@@ -208,7 +208,7 @@ export const dataRoomRouter = createTRPCRouter({
       const company = dataRoom.company;
 
       const upsertManyRecipients = async () => {
-        const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+        const baseUrl = NEXT_PUBLIC_BASE_URL();
         const recipients = [...others, ...selectedContacts];
 
         for (const recipient of recipients) {

@@ -1,4 +1,4 @@
-import { env } from "@/env";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
 import {
   ShareUpdateEmailJob,
   type UpdateSharePayloadType,
@@ -39,7 +39,7 @@ export const shareUpdateProcedure = withAuth
     const company = update.company;
 
     const upsertManyRecipients = async () => {
-      const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+      const baseUrl = NEXT_PUBLIC_BASE_URL();
       const recipients = [...others, ...selectedContacts];
 
       for (const recipient of recipients) {

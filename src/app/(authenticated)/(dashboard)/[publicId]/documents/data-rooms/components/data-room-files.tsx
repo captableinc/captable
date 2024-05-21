@@ -16,12 +16,12 @@ import { RiShareLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
   RiUploadCloudLine,
 } from "@remixicon/react";
-import { env } from "next-runtime-env";
 import Link from "next/link";
 import DataRoomUploader from "./data-room-uploader";
 
@@ -51,7 +51,7 @@ const DataRoomFiles = ({
 }: DataRoomFilesProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const baseUrl = env("NEXT_PUBLIC_BASE_URL")!;
+  const baseUrl = NEXT_PUBLIC_BASE_URL();
   const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
   const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
     {

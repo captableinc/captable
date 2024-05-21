@@ -1,5 +1,5 @@
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
 import MemberInviteEmail from "@/emails/MemberInviteEmail";
-import { env } from "@/env";
 import { BaseJob } from "@/jobs/base";
 import { constants } from "@/lib/constants";
 import { sendMail } from "@/server/mailer";
@@ -25,7 +25,7 @@ export const sendMemberInviteEmail = async (
 ) => {
   const { email, token, verificationToken, company, user } = payload;
 
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl = NEXT_PUBLIC_BASE_URL();
   const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
 
   const params = new URLSearchParams({

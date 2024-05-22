@@ -1,7 +1,9 @@
 "use client";
 
 import { SpinnerIcon } from "@/components/common/icons";
+import { Button } from "@/components/ui/button";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -16,141 +18,171 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  StepperModalFooter,
+  StepperPrev,
+  useStepper,
+} from "@/components/ui/stepper";
+import { toTitleCase } from "@/lib/string";
 import { VestingScheduleEnum } from "@/prisma/enums";
-import { api } from "@/trpc/react";
-import { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
+import type { RouterOutputs } from "@/trpc/shared";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-export const VestingDetailsFields = [
-  "vestingSchedule",
-  "equityPlanId",
-  "exercisePrice",
-  "stakeholderId",
-];
+const vestingSchedule = Object.values(VestingScheduleEnum).map((val) => ({
+  label: toTitleCase(val).replace("Vesting_", "").replaceAll("_", "-"),
+  value: val,
+}));
 
-export const VestingDetails = () => {
-  const form = useFormContext();
-  const stakeholders = api.stakeholder.getStakeholders.useQuery();
-  const equityPlans = api.equityPlan.getPlans.useQuery();
-  const vestingSchedule = useMemo(
-    () =>
-      Object.values(VestingScheduleEnum).filter(
-        (value) => typeof value === "string",
-      ),
-    [],
-  );
+const formSchema = z.object({
+  equityPlanId: z.string(),
+  vestingSchedule: z.nativeEnum(VestingScheduleEnum),
+  exercisePrice: z.coerce.number(),
+  stakeholderId: z.string(),
+});
 
+type TFormSchema = z.infer<typeof formSchema>;
+
+interface VestingDetailsProps {
+  stakeholders: RouterOutputs["stakeholder"]["getStakeholders"];
+  equityPlans: RouterOutputs["equityPlan"]["getPlans"];
+}
+
+export const VestingDetails = (props: VestingDetailsProps) => {
+  const { stakeholders, equityPlans } = props;
+
+  const { next } = useStepper();
+  const { setValue } = useStockOptionFormValues();
+  const form = useForm<TFormSchema>({ resolver: zodResolver(formSchema) });
+
+  const handleSubmit = (data: TFormSchema) => {
+    setValue(data);
+    next();
+  };
   return (
-    <div className="space-y-4">
-      <div className="grid gap-4">
-        <FormField
-          control={form.control}
-          name="vestingSchedule"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Vesting schedule</FormLabel>
-              {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Vesting" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {vestingSchedule?.length &&
-                    vestingSchedule.map((vs, index) => (
-                      // biome-ignore lint/suspicious/noArrayIndexKey: <ignore>
-                      <SelectItem key={index} value={vs}>
-                        {vs}
+    <Form {...form}>
+      <div className="space-y-4">
+        <form
+          id="vesting-details-form"
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="grid gap-4"
+        >
+          <FormField
+            control={form.control}
+            name="vestingSchedule"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vesting schedule</FormLabel>
+
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Vesting" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {vestingSchedule.map((vs) => (
+                      <SelectItem key={vs.value} value={vs.value}>
+                        {vs.label}
                       </SelectItem>
                     ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="text-xs font-light" />
-            </FormItem>
-          )}
-        />
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="equityPlanId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Equity plan</FormLabel>
-              {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-              <Select onValueChange={field.onChange} value={field.value}>
+          <FormField
+            control={form.control}
+            name="equityPlanId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Equity plan</FormLabel>
+
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {equityPlans?.data.length ? (
+                      equityPlans?.data?.map(({ id, name }) => (
+                        <SelectItem key={id} value={id}>
+                          {name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SpinnerIcon
+                        className="mx-auto my-4 w-full"
+                        color="black"
+                      />
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="exercisePrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Exercise price</FormLabel>
                 <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
+                  <Input type="text" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {equityPlans?.data?.data.length ? (
-                    equityPlans?.data?.data?.map(({ id, name }) => (
-                      <SelectItem key={id} value={id}>
-                        {name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SpinnerIcon
-                      className="mx-auto my-4 w-full"
-                      color="black"
-                    />
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage className="text-xs font-light" />
-            </FormItem>
-          )}
-        />
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="exercisePrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Exercise price</FormLabel>
-              <FormControl>
-                <Input type="text" {...field} />
-              </FormControl>
-              <FormMessage className="text-xs font-light" />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="stakeholderId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stakeholder</FormLabel>
 
-        <FormField
-          control={form.control}
-          name="stakeholderId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stakeholder</FormLabel>
-              {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {stakeholders?.data?.length ? (
-                    stakeholders?.data?.map((sh) => (
-                      <SelectItem key={sh.id} value={sh.id}>
-                        {sh.name}
-                      </SelectItem>
-                    ))
-                  ) : (
-                    <SpinnerIcon
-                      className="mx-auto my-4 w-full"
-                      color="black"
-                    />
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage className="text-xs font-light" />
-            </FormItem>
-          )}
-        />
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {stakeholders?.length ? (
+                      stakeholders?.map((sh) => (
+                        <SelectItem key={sh.id} value={sh.id}>
+                          {sh.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SpinnerIcon
+                        className="mx-auto my-4 w-full"
+                        color="black"
+                      />
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+        </form>
+
+        <StepperModalFooter>
+          <StepperPrev>Back</StepperPrev>
+          <Button type="submit" form="vesting-details-form">
+            Save & Continue
+          </Button>
+        </StepperModalFooter>
       </div>
-    </div>
+    </Form>
   );
 };

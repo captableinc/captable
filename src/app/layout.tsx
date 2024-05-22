@@ -1,4 +1,5 @@
 import logo from "@/assets/logo.svg";
+import { PublicEnvScript } from "@/components/public-env-script";
 import ScreenSize from "@/components/screen-size";
 import { Toaster } from "@/components/ui/toaster";
 import { constants } from "@/lib/constants";
@@ -10,7 +11,7 @@ import { robotoMono, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import type { Metadata } from "next";
-import { PublicEnvScript } from "next-runtime-env";
+
 import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
@@ -30,7 +31,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerAuthSession();
-
   const nodeEnv = process.env.NODE_ENV;
 
   return (

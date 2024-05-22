@@ -16,7 +16,7 @@ import { RiShareLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 
-import { getPublicEnv } from "@/lib/env";
+import { env } from "@/env";
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
@@ -42,7 +42,7 @@ const DataRoomFiles = ({
 }: DataRoomFilesProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const baseUrl = getPublicEnv("NEXT_PUBLIC_BASE_URL");
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
   const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
   const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
     {

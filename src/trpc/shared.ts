@@ -1,14 +1,14 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
-import { getPublicEnv } from "@/lib/env";
+import { env } from "@/env";
 import type { AppRouter } from "@/trpc/api/root";
 
 export const transformer = superjson;
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return "";
-  return getPublicEnv("NEXT_PUBLIC_BASE_URL");
+  return env.NEXT_PUBLIC_BASE_URL;
 }
 
 export function getUrl() {

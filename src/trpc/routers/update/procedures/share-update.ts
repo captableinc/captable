@@ -1,8 +1,8 @@
+import { env } from "@/env";
 import {
   ShareUpdateEmailJob,
   type UpdateSharePayloadType,
 } from "@/jobs/share-update-email";
-import { getPublicEnv } from "@/lib/env";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
 import { withAuth } from "@/trpc/api/trpc";
@@ -39,7 +39,7 @@ export const shareUpdateProcedure = withAuth
     const company = update.company;
 
     const upsertManyRecipients = async () => {
-      const baseUrl = getPublicEnv("NEXT_PUBLIC_BASE_URL");
+      const baseUrl = env.NEXT_PUBLIC_BASE_URL;
       const recipients = [...others, ...selectedContacts];
 
       for (const recipient of recipients) {

@@ -41,7 +41,10 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    /**
+     * Note
+     * while adding new client env variables the values should be updated in the "@/lib/env.ts" as well.
+     */
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
   },

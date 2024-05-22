@@ -162,7 +162,7 @@ When contributing to **Captable, Inc.**, whether on GitHub or in other community
 - Clone the repository
 
   ```bash
-  git clone https://github.com/<your-github-name>/envless.git
+  git clone https://github.com/<your-github-name>/captable.git
   ```
 
 - Copy `.env.example` to `.env`

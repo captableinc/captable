@@ -1,4 +1,5 @@
 import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
+import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import {
@@ -14,11 +15,10 @@ export const reInviteProcedure = withAuth
   .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
     const user = session.user;
 
-    const { authTokenHash, expires, memberInviteTokenHash, token } =
-      await generateInviteToken();
+    const { expires, memberInviteTokenHash } = await generateInviteToken();
 
-    const { company, verificationToken, email } = await db.$transaction(
-      async (tx) => {
+    const { company, verificationToken, email, passwordResetToken } =
+      await db.$transaction(async (tx) => {
         const { companyId } = await checkMembership({ session, tx });
 
         const company = await tx.company.findFirstOrThrow({
@@ -72,15 +72,6 @@ export const reInviteProcedure = withAuth
           },
         });
 
-        // next-auth verification token
-        await tx.verificationToken.create({
-          data: {
-            identifier: email,
-            token: authTokenHash,
-            expires,
-          },
-        });
-
         await Audit.create(
           {
             action: "member.re-invited",
@@ -96,13 +87,15 @@ export const reInviteProcedure = withAuth
           tx,
         );
 
-        return { verificationToken, company, email };
-      },
-    );
+        const { token: passwordResetToken } =
+          await generatePasswordResetToken(email);
+
+        return { verificationToken, company, email, passwordResetToken };
+      });
 
     const payload = {
       verificationToken,
-      token,
+      passwordResetToken,
       email,
       company,
       user: {

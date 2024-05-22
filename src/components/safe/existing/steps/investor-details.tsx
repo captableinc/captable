@@ -17,13 +17,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/trpc/react";
-import { SelectSeparator } from "@radix-ui/react-select";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import { SelectSeparator } from "@radix-ui/react-select";
 import { RiAddCircleLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 
 export const ADD_STAKEHOLDER = "add-stakeholder";
 
@@ -42,16 +43,14 @@ export const InvestorDetails = () => {
   const form = useFormContext();
   const { data: session } = useSession();
   const stakeholders = api.stakeholder.getStakeholders.useQuery();
-
   const stakeholderId = form.watch("stakeholderId");
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentStakeholder = useMemo(
-    () => stakeholders.data?.data?.find((sh) => sh.id === stakeholderId),
-    [stakeholderId],
+    () => stakeholders.data?.find((sh) => sh.id === stakeholderId),
+    [stakeholderId, stakeholders],
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explain>
   useEffect(() => {
     form.setValue("investorName", currentStakeholder?.name);
     form.setValue("investorEmail", currentStakeholder?.email);
@@ -66,20 +65,31 @@ export const InvestorDetails = () => {
       <FormField
         control={form.control}
         name="capital"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Capital</FormLabel>
-            <FormControl>
-              <Input
-                type="text"
-                {...field}
-                onChange={(e) => field.onChange(parseFloat(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
+        render={({ field }) => {
+          const { onChange, ...rest } = field;
+          return (
+            <FormItem>
+              <FormLabel>Valuation cap</FormLabel>
+              <FormControl>
+                <NumericFormat
+                  thousandSeparator
+                  allowedDecimalSeparators={["%"]}
+                  decimalScale={2}
+                  prefix={"$  "}
+                  {...rest}
+                  customInput={Input}
+                  onValueChange={(values) => {
+                    const { floatValue } = values;
+                    onChange(floatValue);
+                  }}
+                />
+              </FormControl>
+              <FormMessage className="text-xs font-light" />
+            </FormItem>
+          );
+        }}
       />
+
       <FormField
         control={form.control}
         name="issueDate"
@@ -123,11 +133,10 @@ export const InvestorDetails = () => {
               }}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select type" />
+                <SelectValue placeholder="Select stakeholder" />
               </SelectTrigger>
               <SelectContent>
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
-                {stakeholders?.data?.data?.map((sh) => (
+                {stakeholders?.data?.map((sh) => (
                   <SelectItem key={sh.id} value={sh.id}>
                     {sh.institutionName
                       ? `${sh.institutionName} - ${sh.name}`

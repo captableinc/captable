@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { generatePublicId } from "@/common/id";
 import { uploadFile } from "@/common/uploads";
 import { Audit } from "@/server/audit";
@@ -19,8 +19,8 @@ export const createSafeProcedure = withAuth
       publicId: generatePublicId(),
       capital: input.capital,
       valuationCap: input.valuationCap,
-      discountRate: input.discountRate,
-      proRata: input.proRata,
+      discountRate: input.discountRate ?? 0,
+      proRata: input.proRata ?? false,
       issueDate: new Date(input.issueDate),
       boardApprovalDate: new Date(input.boardApprovalDate),
       safeTemplate,
@@ -108,13 +108,17 @@ export const createSafeProcedure = withAuth
 
           await txn.safe.create({ data: { ...data, companyId } });
 
+          if (!documents[0]?.bucketId) {
+            throw new Error("BucketId is required for custom template");
+          }
+
           const template = await txn.template.create({
             data: {
               companyId: companyId,
               uploaderId: memberId,
               publicId: generatePublicId(),
-              bucketId: documents[0]!.bucketId,
-              name: documents[0]!.name,
+              bucketId: documents[0].bucketId,
+              name: documents[0].name,
             },
           });
 

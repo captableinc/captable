@@ -39,7 +39,7 @@ const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
   const router = useRouter();
 
   const { mutateAsync } = api.stakeholder.addStakeholders.useMutation({
-    onSuccess: async ({ success, message }) => {
+    onSuccess: ({ success, message }) => {
       toast({
         variant: success ? "default" : "destructive",
         title: success
@@ -154,7 +154,7 @@ const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
                       <SelectItem value="FOUNDER">Founder</SelectItem>
                       <SelectItem value="INVESTOR">Investor</SelectItem>
                       <SelectItem value="NON_US_EMPLOYEE">
-                        Non uS employee
+                        Non US employee
                       </SelectItem>
                       <SelectItem value="OFFICER">Officer</SelectItem>
                       <SelectItem value="OTHER">Other</SelectItem>

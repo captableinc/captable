@@ -52,17 +52,13 @@ export const generateMemberIdentifier = ({
 };
 
 export async function generateInviteToken() {
-  const token = nanoid(32);
-
   const secret = env.NEXTAUTH_SECRET;
 
   const ONE_DAY_IN_SECONDS = 86400;
   const expires = new Date(Date.now() + ONE_DAY_IN_SECONDS * 1000);
 
   const memberInviteTokenHash = await createHash(`member-${nanoid(16)}`);
-  const authTokenHash = await createHash(`${token}${secret}`);
-
-  return { token, expires, memberInviteTokenHash, authTokenHash };
+  return { expires, memberInviteTokenHash };
 }
 
 interface revokeExistingInviteTokensOptions {

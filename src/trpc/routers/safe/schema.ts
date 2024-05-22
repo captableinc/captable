@@ -16,9 +16,9 @@ export const SafeMutationSchema = z.object({
     .optional(),
   capital: z.number(),
   valuationCap: z.number(),
-  discountRate: z.number(),
+  discountRate: z.number().default(0),
   mfn: z.boolean().optional(),
-  proRata: z.boolean(),
+  proRata: z.boolean().optional(),
   additionalTerms: z.string().optional(),
 
   stakeholderId: z.string(),
@@ -70,8 +70,8 @@ export const ZodAddExistingSafeMutationSchema = z.object({
   stakeholderId: z.string(),
   capital: z.number(),
   valuationCap: z.number(),
-  discountRate: z.number(),
-  proRata: z.boolean(),
+  discountRate: z.number().default(0),
+  proRata: z.boolean().optional(),
 
   type: z
     .nativeEnum(SafeTypeEnum, {

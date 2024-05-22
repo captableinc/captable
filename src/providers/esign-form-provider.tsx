@@ -1,12 +1,23 @@
 "use client";
 
-import { createReactContext } from "@/react-utils/create-context";
-import { type Dispatch, type ReactNode, useReducer } from "react";
-import { type FileWithPath } from "react-dropzone";
+import { invariant } from "@/lib/error";
+import {
+  type Dispatch,
+  type ReactNode,
+  createContext,
+  useContext,
+  useReducer,
+} from "react";
+import type { FileWithPath } from "react-dropzone";
 
 interface EsignFormProviderProps {
   children: ReactNode;
 }
+
+const EsignFormProviderContext = createContext<{
+  value: Value;
+  setValue: Dispatch<Partial<Value>>;
+} | null>(null);
 
 type Value = {
   recipients: {
@@ -17,13 +28,6 @@ type Value = {
   document: FileWithPath[];
 };
 
-const consumerName = "EsignFormProvider";
-
-const [Provider, useValues] = createReactContext<{
-  value: Value;
-  setValue: Dispatch<Partial<Value>>;
-}>(consumerName);
-
 export function EsignFormProvider({ children }: EsignFormProviderProps) {
   const [value, setValue] = useReducer(
     (data: Value, partialData: Partial<Value>) => ({ ...data, ...partialData }),
@@ -31,10 +35,19 @@ export function EsignFormProvider({ children }: EsignFormProviderProps) {
   );
 
   return (
-    <Provider value={value} setValue={setValue}>
+    <EsignFormProviderContext.Provider value={{ value, setValue }}>
       {children}
-    </Provider>
+    </EsignFormProviderContext.Provider>
   );
 }
 
-export const useEsignValues = () => useValues(consumerName);
+export const useEsignValues = () => {
+  const data = useContext(EsignFormProviderContext);
+
+  invariant(
+    data,
+    "useEsignValues must be used within EsignFormProviderContext",
+  );
+
+  return data;
+};

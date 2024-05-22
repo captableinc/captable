@@ -1,16 +1,22 @@
 "use client";
 
-import { createReactContext } from "@/react-utils/create-context";
+import { invariant } from "@/lib/error";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
-import { ReactNode, useCallback, useState } from "react";
-import { Document, DocumentProps, Page, pdfjs } from "react-pdf";
+import {
+  type ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
+import { Document, type DocumentProps, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
 type LoadCallback = Required<DocumentProps>["onLoadSuccess"];
 type PDFDocumentProxy = Parameters<LoadCallback>[0];
 
-pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
+pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 const options = {
   cMapUrl: "/cmaps/",
@@ -74,12 +80,11 @@ export const PdfViewer = ({
   );
 };
 
-const providerName = "PdfViewer";
-
-const [Provider, useValue] = createReactContext<{
+const PdfProviderContext = createContext<{
   containerWidth: number;
   numPages: number;
-}>(providerName);
+} | null>(null);
+
 export interface PdfViewerRootProps
   extends Omit<DocumentProps, "onDocumentLoadSuccess" | "children"> {
   onDocumentLoadSuccess?: (e: PDFDocumentProxy) => Promise<void> | void;
@@ -118,8 +123,8 @@ export function PdfViewerRoot({
   };
 
   return (
-    <Provider numPages={numPages} containerWidth={containerWidth}>
-      <div className={rootClassName} ref={setContainerRef}>
+    <div className={rootClassName} ref={setContainerRef}>
+      <PdfProviderContext.Provider value={{ numPages, containerWidth }}>
         <Document
           onLoadSuccess={onDocumentLoadSuccess}
           options={options}
@@ -127,11 +132,17 @@ export function PdfViewerRoot({
         >
           {children}
         </Document>
-      </div>
-    </Provider>
+      </PdfProviderContext.Provider>
+    </div>
   );
 }
 
-export const usePdfValue = () => useValue(providerName);
+export const usePdfValue = () => {
+  const data = useContext(PdfProviderContext);
+
+  invariant(data, "usePdfValue must be used within PdfViewerRoot");
+
+  return data;
+};
 
 export const PdfViewerPage = Page;

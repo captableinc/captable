@@ -10,12 +10,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 const ForgotPassword = () => {
   const inputSchema = z.object({ email: z.string().email() });
@@ -31,20 +31,12 @@ const ForgotPassword = () => {
   const router = useRouter();
 
   const { mutateAsync } = api.auth.forgotPassword.useMutation({
-    onSuccess: async ({ message }) => {
-      toast({
-        variant: "default",
-        title: "Reset email sent",
-        description: message,
-      });
+    onSuccess: () => {
+      toast.success("🎉 Reset password email sent.");
       router.replace("/email-sent");
     },
     onError: ({ message }) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: message,
-      });
+      toast.error(`🔥 Error - ${message}`);
     },
   });
   const onSubmit = async (values: z.infer<typeof inputSchema>) => {

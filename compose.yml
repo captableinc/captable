@@ -70,17 +70,6 @@ services:
         mc policy set public myminio/captable-public-bucket;
         exit 0;
       "
-  adminer:
-    image: adminer
-    container_name: captable-adminer
-    ports:
-      - 8080:8080
-    depends_on:
-      - pg
-    environment:
-      - ADMINER_DESIGN=nette
-      - ADMINER_DEFAULT_SERVER=pg
-
 volumes:
   minio:
   postgres:

@@ -1,7 +1,13 @@
-import { env } from "next-runtime-env";
+export function getPublicEnv() {
+  const publicEnv = Object.keys(process.env)
+    .filter((key) => /^NEXT_PUBLIC_/i.test(key))
+    .reduce<Record<string, string>>((prev, curr) => {
+      const env = process.env[curr];
+      if (env) {
+        prev[curr] = env;
+      }
+      return prev;
+    }, {});
 
-type TPublicEnvVar = "NEXT_PUBLIC_BASE_URL" | "NEXT_PUBLIC_UPLOAD_DOMAIN";
-
-export const getPublicEnv = (envVar: TPublicEnvVar) => {
-  return env(envVar) as string;
-};
+  return publicEnv;
+}

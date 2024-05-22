@@ -28,7 +28,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import {
@@ -36,6 +35,7 @@ import {
   type TypeDocumentShareMutation,
 } from "@/trpc/routers/document-share-router/schema";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 type DocumentShareModalProps = {
   title: string | React.ReactNode;
@@ -66,7 +66,6 @@ const DocumentShareModal = ({
       publicId,
     },
   });
-  const { toast } = useToast();
 
   useEffect(() => {
     if (documentId) {
@@ -75,14 +74,12 @@ const DocumentShareModal = ({
   }, [documentId, form]);
 
   const { mutateAsync } = api.documentShare.create.useMutation({
-    onSuccess: async ({ success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully created"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        toast.success("Document shared successfully");
+      } else {
+        toast.error(message);
+      }
 
       form.reset();
       setOpen(false);
@@ -200,6 +197,7 @@ const DocumentShareModal = ({
                         <TagsInput.Control className="flex min-w-full flex-wrap gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                           {api.value.map((value, index) => (
                             <TagsInput.Item
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <>
                               key={index}
                               index={index}
                               value={value}

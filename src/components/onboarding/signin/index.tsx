@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,8 +21,10 @@ import {
 } from "@simplewebauthn/browser";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { AuthFormHeader } from "../auth-form-header";
 
@@ -37,8 +38,8 @@ interface LoginFormProps {
 }
 
 const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
+  const router = useRouter();
   const [isPasskeyLoading, setIsPasskeyLoading] = useState<boolean>(false);
-  const { toast } = useToast();
 
   const { mutateAsync: createPasskeySigninOptions } =
     api.passkey.createSigninOptions.useMutation();
@@ -62,24 +63,16 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
     });
 
     if (result?.error) {
-      toast({
-        variant: "destructive",
-        title: "Unable to login",
-        description: "Incorrect email or password",
-      });
+      toast.error("Incorrect email or password");
     }
   }
 
   const onSignInWithPasskey = async () => {
     if (!browserSupportsWebAuthn()) {
-      toast({
-        title: "Not supported",
-        description: "Passkeys are not supported on this browser",
-        duration: 10000,
-        variant: "destructive",
-      });
+      toast.error("Passkeys are not supported on this browser");
       return;
     }
+
     try {
       setIsPasskeyLoading(true);
 
@@ -95,27 +88,17 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
         });
 
         if (!result?.url) {
-          toast({
-            title: "Not authorized",
-            description: "Invalid credentials",
-            duration: 10000,
-            variant: "destructive",
-          });
-          return;
+          toast.error("Unauthorized error, invalid credentials.");
         } else {
-          window.location.href = result.url;
+          router.push(result.url);
         }
       }
-    } catch (err) {
-      toast({
-        title: "Error",
-        description:
-          //@ts-expect-error unknown
-          err?.message ??
+    } catch (_err) {
+      const err = _err as Error;
+      toast(
+        err.message ||
           "Something went wrong, please reload the page and try again.",
-        duration: 10000,
-        variant: "destructive",
-      });
+      );
     } finally {
       setIsPasskeyLoading(false);
     }
@@ -153,7 +136,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t"></span>
+              <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">

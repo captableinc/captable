@@ -7,9 +7,9 @@ import ShareModal, {
 import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
 import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 import type { Bucket, DataRoom } from "@prisma/client";
 import { RiShareLine } from "@remixicon/react";
@@ -24,15 +24,6 @@ import {
 import { env } from "next-runtime-env";
 import Link from "next/link";
 import DataRoomUploader from "./data-room-uploader";
-
-interface DataRoomType extends DataRoom {
-  documents: {
-    id: string;
-    name: string;
-    url: string;
-    createdAt: Date;
-  }[];
-}
 
 type DataRoomFilesProps = {
   dataRoom: DataRoom;
@@ -50,26 +41,17 @@ const DataRoomFiles = ({
   companyPublicId,
 }: DataRoomFilesProps) => {
   const router = useRouter();
-  const { toast } = useToast();
-  const baseUrl = env("NEXT_PUBLIC_BASE_URL")!;
+  const baseUrl = env("NEXT_PUBLIC_BASE_URL");
   const { mutateAsync: saveDataRoomMutation } = api.dataRoom.save.useMutation();
   const { mutateAsync: shareDataRoomMutation } = api.dataRoom.share.useMutation(
     {
       onSuccess: () => {
         router.refresh();
-
-        toast({
-          title: "✨ Complete",
-          description: "Data room successfully shared.",
-        });
+        toast.success("Data room successfully shared.");
       },
 
       onError: (error) => {
-        toast({
-          title: error.message,
-          description: "",
-          variant: "destructive",
-        });
+        toast.error(error.message);
       },
     },
   );
@@ -78,19 +60,11 @@ const DataRoomFiles = ({
     api.dataRoom.unShare.useMutation({
       onSuccess: () => {
         router.refresh();
-
-        toast({
-          title: "✨ Complete",
-          description: "Successfully removed access to data room.",
-        });
+        toast.success("Successfully removed access to data room.");
       },
 
       onError: (error) => {
-        toast({
-          title: error.message,
-          description: "",
-          variant: "destructive",
-        });
+        toast.error(error.message);
       },
     });
 

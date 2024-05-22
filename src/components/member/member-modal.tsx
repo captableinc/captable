@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 import {
   type TypeZodInviteMemberMutationSchema,
@@ -46,42 +46,25 @@ const MemberModal = ({
 }: MemberModalType) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
   const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
       setOpen(false);
-      toast({
-        variant: "default",
-        title: "🎉 Invited!",
-        description: "You have successfully invited the stakeholder.",
-      });
+      toast.success("You have successfully invited the stakeholder.");
       router.refresh();
     },
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: error.message,
-        description: "",
-      });
+      toast.error(error.message);
     },
   });
 
   const updateMember = api.member.updateMember.useMutation({
     onSuccess: () => {
       setOpen(false);
-      toast({
-        variant: "default",
-        title: "🎉 Updated!",
-        description: "You have successfully updated the stakeholder.",
-      });
+      toast.success("You have successfully updated the stakeholder.");
       router.refresh();
     },
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: error.message,
-        description: "",
-      });
+      toast.error(error.message);
     },
   });
 

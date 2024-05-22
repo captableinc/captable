@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
   EquityPlanMutationSchema,
@@ -60,8 +60,6 @@ const EquityPlanForm = ({
   },
 }: EquityFormType) => {
   const router = useRouter();
-  const { toast } = useToast();
-
   const form = useForm<EquityPlanMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: equityPlan,
@@ -69,14 +67,12 @@ const EquityPlanForm = ({
 
   const isSubmitting = form.formState.isSubmitting;
   const createMutation = api.equityPlan.create.useMutation({
-    onSuccess: async ({ success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully created"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
 
       form.reset();
       setOpen(false);
@@ -85,14 +81,12 @@ const EquityPlanForm = ({
   });
 
   const updateMutation = api.equityPlan.update.useMutation({
-    onSuccess: async ({ success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully updated"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
 
       form.reset();
       setOpen(false);
@@ -225,7 +219,7 @@ const EquityPlanForm = ({
                         {shareClasses.map((shareClass) => (
                           <SelectItem
                             key={shareClass.id}
-                            value={shareClass.id!}
+                            value={shareClass.id as string}
                           >
                             {shareClass.name}
                           </SelectItem>

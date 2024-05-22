@@ -1,6 +1,6 @@
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import EsignEmail from "@/emails/EsignEmail";
 import { BaseJob } from "@/jobs/base";
+import { getPublicEnv } from "@/lib/env";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
@@ -34,7 +34,7 @@ export type ExtendedEsignPayloadType = EsignEmailPayloadType &
 
 export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
   const { email, token, ...rest } = payload;
-  const baseUrl = NEXT_PUBLIC_BASE_URL();
+  const baseUrl = getPublicEnv("NEXT_PUBLIC_BASE_URL");
   const html = await render(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,

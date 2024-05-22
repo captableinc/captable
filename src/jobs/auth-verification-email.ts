@@ -1,6 +1,6 @@
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import AccountVerificationEmail from "@/emails/AccountVerificationEmail";
 import { BaseJob } from "@/jobs/base";
+import { getPublicEnv } from "@/lib/env";
 import { sendMail } from "@/server/mailer";
 import { render } from "jsx-email";
 import type { Job } from "pg-boss";
@@ -14,7 +14,7 @@ export const sendAuthVerificationEmail = async (
   payload: AuthVerificationPayloadType,
 ) => {
   const { email, token } = payload;
-  const baseUrl = NEXT_PUBLIC_BASE_URL();
+  const baseUrl = getPublicEnv("NEXT_PUBLIC_BASE_URL");
 
   const confirmLink = `${baseUrl}/verify-email/${token}`;
 

@@ -16,7 +16,7 @@ import { RiShareLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useDebounceCallback } from "usehooks-ts";
 
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import {
   RiFolder3Fill as FolderIcon,
   RiAddFill,
@@ -24,15 +24,6 @@ import {
 } from "@remixicon/react";
 import Link from "next/link";
 import DataRoomUploader from "./data-room-uploader";
-
-interface DataRoomType extends DataRoom {
-  documents: {
-    id: string;
-    name: string;
-    url: string;
-    createdAt: Date;
-  }[];
-}
 
 type DataRoomFilesProps = {
   dataRoom: DataRoom;

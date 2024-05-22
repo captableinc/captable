@@ -1,7 +1,7 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import type { AppRouter } from "@/trpc/api/root";
 
 export const transformer = superjson;

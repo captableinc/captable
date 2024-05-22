@@ -1,4 +1,4 @@
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import EsignEmail from "@/emails/EsignEmail";
 import { BaseJob } from "@/jobs/base";
 import { db } from "@/server/db";

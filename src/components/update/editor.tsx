@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";

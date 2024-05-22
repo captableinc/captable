@@ -1,4 +1,4 @@
-import { NEXT_PUBLIC_BASE_URL } from "@/constants/common";
+import { NEXT_PUBLIC_BASE_URL } from "@/constants/env";
 import { PASSKEY_TIMEOUT } from "@/constants/passkey";
 
 /**

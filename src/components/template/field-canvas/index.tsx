@@ -42,6 +42,10 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
 
   useResizeObserver(containerRef, resizeObserverOptions, onResize);
 
+  const recipient = getValues("recipient");
+  const recipientColors = getValues("recipientColors");
+  const color = recipientColors?.[recipient] ?? "";
+
   return (
     <>
       <div
@@ -125,6 +129,7 @@ export function FieldCanvas({ recipients, pageNumber }: FieldCanvasProp) {
           top={Math.min(startPos.y, endPos.y)}
           height={Math.abs(endPos.y - startPos.y)}
           width={Math.abs(endPos.x - startPos.x)}
+          color={color}
         />
       )}
 

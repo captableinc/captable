@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 
-import { getPublicEnv } from "@/lib/env";
+import { env } from "@/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
@@ -41,7 +41,7 @@ const UpdatesEditor = ({
 }: UpdatesEditorProps) => {
   const router = useRouter();
   const { toast } = useToast();
-  const baseUrl = getPublicEnv("NEXT_PUBLIC_BASE_URL");
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");

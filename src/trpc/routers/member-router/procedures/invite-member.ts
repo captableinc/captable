@@ -1,4 +1,5 @@
 import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
+import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { generateInviteToken, generateMemberIdentifier } from "@/server/member";
@@ -13,9 +14,10 @@ export const inviteMemberProcedure = withAuth
     const { name, email, title } = input;
     const { userAgent, requestIp, session } = ctx;
 
-    //token flow same as https://github.com/nextauthjs/next-auth/blob/main/packages/core/src/lib/actions/signin/send-token.ts#L12C4-L12C4
-    const { authTokenHash, expires, memberInviteTokenHash, token } =
-      await generateInviteToken();
+    const { expires, memberInviteTokenHash } = await generateInviteToken();
+
+    const { token: passwordResetToken } =
+      await generatePasswordResetToken(email);
 
     const { company, verificationToken } = await ctx.db.$transaction(
       async (tx) => {
@@ -109,15 +111,6 @@ export const inviteMemberProcedure = withAuth
           },
         });
 
-        // next-auth verification token
-        await tx.verificationToken.create({
-          data: {
-            identifier: email,
-            token: authTokenHash,
-            expires,
-          },
-        });
-
         await Audit.create(
           {
             action: "member.invited",
@@ -139,7 +132,7 @@ export const inviteMemberProcedure = withAuth
 
     const payload = {
       verificationToken,
-      token,
+      passwordResetToken,
       email,
       company,
       user: {

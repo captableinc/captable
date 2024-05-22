@@ -8,7 +8,7 @@ import type { Job } from "pg-boss";
 
 type MemberInvitePayloadType = {
   email: string;
-  token: string;
+  passwordResetToken: string;
   user: {
     email?: string | null | undefined;
     name?: string | null | undefined;
@@ -23,18 +23,18 @@ type MemberInvitePayloadType = {
 export const sendMemberInviteEmail = async (
   payload: MemberInvitePayloadType,
 ) => {
-  const { email, token, verificationToken, company, user } = payload;
+  const { email, passwordResetToken, verificationToken, company, user } =
+    payload;
 
   const baseUrl = NEXT_PUBLIC_BASE_URL();
-  const callbackUrl = `${baseUrl}/verify-member/${verificationToken}`;
 
   const params = new URLSearchParams({
-    callbackUrl,
-    token,
+    passwordResetToken,
     email,
   });
 
-  const inviteLink = `${baseUrl}/api/auth/callback/email?${params.toString()}`;
+  const inviteLink = `${baseUrl}/verify-member/${verificationToken}?${params.toString()}`;
+  console.log("sending invite email to", email, ": ", inviteLink);
 
   await sendMail({
     to: email,
@@ -50,7 +50,7 @@ export const sendMemberInviteEmail = async (
 };
 
 export class SendMemberInviteEmailJob extends BaseJob<MemberInvitePayloadType> {
-  readonly type = "email.password-reset";
+  readonly type = "email.member-invite";
 
   async work(job: Job<MemberInvitePayloadType>): Promise<void> {
     await sendMemberInviteEmail(job.data);

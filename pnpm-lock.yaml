@@ -173,9 +173,6 @@ dependencies:
   next-nprogress-bar:
     specifier: ^2.3.11
     version: 2.3.12
-  next-runtime-env:
-    specifier: ^3.2.2
-    version: 3.2.2(next@14.2.3)(react@18.3.1)
   nodemailer:
     specifier: ^6.9.8
     version: 6.9.13
@@ -9106,16 +9103,6 @@ packages:
     resolution: {integrity: sha512-BCsmNmssPY4QfYKux7cGYm/JmsM/n9TGMJJDyYPt7ckWyK8l43hMgi7g9d7u/IxCaEAx3pbzfg7Ity0zdlDnGA==}
     dependencies:
       nprogress: 0.2.0
-    dev: false
-
-  /next-runtime-env@3.2.2(next@14.2.3)(react@18.3.1):
-    resolution: {integrity: sha512-S5S6NxIf3XeaVc9fLBN2L5Jzu+6dLYCXeOaPQa1RzKRYlG2BBayxXOj6A4VsciocyNkJMazW1VAibtbb1/ZjAw==}
-    peerDependencies:
-      next: ^14
-      react: ^18
-    dependencies:
-      next: 14.2.3(@babel/core@7.24.5)(react-dom@18.2.0)(react@18.3.1)
-      react: 18.3.1
     dev: false
 
   /next@14.2.3(@babel/core@7.24.5)(react-dom@18.2.0)(react@18.3.1):

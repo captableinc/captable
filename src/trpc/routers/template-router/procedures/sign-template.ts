@@ -267,18 +267,21 @@ async function signPdf({
 }: TSignPdfOptions) {
   const audits = await getEsignAudits({ templateId, tx: db });
 
-  await new EsignPdfJob().emit({
-    bucketKey,
-    data,
-    fields,
-    audits,
-    companyId,
-    requestIp,
-    templateId,
-    templateName,
-    uploaderName,
-    userAgent,
-    recipients,
-    company,
-  });
+  await new EsignPdfJob().emit(
+    {
+      bucketKey,
+      data,
+      fields,
+      audits,
+      companyId,
+      requestIp,
+      templateId,
+      templateName,
+      uploaderName,
+      userAgent,
+      recipients,
+      company,
+    },
+    { singletonKey: `esign-${templateId}`, useSingletonQueue: true },
+  );
 }

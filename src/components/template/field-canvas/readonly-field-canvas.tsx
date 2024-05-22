@@ -1,6 +1,6 @@
 "use client";
 
-import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
+import type { TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { useCallback, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -8,7 +8,11 @@ import { ReadOnlyTemplateField } from "./readonly-template-field";
 
 const resizeObserverOptions = {};
 
-export function ReadOnlyFieldCanvas() {
+interface ReadOnlyFieldCanvasProps {
+  pageNumber: number;
+}
+
+export function ReadOnlyFieldCanvas({ pageNumber }: ReadOnlyFieldCanvasProps) {
   const { control } = useFormContext<TemplateSigningFieldForm>();
   const { fields } = useFieldArray({
     name: "fields",
@@ -37,25 +41,27 @@ export function ReadOnlyFieldCanvas() {
         className="absolute bottom-0 left-0 right-0 top-0 z-10"
       />
 
-      {fields.map((field) => (
-        <ReadOnlyTemplateField
-          viewportWidth={field.viewportWidth}
-          viewportHeight={field.viewportHeight}
-          currentViewportWidth={viewport.width}
-          currentViewportHeight={viewport.height}
-          key={field._id}
-          height={field.height}
-          left={field.left}
-          top={field.top}
-          id={field.id}
-          width={field.width}
-          name={field.name}
-          type={field.type}
-          recipientId={field.recipientId}
-          prefilledValue={field.prefilledValue}
-          meta={field.meta}
-        />
-      ))}
+      {fields
+        .filter((item) => item.page === pageNumber)
+        .map((field) => (
+          <ReadOnlyTemplateField
+            viewportWidth={field.viewportWidth}
+            viewportHeight={field.viewportHeight}
+            currentViewportWidth={viewport.width}
+            currentViewportHeight={viewport.height}
+            key={field._id}
+            height={field.height}
+            left={field.left}
+            top={field.top}
+            id={field.id}
+            width={field.width}
+            name={field.name}
+            type={field.type}
+            recipientId={field.recipientId}
+            prefilledValue={field.prefilledValue}
+            meta={field.meta}
+          />
+        ))}
     </>
   );
 }

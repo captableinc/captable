@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,6 @@ import { useForm } from "react-hook-form";
 import { dayjsExt } from "@/common/dayjs";
 import { uploadFile } from "@/common/uploads";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/components/ui/use-toast";
 import countries from "@/lib/countries";
 import { cn, isFileExists, validateFile } from "@/lib/utils";
 import { api } from "@/trpc/react";
@@ -37,6 +35,7 @@ import type { RouterOutputs } from "@/trpc/shared";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import Loading from "../common/loading";
 
 const formSchema = ZodOnboardingMutationSchema;
@@ -59,7 +58,6 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { update, data: user } = useSession();
   const router = useRouter();
-  const { toast } = useToast();
   const [imageUrl, setImageUrl] = useState<string>(data?.company.logo ?? "");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -97,16 +95,14 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
   });
 
   const companySettingMutation = api.company.updateCompany.useMutation({
-    onSuccess: async ({ success, message }) => {
+    onSuccess: async ({ success }) => {
       await update();
 
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully updated"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
+      if (success) {
+        toast.success("🎉 Successfully updated");
+      } else {
+        toast.error("Uh oh! Something went wrong.");
+      }
 
       router.refresh();
     },
@@ -143,11 +139,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         const { imageUrl } = await handleLogoUpload(file);
 
         if (!imageUrl) {
-          return toast({
-            variant: "destructive",
-            title: "Failed uploading the logo.",
-            description: "Please try again later.",
-          });
+          return toast.error("Failed uploading the logo.");
         }
 
         const currentValues = form.getValues();
@@ -165,20 +157,12 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         });
       } catch (error) {
         console.error("Something went wrong", error);
-        toast({
-          variant: "destructive",
-          title: "Failed uploading logo.",
-          description: "Please try again later.",
-        });
+        toast.error("Failed uploading logo.");
       } finally {
         setLoading(false);
       }
     } else {
-      toast({
-        variant: "destructive",
-        title: title,
-        description: errorMessage,
-      });
+      toast.error(errorMessage);
     }
   };
 
@@ -195,8 +179,10 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
       } else if (type === "edit") {
         await companySettingMutation.mutateAsync(values);
       }
-      // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-    } catch (error) {}
+    } catch (error) {
+      console.error("Something went wrong", error);
+      toast.error("Failed submitting the form.");
+    }
   }
 
   const isSubmitting = form.formState.isSubmitting;

@@ -1,11 +1,11 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
-import { type TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
+import type { TemplateSigningFieldForm } from "@/providers/template-signing-field-provider";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import { type ComponentProps, type ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 
 interface SigningFieldFormProps extends ComponentProps<"form"> {
   companyPublicId?: string;
@@ -22,17 +22,12 @@ export function SigningFieldForm({
   ...rest
 }: SigningFieldFormProps) {
   const { handleSubmit } = useFormContext<TemplateSigningFieldForm>();
-  const { toast } = useToast();
 
   const router = useRouter();
 
   const { mutateAsync } = api.template.sign.useMutation({
     onSuccess() {
-      toast({
-        variant: "default",
-        title: "🎉 Document signed Successfully",
-        description: "",
-      });
+      toast.success("🎉 Great job, you are done signing this document.");
 
       if (companyPublicId) {
         router.push(`/${companyPublicId}/documents`);

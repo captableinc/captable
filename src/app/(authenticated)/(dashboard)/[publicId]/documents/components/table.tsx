@@ -6,9 +6,7 @@ import { Card } from "@/components/ui/card";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
-import DocumentShareModal from "@/components/documents/share/document-share-modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 
 type DocumentType = RouterOutputs["document"]["getAll"];
 
@@ -41,11 +39,6 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
     window.open(fileUrl.url, "_blank");
   };
 
-  const [openShareModal, setOpenShareModal] = useState(false);
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(
-    null,
-  );
-
   return (
     <>
       <Card>
@@ -56,7 +49,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
               {/* <TableHead>Type</TableHead> */}
               <TableHead>Owner</TableHead>
               <TableHead>Uploaded</TableHead>
-              <TableHead></TableHead>
+              <TableHead />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -137,14 +130,6 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
           </TableBody>
         </Table>
       </Card>
-
-      <DocumentShareModal
-        title="Share document"
-        subtitle="Create a link to share this document."
-        open={openShareModal}
-        setOpen={setOpenShareModal}
-        documentId={selectedDocumentId}
-      />
     </>
   );
 };

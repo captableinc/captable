@@ -35,11 +35,11 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { useToast } from "@/components/ui/use-toast";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { OptionTableToolbar } from "./option-table-toolbar";
 
 type Option = RouterOutputs["securities"]["getOptions"]["data"];
@@ -232,28 +232,16 @@ export const columns: ColumnDef<Option[number]>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const option = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast();
 
       const deleteOptionMutation = api.securities.deleteOption.useMutation({
         onSuccess: () => {
-          toast({
-            variant: "default",
-            title: "🎉 Successfully deleted",
-            description: "Stock option for stakeholder deleted",
-          });
+          toast.success("Successfully deleted stock option for stakeholder");
           router.refresh();
         },
         onError: () => {
-          toast({
-            variant: "destructive",
-            title: "Failed deletion",
-            description: "Stock option for stakeholder could not be deleted",
-          });
+          toast.error("Stock option for stakeholder could not be deleted");
         },
       });
 

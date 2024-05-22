@@ -12,12 +12,13 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import React, { type SetStateAction } from "react";
+import type React from "react";
+import type { SetStateAction } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 type PasskeyModalType = {
@@ -48,7 +49,6 @@ const UpdatePasskeyNameModal = ({
   prevPasskeyName,
   dialogProps: { open, setOpen },
 }: PasskeyModalType) => {
-  const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm<TUpdatePasskeyNameFormSchema>({
@@ -58,19 +58,11 @@ const UpdatePasskeyNameModal = ({
   const { mutateAsync: updatePasskeyMutation } = api.passkey.update.useMutation(
     {
       onSuccess: () => {
-        toast({
-          variant: "default",
-          title: "🎉 Successfully updated the passkey",
-          description: " Provide description more on it.",
-        });
+        toast.success("🎉 Successfully updated the passkey");
         router.refresh();
       },
       onError: () => {
-        toast({
-          variant: "destructive",
-          title: "Failed updation",
-          description: "Cannot update the required passkey name",
-        });
+        toast.error("Error while updating the passkey. Please try again.");
       },
       onSettled: () => {
         form.reset();
@@ -87,16 +79,12 @@ const UpdatePasskeyNameModal = ({
         passkeyId,
         name: newPasskeyName,
       });
-    } catch (err) {
-      console.log({ err });
-      toast({
-        title: "Error",
-        description:
-          // @ts-expect-error error
-          err?.message ??
+    } catch (_err) {
+      const err = _err as Error;
+      toast.error(
+        err?.message ??
           "Something went wrong, please reload the page and try again.",
-        duration: 5000,
-      });
+      );
     }
   };
 

@@ -1,6 +1,5 @@
 import logo from "@/assets/logo.svg";
 import ScreenSize from "@/components/screen-size";
-import { Toaster } from "@/components/ui/toaster";
 import { constants } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { NextAuthProvider } from "@/providers/next-auth";
@@ -9,9 +8,10 @@ import { getServerAuthSession } from "@/server/auth";
 import { robotoMono, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { PublicEnvScript } from "next-runtime-env";
 import { cookies } from "next/headers";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -41,7 +41,7 @@ export default async function RootLayout({
           <NextAuthProvider session={session}>
             <TRPCReactProvider cookies={cookies().toString()}>
               <main>{children}</main>
-              <Toaster />
+              <Toaster richColors />
               {process.env.NEXT_PUBLIC_NODE_ENV === "development" && (
                 <ScreenSize />
               )}

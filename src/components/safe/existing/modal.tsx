@@ -1,5 +1,4 @@
 import MultiStepModal from "@/components/common/multistep-modal";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import {
   type TypeZodAddExistingSafeMutationSchema,
@@ -7,6 +6,7 @@ import {
 } from "@/trpc/routers/safe/schema";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import useSafeSteps from "./use-safe-steps";
 
 type CreateExistingSafeType = {
@@ -27,20 +27,15 @@ export default function CreateExistingSafe({
 
   const steps = useSafeSteps({ companyId });
   const formSchema = ZodAddExistingSafeMutationSchema;
-  const { toast } = useToast();
 
   const { mutateAsync } = api.safe.addExisting.useMutation({
-    onSuccess: async ({ message, success }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: message,
-        description: success
-          ? "New SAFEs agreement has been created."
-          : "Failed creating SAFEs. Please try again.",
-      });
-      setOpen(false);
+    onSuccess: ({ success }) => {
       if (success) {
+        toast.success("SAFEs created successfully.");
+        setOpen(false);
         router.refresh();
+      } else {
+        toast.error("Failed creating SAFEs. Please try again.");
       }
     },
   });

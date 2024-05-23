@@ -134,5 +134,9 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.25.1"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.1.2"
   }
 }

@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     name: 🚀 Deploy
+    environment: staging
     runs-on: ubuntu-latest
     concurrency:
       group: staging

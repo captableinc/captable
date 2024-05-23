@@ -18,8 +18,8 @@ dependencies:
     specifier: ^0.12.2
     version: 0.12.4(@tiptap/pm@2.4.0)(@types/react@18.3.2)(react-dom@18.2.0)(react@18.3.1)
   '@hookform/resolvers':
-    specifier: ^3.3.4
-    version: 3.4.0(react-hook-form@7.51.4)
+    specifier: ^3.4.2
+    version: 3.4.2(react-hook-form@7.51.5)
   '@next-auth/prisma-adapter':
     specifier: ^1.0.7
     version: 1.0.7(@prisma/client@5.14.0)(next-auth@4.24.7)
@@ -198,8 +198,8 @@ dependencies:
     specifier: ^14.2.3
     version: 14.2.3(react@18.3.1)
   react-hook-form:
-    specifier: ^7.51.3
-    version: 7.51.4(react@18.3.1)
+    specifier: ^7.51.5
+    version: 7.51.5(react@18.3.1)
   react-number-format:
     specifier: ^5.3.4
     version: 5.3.4(react-dom@18.2.0)(react@18.3.1)
@@ -234,7 +234,7 @@ dependencies:
     specifier: ^3.1.0
     version: 3.1.0(react@18.3.1)
   zod:
-    specifier: ^3.22.4
+    specifier: ^3.23.8
     version: 3.23.8
 
 devDependencies:
@@ -2259,12 +2259,12 @@ packages:
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
     dev: false
 
-  /@hookform/resolvers@3.4.0(react-hook-form@7.51.4):
-    resolution: {integrity: sha512-+oAqK3okmoEDnvUkJ3N/mvNMeeMv5Apgy1jkoRmlaaAF4vBgcJs9tHvtXU7VE4DvPosvAUUkPOaNFunzt1dbgA==}
+  /@hookform/resolvers@3.4.2(react-hook-form@7.51.5):
+    resolution: {integrity: sha512-1m9uAVIO8wVf7VCDAGsuGA0t6Z3m6jVGAN50HkV9vYLl0yixKK/Z1lr01vaRvYCkIKGoy1noVRxMzQYb4y/j1Q==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.51.4(react@18.3.1)
+      react-hook-form: 7.51.5(react@18.3.1)
     dev: false
 
   /@img/sharp-darwin-arm64@0.33.4:
@@ -10081,8 +10081,8 @@ packages:
       react: 18.3.1
     dev: false
 
-  /react-hook-form@7.51.4(react@18.3.1):
-    resolution: {integrity: sha512-V14i8SEkh+V1gs6YtD0hdHYnoL4tp/HX/A45wWQN15CYr9bFRmmRdYStSO5L65lCCZRF+kYiSKhm9alqbcdiVA==}
+  /react-hook-form@7.51.5(react@18.3.1):
+    resolution: {integrity: sha512-J2ILT5gWx1XUIJRETiA7M19iXHlG74+6O3KApzvqB/w8S5NQR7AbU8HVZrMALdmDgWpRPYiZJl0zx8Z4L2mP6Q==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18

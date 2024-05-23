@@ -39,7 +39,7 @@ const DataRoomUploader = ({
       <Uploader
         multiple={true}
         identifier={companyPublicId}
-        keyPrefix={`data-room/${dataRoom.publicId}/file`}
+        keyPrefix={`data-room/${dataRoom.publicId}`}
         onSuccess={async (upload: UploadReturn) => {
           const document = await documentMutation.mutateAsync({
             name: upload.name,

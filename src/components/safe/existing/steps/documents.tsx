@@ -2,6 +2,7 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Uploader from "@/components/ui/uploader";
+import { useSession } from "next-auth/react";
 import { useFormContext } from "react-hook-form";
 
 type Documents = {
@@ -12,6 +13,7 @@ type Documents = {
 export const DocumentsFields = ["documents"];
 
 export const Documents = () => {
+  const { data } = useSession();
   const form = useFormContext();
   //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const documents: [Documents] = form.watch("documents");
@@ -20,8 +22,9 @@ export const Documents = () => {
     <>
       <Uploader
         multiple={true}
-        identifier={"safes"}
-        keyPrefix="safes-key"
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        identifier={data?.user.companyPublicId!}
+        keyPrefix="safes"
         onSuccess={(bucketData) => {
           form.setValue("documents", [
             //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

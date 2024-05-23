@@ -57,101 +57,97 @@ export const GeneralDetails = () => {
     next();
   };
   return (
-    <>
-      <Form {...form}>
-        <form
-          id="general-details-form"
-          onSubmit={form.handleSubmit(handleSubmit)}
-        >
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="grantId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Grant ID</FormLabel>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex flex-col gap-y-4"
+      >
+        <div className="flex flex-col gap-y-4">
+          <FormField
+            control={form.control}
+            name="grantId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Grant ID</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Grant type</FormLabel>
+
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <Input type="text" {...field} />
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
+                  <SelectContent>
+                    {TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Grant type</FormLabel>
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {TYPES.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
 
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {STATUSES.map((status) => (
-                        <SelectItem key={status.label} value={status.value}>
-                          {status.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
-          </div>
-        </form>
-      </Form>
-      <StepperModalFooter>
-        <StepperPrev>Back</StepperPrev>
-        <Button type="submit" form="general-details-form">
-          Save & Continue
-        </Button>
-      </StepperModalFooter>
-    </>
+                  <SelectContent>
+                    {STATUSES.map((status) => (
+                      <SelectItem key={status.label} value={status.value}>
+                        {status.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <StepperModalFooter>
+          <StepperPrev>Back</StepperPrev>
+          <Button type="submit">Save & Continue</Button>
+        </StepperModalFooter>
+      </form>
+    </Form>
   );
 };

@@ -32,6 +32,7 @@ type TStepperContext = {
   activeIndex: number;
   prev: () => void;
   next: () => void;
+  reset: () => void;
 };
 
 const StepperContext = createContext<TStepperContext | null>(null);
@@ -106,13 +107,17 @@ export function StepperRoot({ children }: StepperRootProps) {
     }
   };
 
+  const reset = () => {
+    setActiveIndex(0);
+  };
+
   return (
     <DescendantProvider
       context={StepperDescendantContext}
       items={descendants}
       set={setDescendants}
     >
-      <StepperContext.Provider value={{ activeIndex, next, prev }}>
+      <StepperContext.Provider value={{ activeIndex, next, prev, reset }}>
         {children}
       </StepperContext.Provider>
     </DescendantProvider>

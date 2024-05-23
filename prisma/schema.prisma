@@ -66,8 +66,8 @@ model User {
 }
 
 enum CredentialDeviceTypeEnum {
-  SINGLE_DEVICE
-  MULTI_DEVICE
+  SINGLE_DEVICE @map("Single device")
+  MULTI_DEVICE  @map("Multiple device")
 }
 
 model Passkey {
@@ -159,9 +159,9 @@ model Company {
 }
 
 enum MemberStatusEnum {
-  ACTIVE
-  INACTIVE
-  PENDING
+  ACTIVE   @map("Active")
+  PENDING  @map("Pending")
+  INACTIVE @map("Inactive")
 }
 
 model Member {
@@ -194,24 +194,24 @@ model Member {
 }
 
 enum StakeholderTypeEnum {
-  INDIVIDUAL
-  INSTITUTION
+  INDIVIDUAL  @map("Individual")
+  INSTITUTION @map("Institution")
 }
 
 enum StakeholderRelationshipEnum {
-  ADVISOR
-  BOARD_MEMBER
-  CONSULTANT
-  EMPLOYEE
-  EX_ADVISOR
-  EX_CONSULTANT
-  EX_EMPLOYEE
-  EXECUTIVE
-  FOUNDER
-  INVESTOR
-  NON_US_EMPLOYEE
-  OFFICER
-  OTHER
+  ADVISOR         @map("Advisor")
+  BOARD_MEMBER    @map("Board Member")
+  CONSULTANT      @map("Consultant")
+  EMPLOYEE        @map("Employee")
+  EX_ADVISOR      @map("Ex-Advisor")
+  EX_CONSULTANT   @map("Ex-Consultant")
+  EX_EMPLOYEE     @map("Ex-Employee")
+  EXECUTIVE       @map("Executive")
+  FOUNDER         @map("Founder")
+  INVESTOR        @map("Investor")
+  NON_US_EMPLOYEE @map("Non-US Employee")
+  OFFICER         @map("Officer")
+  OTHER           @map("Other")
 }
 
 model Stakeholder {
@@ -261,18 +261,18 @@ model Audit {
 }
 
 enum ShareTypeEnum {
-  COMMON
-  PREFERRED
+  COMMON    @map("Common")
+  PREFERRED @map("Preferred")
 }
 
 enum SharePrefixEnum {
-  CS // Common Shares
-  PS // Preferred Shares
+  CS @map("Common shares")
+  PS @map("Preferred shares")
 }
 
 enum ConversionRightsEnum {
-  CONVERTS_TO_FUTURE_ROUND
-  CONVERTS_TO_SHARE_CLASS_ID
+  CONVERTS_TO_FUTURE_ROUND   @map("Converts to future round")
+  CONVERTS_TO_SHARE_CLASS_ID @map("Converts to share class ID")
 }
 
 // Based on OCF format
@@ -312,10 +312,10 @@ model ShareClass {
 }
 
 enum CancellationBehaviorEnum {
-  RETIRE
-  RETURN_TO_POOL
-  HOLD_AS_CAPITAL_STOCK
-  DEFINED_PER_PLAN_SECURITY
+  RETIRE                    @map("Retire")
+  RETURN_TO_POOL            @map("Return to pool")
+  HOLD_AS_CAPITAL_STOCK     @map("Hold as capital stock")
+  DEFINED_PER_PLAN_SECURITY @map("Defined per plan security")
 }
 
 model EquityPlan {
@@ -497,15 +497,15 @@ model DocumentShare {
 }
 
 enum FieldTypes {
-  TEXT
-  RADIO
-  EMAIL
-  DATE
-  DATETIME
-  TEXTAREA
-  CHECKBOX
-  SIGNATURE
-  SELECT
+  TEXT      @map("Text")
+  RADIO     @map("Radio")
+  EMAIL     @map("Email")
+  DATE      @map("Date")
+  DATETIME  @map("Datetime")
+  TEXTAREA  @map("Text Area")
+  CHECKBOX  @map("Checkbox")
+  SIGNATURE @map("Signature")
+  SELECT    @map("Select")
 }
 
 model TemplateField {
@@ -539,8 +539,8 @@ model TemplateField {
 }
 
 enum TemplateStatus {
-  DRAFT
-  COMPLETE
+  DRAFT    @map("Draft")
+  COMPLETE @map("Complete")
 }
 
 model Template {
@@ -575,9 +575,9 @@ model Template {
 }
 
 enum EsignRecipientStatus {
-  SENT
-  SIGNED
-  PENDING
+  SENT    @map("Sent")
+  SIGNED  @map("Signed")
+  PENDING @map("Pending")
 }
 
 model EsignRecipient {
@@ -603,26 +603,26 @@ model EsignRecipient {
 }
 
 enum SecuritiesStatusEnum {
-  ACTIVE
-  DRAFT
-  SIGNED
-  PENDING
+  ACTIVE  @map("Active")
+  DRAFT   @map("Draft")
+  SIGNED  @map("Signed")
+  PENDING @map("Pending")
 }
 
 enum VestingScheduleEnum {
-  VESTING_0_0_0 // Immediate vesting
-  VESTING_0_0_1 // 1 year cliff with no vesting
-  VESTING_4_1_0 // 4 years vesting every month with no cliff
-  VESTING_4_1_1 // 4 years vesting every month with 1 year cliff
-  VESTING_4_3_1 // 4 years vesting every 3 months with 1 year cliff
-  VESTING_4_6_1 // 4 years vesting every 6 months with 1 year cliff
-  VESTING_4_12_1 // 4 years vesting every year with 1 year cliff
+  VESTING_0_0_0  @map("Immediate vesting")
+  VESTING_0_0_1  @map("1 year cliff with no vesting")
+  VESTING_4_1_0  @map("4 years vesting every month with no cliff")
+  VESTING_4_1_1  @map("4 years vesting every month with 1 year cliff")
+  VESTING_4_3_1  @map("4 years vesting every 3 months with 1 year cliff")
+  VESTING_4_6_1  @map("4 years vesting every 6 months with 1 year cliff")
+  VESTING_4_12_1 @map("4 years vesting every year with 1 year cliff")
 }
 
 enum ShareLegendsEnum {
-  US_SECURITIES_ACT // US Securities Act of 1933
-  SALE_AND_ROFR // Sale and Right of first refusal
-  TRANSFER_RESTRICTIONS // Bylaw transfer restrictions
+  US_SECURITIES_ACT     @map("US Securities Act of 1933")
+  SALE_AND_ROFR         @map("Sale and Right of first refusal")
+  TRANSFER_RESTRICTIONS @map("Bylaw transfer restrictions")
 }
 
 model Share {
@@ -665,17 +665,17 @@ model Share {
 }
 
 enum OptionTypeEnum {
-  ISO // Incentive Stock Options
-  NSO // Non-satutory Stock Options
-  RSU // Restricted Stock Units
+  ISO @map("Incentive Stock Options")
+  NSO @map("Non-satutory Stock Options")
+  RSU @map("Restricted Stock Units")
 }
 
 enum OptionStatusEnum {
-  DRAFT
-  ACTIVE
-  EXERCISED
-  EXPIRED
-  CANCELLED
+  DRAFT     @map("Draft")
+  ACTIVE    @map("Active")
+  EXERCISED @map("Exercised")
+  EXPIRED   @map("Expired")
+  CANCELLED @map("Cancelled")
 }
 
 model Option {
@@ -740,16 +740,16 @@ model Investment {
 }
 
 enum SafeTypeEnum {
-  PRE_MONEY
-  POST_MONEY
+  PRE_MONEY  @map("Pre-Money")
+  POST_MONEY @map("Post-Money")
 }
 
 enum SafeStatusEnum {
-  DRAFT
-  ACTIVE
-  PENDING
-  EXPIRED
-  CANCELLED
+  DRAFT     @map("Draft")
+  ACTIVE    @map("Active")
+  PENDING   @map("Pending")
+  EXPIRED   @map("Expired")
+  CANCELLED @map("Cancelled")
 }
 
 // YC Standard Safe
@@ -798,36 +798,36 @@ model Safe {
 }
 
 enum ConvertibleStatusEnum {
-  DRAFT
-  ACTIVE
-  PENDING
-  EXPIRED
-  CANCELLED
+  DRAFT     @map("Draft")
+  ACTIVE    @map("Active")
+  PENDING   @map("Pending")
+  EXPIRED   @map("Expired")
+  CANCELLED @map("Cancelled")
 }
 
 enum ConvertibleTypeEnum {
-  CCD // Compulsory Convertible Debenture
-  OCD // Optionally Convertible Debenture
-  NOTE // Simple Convertible note
+  CCD  @map("Compulsory Convertible Debenture")
+  OCD  @map("Optionally Convertible Debenture")
+  NOTE @map("Simple Convertible note")
 }
 
 enum ConvertibleInterestMethodEnum {
-  SIMPLE
-  COMPOUND
+  SIMPLE   @map("Simple")
+  COMPOUND @map("Compound")
 }
 
 enum ConvertibleInterestAccrualEnum {
-  DAILY
-  MONTHLY
-  SEMI_ANNUALLY
-  ANNUALLY
-  YEARLY
-  CONTINUOUSLY
+  DAILY         @map("Daily")
+  MONTHLY       @map("Monthly")
+  SEMI_ANNUALLY @map("Semi-annually")
+  ANNUALLY      @map("Annually")
+  YEARLY        @map("Yearly")
+  CONTINUOUSLY  @map("Continuously")
 }
 
 enum ConvertibleInterestPaymentScheduleEnum {
-  DEFERRED
-  PAY_AT_MATURITY
+  DEFERRED        @map("Deferred")
+  PAY_AT_MATURITY @map("Pay at maturity")
 }
 
 model ConvertibleNote {
@@ -866,9 +866,9 @@ model ConvertibleNote {
 }
 
 enum UpdateStatusEnum {
-  DRAFT
-  PUBLIC
-  PRIVATE
+  DRAFT   @map("Draft")
+  PUBLIC  @map("Public")
+  PRIVATE @map("Private")
 }
 
 model Update {

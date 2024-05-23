@@ -1,6 +1,6 @@
 "use client";
 
-import { SpinnerIcon } from "@/components/common/icons";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -50,6 +50,20 @@ interface VestingDetailsProps {
   equityPlans: RouterOutputs["equityPlan"]["getPlans"];
 }
 
+interface EmptySelectProps {
+  title: string;
+  description: string;
+}
+
+function EmptySelect({ title, description }: EmptySelectProps) {
+  return (
+    <Alert variant="destructive">
+      <AlertTitle>{title}</AlertTitle>
+      <AlertDescription>{description}</AlertDescription>
+    </Alert>
+  );
+}
+
 export const VestingDetails = (props: VestingDetailsProps) => {
   const { stakeholders, equityPlans } = props;
 
@@ -61,6 +75,8 @@ export const VestingDetails = (props: VestingDetailsProps) => {
     setValue(data);
     next();
   };
+
+  const disabled = !stakeholders.length && !equityPlans.data?.length;
   return (
     <Form {...form}>
       <form
@@ -94,38 +110,38 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="equityPlanId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Equity plan</FormLabel>
+          {equityPlans.data.length ? (
+            <FormField
+              control={form.control}
+              name="equityPlanId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Equity plan</FormLabel>
 
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {equityPlans?.data.length ? (
-                      equityPlans?.data?.map(({ id, name }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {equityPlans?.data?.map(({ id, name }) => (
                         <SelectItem key={id} value={id}>
                           {name}
                         </SelectItem>
-                      ))
-                    ) : (
-                      <SpinnerIcon
-                        className="mx-auto my-4 w-full"
-                        color="black"
-                      />
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
-          />
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          ) : (
+            <EmptySelect
+              title="Equity plan not found"
+              description="Please create an Equity Plan to continue."
+            />
+          )}
 
           <FormField
             control={form.control}
@@ -141,43 +157,45 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="stakeholderId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Stakeholder</FormLabel>
+          {stakeholders.length ? (
+            <FormField
+              control={form.control}
+              name="stakeholderId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Stakeholder</FormLabel>
 
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {stakeholders?.length ? (
-                      stakeholders?.map((sh) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {stakeholders?.map((sh) => (
                         <SelectItem key={sh.id} value={sh.id}>
                           {sh.name}
                         </SelectItem>
-                      ))
-                    ) : (
-                      <SpinnerIcon
-                        className="mx-auto my-4 w-full"
-                        color="black"
-                      />
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
-          />
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          ) : (
+            <EmptySelect
+              title="Stakeholders not found"
+              description="Please create an stakeholder to continue."
+            />
+          )}
         </div>
 
         <StepperModalFooter>
           <StepperPrev>Back</StepperPrev>
-          <Button type="submit">Save & Continue</Button>
+          <Button disabled={disabled} type="submit">
+            Save & Continue
+          </Button>
         </StepperModalFooter>
       </form>
     </Form>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
-import { type TemplateFieldForm as TTemplateFieldForm } from "@/providers/template-field-provider";
+import type { TemplateFieldForm as TTemplateFieldForm } from "@/providers/template-field-provider";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 
 interface TemplateFieldFormProps {
   children: ReactNode;
@@ -19,18 +19,17 @@ export const TemplateFieldForm = ({
   companyPublicId,
 }: TemplateFieldFormProps) => {
   const router = useRouter();
-  const { toast } = useToast();
 
   const { handleSubmit, getValues } = useFormContext<TTemplateFieldForm>();
   const status = getValues("status");
 
   const { mutateAsync } = api.templateField.add.useMutation({
-    onSuccess: async ({ message, success, title }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success ? `🎉 ${title}` : title,
-        description: message,
-      });
+    onSuccess: ({ message, success, title }) => {
+      if (success) {
+        toast.success(`🎉 ${title}, ${message}`);
+      } else {
+        toast.error(`${title}, ${message}`);
+      }
 
       if (status === "COMPLETE") {
         router.push(`/${companyPublicId}/documents/esign`);

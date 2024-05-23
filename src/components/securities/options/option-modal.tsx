@@ -1,14 +1,15 @@
 "use client";
 
 import MultiStepModal from "@/components/common/multistep-modal";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import {
   type TypeZodAddOptionMutationSchema,
   ZodAddOptionMutationSchema,
 } from "@/trpc/routers/securities-router/schema";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Documents,
   GeneralDetails,
@@ -27,21 +28,16 @@ type OptionModalProps = {
 
 const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   const addOptionMutation = api.securities.addOptions.useMutation({
-    onSuccess: async ({ message, success }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: message,
-        description: success
-          ? "A new stakeholder option has been created."
-          : "Failed adding an option. Please try again.",
-      });
-      setOpen(false);
+    onSuccess: ({ success }) => {
       if (success) {
+        toast.success("A new stakeholder option has been created.");
+        setOpen(false);
         router.refresh();
+      } else {
+        toast.error("Failed adding an option. Please try again.");
       }
     },
   });
@@ -75,13 +71,12 @@ const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
 
   const onSubmit = async (data: TypeZodAddOptionMutationSchema) => {
     if (data?.documents.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Uh ohh! Documents not found",
-        description: "Please upload necessary documents",
-      });
+      toast.error(
+        "Uh ohh! Documents not found, please upload necessary documents",
+      );
       return;
     }
+
     await addOptionMutation.mutateAsync(data);
   };
   return (

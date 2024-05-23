@@ -5,7 +5,6 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { api } from "@/trpc/react";
 import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -19,8 +18,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export const ZSetPasswordFormSchema = z
   .object({
@@ -45,8 +44,6 @@ export const SetPasswordForm = ({
   email,
   verificationToken,
 }: SetPasswordFormProps) => {
-  const router = useRouter();
-
   const form = useForm<TSetPasswordFormSchema>({
     values: {
       password: "",
@@ -59,10 +56,7 @@ export const SetPasswordForm = ({
 
   const { mutateAsync } = api.auth.newPassword.useMutation({
     onSuccess: async () => {
-      toast({
-        variant: "default",
-        title: "🎉 Password updated",
-      });
+      toast.success("🎉 Password updated successfully.");
       await signIn("credentials", {
         password: form.getValues("password"),
         email: email,
@@ -70,11 +64,7 @@ export const SetPasswordForm = ({
       });
     },
     onError: ({ message }) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: message,
-      });
+      toast.error(`🔥 Error - ${message}`);
     },
   });
 

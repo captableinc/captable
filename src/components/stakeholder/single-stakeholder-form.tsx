@@ -23,9 +23,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 type SingleStakeholderFormType = {
   setOpen: (val: boolean) => void;
 };
@@ -40,15 +40,13 @@ const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
 
   const { mutateAsync } = api.stakeholder.addStakeholders.useMutation({
     onSuccess: ({ success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully created"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
-
-      router.refresh();
+      if (success) {
+        form.reset();
+        router.refresh();
+        toast.success("🎉 Successfully created!");
+      } else {
+        toast.error(`🔥 Error - ${message}`);
+      }
     },
   });
 

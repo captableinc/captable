@@ -1,13 +1,18 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
 import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import * as React from "react";
 
 import {
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -15,10 +20,6 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
 } from "@tanstack/react-table";
 
 import { dayjsExt } from "@/common/dayjs";
@@ -27,6 +28,7 @@ import { DataTablePagination } from "@/components/ui/data-table/data-table-pagin
 import { api } from "@/trpc/react";
 import { RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -36,7 +38,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useToast } from "../ui/use-toast";
 import { PasskeyTableToolbar } from "./passkey-table-toolbar";
 import UpdatePasskeyNameModal from "./update-passkey-name-modal";
 
@@ -44,20 +45,6 @@ type Passkey = RouterOutputs["passkey"]["find"]["data"];
 
 type PasskeyType = {
   passkey: Passkey;
-};
-
-const humanizeBackupStatus = (status: boolean) => {
-  if (status) {
-    return (
-      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-600/20">
-        Done
-      </span>
-    );
-  } else {
-    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-      Pending
-    </span>;
-  }
 };
 
 const humanizeDeviceType = (type: string) => {
@@ -114,7 +101,12 @@ export const columns: ColumnDef<Passkey[number]>[] = [
     },
     cell: ({ row }) => (
       <div className="text-left">
-        {humanizeBackupStatus(!!row.getValue("credentialBackedUp"))}
+        <Badge
+          variant={row.getValue("credentialBackedUp") ? "success" : "warning"}
+          className="h-7 align-middle"
+        >
+          {row.getValue("credentialBackedUp") ? "Done" : "Pending"}
+        </Badge>
       </div>
     ),
   },
@@ -134,22 +126,7 @@ export const columns: ColumnDef<Passkey[number]>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "updatedAt",
-  //   header: ({ column }) => {
-  //     return (
-  //       <SortButton
-  //         label="Updated at"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       />
-  //     );
-  //   },
-  //   cell: ({ row }) => (
-  //     <div className="text-left">
-  //       {dayjsExt(row.getValue("createdAt")).fromNow()}
-  //     </div>
-  //   ),
-  // },
+
   {
     accessorKey: "lastUsedAt",
     header: ({ column }) => {
@@ -172,12 +149,8 @@ export const columns: ColumnDef<Passkey[number]>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      //eslint-disable-next-line react-hooks/rules-of-hooks
       const [open, setOpen] = React.useState<boolean>(false);
-      //eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
-      //eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast();
 
       const passkey = row.original;
       const DELETE__ACTION = "Delete passkey";
@@ -186,19 +159,11 @@ export const columns: ColumnDef<Passkey[number]>[] = [
       const { mutateAsync: deletePasskeyMutation } =
         api.passkey.delete.useMutation({
           onSuccess: () => {
-            toast({
-              variant: "default",
-              title: "🎉 Successfully deleted the passkey",
-              description: " Provide description more on it.",
-            });
+            toast.success("🎉 Successfully deleted the passkey");
             router.refresh();
           },
           onError: () => {
-            toast({
-              variant: "destructive",
-              title: "Failed deletion",
-              description: "Cannot delete the required passkey",
-            });
+            toast.error("Error while deleting the passkey. Please try again.");
           },
         });
 

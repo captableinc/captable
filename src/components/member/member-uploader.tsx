@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import { parseInviteMembersCSV } from "@/lib/invite-team-members-csv-parser";
 import { api } from "@/trpc/react";
-import { type TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
+import type { TypeZodInviteMemberArrayMutationSchema } from "@/trpc/routers/member-router/schema";
 import { RiUploadLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 type TeamMemberUploaderType = {
   setOpen: (val: boolean) => void;
@@ -23,19 +23,11 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
   const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
       setOpen(false);
-      toast({
-        variant: "default",
-        title: "🎉 Invited!",
-        description: "You have successfully invited the stakeholder.",
-      });
+      toast.success("You have successfully invited the stakeholder.");
       router.refresh();
     },
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: error.message,
-        description: "",
-      });
+      toast.error(error.message);
     },
   });
 
@@ -61,12 +53,9 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
       setOpen(false);
     } catch (error) {
       console.error((error as Error).message);
-      toast({
-        variant: "destructive",
-        title: "Something went wrong!",
-        description:
-          "Please check the CSV file and make sure its according to our format",
-      });
+      toast.error(
+        "Something went wrong, please check the CSV file and make sure its according to our format",
+      );
     }
   };
 
@@ -87,6 +76,7 @@ const TeamMemberUploader = ({ setOpen }: TeamMemberUploaderType) => {
         , complete and upload it to import your existing or new team members.
       </div>
 
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
       <div
         className="flex h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-gray-300"
         onClick={() => fileInputRef.current?.click()}

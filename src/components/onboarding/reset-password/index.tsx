@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 export const ZResetPasswordFormSchema = z
   .object({
@@ -51,20 +51,12 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
   const isSubmitting = form.formState.isSubmitting;
 
   const { mutateAsync } = api.auth.newPassword.useMutation({
-    onSuccess: async ({ message }) => {
-      toast({
-        variant: "default",
-        title: "🎉 Password Updated",
-        description: message,
-      });
+    onSuccess: () => {
+      toast.success("🎉 Password updated successfully.");
       router.replace("/password-updated");
     },
     onError: ({ message }) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: message,
-      });
+      toast.error(`🔥 Error - ${message}`);
     },
   });
 

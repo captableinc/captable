@@ -22,7 +22,7 @@ export const Documents = () => {
         multiple={true}
         identifier={"safes"}
         keyPrefix="safes-key"
-        onSuccess={async (bucketData) => {
+        onSuccess={(bucketData) => {
           form.setValue("documents", [
             //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             ...(form.getValues("documents") || []),

@@ -14,10 +14,8 @@ export function UploadDocumentStep() {
     <StepperStep title="Upload a document">
       <StepperModalContent>
         <Uploader
-          identifier={""}
           shouldUpload={false}
-          keyPrefix="equity-doc"
-          onSuccess={async (file) => {
+          onSuccess={(file) => {
             setValue({ document: file });
             next();
           }}

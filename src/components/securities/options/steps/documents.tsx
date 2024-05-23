@@ -70,8 +70,6 @@ export const Documents = () => {
       <div>
         <Uploader
           multiple={true}
-          identifier={""}
-          keyPrefix="equity-doc"
           shouldUpload={false}
           onSuccess={(bucketData) => {
             setDocumentsList(bucketData);

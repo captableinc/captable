@@ -2,7 +2,6 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Uploader from "@/components/ui/uploader";
-import React from "react";
 import { useFormContext } from "react-hook-form";
 
 type Documents = {
@@ -23,7 +22,7 @@ export const Documents = () => {
         multiple={false}
         identifier={"documenter"}
         keyPrefix="equity-doc"
-        onSuccess={async (bucketData) => {
+        onSuccess={(bucketData) => {
           form.setValue("documents", [
             {
               bucketId: bucketData.id,

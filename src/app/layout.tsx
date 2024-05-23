@@ -1,4 +1,5 @@
 import logo from "@/assets/logo.svg";
+import { PublicEnvScript } from "@/components/public-env-script";
 import ScreenSize from "@/components/screen-size";
 import { constants } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,6 @@ import { robotoMono, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import type { Metadata } from "next";
-import { PublicEnvScript } from "next-runtime-env";
 import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 
@@ -30,6 +30,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerAuthSession();
+  const nodeEnv = process.env.NODE_ENV;
 
   return (
     <html lang="en" className={cn(satoshi.variable, robotoMono.variable)}>
@@ -42,7 +43,7 @@ export default async function RootLayout({
             <TRPCReactProvider cookies={cookies().toString()}>
               <main>{children}</main>
               <Toaster richColors />
-              {process.env.NEXT_PUBLIC_NODE_ENV === "development" && (
+              {nodeEnv === "development" && (
                 <ScreenSize />
               )}
             </TRPCReactProvider>

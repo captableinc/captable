@@ -1,8 +1,14 @@
 "use server";
 import type { ExtendedRecipientType } from "@/components/common/share-modal";
-import Editor from "@/components/update/editor";
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
+
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(
+  () => import("../../../../../../components/update/editor"),
+  { ssr: false },
+);
 
 const getUpdate = async (publicId: string) => {
   return await db.update.findFirstOrThrow({
@@ -23,23 +29,22 @@ const UpdatePage = async ({
 
   if (updatePublicId === "new") {
     return <Editor companyPublicId={publicId} contacts={contacts} mode="new" />;
-  } else {
-    const update = await getUpdate(updatePublicId);
-    const recipients = await api.update.getRecipiants.query({
-      updateId: update?.id,
-      publicUpdateId: update.publicId,
-    });
-
-    return (
-      <Editor
-        companyPublicId={publicId}
-        update={update}
-        contacts={contacts}
-        recipients={recipients as object[] as ExtendedRecipientType[]}
-        mode="edit"
-      />
-    );
   }
+  const update = await getUpdate(updatePublicId);
+  const recipients = await api.update.getRecipiants.query({
+    updateId: update?.id,
+    publicUpdateId: update.publicId,
+  });
+
+  return (
+    <Editor
+      companyPublicId={publicId}
+      update={update}
+      contacts={contacts}
+      recipients={recipients as object[] as ExtendedRecipientType[]}
+      mode="edit"
+    />
+  );
 };
 
 export default UpdatePage;

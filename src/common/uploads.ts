@@ -1,10 +1,9 @@
+import { env } from "@/env";
 import {
   getPresignedGetUrl,
   getPresignedPutUrl,
   type getPresignedUrlOptions,
 } from "@/server/file-uploads";
-
-import { env } from "next-runtime-env";
 
 /**
  * usage
@@ -51,7 +50,7 @@ export const uploadFile = async (
   const { name, type, size } = file;
   let fileUrl = bucketUrl;
 
-  const uploadDomain = env("NEXT_PUBLIC_UPLOAD_DOMAIN");
+  const uploadDomain = env.NEXT_PUBLIC_UPLOAD_DOMAIN;
   if (bucketMode === "publicBucket" && uploadDomain) {
     fileUrl = `${uploadDomain}/${key}`;
   }

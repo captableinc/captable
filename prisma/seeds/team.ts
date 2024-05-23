@@ -1,18 +1,8 @@
-import type { MemberStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
 import colors from "colors";
 colors.enable();
-
-type UserType = {
-  name: string;
-  email: string;
-  title?: string;
-  image?: string;
-  isOnboarded?: boolean;
-  status?: MemberStatusEnum;
-};
 
 const seedTeam = async () => {
   const team = [
@@ -62,6 +52,7 @@ const seedTeam = async () => {
   console.log(`Seeding ${team.length} team members`.blue);
   const companies = await db.company.findMany();
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   team.forEach(async (t) => {
     // const { name, email, image, title, status, isOnboarded } = t
     const salt = await bcrypt.genSalt(10);
@@ -77,12 +68,13 @@ const seedTeam = async () => {
       },
     });
 
+    // biome-ignore lint/complexity/noForEach: <explanation>
     companies.forEach(async (company) => {
       await db.member.create({
         data: {
           title,
           isOnboarded,
-          status: status as MemberStatusEnum,
+          status: status as "ACTIVE" | "PENDING" | "INACTIVE",
           userId: user.id,
           companyId: company.id,
         },

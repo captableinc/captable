@@ -32,6 +32,7 @@ type TStepperContext = {
   activeIndex: number;
   prev: () => void;
   next: () => void;
+  reset: () => void;
 };
 
 const StepperContext = createContext<TStepperContext | null>(null);
@@ -106,20 +107,24 @@ export function StepperRoot({ children }: StepperRootProps) {
     }
   };
 
+  const reset = () => {
+    setActiveIndex(0);
+  };
+
   return (
     <DescendantProvider
       context={StepperDescendantContext}
       items={descendants}
       set={setDescendants}
     >
-      <StepperContext.Provider value={{ activeIndex, next, prev }}>
+      <StepperContext.Provider value={{ activeIndex, next, prev, reset }}>
         {children}
       </StepperContext.Provider>
     </DescendantProvider>
   );
 }
 
-type StepperModalProps = ModalProps;
+export type StepperModalProps = ModalProps;
 
 function StepList() {
   const steps = useDescendants(StepperDescendantContext);
@@ -192,7 +197,7 @@ export function StepperModal({
             aria-label="Progress"
             className="red col-span-3 hidden max-w-64 md:block"
           >
-            <ol role="list" className="overflow-hidden">
+            <ol className="overflow-hidden">
               <StepList />
             </ol>
           </nav>

@@ -1,12 +1,12 @@
 import EmptyState from "@/components/common/empty-state";
 import Tldr from "@/components/common/tldr";
-import OptionModal from "@/components/securities/options/option-modal";
+import { OptionModal } from "@/components/securities/options/option-modal";
 import OptionTable from "@/components/securities/options/option-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiGroup2Fill } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Options",

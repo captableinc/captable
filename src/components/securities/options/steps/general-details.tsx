@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -15,121 +17,137 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  StepperModalFooter,
+  StepperPrev,
+  useStepper,
+} from "@/components/ui/stepper";
+import { toTitleCase } from "@/lib/string";
 import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
-import { useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-export const GeneralDetailsField = [
-  "grantId",
-  "grantType",
-  "quantity",
-  "status",
-];
+const STATUSES = Object.values(OptionStatusEnum).map((val) => ({
+  label: toTitleCase(val),
+  value: val,
+}));
+const TYPES = Object.values(OptionTypeEnum);
+
+const formSchema = z.object({
+  grantId: z.string(),
+  type: z.nativeEnum(OptionTypeEnum),
+  quantity: z.coerce.number(),
+  status: z.nativeEnum(OptionStatusEnum),
+});
+
+type TFormSchema = z.infer<typeof formSchema>;
 
 export const GeneralDetails = () => {
-  const form = useFormContext();
+  const { next } = useStepper();
+  const { setValue } = useStockOptionFormValues();
 
-  const types = useMemo(
-    () =>
-      Object.values(OptionTypeEnum).filter(
-        (value) => typeof value === "string",
-      ),
-    [],
-  ) as string[];
+  const form = useForm<TFormSchema>({
+    resolver: zodResolver(formSchema),
+  });
 
-  const status = useMemo(
-    () =>
-      Object.values(OptionStatusEnum).filter(
-        (value) => typeof value === "string",
-      ),
-    [],
-  ) as string[];
-
+  const handleSubmit = (data: TFormSchema) => {
+    setValue(data);
+    next();
+  };
   return (
-    <div className="space-y-4">
-      <FormField
-        control={form.control}
-        name="grantId"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Grant ID</FormLabel>
-            <FormControl>
-              <Input type="text" {...field} />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex flex-col gap-y-4"
+      >
+        <div className="flex flex-col gap-y-4">
+          <FormField
+            control={form.control}
+            name="grantId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Grant ID</FormLabel>
+                <FormControl>
+                  <Input type="text" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-      <FormField
-        control={form.control}
-        name="type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Grant type</FormLabel>
-            {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {types
-                  ? types.map((t, index) => (
-                      <SelectItem key={index} value={t}>
-                        {t}
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Grant type</FormLabel>
+
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {TYPES.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
                       </SelectItem>
-                    ))
-                  : null}
-              </SelectContent>
-            </Select>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-      <FormField
-        control={form.control}
-        name="quantity"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Quantity</FormLabel>
-            <FormControl>
-              <Input type="email" {...field} />
-            </FormControl>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
 
-      <FormField
-        control={form.control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {status
-                  ? status.map((s, index) => (
-                      <SelectItem key={index} value={s}>
-                        {s}
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {STATUSES.map((status) => (
+                      <SelectItem key={status.label} value={status.value}>
+                        {status.label}
                       </SelectItem>
-                    ))
-                  : null}
-              </SelectContent>
-            </Select>
-            <FormMessage className="text-xs font-light" />
-          </FormItem>
-        )}
-      />
-    </div>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+        </div>
+        <StepperModalFooter>
+          <StepperPrev>Back</StepperPrev>
+          <Button type="submit">Save & Continue</Button>
+        </StepperModalFooter>
+      </form>
+    </Form>
   );
 };

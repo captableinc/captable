@@ -1,102 +1,51 @@
-"use client";
-
-import MultiStepModal from "@/components/common/multistep-modal";
-import { api } from "@/trpc/react";
 import {
-  type TypeZodAddOptionMutationSchema,
-  ZodAddOptionMutationSchema,
-} from "@/trpc/routers/securities-router/schema";
-import { useRouter } from "next/navigation";
-import type React from "react";
-import { useState } from "react";
-import { toast } from "sonner";
-import {
-  Documents,
-  GeneralDetails,
-  GeneralDetailsField,
-  RelevantDates,
-  RelevantDatesFields,
-  VestingDetails,
-  VestingDetailsFields,
-} from "./steps";
+  StepperModal,
+  StepperModalContent,
+  type StepperModalProps,
+  StepperStep,
+} from "@/components/ui/stepper";
+import { StockOptionFormProvider } from "@/providers/stock-option-form-provider";
+import { api } from "@/trpc/server";
+import { Documents } from "./steps/documents";
+import { GeneralDetails } from "./steps/general-details";
+import { RelevantDates } from "./steps/relevant-dates";
+import { VestingDetails } from "./steps/vesting-details";
 
-type OptionModalProps = {
-  title: string;
-  subtitle: string | React.ReactNode;
-  trigger: string | React.ReactNode;
-};
-
-const OptionModal = ({ title, subtitle, trigger }: OptionModalProps) => {
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
-
-  const addOptionMutation = api.securities.addOptions.useMutation({
-    onSuccess: ({ success }) => {
-      if (success) {
-        toast.success("A new stakeholder option has been created.");
-        setOpen(false);
-        router.refresh();
-      } else {
-        toast.error("Failed adding an option. Please try again.");
-      }
-    },
-  });
-
-  const steps = [
-    {
-      id: 1,
-      title: "General details",
-      component: GeneralDetails,
-      fields: GeneralDetailsField,
-    },
-    {
-      id: 2,
-      title: "Vesting details",
-      component: VestingDetails,
-      fields: VestingDetailsFields,
-    },
-    {
-      id: 3,
-      title: "Relevant dates",
-      component: RelevantDates,
-      fields: RelevantDatesFields,
-    },
-    {
-      id: 4,
-      title: "Documents",
-      component: Documents,
-      fields: ["documents"],
-    },
-  ];
-
-  const onSubmit = async (data: TypeZodAddOptionMutationSchema) => {
-    if (data?.documents.length === 0) {
-      toast.error(
-        "Uh ohh! Documents not found, please upload necessary documents",
-      );
-      return;
-    }
-
-    await addOptionMutation.mutateAsync(data);
-  };
+async function VestingDetailsStep() {
+  const [stakeholders, equityPlans] = await Promise.all([
+    api.stakeholder.getStakeholders.query(),
+    api.equityPlan.getPlans.query(),
+  ]);
   return (
-    <div>
-      <MultiStepModal
-        steps={steps}
-        title={title}
-        subtitle={subtitle}
-        trigger={trigger}
-        dialogProps={{
-          open,
-          onOpenChange: (val) => {
-            setOpen(val);
-          },
-        }}
-        schema={ZodAddOptionMutationSchema}
-        onSubmit={onSubmit}
-      />
-    </div>
+    <VestingDetails stakeholders={stakeholders} equityPlans={equityPlans} />
+  );
+}
+
+export const OptionModal = (props: Omit<StepperModalProps, "children">) => {
+  return (
+    <StepperModal {...props}>
+      <StockOptionFormProvider>
+        <StepperStep title="General details">
+          <StepperModalContent>
+            <GeneralDetails />
+          </StepperModalContent>
+        </StepperStep>
+        <StepperStep title="Vesting details">
+          <StepperModalContent>
+            <VestingDetailsStep />
+          </StepperModalContent>
+        </StepperStep>
+        <StepperStep title="Relevant dates">
+          <StepperModalContent>
+            <RelevantDates />
+          </StepperModalContent>
+        </StepperStep>
+        <StepperStep title="Documents">
+          <StepperModalContent>
+            <Documents />
+          </StepperModalContent>
+        </StepperStep>
+      </StockOptionFormProvider>
+    </StepperModal>
   );
 };
-
-export default OptionModal;

@@ -37,7 +37,9 @@ export type TypeKeyPrefixes =
   | "unsigned-esign-doc"
   | "stock-option-docs"
   | "company-logos"
-  | "profile-avatars";
+  | "profile-avatars"
+  | "generic-documents"
+  | `data-room/${string}`;
 
 export interface getPresignedUrlOptions {
   contentType: string;

@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "./button";
 
+import type { TypeKeyPrefixes } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
@@ -26,7 +27,7 @@ type UploadProps =
       shouldUpload?: true;
       onSuccess?: (data: UploadReturn) => void | Promise<void>;
       identifier: string;
-      keyPrefix: string;
+      keyPrefix: TypeKeyPrefixes;
     }
   | {
       shouldUpload: false;

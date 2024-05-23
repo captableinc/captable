@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
 import { parseStrakeholdersCSV } from "@/lib/stakeholders-csv-parser";
 import { api } from "@/trpc/react";
 import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
@@ -9,6 +8,7 @@ import { RiUploadLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 type StakeholderUploaderType = {
   setOpen: (val: boolean) => void;
@@ -23,15 +23,12 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
   const { mutateAsync, isLoading } =
     api.stakeholder.addStakeholders.useMutation({
       onSuccess: ({ success, message }) => {
-        toast({
-          variant: success ? "default" : "destructive",
-          title: success
-            ? "🎉 Successfully created"
-            : "Uh oh! Something went wrong.",
-          description: message,
-        });
-
-        router.refresh();
+        if (success) {
+          toast.success("🎉 Successfully created!");
+          router.refresh();
+        } else {
+          toast.error(`🔥 Error - ${message}`);
+        }
       },
     });
 
@@ -51,13 +48,7 @@ const StakeholderUploader = ({ setOpen }: StakeholderUploaderType) => {
 
       setOpen(false);
     } catch (error) {
-      console.error((error as Error).message);
-      toast({
-        variant: "destructive",
-        title: "Something went wrong!",
-        description:
-          "Please check the CSV file and make sure its according to our format",
-      });
+      toast.error(`🔥 Error - ${(error as Error).message}`);
     }
   };
 

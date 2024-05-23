@@ -35,11 +35,11 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { useToast } from "@/components/ui/use-toast";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { SafeTableToolbar } from "./safe-table-toolbar";
 
 type Safe = RouterOutputs["safe"]["getSafes"]["data"];
@@ -240,28 +240,16 @@ export const columns: ColumnDef<Safe[number]>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const safe = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast();
 
       const deleteSafeMutation = api.safe.deleteSafe.useMutation({
         onSuccess: () => {
-          toast({
-            variant: "default",
-            title: "🎉 Successfully deleted",
-            description: "SAFEs agreement deleted",
-          });
+          toast.success("🎉 SAFE agreement successfully deleted");
           router.refresh();
         },
         onError: () => {
-          toast({
-            variant: "destructive",
-            title: "Failed deletion",
-            description: "SAFEs agreement could not be deleted",
-          });
+          toast.error("SAFEs agreement could not be deleted");
         },
       });
 

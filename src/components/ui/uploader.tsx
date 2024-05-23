@@ -1,17 +1,18 @@
 "use client";
 
 import { uploadFile } from "@/common/uploads";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
-import React, { useCallback, useState } from "react";
+import type React from "react";
+import { useCallback, useState } from "react";
 import {
   type DropzoneOptions,
   type FileWithPath,
   useDropzone,
 } from "react-dropzone";
+import { toast } from "sonner";
 import { Button } from "./button";
 
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
 
@@ -32,12 +33,9 @@ type UploadProps =
 
 type Props = {
   header?: React.ReactNode;
-
   // should be companyPublicId or memberId or userId
   identifier: string;
-
   keyPrefix: string;
-
   multiple?: boolean;
 } & DocumentUploadDropzone &
   UploadProps;
@@ -51,18 +49,14 @@ export function Uploader({
   shouldUpload = true,
   ...rest
 }: Props) {
-  const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
   const { mutateAsync } = api.bucket.create.useMutation();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const onDrop = useCallback(async (acceptedFiles: FileWithPath[]) => {
     try {
       if (!multiple && acceptedFiles.length > 1) {
-        toast({
-          variant: "destructive",
-          title: "Files exceeded",
-          description: "Only one file is allowed for upload",
-        });
+        toast.error("Files exceeded, please upload only one file.");
         return;
       }
 
@@ -82,42 +76,27 @@ export function Uploader({
             await onSuccess(data as any);
           }
 
-          toast({
-            variant: "default",
-            title: "🎉 Successfully uploaded",
-            description: "Your document(s) has been uploaded.",
-          });
+          toast.success("🎉 Successfully uploaded");
         }
       } else {
         if (onSuccess) {
           // biome-ignore lint/suspicious/noExplicitAny: <explanation>
           await onSuccess(acceptedFiles as any);
         }
-        toast({
-          variant: "default",
-          title: "🎉 Successfully uploaded",
-          description: "Your document(s) has been uploaded.",
-        });
+        toast.success("🎉 Successfully uploaded");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "Please reload the page and try again later.",
-      });
+      toast.error("Uh oh! Something went wrong, please try again.");
     } finally {
       setUploading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { getRootProps, getInputProps, open } = useDropzone({
     ...rest,
-    // Disable click and keydown behavior
     noClick: true,
     noKeyboard: true,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     onDrop,
   });
 

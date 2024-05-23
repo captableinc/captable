@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { toast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +19,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { AuthFormHeader } from "../auth-form-header";
 
@@ -45,19 +45,11 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
   const router = useRouter();
 
   const { mutateAsync } = api.auth.signup.useMutation({
-    onSuccess: async ({ message }) => {
-      toast({
-        variant: "default",
-        title: "🎉 Thanks for signing up!",
-        description: message,
-      });
+    onSuccess: ({ message }) => {
+      toast.success(message);
     },
     onError: (err) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: err.message,
-      });
+      toast.error(`🔥 Error - ${err.message}`);
     },
   });
 
@@ -93,7 +85,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t"></span>
+                  <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-background px-2 text-muted-foreground">

@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
-import { useToast } from "@/components/ui/use-toast";
 import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
 import type { Block } from "@blocknote/core";
@@ -18,6 +17,7 @@ import { RiArrowDownSLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
+import { toast } from "sonner";
 
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
@@ -40,7 +40,6 @@ const UpdatesEditor = ({
   companyPublicId,
 }: UpdatesEditorProps) => {
   const router = useRouter();
-  const { toast } = useToast();
   const baseUrl = env("NEXT_PUBLIC_BASE_URL");
 
   const date = new Date();
@@ -181,16 +180,13 @@ const UpdatesEditor = ({
   });
 
   const draftMutation = api.update.save.useMutation({
-    onSuccess: ({ publicId, success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully saved"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
-
-      if (!success) return;
+    onSuccess: ({ publicId, success }) => {
+      if (success) {
+        toast.success("🎉 Successfully saved");
+      } else {
+        toast.error("Uh oh! Something went wrong.");
+        return;
+      }
 
       if (update) {
         router.refresh();
@@ -199,12 +195,9 @@ const UpdatesEditor = ({
       }
     },
 
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: error.message,
-      });
+    onError: (_error) => {
+      console.error("Error saving draft:", _error);
+      toast.error("Uh oh! Something went wrong.");
     },
 
     onSettled: () => {
@@ -214,25 +207,18 @@ const UpdatesEditor = ({
 
   const cloneMutation = api.update.clone.useMutation({
     onSuccess: ({ publicId, success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully cloned"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
-
-      if (!success) return;
+      if (success) {
+        toast.success(`🎉 Successfully cloned. ${message}`);
+      } else {
+        toast.error(`Uh oh! Something went wrong. ${message}`);
+        return;
+      }
 
       router.push(`/${companyPublicId}/updates/${publicId}`);
     },
 
     onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: error.message,
-      });
+      toast.error(`Uh oh! Something went wrong. ${error.message}`);
     },
 
     onSettled: () => {
@@ -268,19 +254,11 @@ const UpdatesEditor = ({
   const { mutateAsync: shareUpdateMutation } = api.update.share.useMutation({
     onSuccess: () => {
       router.refresh();
-
-      toast({
-        title: "Successfully shared!",
-        description: "Update successfully shared.",
-      });
+      toast.success("🎉 Successfully shared");
     },
 
     onError: (error) => {
-      toast({
-        title: "Oops! Something went wrong.",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast.error(`Uh oh! Something went wrong. ${error.message}`);
     },
   });
 
@@ -289,18 +267,11 @@ const UpdatesEditor = ({
       onSuccess: (r) => {
         router.refresh();
 
-        toast({
-          title: "Removed access!",
-          description: r.message,
-        });
+        toast.success("🎉 Successfully removed access");
       },
 
       onError: (error: { message: string }) => {
-        toast({
-          title: "Oops! Something went wrong.",
-          description: error.message,
-          variant: "destructive",
-        });
+        toast.error(`Uh oh! Something went wrong. ${error.message}`);
       },
     },
   );

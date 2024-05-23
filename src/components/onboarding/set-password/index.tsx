@@ -5,7 +5,6 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { api } from "@/trpc/react";
 import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -19,9 +18,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
-export const ZResetPasswordFormSchema = z
+export const ZSetPasswordFormSchema = z
   .object({
     password: ZPasswordSchema,
     repeatedPassword: ZPasswordSchema,
@@ -31,29 +31,37 @@ export const ZResetPasswordFormSchema = z
     message: "Passwords don't match",
   });
 
-export type TResetPasswordFormSchema = z.infer<typeof ZResetPasswordFormSchema>;
+export type TSetPasswordFormSchema = z.infer<typeof ZSetPasswordFormSchema>;
 
-export type ResetPasswordFormProps = {
+export type SetPasswordFormProps = {
   token: string;
+  email: string;
+  verificationToken: string;
 };
 
-export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
-  const router = useRouter();
-
-  const form = useForm<TResetPasswordFormSchema>({
+export const SetPasswordForm = ({
+  token,
+  email,
+  verificationToken,
+}: SetPasswordFormProps) => {
+  const form = useForm<TSetPasswordFormSchema>({
     values: {
       password: "",
       repeatedPassword: "",
     },
-    resolver: zodResolver(ZResetPasswordFormSchema),
+    resolver: zodResolver(ZSetPasswordFormSchema),
   });
 
   const isSubmitting = form.formState.isSubmitting;
 
   const { mutateAsync } = api.auth.newPassword.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("🎉 Password updated successfully.");
-      router.replace("/password-updated");
+      await signIn("credentials", {
+        password: form.getValues("password"),
+        email: email,
+        callbackUrl: `/verify-member/${verificationToken}?email=${email}`,
+      });
     },
     onError: ({ message }) => {
       toast.error(`🔥 Error - ${message}`);
@@ -62,7 +70,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
 
   const onFormSubmit = async ({
     password,
-  }: Omit<TResetPasswordFormSchema, "repeatedPassword">) => {
+  }: Omit<TSetPasswordFormSchema, "repeatedPassword">) => {
     await mutateAsync({ password, token });
   };
 
@@ -72,7 +80,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
         <div className="flex flex-col gap-y-2 text-center">
           <CaptableLogo className="mb-1 h-10 w-auto" />
           <h1 className="text-2xl font-semibold tracking-tight">
-            Reset your password
+            Set your password
           </h1>
         </div>
         <Form {...form}>
@@ -130,7 +138,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                 )}
               />
               <Button type="submit" size="lg" loading={isSubmitting}>
-                {isSubmitting ? "Resetting Password..." : "Reset Password"}
+                {isSubmitting ? "Setting Password..." : "Set Password"}
               </Button>
             </div>
           </form>

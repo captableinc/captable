@@ -7,9 +7,8 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { PayloadType } from "@/lib/constants";
-import { type RootPayload } from "@/lib/types";
+import type { RootPayload } from "@/lib/types";
 import {
   compareFormDataWithInitial,
   isFileExists,
@@ -17,13 +16,15 @@ import {
 } from "@/lib/utils";
 import { profileSettingsSchema } from "@/lib/zodSchemas";
 import { api } from "@/trpc/react";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import type React from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { type z } from "zod";
+import { toast } from "sonner";
+import type { z } from "zod";
 
 type MemberProfile = RouterOutputs["member"]["getProfile"];
 
@@ -35,7 +36,6 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { data: session, update } = useSession();
   const router = useRouter();
-  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof profileSettingsSchema>>({
@@ -59,7 +59,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
       const { fullName, loginEmail } = memberProfile;
 
       switch (rootPayload.type) {
-        case PayloadType.PROFILE_DATA:
+        case PayloadType.PROFILE_DATA: {
           const updatedProfilePayload = rootPayload.payload;
 
           if (
@@ -82,8 +82,9 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           router.refresh();
 
           break;
+        }
 
-        case PayloadType.PROFILE_AVATAR:
+        case PayloadType.PROFILE_AVATAR: {
           const _updatedProfilePayload = rootPayload.payload;
 
           const updateUser = {
@@ -97,22 +98,16 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
           await update(updateUser);
 
           break;
+        }
 
         default:
           break;
       }
 
-      toast({
-        variant: "default",
-        title: "🎉 Successfully updated your profile",
-      });
+      toast.success("🎉 Successfully updated your profile");
     },
     onError: () => {
-      return toast({
-        variant: "destructive",
-        title: "Failed updating profile",
-        description: "Something went wrong.",
-      });
+      return toast.error("Error updating profile");
     },
   });
 
@@ -138,7 +133,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
 
     if (!file) return;
 
-    const { isValid, title, errorMessage } = validateFile(file);
+    const { isValid, errorMessage } = validateFile(file);
 
     if (isValid) {
       try {
@@ -146,11 +141,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
         const { imageUrl } = await handleImageUpload(file);
 
         if (!imageUrl) {
-          return toast({
-            variant: "destructive",
-            title: "Failed uploading the image.",
-            description: "Please try again later.",
-          });
+          return toast.error("Failed uploading the image.");
         }
 
         saveProfileMutation.mutate({
@@ -161,21 +152,12 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
         });
       } catch (error) {
         console.error("Something went wrong", error);
-        toast({
-          variant: "destructive",
-          title: "Failed uploading image.",
-          description: "Please try again later.",
-        });
+        toast.error("Failed uploading image.");
       } finally {
         setLoading(false);
       }
     } else {
-      toast({
-        variant: "destructive",
-        title: title,
-        description: errorMessage,
-      });
-
+      toast.error(errorMessage);
       return;
     }
   };
@@ -186,7 +168,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
     }
   };
 
-  async function onSubmit(values: z.infer<typeof profileSettingsSchema>) {
+  function onSubmit(values: z.infer<typeof profileSettingsSchema>) {
     // React Hook Form considers trailing-spaces as change in form-state
     const hasChanged = compareFormDataWithInitial(memberProfile, values);
 
@@ -207,11 +189,7 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
       });
     } catch (error) {
       console.warn(error);
-      toast({
-        variant: "destructive",
-        title: "Failed updating profile.",
-        description: "Please try again later.",
-      });
+      toast.error("Failed updating profile.");
     } finally {
       setLoading(false);
     }

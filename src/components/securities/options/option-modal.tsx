@@ -1,8 +1,8 @@
 import {
   StepperModal,
   StepperModalContent,
-  type StepperModalProps,
   StepperStep,
+  type StepperModalProps,
 } from "@/components/ui/stepper";
 import { StockOptionFormProvider } from "@/providers/stock-option-form-provider";
 import { api } from "@/trpc/server";

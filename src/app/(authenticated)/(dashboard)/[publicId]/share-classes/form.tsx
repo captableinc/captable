@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -74,7 +74,6 @@ const ShareClassForm = ({
 
   const { watch } = form;
   const router = useRouter();
-  const { toast } = useToast();
   const isSubmitting = form.formState.isSubmitting;
   const watchConversionRights = watch("conversionRights") as string;
   const [renderShareClassInput, setRenderShareClassInput] = useState(false);
@@ -88,34 +87,28 @@ const ShareClassForm = ({
   }, [watchConversionRights]);
 
   const createMutation = api.shareClass.create.useMutation({
-    onSuccess: async ({ success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully created"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
-
-      form.reset();
-      setOpen(false);
-      router.refresh();
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        toast.success(message);
+        form.reset();
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error(message);
+      }
     },
   });
 
   const updateMutation = api.shareClass.update.useMutation({
-    onSuccess: async ({ success, message }) => {
-      toast({
-        variant: success ? "default" : "destructive",
-        title: success
-          ? "🎉 Successfully updated"
-          : "Uh oh! Something went wrong.",
-        description: message,
-      });
-
-      form.reset();
-      setOpen(false);
-      router.refresh();
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        toast.success(message);
+        form.reset();
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error(message);
+      }
     },
   });
 
@@ -473,7 +466,7 @@ const ShareClassForm = ({
                         <FormLabel>Share class it{`'`}ll convert to</FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value!}
+                          defaultValue={field.value as string}
                         >
                           <FormControl>
                             <SelectTrigger className="w-full">
@@ -491,7 +484,7 @@ const ShareClassForm = ({
                               {shareClasses.map((shareClass) => (
                                 <SelectItem
                                   key={shareClass.id}
-                                  value={shareClass.id!}
+                                  value={shareClass.id as string}
                                 >
                                   {shareClass.name}
                                 </SelectItem>

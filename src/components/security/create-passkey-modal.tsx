@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
@@ -39,7 +39,6 @@ type TCreatePasskeyFormSchema = z.infer<typeof ZCreatePasskeyFormSchema>;
 const PasskeyModal = ({ title, subtitle, trigger }: PasskeyModalType) => {
   const parser = new UAParser();
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm<TCreatePasskeyFormSchema>({
@@ -50,16 +49,14 @@ const PasskeyModal = ({ title, subtitle, trigger }: PasskeyModalType) => {
     api.passkey.createRegistrationOptions.useMutation();
 
   const { mutateAsync: createPasskey } = api.passkey.create.useMutation({
-    onSuccess: async () => {
-      toast({
-        description: "🎉 Successfully created passkey",
-        duration: 5000,
-      });
+    onSuccess: () => {
+      toast.success("🎉 Successfully created passkey");
       router.refresh();
       setOpen(false);
     },
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const extractDefaultPasskeyName = () => {
       if (!window || !window.navigator) {
@@ -87,7 +84,6 @@ const PasskeyModal = ({ title, subtitle, trigger }: PasskeyModalType) => {
         passkeyName: defaultPasskeyName,
       });
     }
-    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, form]);
 
   const isSubmitting = form.formState.isSubmitting;
@@ -107,14 +103,9 @@ const PasskeyModal = ({ title, subtitle, trigger }: PasskeyModalType) => {
       });
     } catch (err) {
       console.log({ err });
-
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description:
-          "Something went wrong, please reload the page and try again.",
-        duration: 5000,
-      });
+      toast.error(
+        "Something went wrong, please reload the page and try again.",
+      );
     }
   };
 

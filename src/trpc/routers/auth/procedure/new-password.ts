@@ -40,6 +40,8 @@ export const newPasswordProcedure = withoutAuth
       where: { id: existingUser.id },
       data: {
         password: hashedPassword,
+        // since the user can only reset using email, we can assume the email is verified
+        emailVerified: new Date(),
       },
     });
 

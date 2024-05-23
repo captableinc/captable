@@ -1,5 +1,4 @@
 import MultiStepModal from "@/components/common/multistep-modal";
-import { useToast } from "@/components/ui/use-toast";
 import { api } from "@/trpc/react";
 import {
   SafeMutationSchema,
@@ -8,6 +7,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import useSafeSteps from "./useSafeSteps";
 
 type CreateNewSafeType = {
@@ -25,25 +25,20 @@ export default function CreateNewSafe({
 
   const steps = useSafeSteps({ companyId });
   const formSchema = SafeMutationSchema;
-  const { toast } = useToast();
 
   const { mutateAsync } = api.safe.create.useMutation({
     onSuccess: (payload) => {
-      const isSuccess = payload?.success;
-      const message = payload?.message;
-      toast({
-        variant: isSuccess ? "default" : "destructive",
-        title: isSuccess
-          ? "🎉 Successfully created SAFEs."
-          : "Failed creating safe",
-        description: message,
-      });
-      if (isSuccess) {
+      const success = payload?.success;
+
+      if (success) {
+        toast.success("🎉 SAFEs created successfully.");
+        setOpen(false);
         router.push(
           `/${session?.user.companyPublicId}/documents/esign/${payload?.template?.publicId}`,
         );
+      } else {
+        toast.error("Failed creating SAFEs. Please try again.");
       }
-      setOpen(false);
     },
   });
 

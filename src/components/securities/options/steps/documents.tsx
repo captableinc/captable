@@ -3,7 +3,12 @@
 import { uploadFile } from "@/common/uploads";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { StepperModalFooter, StepperPrev } from "@/components/ui/stepper";
+import { DialogClose } from "@/components/ui/dialog";
+import {
+  StepperModalFooter,
+  StepperPrev,
+  useStepper,
+} from "@/components/ui/stepper";
 import Uploader from "@/components/ui/uploader";
 import { invariant } from "@/lib/error";
 import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
@@ -18,6 +23,7 @@ export const Documents = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const { value } = useStockOptionFormValues();
+  const { reset } = useStepper();
   const [documentsList, setDocumentsList] = useState<FileWithPath[]>([]);
   const { mutateAsync: handleBucketUpload } = api.bucket.create.useMutation();
   const { mutateAsync: addOptionMutation } =
@@ -28,7 +34,7 @@ export const Documents = () => {
         if (success) {
           toast.success("A new stakeholder option has been created.");
           router.refresh();
-          router.push(`/${session.user.companyPublicId}/securities/options`);
+          reset();
         } else {
           toast.error("Failed adding an option. Please try again.");
         }
@@ -96,9 +102,14 @@ export const Documents = () => {
       </div>
       <StepperModalFooter>
         <StepperPrev>Back</StepperPrev>
-        <Button disabled={documentsList.length === 0} onClick={handleComplete}>
-          Submit
-        </Button>
+        <DialogClose asChild>
+          <Button
+            disabled={documentsList.length === 0}
+            onClick={handleComplete}
+          >
+            Submit
+          </Button>
+        </DialogClose>
       </StepperModalFooter>
     </div>
   );

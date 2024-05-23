@@ -63,12 +63,11 @@ export const VestingDetails = (props: VestingDetailsProps) => {
   };
   return (
     <Form {...form}>
-      <div className="space-y-4">
-        <form
-          id="vesting-details-form"
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="grid gap-4"
-        >
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="flex flex-col gap-y-4"
+      >
+        <div className="grid gap-4">
           <FormField
             control={form.control}
             name="vestingSchedule"
@@ -135,7 +134,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
               <FormItem>
                 <FormLabel>Exercise price</FormLabel>
                 <FormControl>
-                  <Input type="text" {...field} />
+                  <Input type="number" {...field} />
                 </FormControl>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
@@ -174,15 +173,13 @@ export const VestingDetails = (props: VestingDetailsProps) => {
               </FormItem>
             )}
           />
-        </form>
+        </div>
 
         <StepperModalFooter>
           <StepperPrev>Back</StepperPrev>
-          <Button type="submit" form="vesting-details-form">
-            Save & Continue
-          </Button>
+          <Button type="submit">Save & Continue</Button>
         </StepperModalFooter>
-      </div>
+      </form>
     </Form>
   );
 };

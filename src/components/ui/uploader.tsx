@@ -25,30 +25,35 @@ type UploadProps =
   | {
       shouldUpload?: true;
       onSuccess?: (data: UploadReturn) => void | Promise<void>;
+      identifier: string;
+      keyPrefix: string;
     }
   | {
       shouldUpload: false;
       onSuccess?: (data: FileWithPath[]) => void | Promise<void>;
+      identifier?: never;
+      keyPrefix?: never;
     };
 
 type Props = {
   header?: React.ReactNode;
   // should be companyPublicId or memberId or userId
-  identifier: string;
-  keyPrefix: string;
+
   multiple?: boolean;
 } & DocumentUploadDropzone &
   UploadProps;
 
-export function Uploader({
-  header,
-  identifier,
-  keyPrefix,
-  onSuccess,
-  multiple = false,
-  shouldUpload = true,
-  ...rest
-}: Props) {
+export function Uploader(props: Props) {
+  const {
+    multiple,
+    onSuccess,
+    shouldUpload: _shouldUpload,
+    identifier: _identifier,
+    keyPrefix: _keyPrefix,
+    header,
+    ...rest
+  } = props;
+
   const [uploading, setUploading] = useState(false);
   const { mutateAsync } = api.bucket.create.useMutation();
 
@@ -62,11 +67,11 @@ export function Uploader({
 
       setUploading(true);
 
-      if (shouldUpload) {
+      if (props.shouldUpload !== false) {
         for (const file of acceptedFiles) {
           const { key, mimeType, name, size } = await uploadFile(file, {
-            identifier,
-            keyPrefix,
+            identifier: props.identifier,
+            keyPrefix: props.keyPrefix,
           });
 
           const data = await mutateAsync({ key, mimeType, name, size });

@@ -1,5 +1,11 @@
+// @ts-nocheck
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+
+const readRuntimePublicEnvVariable = (key) => {
+  if (typeof window === "undefined") return process.env[key];
+  return window.___ENV[key];
+};
 
 export const env = createEnv({
   /**
@@ -41,10 +47,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
-    NEXT_PUBLIC_NODE_ENV: z.string().default("development"),
   },
 
   /**
@@ -53,8 +57,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-    NEXT_PUBLIC_NODE_ENV: process.env.NEXT_PUBLIC_NODE_ENV,
+    NEXT_PUBLIC_BASE_URL: readRuntimePublicEnvVariable("NEXT_PUBLIC_BASE_URL"),
     DATABASE_URL: process.env.DATABASE_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -67,7 +70,9 @@ export const env = createEnv({
     UPLOAD_BUCKET_PRIVATE: process.env.UPLOAD_BUCKET_PRIVATE,
     UPLOAD_ACCESS_KEY_ID: process.env.UPLOAD_ACCESS_KEY_ID,
     UPLOAD_SECRET_ACCESS_KEY: process.env.UPLOAD_SECRET_ACCESS_KEY,
-    NEXT_PUBLIC_UPLOAD_DOMAIN: process.env.NEXT_PUBLIC_UPLOAD_DOMAIN,
+    NEXT_PUBLIC_UPLOAD_DOMAIN: readRuntimePublicEnvVariable(
+      "NEXT_PUBLIC_UPLOAD_DOMAIN",
+    ),
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,

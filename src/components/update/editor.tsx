@@ -19,10 +19,10 @@ import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
 
+import { env } from "@/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
-import { env } from "next-runtime-env";
 
 type UpdatesEditorProps = {
   update?: Update;
@@ -40,7 +40,7 @@ const UpdatesEditor = ({
   companyPublicId,
 }: UpdatesEditorProps) => {
   const router = useRouter();
-  const baseUrl = env("NEXT_PUBLIC_BASE_URL");
+  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");

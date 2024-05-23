@@ -210,7 +210,7 @@ export async function uploadEsignDocuments({
 
   const data = await uploadFile(file, {
     identifier: companyId,
-    keyPrefix: "generic-document",
+    keyPrefix: "signed-esign-doc",
   });
 
   return data;

@@ -1,6 +1,5 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -30,6 +29,7 @@ import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { EmptySelect } from "../../shared/EmptySelect";
 
 const vestingSchedule = Object.values(VestingScheduleEnum).map((val) => ({
   label: toTitleCase(val).replace("Vesting_", "").replaceAll("_", "-"),
@@ -48,20 +48,6 @@ type TFormSchema = z.infer<typeof formSchema>;
 interface VestingDetailsProps {
   stakeholders: RouterOutputs["stakeholder"]["getStakeholders"];
   equityPlans: RouterOutputs["equityPlan"]["getPlans"];
-}
-
-interface EmptySelectProps {
-  title: string;
-  description: string;
-}
-
-function EmptySelect({ title, description }: EmptySelectProps) {
-  return (
-    <Alert variant="destructive">
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{description}</AlertDescription>
-    </Alert>
-  );
 }
 
 export const VestingDetails = (props: VestingDetailsProps) => {

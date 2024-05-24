@@ -1,7 +1,7 @@
 name: captable
 services:
   app:
-    image: node:${NODE_VERSION}-alpine
+    image: node:20.11.0-alpine
     container_name: captable-app
     depends_on:
       - pg
@@ -14,6 +14,27 @@ services:
       - ".env"
     working_dir: /app
     command: [/bin/sh, -c, "npm i -g pnpm@9.1.2 && pnpm install && pnpm dev"]
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - /app/.pnpm-store
+
+  studio:
+    image: node:20.11.0-alpine
+    container_name: captable-studio
+    depends_on:
+      - pg
+      - smtp
+      - minio
+    restart: always
+    ports:
+      - 5555:5555
+    env_file:
+      - ".env"
+    working_dir: /app
+    command:
+      [/bin/sh, -c, "npm i -g pnpm@9.1.2 && pnpm install && pnpm db:studio"]
     volumes:
       - .:/app
       - /app/node_modules

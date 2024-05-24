@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:20-alpine AS base
+FROM --platform=linux/amd64 node:20.11.0-alpine AS base
 
 LABEL fly_launch_runtime="Next.js/Prisma"
 

@@ -1,6 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
 import Tldr from "@/components/common/tldr";
-import ShareModal from "@/components/securities/shares/share-modal";
+import { ShareModal } from "@/components/securities/shares/share-modal";
 import ShareTable from "@/components/securities/shares/share-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

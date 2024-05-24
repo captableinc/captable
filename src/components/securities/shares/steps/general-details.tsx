@@ -143,7 +143,7 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select stakeholder" />
+                          <SelectValue placeholder="Select shareclass" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

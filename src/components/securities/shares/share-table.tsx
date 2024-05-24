@@ -34,7 +34,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { api } from "@/trpc/react";
@@ -44,6 +43,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ShareTableToolbar } from "./share-table-toolbar";
 
 type Share = RouterOutputs["securities"]["getShares"]["data"];
@@ -295,26 +295,15 @@ export const columns: ColumnDef<Share[number]>[] = [
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast();
-
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const share = row.original;
 
       const deleteShareMutation = api.securities.deleteShare.useMutation({
         onSuccess: () => {
-          toast({
-            variant: "default",
-            title: "🎉 Successfully deleted",
-            description: "Share deleted for stakeholder",
-          });
+          toast.success("🎉 Successfully deleted the stakeholder");
           router.refresh();
         },
         onError: () => {
-          toast({
-            variant: "destructive",
-            title: "Failed deletion",
-            description: "Stakeholder share couldn't be deleted",
-          });
+          toast.error("Failed deleting the share");
         },
       });
 

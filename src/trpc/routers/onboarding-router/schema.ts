@@ -22,7 +22,7 @@ export const ZodCompanyMutationSchema = z.object({
     name: z.string().min(1, {
       message: "Company name is required",
     }),
-    website: z.string().min(1).optional(),
+    website: z.string().url().nullable(),
     incorporationType: z.string().min(1, {
       message: "Incorporation type is required",
     }),

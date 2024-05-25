@@ -78,7 +78,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         incorporationState: data?.company.incorporationState ?? "",
         incorporationType: data?.company.incorporationType ?? "",
         name: data?.company.name ?? "",
-        website: data?.company.website ?? "",
+        website: data?.company.website ?? null,
         state: data?.company.state ?? "",
         streetAddress: data?.company.streetAddress ?? "",
         zipcode: data?.company.zipcode ?? "",

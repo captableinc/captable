@@ -1,7 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
-import { CreateSafeModal } from "@/components/safe/create-safe-modal";
 import SafeTable from "@/components/safe/existing/safe-table";
+import { SafeActions } from "@/components/safe/safe-actions";
 import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -24,7 +24,7 @@ const SafePage = async () => {
         title="Create and manage SAFE agreements."
         subtitle="Please click the button for creating agreements."
       >
-        <CreateSafeModal />
+        <SafeActions />
       </EmptyState>
     );
   }
@@ -33,7 +33,7 @@ const SafePage = async () => {
     <PageLayout
       title="SAFEs"
       description="Create and manage SAFE agreements for your company."
-      action={<CreateSafeModal />}
+      action={<SafeActions />}
     >
       <Card className="mt-3">
         <div className="p-6">

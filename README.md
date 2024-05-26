@@ -129,6 +129,9 @@ When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in ot
 
   ```
 
+  > **Note**
+  > Everytime you make changes to Dockerfile or compose.yml, you need to rebuild the docker image by running `docker compose up --build`
+
 - Running `docker compose up` will start all the services on their respective ports.
 
   - App will be running on [http://localhost:3000](http://localhost:3000)

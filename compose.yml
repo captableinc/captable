@@ -1,7 +1,10 @@
 name: captable
 services:
   app:
-    image: node:20.11.0-alpine
+    build:
+      target: deps
+      context: .
+      dockerfile: ./docker/Dockerfile
     container_name: captable-app
     depends_on:
       - pg
@@ -13,7 +16,7 @@ services:
     env_file:
       - ".env"
     working_dir: /app
-    command: [/bin/sh, -c, "npm i -g pnpm@9.1.2 && pnpm install && pnpm dev"]
+    command: [/bin/sh, -c, "pnpm install && pnpm dev"]
     volumes:
       - .:/app
       - /app/node_modules
@@ -21,7 +24,10 @@ services:
       - /app/.pnpm-store
 
   studio:
-    image: node:20.11.0-alpine
+    build:
+      target: deps
+      context: .
+      dockerfile: ./docker/Dockerfile
     container_name: captable-studio
     depends_on:
       - pg
@@ -33,8 +39,7 @@ services:
     env_file:
       - ".env"
     working_dir: /app
-    command:
-      [/bin/sh, -c, "npm i -g pnpm@9.1.2 && pnpm install && pnpm db:studio"]
+    command: [/bin/sh, -c, "pnpm install && pnpm db:studio"]
     volumes:
       - .:/app
       - /app/node_modules

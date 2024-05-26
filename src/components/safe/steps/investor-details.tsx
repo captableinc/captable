@@ -15,6 +15,7 @@ import {
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
+import { useFormValueUpdater } from "@/providers/form-value-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,17 +24,19 @@ const formSchema = z.object({
   capital: z.coerce.number(),
   issueDate: z.string().date(),
   boardApprovalDate: z.string().date(),
-  stakeholderId: z.string(),
+  // stakeholderId: z.string(),
 });
 
 type TFormSchema = z.infer<typeof formSchema>;
 
 export function InvestorDetails() {
   const { next } = useStepper();
+  const setValue = useFormValueUpdater<TFormSchema>();
   const form = useForm<TFormSchema>({ resolver: zodResolver(formSchema) });
 
   const handleSubmit = (data: TFormSchema) => {
     next();
+    setValue(data);
   };
 
   return (
@@ -43,6 +46,19 @@ export function InvestorDetails() {
         className="flex flex-col gap-y-4"
       >
         <div className="flex flex-col gap-y-4">
+          <FormField
+            control={form.control}
+            name="capital"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Capital</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="issueDate"

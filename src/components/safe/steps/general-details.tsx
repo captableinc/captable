@@ -16,6 +16,7 @@ import {
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
+import { useFormValueUpdater } from "@/providers/form-value-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,12 +32,14 @@ type TFormSchema = z.infer<typeof formSchema>;
 
 export const GeneralDetails = () => {
   const { next } = useStepper();
+  const setValue = useFormValueUpdater<TFormSchema>();
   const form = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
   });
 
   const handleSubmit = (data: TFormSchema) => {
     next();
+    setValue(data);
   };
 
   return (

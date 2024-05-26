@@ -10,8 +10,6 @@ import {
   RiBankCardLine,
   RiBuildingFill,
   RiBuildingLine,
-  RiDoorLockFill,
-  RiDoorLockLine,
   RiGroup2Fill,
   RiGroup2Line,
   RiLock2Fill,
@@ -57,12 +55,6 @@ const accountNav = [
     activeIcon: RiNotificationFill,
   },
   {
-    name: "Passkey",
-    href: "/settings/passkey",
-    icon: RiDoorLockLine,
-    activeIcon: RiDoorLockFill,
-  },
-  {
     name: "Security",
     href: "/settings/security",
     icon: RiLock2Line,
@@ -102,7 +94,8 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
             {accountNav.map((item) => {
               const href = `/${companyPublicId}${item.href}`;
-              const isActive = currentPath === href;
+              const isActive =
+                currentPath.includes(href) || currentPath === href;
 
               return (
                 <li key={item.name} className="rounded py-1">

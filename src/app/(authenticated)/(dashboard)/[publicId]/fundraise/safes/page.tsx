@@ -1,7 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
-import SafeTable from "@/components/safe/existing/safe-table";
 import { SafeActions } from "@/components/safe/safe-actions";
+import { SafeTable } from "@/components/safe/safe-table";
 import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
 import { api } from "@/trpc/server";

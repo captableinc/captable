@@ -292,7 +292,7 @@ export const columns: ColumnDef<Safe[number]>[] = [
   },
 ];
 
-const SafeTable = ({ safes }: SafesType) => {
+export const SafeTable = ({ safes }: SafesType) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -336,5 +336,3 @@ const SafeTable = ({ safes }: SafesType) => {
     </div>
   );
 };
-
-export default SafeTable;

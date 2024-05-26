@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useRouter } from "next/navigation";
@@ -22,7 +23,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UAParser } from "ua-parser-js";
 import { z } from "zod";
-import { Alert, AlertDescription } from "../ui/alert";
 
 type PasskeyModalType = {
   title: string;

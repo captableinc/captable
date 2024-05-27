@@ -1,6 +1,6 @@
 import { SafeTemplateEnum } from "@/prisma/enums";
 import { z } from "zod";
-import { ZodCreateTemplateMutationSchema } from "../template-router/schema";
+import { ZodTemplateFieldRecipientSchema } from "../template-router/schema";
 
 const commonSafeSchema = z.object({
   safeId: z.string().min(1),
@@ -9,7 +9,7 @@ const commonSafeSchema = z.object({
   proRata: z.boolean(),
   capital: z.coerce.number(),
   issueDate: z.string().date(),
-  boardApprovalDate: z.string(),
+  boardApprovalDate: z.string().date(),
   stakeholderId: z.string(),
 });
 
@@ -17,10 +17,7 @@ const safeTemplateKeys = Object.keys(SafeTemplateEnum).filter(
   (item) => item !== "CUSTOM",
 ) as [Exclude<keyof typeof SafeTemplateEnum, "CUSTOM">];
 
-const newSafeSchema = ZodCreateTemplateMutationSchema.pick({
-  orderedDelivery: true,
-  recipients: true,
-}).merge(commonSafeSchema);
+const newSafeSchema = ZodTemplateFieldRecipientSchema.merge(commonSafeSchema);
 
 const customTemplateSchema = z
   .object({

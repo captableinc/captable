@@ -6,7 +6,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
 
-import { type ShareContactType } from "@/schema/contacts";
+import type { ShareContactType } from "@/schema/contacts";
 import type { DataRoomRecipient } from "@prisma/client";
 import {
   RiCheckLine as CheckIcon,
@@ -43,8 +43,8 @@ const Share = ({
   removeAccess,
 }: Props) => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [copiedText, copy] = useCopyToClipboard();
+  const [loading, _setLoading] = useState<boolean>(false);
+  const [_copiedText, copy] = useCopyToClipboard();
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Option[]>([]);
 
@@ -68,6 +68,7 @@ const Share = ({
       title={title}
       subtitle={subtitle}
       trigger={trigger}
+      scrollable={true}
       dialogProps={{
         open,
         onOpenChange: (val) => {
@@ -87,6 +88,7 @@ const Share = ({
               setSelected={setSelected}
               options={contacts.map((contact) => ({
                 label:
+                  // biome-ignore lint: It's okay to concatenate with + ;)
                   `${contact.name}` +
                   (contact.institutionName
                     ? ` - ${contact.institutionName}`

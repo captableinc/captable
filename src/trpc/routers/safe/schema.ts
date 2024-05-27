@@ -1,54 +1,56 @@
-import { SafeStatusEnum, SafeTemplateEnum, SafeTypeEnum } from "@/prisma/enums";
+import { SafeTemplateEnum } from "@/prisma/enums";
 import { z } from "zod";
+import { ZodCreateTemplateMutationSchema } from "../template-router/schema";
 
-export const SafeMutationSchema = z.object({
-  id: z.string().optional(),
-  publicId: z.string().optional(),
-  type: z
-    .nativeEnum(SafeTypeEnum, {
-      errorMap: () => ({ message: "Invalid SAFE type" }),
-    })
-    .optional(),
-  status: z
-    .nativeEnum(SafeStatusEnum, {
-      errorMap: () => ({ message: "Invalid SAFE status" }),
-    })
-    .optional(),
-  capital: z.number(),
-  valuationCap: z.number(),
-  discountRate: z.number().default(0),
-  mfn: z.boolean().optional(),
-  proRata: z.boolean().optional(),
-  additionalTerms: z.string().optional(),
-
+const commonSafeSchema = z.object({
+  safeId: z.string().min(1),
+  valuationCap: z.coerce.number(),
+  discountRate: z.coerce.number().optional(),
+  proRata: z.boolean(),
+  capital: z.coerce.number(),
+  issueDate: z.string().date(),
+  boardApprovalDate: z.string(),
   stakeholderId: z.string(),
-
-  investorName: z.string(),
-  investorEmail: z.string().email(),
-  investorInstitutionName: z.string().optional(),
-
-  issueDate: z.coerce.date({
-    required_error: "Issue date is required",
-    invalid_type_error: "This is not a valid date",
-  }),
-  boardApprovalDate: z.coerce.date({
-    required_error: "Board approval date is required",
-    invalid_type_error: "This is not a valid date",
-  }),
-  safeTemplate: z.nativeEnum(SafeTemplateEnum, {
-    errorMap: () => ({ message: "Invalid SAFE template" }),
-  }),
-  documents: z
-    .array(
-      z.object({
-        bucketId: z.string(),
-        name: z.string(),
-      }),
-    )
-    .optional(),
 });
 
-export type SafeMutationType = z.infer<typeof SafeMutationSchema>;
+const safeTemplateKeys = Object.keys(SafeTemplateEnum).filter(
+  (item) => item !== "CUSTOM",
+) as [Exclude<keyof typeof SafeTemplateEnum, "CUSTOM">];
+
+const newSafeSchema = ZodCreateTemplateMutationSchema.pick({
+  orderedDelivery: true,
+  recipients: true,
+}).merge(commonSafeSchema);
+
+const customTemplateSchema = z
+  .object({
+    document: z.object({
+      bucketId: z.string(),
+      name: z.string(),
+    }),
+  })
+  .merge(newSafeSchema);
+
+export const ZodCreateSafeMutationSchema = z.discriminatedUnion(
+  "safeTemplate",
+  [
+    z
+      .object({
+        safeTemplate: z.literal("CUSTOM"),
+      })
+      .merge(customTemplateSchema),
+
+    z
+      .object({
+        safeTemplate: z.enum(safeTemplateKeys),
+      })
+      .merge(newSafeSchema),
+  ],
+);
+
+export type TypeZodCreateSafeMutationSchema = z.infer<
+  typeof ZodCreateSafeMutationSchema
+>;
 
 export const ZodDeleteSafesMutationSchema = z.object({
   safeId: z.string(),
@@ -58,23 +60,16 @@ export type TypeZodDeleteSafesMutationSchema = z.infer<
   typeof ZodDeleteSafesMutationSchema
 >;
 
-export const ZodAddExistingSafeMutationSchema = z.object({
-  safeId: z.string().min(1),
-  valuationCap: z.coerce.number(),
-  discountRate: z.coerce.number().optional(),
-  proRata: z.boolean(),
-  capital: z.coerce.number(),
-  issueDate: z.string().date(),
-  boardApprovalDate: z.string(),
-  stakeholderId: z.string(),
-
-  documents: z.array(
-    z.object({
-      bucketId: z.string(),
-      name: z.string(),
-    }),
-  ),
-});
+export const ZodAddExistingSafeMutationSchema = z
+  .object({
+    documents: z.array(
+      z.object({
+        bucketId: z.string(),
+        name: z.string(),
+      }),
+    ),
+  })
+  .merge(commonSafeSchema);
 
 export type TypeZodAddExistingSafeMutationSchema = z.infer<
   typeof ZodAddExistingSafeMutationSchema

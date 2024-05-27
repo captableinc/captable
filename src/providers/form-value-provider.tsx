@@ -1,3 +1,5 @@
+"use client";
+
 import { invariant } from "@/lib/error";
 import {
   type Dispatch,

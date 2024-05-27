@@ -35,6 +35,10 @@ export const GeneralDetails = () => {
   const setValue = useFormValueUpdater<TFormSchema>();
   const form = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      valuationCap: 0,
+      proRata: false,
+    },
   });
 
   const handleSubmit = (data: TFormSchema) => {

@@ -28,7 +28,7 @@ const formSchema = z.object({
   proRata: z.boolean(),
 });
 
-type TFormSchema = z.infer<typeof formSchema>;
+export type TFormSchema = z.infer<typeof formSchema>;
 
 export const GeneralDetails = () => {
   const { next } = useStepper();

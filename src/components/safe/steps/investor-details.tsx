@@ -24,10 +24,10 @@ const formSchema = z.object({
   capital: z.coerce.number(),
   issueDate: z.string().date(),
   boardApprovalDate: z.string().date(),
-  // stakeholderId: z.string(),
+  stakeholderId: z.string(),
 });
 
-type TFormSchema = z.infer<typeof formSchema>;
+export type TFormSchema = z.infer<typeof formSchema>;
 
 export function InvestorDetails() {
   const { next } = useStepper();

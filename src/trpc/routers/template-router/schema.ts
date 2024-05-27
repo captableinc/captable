@@ -1,8 +1,6 @@
 import { z } from "zod";
 
-export const ZodCreateTemplateMutationSchema = z.object({
-  name: z.string(),
-  bucketId: z.string(),
+export const ZodTemplateFieldRecipientSchema = z.object({
   recipients: z.array(
     z.object({
       email: z.string().email(),
@@ -11,6 +9,13 @@ export const ZodCreateTemplateMutationSchema = z.object({
   ),
   orderedDelivery: z.boolean(),
 });
+
+export const ZodCreateTemplateMutationSchema = z
+  .object({
+    name: z.string(),
+    bucketId: z.string(),
+  })
+  .merge(ZodTemplateFieldRecipientSchema);
 
 export type TypeZodCreateTemplateMutationSchema = z.infer<
   typeof ZodCreateTemplateMutationSchema

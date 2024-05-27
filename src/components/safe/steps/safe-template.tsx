@@ -174,9 +174,8 @@ function CustomTemplateField({
   return (
     <div>
       <Uploader
-        multiple={true}
         identifier={""}
-        keyPrefix="equity-doc"
+        keyPrefix="new-safes"
         shouldUpload={false}
         onSuccess={(bucketData) => {
           setDocumentsList(bucketData);

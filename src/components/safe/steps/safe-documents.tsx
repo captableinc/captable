@@ -18,7 +18,7 @@ export function SafeDocuments() {
         <Uploader
           multiple={true}
           identifier={""}
-          keyPrefix="equity-doc"
+          keyPrefix="existing-safes"
           shouldUpload={false}
           onSuccess={(bucketData) => {
             setDocumentsList(bucketData);

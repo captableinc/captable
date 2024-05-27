@@ -56,7 +56,12 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
   const { data: session } = useSession();
   const router = useRouter();
   const setValue = useFormValueUpdater<TFormSchema>();
-  const form = useForm<TFormSchema>({ resolver: zodResolver(formSchema) });
+  const form = useForm<TFormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      capital: 0,
+    },
+  });
 
   const handleSubmit = (data: TFormSchema) => {
     next();

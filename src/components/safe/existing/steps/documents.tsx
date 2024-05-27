@@ -24,7 +24,7 @@ export const Documents = () => {
         multiple={true}
         // biome-ignore lint/style/noNonNullAssertion: <explanation>
         identifier={data?.user.companyPublicId!}
-        keyPrefix="safes"
+        keyPrefix="existing-safes"
         onSuccess={(bucketData) => {
           form.setValue("documents", [
             //eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

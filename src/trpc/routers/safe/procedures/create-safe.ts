@@ -47,7 +47,7 @@ export const createSafeProcedure = withAuth
           file,
           {
             identifier: "templates",
-            keyPrefix: "safes",
+            keyPrefix: "new-safes",
           },
           "privateBucket",
         );

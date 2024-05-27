@@ -32,7 +32,8 @@ const S3 = new S3Client({
 });
 
 export type TypeKeyPrefixes =
-  | "safes"
+  | "new-safes"
+  | "existing-safes"
   | "signed-esign-doc"
   | "unsigned-esign-doc"
   | "stock-option-docs"

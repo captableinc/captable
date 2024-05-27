@@ -24,7 +24,7 @@ export const Documents = () => {
         multiple={false}
         // biome-ignore lint/style/noNonNullAssertion: <explanation>
         identifier={data?.user.companyPublicId!}
-        keyPrefix="safes"
+        keyPrefix="new-safes"
         onSuccess={(bucketData) => {
           form.setValue("documents", [
             {

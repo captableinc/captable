@@ -12,6 +12,10 @@ export const ZodCreateTemplateMutationSchema = z.object({
   orderedDelivery: z.boolean(),
 });
 
+export type TypeZodCreateTemplateMutationSchema = z.infer<
+  typeof ZodCreateTemplateMutationSchema
+>;
+
 export const ZodGetTemplateQuerySchema = z.object({
   publicId: z.string(),
   isDraftOnly: z.boolean(),

@@ -3,7 +3,6 @@ import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ExistingSafeModal } from "./existing-safe-modal";
@@ -18,27 +17,23 @@ export function SafeActions() {
           Manage SAFE
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="flex flex-col text-start">
         <ExistingSafeModal
           title="Create an existing SAFE agreement"
           subtitle="Record an existing SAFE agreement to keep track of it in your captable."
           trigger={
-            <DropdownMenuItem asChild>
-              <Button variant="ghost" size="sm">
-                Add existing SAFE
-              </Button>
-            </DropdownMenuItem>
+            <Button variant="ghost" size="sm">
+              Add existing SAFE
+            </Button>
           }
         />
         <NewSafeModal
           title="Create a new SAFE agreement"
           subtitle="Create, sign and send a new SAFE agreement to your investors."
           trigger={
-            <DropdownMenuItem asChild>
-              <Button variant="ghost" size="sm">
-                Add new SAFE
-              </Button>
-            </DropdownMenuItem>
+            <Button variant="ghost" size="sm">
+              Add new SAFE
+            </Button>
           }
         />
       </DropdownMenuContent>

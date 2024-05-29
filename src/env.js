@@ -39,6 +39,9 @@ export const env = createEnv({
     // google
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
+
+    // stripe
+    STRIPE_API_KEY: z.string().optional(),
   },
 
   /**
@@ -76,6 +79,8 @@ export const env = createEnv({
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

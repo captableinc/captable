@@ -154,6 +154,7 @@ model Company {
   convertibleNotes ConvertibleNote[]
   dataRooms        DataRoom[]
   eSignAudits      EsignAudit[]
+  subscriptions    Subscription[]
 
   @@unique([publicId])
 }
@@ -917,4 +918,131 @@ model EsignAudit {
   @@index([companyId])
   @@index([templateId])
   @@index([recipientId])
+}
+
+enum PricingType {
+  one_time
+  recurring
+}
+
+enum PricingPlanInterval {
+  day
+  week
+  month
+  year
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  in_active
+  past_due
+}
+
+model Product {
+  id String @id
+  // Product ID from Stripe, e.g. prod_1234.
+
+  active Boolean
+  // Whether the product is currently available for purchase.
+
+  name String
+  // The product's name, meant to be displayable to the customer. Whenever this product is sold via a subscription, name will show up on associated invoice line item descriptions.
+
+  description String?
+  // The product's description.
+
+  metadata Json?
+  // additional data.
+
+  prices Price[]
+}
+
+model Price {
+  id String @id
+  // Price ID from Stripe, e.g. price_1234.
+
+  productId String
+
+  active Boolean
+  // Whether the price can be used for new purchases.
+
+  description String?
+  // A brief description of the price.
+
+  unitAmount BigInt
+  // The unit amount as a positive integer in the smallest currency unit (e.g., 100 cents for US$1.00 or 100 for ¥100, a zero-decimal currency).
+
+  currency String @db.Char(3)
+  // Three-letter ISO currency code, in lowercase.
+
+  type PricingType
+
+  interval PricingPlanInterval
+
+  intervalCount Int
+  // The number of intervals (specified in the `interval` attribute) between subscription billings. For example, `interval=month` and `interval_count=3` bills every 3 months.
+
+  trialPeriodDays Int?
+  // Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+
+  metadata Json?
+  // additional data.
+
+  product      Product        @relation(fields: [productId], references: [id])
+  Subscription Subscription[]
+
+  @@index([productId])
+}
+
+model Subscription {
+  id String @id
+  // Subscription ID from Stripe, e.g. sub_1234.
+
+  priceId String
+  // ID of the price that created this subscription.
+
+  companyId String?
+  // ID of the company that created this subscription.
+
+  quantity Int
+  // Quantity multiplied by the unit amount of the price creates the amount of the subscription. Can be used to charge multiple seats.
+
+  status SubscriptionStatus
+
+  cancelAtPeriodEnd Boolean
+  // If true the subscription has been canceled by the user and will be deleted at the end of the billing period.
+
+  created DateTime @default(now())
+  // Time at which the subscription was created.
+
+  currentPeriodStart DateTime @default(now())
+  // Start of the current period that the subscription has been invoiced for.
+
+  currentPeriodEnd DateTime @default(now())
+  // End of the current period that the subscription has been invoiced for. At the end of this period, a new invoice will be created.
+
+  endedAt DateTime?
+  // If the subscription has ended, the timestamp of the date the subscription ended.
+
+  cancelAt DateTime?
+  /// A date in the future at which the subscription will automatically get canceled.
+
+  canceledAt DateTime?
+  // If the subscription has been canceled, the date of that cancellation. If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will still reflect the date of the initial cancellation request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
+
+  trialStart DateTime?
+  // If the subscription has a trial, the beginning of that trial.
+
+  trialEnd DateTime?
+  // If the subscription has a trial, the end of that trial.
+
+  metadata Json?
+  // additional data.
+
+  company Company? @relation(fields: [companyId], references: [id])
+  price   Price    @relation(fields: [priceId], references: [id])
+
+  @@index([companyId])
+  @@index([priceId])
 }

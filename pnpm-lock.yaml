@@ -5819,6 +5819,10 @@ packages:
     resolution: {integrity: sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==}
     engines: {node: '>=14.16'}
 
+  stripe@15.8.0:
+    resolution: {integrity: sha512-7eEPMgehd1I16cXeP7Rcn/JKkPWIadB9vGIeE+vbCzQXaY5R95AoNmkZx0vmlu1H4QIDs7j1pYIKPRm9Dr4LKg==}
+    engines: {node: '>=12.*'}
+
   strnum@1.0.5:
     resolution: {integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==}
 
@@ -13412,6 +13416,11 @@ snapshots:
   strip-final-newline@3.0.0: {}
 
   strip-json-comments@5.0.1: {}
+
+  stripe@15.8.0:
+    dependencies:
+      '@types/node': 20.12.12
+      qs: 6.12.1
 
   strnum@1.0.5: {}
 

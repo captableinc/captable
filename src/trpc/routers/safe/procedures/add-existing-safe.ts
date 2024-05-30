@@ -9,25 +9,21 @@ export const addExistingSafeProcedure = withAuth
   .mutation(async ({ ctx, input }) => {
     const { userAgent, requestIp, session } = ctx;
     const user = ctx.session.user;
-    const documents = input.documents;
+    const { documents, ...rest } = input;
 
     try {
       await ctx.db.$transaction(async (tx) => {
         const { companyId, memberId } = await checkMembership({ session, tx });
 
-        const data = {
-          companyId,
-          stakeholderId: input.stakeholderId,
-          publicId: generatePublicId(),
-          capital: input.capital,
-          valuationCap: input.valuationCap,
-          discountRate: input.discountRate ?? 0,
-          proRata: input.proRata ?? false,
-          issueDate: new Date(input.issueDate),
-          boardApprovalDate: new Date(input.boardApprovalDate),
-        };
-
-        const safe = await tx.safe.create({ data });
+        const safe = await tx.safe.create({
+          data: {
+            publicId: generatePublicId(),
+            companyId,
+            ...rest,
+            issueDate: new Date(input.issueDate),
+            boardApprovalDate: new Date(input.boardApprovalDate),
+          },
+        });
 
         const bulkDocuments = documents.map((doc) => ({
           companyId,

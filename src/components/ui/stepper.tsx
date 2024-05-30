@@ -237,10 +237,16 @@ export function StepperPrev({
   children,
   ...rest
 }: ButtonProps & { children: ReactNode }) {
-  const { prev } = useStepper();
+  const { prev, activeIndex } = useStepper();
 
   return (
-    <Button variant="outline" onClick={prev} {...rest}>
+    <Button
+      variant="outline"
+      disabled={activeIndex === 0}
+      type="button"
+      onClick={prev}
+      {...rest}
+    >
       {children}
     </Button>
   );

@@ -1,33 +1,23 @@
-import { api } from "@/trpc/server";
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-
-import PasskeyModal from "@/components/security/create-passkey-modal";
-import PasskeyTable from "@/components/security/user-passkeys-data-table";
+import { SettingsHeader } from "@/components/security/SettingHeader";
+import PasskeyModal from "@/components/security/passkey/create-passkey-modal";
+import PasskeyTable from "@/components/security/passkey/user-passkeys-data-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { api } from "@/trpc/server";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Manage passkeys",
+  title: "Security",
 };
-
-export default async function PasskeysPage() {
+export default async function PasskeyPage() {
   const passkeys = await api.passkey.find.query();
-  const isPasskeyEnabled = true;
-
-  if (!isPasskeyEnabled) {
-    redirect("/settings/security");
-  }
-
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">
-        <div className="gap-y-3">
-          <h3 className="font-medium">Passkey</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Add a new passkey
-          </p>
-        </div>
+        <SettingsHeader
+          title="Manage Passkey"
+          subtitle="Add, delete or update passkey configuration"
+        />
         <div>
           <PasskeyModal
             title="Add a new passkey"

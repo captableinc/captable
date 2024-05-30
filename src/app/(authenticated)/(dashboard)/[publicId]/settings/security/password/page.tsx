@@ -8,18 +8,17 @@ export const metadata: Metadata = {
 };
 export default function SecurityPage() {
   return (
-    <>
-      <div className="flex flex-col gap-y-3">
-        <div>
-          <SettingsHeader
-            title="Update Password"
-            subtitle="Provide a strong password as possible"
-          />
-        </div>
-        <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-          <UpdatePasswordForm />
-        </Card>
+    <div className="flex flex-col gap-y-3">
+      <div>
+        <SettingsHeader
+          title="Update Password"
+          subtitle="Update your password to keep your account secure and safe."
+        />
       </div>
-    </>
+
+      <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
+        <UpdatePasswordForm />
+      </Card>
+    </div>
   );
 }

@@ -48,12 +48,14 @@ export const UpdatePasswordForm = () => {
   const { mutateAsync } = api.security.updatePassword.useMutation({
     onSuccess: ({ success }) => {
       if (success) {
-        toast("🎉 Password Updated");
+        toast.success("Password updated successfully!");
         form.reset();
       }
     },
-    onError: () => {
-      toast("Uh oh! Something went wrong.");
+    onError: (error: { message: string } | Error | null | undefined) => {
+      toast.error(
+        error?.message ?? "An error occurred while updating your password",
+      );
     },
   });
 
@@ -75,7 +77,7 @@ export const UpdatePasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="grid gap-3">
-                    <FormLabel htmlFor="password">Current Password</FormLabel>
+                    <FormLabel htmlFor="password">Current password</FormLabel>
                     <FormControl>
                       <PasswordInput
                         id="password"
@@ -98,7 +100,7 @@ export const UpdatePasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="grid gap-3">
-                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <FormLabel htmlFor="password">New password</FormLabel>
                     <FormControl>
                       <PasswordInput
                         id="password"
@@ -122,7 +124,7 @@ export const UpdatePasswordForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="grid gap-3">
-                    <FormLabel htmlFor="password">Repeat Password</FormLabel>
+                    <FormLabel htmlFor="password">Verify password</FormLabel>
                     <FormControl>
                       <PasswordInput
                         id="repeatPassword"

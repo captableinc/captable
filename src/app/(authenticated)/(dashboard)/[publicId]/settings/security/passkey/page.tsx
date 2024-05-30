@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function PasskeyPage() {
   const passkeys = await api.passkey.find.query();
   return (
-    <div className="flex flex-col mt-12 gap-y-3">
+    <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">
         <SettingsHeader
           title="Manage Passkey"

@@ -10,25 +10,22 @@ export const metadata: Metadata = {
 
 const SecurityLists = [
   {
-    title: "Change your password",
-    description:
-      "Let's update your current password with something more secure",
+    title: "Password",
+    description: "Update your password to keep your account secure and safe.",
     href: "security/password",
-    buttonDisplayName: "Update",
+    buttonDisplayName: "Update password",
   },
   {
     title: "Passkeys",
-    description: `Allows authenticating using biometrics, password managers,
-    hardware keys, etc.`,
+    description: "Add, delete or update passkey configuration.",
     href: "security/passkey",
-    buttonDisplayName: "Manage",
+    buttonDisplayName: "Manage passkeys",
   },
   {
     title: "Two factor authentication",
-    description:
-      "Add an authenticator to make password signing more secure and authentic.",
+    description: "Add an extra layer of security to your account.",
     href: "security/2fa",
-    buttonDisplayName: "Add 2FA",
+    buttonDisplayName: "Manage 2FA",
   },
 ];
 

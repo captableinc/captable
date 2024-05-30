@@ -24,7 +24,7 @@ export const SecurityList = ({
           <AlertDescription className="mr-4">{description}</AlertDescription>
         </div>
 
-        <Button asChild className="bg-black">
+        <Button asChild size="sm" variant={"outline"}>
           <Link href={href}>{buttonDisplayName}</Link>
         </Button>
       </Alert>

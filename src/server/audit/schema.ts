@@ -40,6 +40,9 @@ export const AuditSchema = z.object({
     "documentShare.created",
 
     "password.updated",
+
+    "google-account.connected",
+    "google-account.disconnected",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({

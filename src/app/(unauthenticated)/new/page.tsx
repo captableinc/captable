@@ -7,14 +7,14 @@ import { notFound } from "next/navigation";
 import LoginWithGoogle from "./components/LoginWithGoogle";
 
 export default async function CapPage() {
-  if (!env.NEXT_PUBLIC_BASE_URL.includes("captable.inc")) {
+  if (env.NEXTAUTH_URL && !env.NEXTAUTH_URL.includes("captable.inc")) {
     return notFound();
   }
 
   const session = await getServerAuthSession();
 
   if (session?.user) {
-    return redirect("/onboarding");
+    return redirect("/company/new");
   }
 
   return (

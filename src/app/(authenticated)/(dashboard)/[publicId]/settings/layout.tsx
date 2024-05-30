@@ -10,10 +10,10 @@ import {
   RiBankCardLine,
   RiBuildingFill,
   RiBuildingLine,
-  RiDoorLockFill,
-  RiDoorLockLine,
   RiGroup2Fill,
   RiGroup2Line,
+  RiLock2Fill,
+  RiLock2Line,
   RiNotificationFill,
   RiNotificationLine,
 } from "@remixicon/react";
@@ -55,10 +55,10 @@ const accountNav = [
     activeIcon: RiNotificationFill,
   },
   {
-    name: "Passkey",
-    href: "/settings/passkey",
-    icon: RiDoorLockLine,
-    activeIcon: RiDoorLockFill,
+    name: "Security",
+    href: "/settings/security",
+    icon: RiLock2Line,
+    activeIcon: RiLock2Fill,
   },
 ];
 
@@ -71,7 +71,7 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
     <PageLayout title="Settings">
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 md:col-span-3">
-          <ul role="list" className="text-sm">
+          <ul className="text-sm">
             {companyNav.map((item) => {
               const href = `/${companyPublicId}${item.href}`;
               const isActive = currentPath === href;
@@ -94,7 +94,8 @@ const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
 
             {accountNav.map((item) => {
               const href = `/${companyPublicId}${item.href}`;
-              const isActive = currentPath === href;
+              const isActive =
+                currentPath.includes(href) || currentPath === href;
 
               return (
                 <li key={item.name} className="rounded py-1">

@@ -261,8 +261,6 @@ function CustomTemplateField({
   return (
     <div>
       <Uploader
-        identifier={""}
-        keyPrefix="new-safes"
         shouldUpload={false}
         onSuccess={(bucketData) => {
           setDocumentsList(bucketData);

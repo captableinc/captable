@@ -1,4 +1,4 @@
-import { SettingsHeader } from "@/components/security/SettingHeader";
+import { SecurityHeader } from "@/components/security/SecurityHeader";
 import { UpdatePasswordForm } from "@/components/security/password/update-password-form";
 import { Card } from "@/components/ui/card";
 import type { Metadata } from "next";
@@ -6,11 +6,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Security",
 };
-export default function SecurityPage() {
+export default function UpdatePasswordPage() {
   return (
     <div className="flex flex-col gap-y-3">
       <div>
-        <SettingsHeader
+        <SecurityHeader
           title="Update Password"
           subtitle="Update your password to keep your account secure and safe."
         />

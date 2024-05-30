@@ -1,4 +1,4 @@
-import { SettingsHeader } from "@/components/security/SettingHeader";
+import { SecurityHeader } from "@/components/security/SecurityHeader";
 import PasskeyModal from "@/components/security/passkey/create-passkey-modal";
 import PasskeyTable from "@/components/security/passkey/user-passkeys-data-table";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default async function PasskeyPage() {
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">
-        <SettingsHeader
+        <SecurityHeader
           title="Manage Passkey"
           subtitle="Add, delete or update passkey configuration"
         />

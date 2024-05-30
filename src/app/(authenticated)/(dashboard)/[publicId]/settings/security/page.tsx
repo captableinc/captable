@@ -1,5 +1,5 @@
+import { SecurityHeader } from "@/components/security/SecurityHeader";
 import { SecurityList } from "@/components/security/SecurityList";
-import { SettingsHeader } from "@/components/security/SettingHeader";
 import { getServerAuthSession } from "@/server/auth";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -22,6 +22,12 @@ const SecurityLists = [
     buttonDisplayName: "Manage passkeys",
   },
   {
+    title: "Google Account",
+    description: "Connect / disconnect your member account with Google Oauth",
+    href: "security/google",
+    buttonDisplayName: "Manage Oauth",
+  },
+  {
     title: "Two factor authentication",
     description: "Add an extra layer of security to your account.",
     href: "security/2fa",
@@ -36,7 +42,7 @@ export default async function SecurityPage() {
   }
   return (
     <>
-      <SettingsHeader
+      <SecurityHeader
         title="Security"
         subtitle="Manage your password and security settings."
         showBackArrow={false}

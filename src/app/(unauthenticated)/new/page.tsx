@@ -1,18 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { env } from "@/env";
 import { getServerAuthSession } from "@/server/auth";
-import {
-  RiCheckboxCircleFill as CheckIcon,
-  RiGoogleFill as GoogleIcon,
-} from "@remixicon/react";
+import { RiCheckboxCircleFill as CheckIcon } from "@remixicon/react";
 
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import LoginWithGoogle from "./components/LoginWithGoogle";
 
 export default async function CapPage() {
-  if (env.NEXT_PUBLIC_BASE_URL !== "https://cloud.captable.inc") {
-    // if (env.NEXT_PUBLIC_BASE_URL !== "http://localhost:3000") {
+  if (!env.NEXT_PUBLIC_BASE_URL.includes("captable.inc")) {
     return notFound();
   }
 

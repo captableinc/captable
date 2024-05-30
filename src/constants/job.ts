@@ -7,6 +7,8 @@ export const JOB_TYPES = {
     "member-invite",
     "esign-confirmation",
     "esign-notification",
+    "google-connected",
+    "google-disconnected",
   ],
   generate: ["esign-pdf"],
 } as const;

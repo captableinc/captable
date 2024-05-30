@@ -170,6 +170,7 @@ model Member {
   status       MemberStatusEnum @default(PENDING)
   isOnboarded  Boolean          @default(false)
   workEmail    String?
+  linkedEmail  String?          @unique
   lastAccessed DateTime         @default(now())
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt

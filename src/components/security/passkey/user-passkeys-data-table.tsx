@@ -29,7 +29,7 @@ import { api } from "@/trpc/react";
 import { RiMoreLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +37,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "../../ui/dropdown-menu";
 import { PasskeyTableToolbar } from "./passkey-table-toolbar";
 import UpdatePasskeyNameModal from "./update-passkey-name-modal";
 
@@ -204,7 +204,7 @@ export const columns: ColumnDef<Passkey[number]>[] = [
             <UpdatePasskeyNameModal
               title="Update passkey name"
               subtitle="Please provide some relevant subtitle"
-              trigger={<></>}
+              trigger={<p />}
               passkeyId={passkey.id}
               prevPasskeyName={passkey.name}
               dialogProps={{ open, setOpen }}

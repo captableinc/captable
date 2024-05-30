@@ -13,6 +13,7 @@ import { onboardingRouter } from "../routers/onboarding-router/router";
 import { passkeyRouter } from "../routers/passkey-router/router";
 import { safeRouter } from "../routers/safe/router";
 import { securitiesRouter } from "../routers/securities-router/router";
+import { securityRouter } from "../routers/security-router/router";
 import { shareClassRouter } from "../routers/share-class/router";
 import { stakeholderRouter } from "../routers/stakeholder-router/router";
 import { templateFieldRouter } from "../routers/template-field-router/router";
@@ -44,6 +45,7 @@ export const appRouter = createTRPCRouter({
   dataRoom: dataRoomRouter,
   common: commonRouter,
   passkey: passkeyRouter,
+  security: securityRouter,
 });
 
 // export type definition of API

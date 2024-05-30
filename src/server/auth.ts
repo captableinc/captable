@@ -13,7 +13,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env";
-import { type MemberStatusEnum } from "@/prisma/enums";
+import type { MemberStatusEnum } from "@/prisma/enums";
 
 import { type TPrismaOrTransaction, db } from "@/server/db";
 
@@ -25,7 +25,9 @@ import {
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { getUserByEmail, getUserById } from "./user";
 
+// biome-ignore lint/style/noNonNullAssertion: warning
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+// biome-ignore lint/style/noNonNullAssertion: warning
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 export const JWT_SECRET = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
@@ -75,9 +77,22 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider !== "credentials") return true;
+      if (account?.type === "oauth" && account?.provider === "google") {
+        if (!user.email) return false;
+
+        const memberWithLinkedEmail = await db.member.findUnique({
+          where: {
+            linkedEmail: user.email,
+          },
+        });
+
+        if (!memberWithLinkedEmail) return "/login";
+
+        return true;
+      }
 
       const existingUser = await getUserById(user.id);
+
       if (!existingUser?.emailVerified) return false;
 
       return true;
@@ -98,7 +113,58 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
 
-    async jwt({ token, trigger }) {
+    async jwt({ token, trigger, user, account }) {
+      if (
+        account?.type === "oauth" &&
+        account.provider &&
+        account.providerAccountId
+      ) {
+        const member = await db.member.findFirst({
+          where: {
+            linkedEmail: user.email,
+            isOnboarded: true,
+            status: "ACTIVE",
+          },
+          select: {
+            id: true,
+            status: true,
+            companyId: true,
+            isOnboarded: true,
+            company: {
+              select: {
+                publicId: true,
+              },
+            },
+            user: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                email: true,
+              },
+            },
+          },
+        });
+        if (member) {
+          token.sub = member.user.id;
+          token.status = member.status;
+          token.name = member.user.name;
+          token.email = member.user.email;
+          token.memberId = member.id;
+          token.companyId = member.companyId;
+          token.isOnboarded = member.isOnboarded;
+          token.companyPublicId = member.company.publicId;
+          token.picture = member.user.image;
+        } else {
+          token.status = "";
+          token.companyId = "";
+          token.memberId = "";
+          token.isOnboarded = false;
+          token.companyPublicId = "";
+        }
+        return token;
+      }
+
       if (trigger) {
         const member = await db.member.findFirst({
           where: {
@@ -285,6 +351,7 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
 

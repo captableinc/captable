@@ -82,6 +82,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         state: data?.company.state ?? "",
         streetAddress: data?.company.streetAddress ?? "",
         zipcode: data?.company.zipcode ?? "",
+        country: data?.company.country ?? "",
       },
     },
   });
@@ -192,7 +193,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="col-span-full flex items-center gap-x-8">
+        <div className="col-span-full space-y-2 flex flex-col sm:flex-row items-center gap-x-3 sm:gap-x-8">
           <Avatar className="h-20 w-20 rounded">
             <AvatarImage src={imageUrl || "/placeholders/company.svg"} />
           </Avatar>
@@ -223,7 +224,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         <div className="grid gap-2">
           <div className="grid gap-5">
             {type === "onboarding" && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="user.name"
@@ -254,7 +255,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="company.name"
@@ -307,7 +308,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               Please provide your company{`'`}s address.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="company.streetAddress"
@@ -337,7 +338,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="company.state"
@@ -402,7 +403,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               certificate of incorporation will come in handy here.
             </p>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="company.incorporationType"
@@ -450,7 +451,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="company.incorporationCountry"

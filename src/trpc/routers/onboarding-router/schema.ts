@@ -47,9 +47,12 @@ export const ZodCompanyMutationSchema = z.object({
     zipcode: z.string().min(1, {
       message: "Zipcode is required",
     }),
-    country: z.string().min(1, {
-      message: "Country is required",
-    }),
+    country: z
+      .string()
+      .min(1, {
+        message: "Country is required",
+      })
+      .default("US"),
     logo: z.string().min(1).optional(),
   }),
 });

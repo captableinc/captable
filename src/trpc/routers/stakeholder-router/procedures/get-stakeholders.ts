@@ -11,7 +11,13 @@ export const getStakeholdersProcedure = withAuth.query(async ({ ctx }) => {
       where: {
         companyId,
       },
-
+      include: {
+        company: {
+          select: {
+            name: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },

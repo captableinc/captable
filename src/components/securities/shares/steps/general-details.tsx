@@ -1,4 +1,5 @@
 "use client";
+import { EmptySelect } from "@/components/securities/shared/EmptySelect";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,6 +30,7 @@ import {
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
+import { VestingSchedule } from "@/lib/vesting";
 import {
   SecuritiesStatusEnum,
   ShareLegendsEnum,
@@ -38,38 +40,17 @@ import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { z } from "zod";
-import { EmptySelect } from "../../shared/EmptySelect";
 
 export const humanizeCompanyLegends = (type: string): string => {
   switch (type) {
     case ShareLegendsEnum.US_SECURITIES_ACT:
-      return "Us securities act";
+      return "US Securities Act";
     case ShareLegendsEnum.TRANSFER_RESTRICTIONS:
-      return "Transfer restrictions";
+      return "Transfer Restrictions";
     case ShareLegendsEnum.SALE_AND_ROFR:
-      return "Sale and Rofr";
-    default:
-      return "";
-  }
-};
-
-export const humanizeVestingSchedule = (type: string): string => {
-  switch (type) {
-    case VestingScheduleEnum.VESTING_0_0_0:
-      return "Immediate vesting";
-    case VestingScheduleEnum.VESTING_0_0_1:
-      return "1 year cliff with no vesting";
-    case VestingScheduleEnum.VESTING_4_1_0:
-      return "4 years vesting every month with no cliff";
-    case VestingScheduleEnum.VESTING_4_1_1:
-      return "4 years vesting every month with 1 year cliff";
-    case VestingScheduleEnum.VESTING_4_3_1:
-      return "4 years vesting every 3 months with 1 year cliff";
-    case VestingScheduleEnum.VESTING_4_6_1:
-      return "4 years vesting every 6 months with 1 year cliff";
-    case VestingScheduleEnum.VESTING_4_12_1:
-      return "4 years vesting every year with 1 year cliff";
+      return "Sale and ROFR";
     default:
       return "";
   }
@@ -139,11 +120,10 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Share class</FormLabel>
-                    {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select shareclass" />
+                          <SelectValue placeholder="Select a share class" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -155,8 +135,8 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                           ))
                         ) : (
                           <EmptySelect
-                            title="ShareClass not found"
-                            description="Please add required shareclass."
+                            title="Share class not found!"
+                            description="Please add required share class."
                           />
                         )}
                       </SelectContent>
@@ -204,30 +184,57 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
               <FormField
                 control={form.control}
                 name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <NumericFormat
+                          thousandSeparator
+                          allowedDecimalSeparators={["%"]}
+                          decimalScale={2}
+                          {...rest}
+                          customInput={Input}
+                          onValueChange={(values) => {
+                            const { floatValue } = values;
+                            onChange(floatValue);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
             <div className="flex-1">
               <FormField
                 control={form.control}
                 name="pricePerShare"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price per share</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Price per share</FormLabel>
+                      <FormControl>
+                        <NumericFormat
+                          thousandSeparator
+                          allowedDecimalSeparators={["%"]}
+                          decimalScale={2}
+                          prefix={"$  "}
+                          {...rest}
+                          customInput={Input}
+                          onValueChange={(values) => {
+                            const { floatValue } = values;
+                            onChange(floatValue);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
           </div>
@@ -244,14 +251,14 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select Vesting" />
+                      <SelectValue placeholder="Select vesting schedule" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {vestingSchedule?.length &&
                       vestingSchedule.map((vs) => (
                         <SelectItem key={vs} value={vs}>
-                          {humanizeVestingSchedule(vs)}
+                          {VestingSchedule[vs]}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -266,14 +273,16 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
             name="companyLegends"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Legends</FormLabel>
+                <FormLabel>Company legends</FormLabel>
                 <MultiSelector
                   onValuesChange={field.onChange}
-                  //@ts-ignore
                   values={field.value}
                 >
                   <MultiSelectorTrigger>
-                    <MultiSelectorInput placeholder="Select company legends" />
+                    <MultiSelectorInput
+                      className="text-sm"
+                      placeholder="Select company legends"
+                    />
                   </MultiSelectorTrigger>
                   <MultiSelectorContent>
                     <MultiSelectorList>

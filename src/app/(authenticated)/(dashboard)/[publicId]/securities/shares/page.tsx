@@ -23,20 +23,13 @@ const SharesPage = async () => {
         subtitle="Please click the button for adding new shares."
       >
         <ShareModal
+          size="4xl"
           title="Create a share"
-          subtitle={
-            <Tldr
-              message="Please fill in the details to create a share. If you need help, click the link below."
-              cta={{
-                label: "Learn more",
-                href: "https://opencap.co/help/stakeholder-shares",
-              }}
-            />
-          }
+          subtitle="Please fill in the details to create and issue a share."
           trigger={
             <Button size="lg">
               <RiAddFill className="mr-2 h-5 w-5" />
-              Add a share
+              Create a share
             </Button>
           }
         />

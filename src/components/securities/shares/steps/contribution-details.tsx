@@ -26,6 +26,7 @@ import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 import { EmptySelect } from "../../shared/EmptySelect";
 
@@ -85,7 +86,7 @@ export const ContributionDetails = ({
                     ) : (
                       <EmptySelect
                         title="Stakeholders not found"
-                        description="Please add stakeholders in company."
+                        description="Please add a stakeholder first."
                       />
                     )}
                   </SelectContent>
@@ -99,30 +100,58 @@ export const ContributionDetails = ({
               <FormField
                 control={form.control}
                 name="capitalContribution"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Capital contribution</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Contributed capital amount</FormLabel>
+                      <FormControl>
+                        <NumericFormat
+                          thousandSeparator
+                          allowedDecimalSeparators={["%"]}
+                          decimalScale={2}
+                          prefix={"$  "}
+                          {...rest}
+                          customInput={Input}
+                          onValueChange={(values) => {
+                            const { floatValue } = values;
+                            onChange(floatValue);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
             <div className="flex-1">
               <FormField
                 control={form.control}
                 name="ipContribution"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Intellectual property</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Value of intellectual property</FormLabel>
+                      <FormControl>
+                        <NumericFormat
+                          thousandSeparator
+                          allowedDecimalSeparators={["%"]}
+                          decimalScale={2}
+                          prefix={"$  "}
+                          {...rest}
+                          customInput={Input}
+                          onValueChange={(values) => {
+                            const { floatValue } = values;
+                            onChange(floatValue);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
           </div>
@@ -131,30 +160,58 @@ export const ContributionDetails = ({
               <FormField
                 control={form.control}
                 name="debtCancelled"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Debt cancelled</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Debt cancelled amount</FormLabel>
+                      <FormControl>
+                        <NumericFormat
+                          thousandSeparator
+                          allowedDecimalSeparators={["%"]}
+                          decimalScale={2}
+                          prefix={"$  "}
+                          {...rest}
+                          customInput={Input}
+                          onValueChange={(values) => {
+                            const { floatValue } = values;
+                            onChange(floatValue);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
             <div className="flex-1">
               <FormField
                 control={form.control}
                 name="otherContributions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Other contributions</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-xs font-light" />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <FormLabel>Other contributed amount</FormLabel>
+                      <FormControl>
+                        <NumericFormat
+                          thousandSeparator
+                          allowedDecimalSeparators={["%"]}
+                          decimalScale={2}
+                          prefix={"$  "}
+                          {...rest}
+                          customInput={Input}
+                          onValueChange={(values) => {
+                            const { floatValue } = values;
+                            onChange(floatValue);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
               />
             </div>
           </div>

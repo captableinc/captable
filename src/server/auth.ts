@@ -9,24 +9,21 @@ import {
   getServerSession,
 } from "next-auth";
 
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-
 import { env } from "@/env";
-import { type MemberStatusEnum } from "@/prisma/enums";
-
-import { type TPrismaOrTransaction, db } from "@/server/db";
-
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import {
   type TAuthenticationResponseJSONSchema,
   ZAuthenticationResponseJSONSchema,
 } from "@/lib/types";
+import type { MemberStatusEnum } from "@/prisma/enums";
+import { type TPrismaOrTransaction, db } from "@/server/db";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { getUserByEmail, getUserById } from "./user";
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 export const JWT_SECRET = new TextEncoder().encode(env.NEXTAUTH_SECRET);
 
 /**
@@ -161,14 +158,9 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (credentials) {
           const { email, password } = credentials;
-
           const user = await getUserByEmail(email);
-          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
           if (!user || !user.password) return null;
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           const passwordsMatch = await bcrypt.compare(password, user.password);
-
           if (passwordsMatch) return user;
         }
         return null;
@@ -283,8 +275,9 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
     GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientId: GOOGLE_CLIENT_ID as string,
+      clientSecret: GOOGLE_CLIENT_SECRET as string,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
 

@@ -2,6 +2,7 @@ import { env } from "@/env";
 import {
   deletePriceRecord,
   deleteProductRecord,
+  manageSubscriptionStatusChange,
   stripe,
   upsertPriceRecord,
   upsertProductRecord,
@@ -59,22 +60,22 @@ export async function POST(req: Request) {
         case "customer.subscription.updated":
         case "customer.subscription.deleted": {
           const subscription = event.data.object as Stripe.Subscription;
-          //   await manageSubscriptionStatusChange(
-          //     subscription.id,
-          //     subscription.customer as string,
-          //     event.type === "customer.subscription.created",
-          //   );
+          await manageSubscriptionStatusChange(
+            subscription.id,
+            subscription.customer as string,
+            event.type === "customer.subscription.created",
+          );
           break;
         }
         case "checkout.session.completed": {
           const checkoutSession = event.data.object as Stripe.Checkout.Session;
           if (checkoutSession.mode === "subscription") {
             const subscriptionId = checkoutSession.subscription;
-            // await manageSubscriptionStatusChange(
-            //   subscriptionId as string,
-            //   checkoutSession.customer as string,
-            //   true,
-            // );
+            await manageSubscriptionStatusChange(
+              subscriptionId as string,
+              checkoutSession.customer as string,
+              true,
+            );
           }
           break;
         }

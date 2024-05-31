@@ -1,6 +1,13 @@
 import { env } from "@/env";
+import { invariant } from "@/lib/error";
 import Stripe from "stripe";
 import { db } from "./db";
+
+const toDateTime = (secs: number) => {
+  const t = new Date(+0); // Unix epoch start.
+  t.setSeconds(secs);
+  return t;
+};
 
 export const stripe = new Stripe(env.STRIPE_API_KEY ?? "", {
   typescript: true,
@@ -66,3 +73,63 @@ export async function upsertPriceRecord(price: Stripe.Price) {
     },
   });
 }
+
+export const manageSubscriptionStatusChange = async (
+  subscriptionId: string,
+  customerId: string,
+  createAction = false,
+) => {
+  const customer = await db.billingCustomer.findFirst({
+    where: { id: customerId },
+  });
+
+  invariant(customer, "Customer lookup failed");
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ["default_payment_method"],
+  });
+
+  const item = subscription.items.data[0];
+
+  invariant(item, "item not found");
+
+  const data = {
+    id: subscription.id,
+    customerId: customer?.id,
+    metadata: subscription.metadata,
+    status: subscription.status,
+    priceId: item.price.id,
+    quantity: item.quantity ?? 1,
+    cancelAtPeriodEnd: subscription.cancel_at_period_end,
+    cancelAt: subscription.cancel_at
+      ? toDateTime(subscription.cancel_at)
+      : undefined,
+    canceledAt: subscription.canceled_at
+      ? toDateTime(subscription.canceled_at)
+      : undefined,
+    currentPeriodStart: subscription.current_period_start
+      ? toDateTime(subscription.current_period_start)
+      : undefined,
+    currentPeriodEnd: subscription.current_period_end
+      ? toDateTime(subscription.current_period_end)
+      : undefined,
+    created: toDateTime(subscription.created),
+    endedAt: subscription.ended_at
+      ? toDateTime(subscription.ended_at)
+      : undefined,
+    trialStart: subscription.trial_start
+      ? toDateTime(subscription.trial_start)
+      : undefined,
+    trialEnd: subscription.trial_end
+      ? toDateTime(subscription.trial_end)
+      : undefined,
+  };
+
+  await db.subscription.upsert({
+    create: data,
+    update: data,
+    where: {
+      id: subscription.id,
+    },
+  });
+};

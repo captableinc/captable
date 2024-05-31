@@ -19,8 +19,8 @@ const SharesPage = async () => {
     return (
       <EmptyState
         icon={<RiPieChartFill />}
-        title="You do not have any shares yet."
-        subtitle="Please click the button for adding new shares."
+        title="You have not issued any shares"
+        subtitle="Please click the button below to start issuing shares."
       >
         <ShareModal
           size="4xl"
@@ -43,23 +43,20 @@ const SharesPage = async () => {
         <div className="gap-y-3">
           <h3 className="font-medium">Shares</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Add shares for stakeholders
+            Issue shares to stakeholders
           </p>
         </div>
         <div>
           <ShareModal
-            title="Draft Shares"
-            subtitle={
-              <Tldr
-                message="Manage shares by adding them. 
-               Add approval dates, notes, certificateId for the stakeholders. "
-                cta={{
-                  label: "Learn more",
-                  href: "https://opencap.co/help/stakeholder-shares",
-                }}
-              />
+            size="4xl"
+            title="Create a share"
+            subtitle="Please fill in the details to create and issue a share."
+            trigger={
+              <Button>
+                <RiAddFill className="mr-2 h-5 w-5" />
+                Create a share
+              </Button>
             }
-            trigger={<Button>Draft Shares</Button>}
           />
         </div>
       </div>

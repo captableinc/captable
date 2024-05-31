@@ -82,6 +82,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
         state: data?.company.state ?? "",
         streetAddress: data?.company.streetAddress ?? "",
         zipcode: data?.company.zipcode ?? "",
+        country: data?.company.country ?? "",
       },
     },
   });

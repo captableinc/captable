@@ -24,15 +24,7 @@ const OptionsPage = async () => {
       >
         <OptionModal
           title="Create an option"
-          subtitle={
-            <Tldr
-              message="Please fill in the details to create an option. If you need help, click the link below."
-              cta={{
-                label: "Learn more",
-                href: "https://captable.inc/help/stakeholder-options",
-              }}
-            />
-          }
+          subtitle="Please fill in the details to create an option."
           trigger={
             <Button size="lg">
               <RiAddFill className="mr-2 h-5 w-5" />

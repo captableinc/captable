@@ -1,6 +1,6 @@
 import { CompanyForm } from "@/components/onboarding/company-form";
 import { api } from "@/trpc/server";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Company",

@@ -48,6 +48,7 @@ export const shareClassRouter = createTRPCRouter({
           };
 
           await tx.shareClass.create({ data });
+
           await Audit.create(
             {
               action: "shareClass.created",
@@ -137,4 +138,26 @@ export const shareClassRouter = createTRPCRouter({
         };
       }
     }),
+
+  get: withAuth.query(async ({ ctx: { db, session } }) => {
+    const shareClass = await db.$transaction(async (tx) => {
+      const { companyId } = await checkMembership({ session, tx });
+
+      return await tx.shareClass.findMany({
+        where: {
+          companyId,
+        },
+        select: {
+          id: true,
+          name: true,
+          company: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+    });
+    return shareClass;
+  }),
 });

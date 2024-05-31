@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function getFileSizeSuffix(bytes: number): string {
   const suffixes = ["", "K", "M", "G", "T"];
   const magnitude = Math.floor(Math.log2(bytes) / 10);
-  const suffix = suffixes[magnitude] + "B";
+  const suffix = `${suffixes[magnitude]}B`;
   return suffix;
 }
 
@@ -70,4 +70,15 @@ export function compareFormDataWithInitial<T extends Record<string, string>>(
   );
 
   return isChanged;
+}
+
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat("en-US").format(value);
+}
+
+export function formatCurrency(value: number, currency: "USD") {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+  }).format(value);
 }

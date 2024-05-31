@@ -8,6 +8,7 @@ import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { toast } from "sonner";
 
 import {
@@ -128,19 +129,28 @@ const EquityPlanForm = ({
             <FormField
               control={form.control}
               name="initialSharesReserved"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Initial reserved shares</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      value={parseBigInt(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const { onChange, ...rest } = field;
+                return (
+                  <FormItem>
+                    <FormLabel>Initial reserved shares</FormLabel>
+                    <FormControl>
+                      <NumericFormat
+                        thousandSeparator
+                        allowedDecimalSeparators={["%"]}
+                        decimalScale={2}
+                        {...rest}
+                        customInput={Input}
+                        onValueChange={(values) => {
+                          const { floatValue } = values;
+                          onChange(floatValue);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs font-light" />
+                  </FormItem>
+                );
+              }}
             />
           </div>
 

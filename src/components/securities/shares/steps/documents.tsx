@@ -45,7 +45,7 @@ export const Documents = () => {
     for (const document of documentsList) {
       const { key, mimeType, name, size } = await uploadFile(document, {
         identifier: session.user.companyPublicId,
-        keyPrefix: "sharesDocs",
+        keyPrefix: "shares-docs",
       });
       const { id: bucketId, name: docName } = await handleBucketUpload({
         key,
@@ -62,8 +62,6 @@ export const Documents = () => {
       <div>
         <Uploader
           multiple={true}
-          identifier={""}
-          keyPrefix="equity-doc"
           shouldUpload={false}
           onSuccess={(bucketData) => {
             setDocumentsList(bucketData);

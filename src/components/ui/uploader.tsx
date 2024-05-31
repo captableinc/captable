@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "./button";
 
+import type { TagType } from "@/lib/tags";
 import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
@@ -25,10 +26,12 @@ type UploadProps =
   | {
       shouldUpload?: true;
       onSuccess?: (data: UploadReturn) => void | Promise<void>;
+      tags: TagType[];
     }
   | {
       shouldUpload: false;
       onSuccess?: (data: FileWithPath[]) => void | Promise<void>;
+      tags?: TagType[];
     };
 
 type Props = {
@@ -39,7 +42,6 @@ type Props = {
   multiple?: boolean;
 } & DocumentUploadDropzone &
   UploadProps;
-
 export function Uploader({
   header,
   identifier,
@@ -47,6 +49,7 @@ export function Uploader({
   onSuccess,
   multiple = false,
   shouldUpload = true,
+  tags,
   ...rest
 }: Props) {
   const [uploading, setUploading] = useState(false);
@@ -63,13 +66,23 @@ export function Uploader({
       setUploading(true);
 
       if (shouldUpload) {
+        if (!tags?.length) {
+          toast.error("Please provide document tags.");
+          return;
+        }
         for (const file of acceptedFiles) {
           const { key, mimeType, name, size } = await uploadFile(file, {
             identifier,
             keyPrefix,
           });
 
-          const data = await mutateAsync({ key, mimeType, name, size });
+          const data = await mutateAsync({
+            key,
+            mimeType,
+            name,
+            size,
+            tags,
+          });
 
           if (onSuccess) {
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>

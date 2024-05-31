@@ -937,8 +937,12 @@ enum PricingPlanInterval {
 enum SubscriptionStatus {
   trialing
   active
-  in_active
+  canceled
+  incomplete
+  incomplete_expired
   past_due
+  unpaid
+  paused
 }
 
 model Product {
@@ -1041,14 +1045,19 @@ model Subscription {
 
   price Price @relation(fields: [priceId], references: [id])
 
+  customer   BillingCustomer @relation(fields: [customerId], references: [id])
+  customerId String
+
   @@index([priceId])
+  @@index([customerId])
 }
 
 model BillingCustomer {
   id        String  @id
   companyId String?
 
-  company Company? @relation(fields: [companyId], references: [id])
+  company       Company?       @relation(fields: [companyId], references: [id])
+  subscriptions Subscription[]
 
   @@index([companyId])
 }

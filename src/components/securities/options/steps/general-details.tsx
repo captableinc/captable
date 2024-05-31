@@ -27,6 +27,7 @@ import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
 import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 
 const STATUSES = Object.values(OptionStatusEnum).map((val) => ({
@@ -106,15 +107,28 @@ export const GeneralDetails = () => {
           <FormField
             control={form.control}
             name="quantity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantity</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const { onChange, ...rest } = field;
+              return (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      thousandSeparator
+                      allowedDecimalSeparators={["%"]}
+                      decimalScale={2}
+                      {...rest}
+                      customInput={Input}
+                      onValueChange={(values) => {
+                        const { floatValue } = values;
+                        onChange(floatValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField

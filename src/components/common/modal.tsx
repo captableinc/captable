@@ -1,17 +1,5 @@
 "use client";
 
-{
-  /*  Usage:
-  <Modal
-    title="Invite teammate"
-    subtitle="Make changes to your profile here. Click save when you're done."
-    trigger={<Button variant="outline">Edit Profile</Button>}
-  >
-    Modal body
-  </Modal>
-*/
-}
-
 import {
   Dialog,
   DialogContent,
@@ -23,7 +11,7 @@ import {
 
 import { CaptableLogo } from "@/components/common/logo";
 import { cn } from "@/lib/utils";
-import { type DialogProps } from "@radix-ui/react-dialog";
+import type { DialogProps } from "@radix-ui/react-dialog";
 
 export type ModalProps = {
   title: string | React.ReactNode;
@@ -32,6 +20,7 @@ export type ModalProps = {
   trigger: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;
+  scrollable?: boolean;
 };
 
 const Modal = ({
@@ -39,6 +28,7 @@ const Modal = ({
   subtitle,
   trigger,
   size = "md",
+  scrollable = true,
   children,
   dialogProps,
 }: ModalProps) => {
@@ -58,7 +48,12 @@ const Modal = ({
           size === "5xl" && "sm:max-w-5xl",
         )}
       >
-        <div className="no-scrollbar max-h-[80vh] overflow-scroll">
+        <div
+          className={cn(
+            "no-scrollbar max-h-[80vh]",
+            scrollable ? "overflow-scroll" : "",
+          )}
+        >
           <header className="border-b border-gray-200 p-5">
             <div className="">
               <DialogHeader>

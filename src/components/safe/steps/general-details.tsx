@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -11,52 +12,41 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   StepperModalFooter,
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
-import { toTitleCase } from "@/lib/string";
-import { OptionStatusEnum, OptionTypeEnum } from "@/prisma/enums";
-import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
+import { useFormValueUpdater } from "@/providers/form-value-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 
-const STATUSES = Object.values(OptionStatusEnum).map((val) => ({
-  label: toTitleCase(val),
-  value: val,
-}));
-const TYPES = Object.values(OptionTypeEnum);
-
 const formSchema = z.object({
-  grantId: z.string(),
-  type: z.nativeEnum(OptionTypeEnum),
-  quantity: z.coerce.number(),
-  status: z.nativeEnum(OptionStatusEnum),
+  safeId: z.string().min(1),
+  valuationCap: z.coerce.number(),
+  discountRate: z.coerce.number().optional(),
+  proRata: z.boolean().default(false).optional(),
 });
 
-type TFormSchema = z.infer<typeof formSchema>;
+export type TFormSchema = z.infer<typeof formSchema>;
 
 export const GeneralDetails = () => {
   const { next } = useStepper();
-  const { setValue } = useStockOptionFormValues();
-
+  const setValue = useFormValueUpdater<TFormSchema>();
   const form = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      valuationCap: 0,
+      proRata: false,
+    },
   });
 
   const handleSubmit = (data: TFormSchema) => {
-    setValue(data);
     next();
+    setValue(data);
   };
+
   return (
     <Form {...form}>
       <form
@@ -66,10 +56,10 @@ export const GeneralDetails = () => {
         <div className="flex flex-col gap-y-4">
           <FormField
             control={form.control}
-            name="grantId"
+            name="safeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Grant ID</FormLabel>
+                <FormLabel>Safe ID</FormLabel>
                 <FormControl>
                   <Input type="text" {...field} />
                 </FormControl>
@@ -80,43 +70,18 @@ export const GeneralDetails = () => {
 
           <FormField
             control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Grant type</FormLabel>
-
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {TYPES.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="quantity"
+            name="valuationCap"
             render={({ field }) => {
               const { onChange, ...rest } = field;
               return (
                 <FormItem>
-                  <FormLabel>Quantity</FormLabel>
+                  <FormLabel>Valuation cap</FormLabel>
                   <FormControl>
                     <NumericFormat
                       thousandSeparator
                       allowedDecimalSeparators={["%"]}
                       decimalScale={2}
+                      prefix={"$  "}
                       {...rest}
                       customInput={Input}
                       onValueChange={(values) => {
@@ -133,26 +98,46 @@ export const GeneralDetails = () => {
 
           <FormField
             control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-
-                <Select onValueChange={field.onChange} value={field.value}>
+            name="discountRate"
+            render={({ field }) => {
+              const { onChange, ...rest } = field;
+              return (
+                <FormItem>
+                  <FormLabel>Discount rate (optional)</FormLabel>
                   <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
+                    <NumericFormat
+                      thousandSeparator
+                      allowedDecimalSeparators={["%"]}
+                      decimalScale={2}
+                      suffix={" %"}
+                      {...rest}
+                      customInput={Input}
+                      onValueChange={(values) => {
+                        const { floatValue } = values;
+                        onChange(floatValue);
+                      }}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {STATUSES.map((status) => (
-                      <SelectItem key={status.label} value={status.value}>
-                        {status.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage className="text-xs font-light" />
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
+          />
+
+          <FormField
+            control={form.control}
+            name="proRata"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="space-y-1 leading-none">
+                  Pro-rata rights (optional)
+                </FormLabel>
               </FormItem>
             )}
           />

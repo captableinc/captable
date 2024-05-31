@@ -22,19 +22,15 @@ import {
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
-import { toTitleCase } from "@/lib/string";
+import { VestingSchedule } from "@/lib/vesting";
 import { VestingScheduleEnum } from "@/prisma/enums";
 import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 import { EmptySelect } from "../../shared/EmptySelect";
-
-const vestingSchedule = Object.values(VestingScheduleEnum).map((val) => ({
-  label: toTitleCase(val).replace("Vesting_", "").replaceAll("_", "-"),
-  value: val,
-}));
 
 const formSchema = z.object({
   equityPlanId: z.string(),
@@ -80,13 +76,13 @@ export const VestingDetails = (props: VestingDetailsProps) => {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select Vesting" />
+                      <SelectValue placeholder="Select vesting schedule" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {vestingSchedule.map((vs) => (
-                      <SelectItem key={vs.value} value={vs.value}>
-                        {vs.label}
+                    {Object.keys(VestingSchedule).map((vKey) => (
+                      <SelectItem key={vKey} value={vKey}>
+                        {VestingSchedule[vKey]}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -132,15 +128,29 @@ export const VestingDetails = (props: VestingDetailsProps) => {
           <FormField
             control={form.control}
             name="exercisePrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Exercise price</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const { onChange, ...rest } = field;
+              return (
+                <FormItem>
+                  <FormLabel>Exercise price</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      thousandSeparator
+                      allowedDecimalSeparators={["%"]}
+                      decimalScale={2}
+                      prefix={"$  "}
+                      {...rest}
+                      customInput={Input}
+                      onValueChange={(values) => {
+                        const { floatValue } = values;
+                        onChange(floatValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
           />
 
           {stakeholders.length ? (

@@ -82,7 +82,7 @@ We have a community of developers, designers, and entrepreneurs who are passiona
 ---
 
 <h3 id="start">Getting started</h3>
-When contributing to **Captable, Inc.**, whether on GitHub or in other community spaces:
+When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in other community spaces:
 
 - Be respectful, civil, and open-minded.
 - Before opening a new pull request, try searching through the [issue tracker](https://github.com/captableinc/captable/issues) for known issues or fixes.

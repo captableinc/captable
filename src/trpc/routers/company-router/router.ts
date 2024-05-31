@@ -40,20 +40,23 @@ export const companyRouter = createTRPCRouter({
   switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { db, session } = ctx;
+      const { db } = ctx;
 
       await db.$transaction(async (tx) => {
-        const { memberId } = await checkMembership({
-          session: {
-            ...session,
-            user: { ...session.user, memberId: input.id },
+        const member = await tx.member.findFirst({
+          where: {
+            id: input.id,
+            isOnboarded: true,
           },
-          tx,
         });
+
+        if (!member) {
+          return { success: true };
+        }
 
         await tx.member.update({
           where: {
-            id: memberId,
+            id: member.id,
           },
           data: {
             lastAccessed: new Date(),

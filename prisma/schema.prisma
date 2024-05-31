@@ -773,6 +773,7 @@ model Safe {
   status       SafeStatusEnum    @default(DRAFT)
   capital      Float // Amount of money invested
   safeTemplate SafeTemplateEnum?
+  safeId       String?
 
   valuationCap    Float?
   discountRate    Float?

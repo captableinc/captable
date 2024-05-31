@@ -19,13 +19,14 @@ import {
 import { useFormValueUpdater } from "@/providers/form-value-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 
 const formSchema = z.object({
   safeId: z.string().min(1),
   valuationCap: z.coerce.number(),
   discountRate: z.coerce.number().optional(),
-  proRata: z.boolean(),
+  proRata: z.boolean().default(false).optional(),
 });
 
 export type TFormSchema = z.infer<typeof formSchema>;
@@ -71,11 +72,23 @@ export const GeneralDetails = () => {
             control={form.control}
             name="valuationCap"
             render={({ field }) => {
+              const { onChange, ...rest } = field;
               return (
                 <FormItem>
                   <FormLabel>Valuation cap</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <NumericFormat
+                      thousandSeparator
+                      allowedDecimalSeparators={["%"]}
+                      decimalScale={2}
+                      prefix={"$  "}
+                      {...rest}
+                      customInput={Input}
+                      onValueChange={(values) => {
+                        const { floatValue } = values;
+                        onChange(floatValue);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
@@ -86,15 +99,29 @@ export const GeneralDetails = () => {
           <FormField
             control={form.control}
             name="discountRate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Discount rate (optional)</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const { onChange, ...rest } = field;
+              return (
+                <FormItem>
+                  <FormLabel>Discount rate (optional)</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      thousandSeparator
+                      allowedDecimalSeparators={["%"]}
+                      decimalScale={2}
+                      suffix={" %"}
+                      {...rest}
+                      customInput={Input}
+                      onValueChange={(values) => {
+                        const { floatValue } = values;
+                        onChange(floatValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField

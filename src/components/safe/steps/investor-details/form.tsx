@@ -33,6 +33,7 @@ import { RiAddCircleLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, useFormContext, useWatch } from "react-hook-form";
+import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -78,15 +79,29 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
           <FormField
             control={form.control}
             name="capital"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Capital</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              const { onChange, ...rest } = field;
+              return (
+                <FormItem>
+                  <FormLabel>Capital</FormLabel>
+                  <FormControl>
+                    <NumericFormat
+                      thousandSeparator
+                      allowedDecimalSeparators={["%"]}
+                      decimalScale={2}
+                      prefix={"$  "}
+                      {...rest}
+                      customInput={Input}
+                      onValueChange={(values) => {
+                        const { floatValue } = values;
+                        onChange(floatValue);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}

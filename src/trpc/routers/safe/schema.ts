@@ -6,7 +6,7 @@ const commonSafeSchema = z.object({
   safeId: z.string().min(1),
   valuationCap: z.coerce.number(),
   discountRate: z.coerce.number().optional(),
-  proRata: z.boolean(),
+  proRata: z.boolean().optional().default(false),
   capital: z.coerce.number(),
   issueDate: z.string().date(),
   boardApprovalDate: z.string().date(),

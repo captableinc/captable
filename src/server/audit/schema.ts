@@ -31,6 +31,10 @@ export const AuditSchema = z.object({
     "option.created",
     "option.deleted",
 
+    "share.created",
+    "share.updated",
+    "share.deleted",
+
     "safe.created",
     "safe.imported",
     "safe.sent",
@@ -49,7 +53,14 @@ export const AuditSchema = z.object({
 
   target: z.array(
     z.object({
-      type: z.enum(["user", "company", "document", "option", "documentShare"]),
+      type: z.enum([
+        "user",
+        "company",
+        "document",
+        "option",
+        "documentShare",
+        "share",
+      ]),
       id: z.string().optional().nullable(),
     }),
   ),

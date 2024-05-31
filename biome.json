@@ -7,7 +7,8 @@
       ".next",
       "dist",
       "public/pdf.worker.min.js",
-      "./prisma/enums.ts"
+      "./prisma/enums.ts",
+      "./src/components/ui/simple-multi-select.tsx"
     ]
   },
   "linter": {
@@ -25,7 +26,8 @@
       ".next",
       "dist",
       "public/pdf.worker.min.js",
-      "./prisma/enums.ts"
+      "./prisma/enums.ts",
+      "./src/components/ui/simple-multi-select.tsx"
     ]
   },
   "formatter": {

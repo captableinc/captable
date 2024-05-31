@@ -1,6 +1,5 @@
 "use client";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -31,6 +30,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
+import { EmptySelect } from "../../shared/EmptySelect";
 
 const formSchema = z.object({
   equityPlanId: z.string(),
@@ -44,20 +44,6 @@ type TFormSchema = z.infer<typeof formSchema>;
 interface VestingDetailsProps {
   stakeholders: RouterOutputs["stakeholder"]["getStakeholders"];
   equityPlans: RouterOutputs["equityPlan"]["getPlans"];
-}
-
-interface EmptySelectProps {
-  title: string;
-  description: string;
-}
-
-function EmptySelect({ title, description }: EmptySelectProps) {
-  return (
-    <Alert variant="destructive">
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription>{description}</AlertDescription>
-    </Alert>
-  );
 }
 
 export const VestingDetails = (props: VestingDetailsProps) => {

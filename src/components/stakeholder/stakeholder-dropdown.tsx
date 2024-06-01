@@ -1,7 +1,7 @@
 "use client";
 import Tldr from "@/components/common/tldr";
+import { pushModal } from "@/components/modals";
 import MultipleStakeholdersModal from "@/components/stakeholder/multiple-stakeholders-modal";
-import SingleStakeholdersModal from "@/components/stakeholder/single-stakeholder-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,27 +22,28 @@ export default function StakeholderDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem asChild>
-          <SingleStakeholdersModal
-            title="Add Stakeholder"
-            subtitle={
-              <Tldr
-                message="Manage stakeholders by adding them. 
+        <DropdownMenuItem
+          asChild
+          onClick={() => {
+            pushModal("SingleStakeholdersModal", {
+              title: "Add Stakeholder",
+              subtitle: (
+                <Tldr
+                  message="Manage stakeholders by adding them. 
           Categorize, assign roles, and maintain contact info for investors, partners, and clients."
-                cta={{
-                  label: "Learn more",
-                  // TODO - this link should be updated to the correct URL
-                  href: "https://captable.inc/help",
-                }}
-              />
-            }
-            trigger={
-              <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
-                <RiUserLine className="mr-2 h-5 w-5" />
-                Create one stakeholder
-              </div>
-            }
-          />
+                  cta={{
+                    label: "Learn more",
+                    href: "https://captable.inc/help",
+                  }}
+                />
+              ),
+            });
+          }}
+        >
+          <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
+            <RiUserLine className="mr-2 h-5 w-5" />
+            Create one stakeholder
+          </div>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>

@@ -176,8 +176,8 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        {...rest}
                         decimalScale={0}
+                        {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
                           const { floatValue } = values;

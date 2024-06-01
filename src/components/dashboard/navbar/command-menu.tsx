@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type RemixiconComponentType,
   RiAccountCircleFill,
   RiPieChart2Fill,
   RiSparklingFill,
@@ -22,7 +23,18 @@ import { RiSearchLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const Pages = [
+import Tldr from "@/components/common/tldr";
+import { pushModal } from "@/components/modals";
+
+type CommandOption = {
+  id: string;
+  title: string;
+  path?: string;
+  icon: RemixiconComponentType;
+  onClick?: () => void;
+};
+
+const Pages: CommandOption[] = [
   {
     id: "ai",
     title: "Ask an AI",
@@ -50,8 +62,24 @@ const Pages = [
   {
     id: "securities",
     title: "Create a share class",
-    path: "/securities",
     icon: RiPieChart2Fill,
+    onClick: () => {
+      pushModal("ShareClassModal", {
+        type: "create",
+        title: "Create a share class",
+        shareClasses: [],
+        subtitle: (
+          <Tldr
+            message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+            cta={{
+              label: "Learn more",
+              // TODO - this link should be updated to the correct URL
+              href: "https://captable.inc/help",
+            }}
+          />
+        ),
+      });
+    },
   },
   {
     id: "safe",
@@ -110,7 +138,16 @@ export function CommandMenu() {
             {Pages.map((page) => (
               <CommandItem
                 key={page.id}
-                onSelect={() => push(page.path)}
+                onSelect={() => {
+                  if (page.path) {
+                    push(page.path);
+                  } else {
+                    if (page.onClick) {
+                      setOpen(false);
+                      page.onClick();
+                    }
+                  }
+                }}
                 className=""
               >
                 <div

@@ -44,8 +44,22 @@ const Pages: CommandOption[] = [
   {
     id: "stakeholders",
     title: "Add Stakeholder",
-    path: "/stakeholders",
     icon: RiAccountCircleFill,
+    onClick: () => {
+      pushModal("SingleStakeholdersModal", {
+        title: "Add Stakeholder",
+        subtitle: (
+          <Tldr
+            message="Manage stakeholders by adding them. 
+          Categorize, assign roles, and maintain contact info for investors, partners, and clients."
+            cta={{
+              label: "Learn more",
+              href: "https://captable.inc/help",
+            }}
+          />
+        ),
+      });
+    },
   },
   {
     id: "documents",

@@ -348,6 +348,7 @@ model Bucket {
   key      String
   mimeType String
   size     Int
+  tags     String[]
 
   documents Document[]
   templates Template[]

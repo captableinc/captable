@@ -6,10 +6,11 @@
 app = 'captable'
 primary_region = 'lax'
 
-
 [experimental]
 allowed_public_ports = []
 auto_rollback = true
+# cmd = "./scripts/migrate.sh"
+# entrypoint = "sh"
 
 [http_service]
 internal_port = 3000
@@ -19,14 +20,8 @@ auto_start_machines = true
 min_machines_running = 0
 processes = ['app']
 
-[[vm]]
-memory = '1gb'
-cpu_kind = 'shared'
-cpus = 1
-
 [deploy]
 strategy = "canary"
-# release_command = "sh ./scripts/migrate.sh"
 
 [env]
 NODE_ENV = "production"

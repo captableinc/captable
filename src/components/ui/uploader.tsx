@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Button } from "./button";
 
 import type { TypeKeyPrefixes } from "@/server/file-uploads";
+import type { TagType } from "@/lib/tags";
 import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
@@ -28,12 +29,14 @@ type UploadProps =
       onSuccess?: (data: UploadReturn) => void | Promise<void>;
       identifier: string;
       keyPrefix: TypeKeyPrefixes;
+      tags: TagType[];
     }
   | {
       shouldUpload: false;
       onSuccess?: (data: FileWithPath[]) => void | Promise<void>;
       identifier?: never;
       keyPrefix?: never;
+      tags?: TagType[];
     };
 
 type Props = {
@@ -44,17 +47,16 @@ type Props = {
 } & DocumentUploadDropzone &
   UploadProps;
 
-export function Uploader(props: Props) {
-  const {
-    multiple,
-    onSuccess,
-    shouldUpload: _shouldUpload,
-    identifier: _identifier,
-    keyPrefix: _keyPrefix,
-    header,
-    ...rest
-  } = props;
-
+export function Uploader({
+  header,
+  identifier,
+  keyPrefix,
+  onSuccess,
+  multiple = false,
+  shouldUpload = true,
+  tags,
+  ...rest
+}: Props) {
   const [uploading, setUploading] = useState(false);
   const { mutateAsync } = api.bucket.create.useMutation();
 
@@ -68,14 +70,25 @@ export function Uploader(props: Props) {
 
       setUploading(true);
 
-      if (props.shouldUpload !== false) {
+      if (shouldUpload) {
+        if (!tags?.length) {
+          toast.error("Please provide document tags.");
+          return;
+        }
+
         for (const file of acceptedFiles) {
           const { key, mimeType, name, size } = await uploadFile(file, {
             identifier: props.identifier,
             keyPrefix: props.keyPrefix,
           });
 
-          const data = await mutateAsync({ key, mimeType, name, size });
+          const data = await mutateAsync({
+            key,
+            mimeType,
+            name,
+            size,
+            tags,
+          });
 
           if (onSuccess) {
             // biome-ignore lint/suspicious/noExplicitAny: <explanation>

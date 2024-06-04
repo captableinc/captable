@@ -16,6 +16,7 @@ import {
   StepperPrev,
   StepperStep,
 } from "@/components/ui/stepper";
+import { TAG } from "@/lib/tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -76,6 +77,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
       mimeType,
       name,
       size,
+      tags: [TAG.ESIGN],
     });
 
     const template = await handleTemplateCreation({

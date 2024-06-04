@@ -38,6 +38,7 @@ import { uploadFile } from "@/common/uploads";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { invariant } from "@/lib/error";
+import { TAG } from "@/lib/tags";
 import { api } from "@/trpc/react";
 import { ZodTemplateFieldRecipientSchema } from "@/trpc/routers/template-router/schema";
 import { RiDeleteBinLine } from "@remixicon/react";
@@ -123,6 +124,7 @@ export function SafeTemplate() {
         mimeType,
         name,
         size,
+        tags: [TAG.SAFE],
       });
 
       const document = { bucketId, name: docName };

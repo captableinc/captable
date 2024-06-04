@@ -1,5 +1,25 @@
 name: captable
 services:
+  app:
+    image: node:${NODE_VERSION}-alpine
+    container_name: captable-app
+    depends_on:
+      - pg
+      - smtp
+      - minio
+    restart: always
+    ports:
+      - 3000:3000
+    env_file:
+      - ".env"
+    working_dir: /app
+    command: [/bin/sh, -c, "npm i -g pnpm@9.1.2 && pnpm install && pnpm dev"]
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - /app/.pnpm-store
+
   pg:
     image: postgres:15
     container_name: captable-database
@@ -11,7 +31,7 @@ services:
     ports:
       - 54321:5432
     volumes:
-      - postgres:/var/lib/postgresql/data  
+      - postgres:/var/lib/postgresql/data
 
   smtp:
     image: axllent/mailpit
@@ -19,6 +39,7 @@ services:
     ports:
       - 8025:8025
       - 1025:1025
+
   minio:
     image: minio/minio
     container_name: captable-minio
@@ -33,40 +54,32 @@ services:
     entrypoint: sh
     command: -c 'minio server /data --console-address ":9001" --address ":9002"'
 
-  app:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.dev
-    container_name: captable-app
-    restart: always
-    ports:
-      - 3000:3000
-    env_file:
-      - ".env.example"
-      - ".env"
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
-    depends_on:
-      - pg
-      - smtp
-      - minio
-
   # minio client - is expected to be run once to setup minio buckets. It'll exit 0 after setup
   mc:
     image: minio/mc
     container_name: captable-minio-client
-    entrypoint: sh
-    command: -c "
-      mc alias set myminio http://minio:9002 captable password;
-      mc mb myminio/captable-private-bucket;
-      mc mb myminio/captable-public-bucket;
-      mc policy set public myminio/captable-public-bucket;
-      exit 0;
-     "
     depends_on:
       - minio
+    entrypoint: sh
+    command: |
+      -c "
+        sleep 10;
+        mc alias set myminio http://minio:9002 captable password;
+        mc mb myminio/captable-private-bucket;
+        mc mb myminio/captable-public-bucket;
+        mc policy set public myminio/captable-public-bucket;
+        exit 0;
+      "
+  adminer:
+    image: adminer
+    container_name: captable-adminer
+    ports:
+      - 8080:8080
+    depends_on:
+      - pg
+    environment:
+      - ADMINER_DESIGN=nette
+      - ADMINER_DEFAULT_SERVER=pg
 
 volumes:
   minio:

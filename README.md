@@ -2,7 +2,6 @@
   <img alt="Captable, Inc. cover image" src="https://captable.inc/og.png">
 </a>
 
-
 <h1 align="center">Captable, Inc.</h1>
 <p align="center">
   #1 Open-source Cap table management platform, an alternative to Carta, Pulley, Angelist and others.
@@ -54,14 +53,12 @@
 
 ✅ **Data rooms** - Captable, Inc. provides a secure virtual data room where you can store important documents and share them with investors, employees, and other stakeholders.
 
-
 <h2 id="community">🤝 Community</h2>
 We have a community of developers, designers, and entrepreneurs who are passionate about building the future of finance. Join us on Discord to connect with like-minded individuals, share your ideas, and collaborate on projects.
 
-* [Join us on Discord](https://discord.gg/rCpqnD6G6p)
-* [Follow us on Twitter](https://twitter.com/captableinc)
-* [Meet the Founder](https://captable.inc/schedule)
-
+- [Join us on Discord](https://discord.gg/rCpqnD6G6p)
+- [Follow us on Twitter](https://twitter.com/captableinc)
+- [Meet the Founder](https://captable.inc/schedule)
 
 <h2 id="contributing">🫡 Contributing</h2>
 
@@ -69,7 +66,6 @@ We have a community of developers, designers, and entrepreneurs who are passiona
 - We are looking for contributors to help us build the future of cap table management.
 - Let's collaborate on [Discord](https://discord.gg/rCpqnD6G6p) community channel.
 - Any contributions you make are truly appreciated.
-
 
 <h3 id="stack">Stack</h3>
 
@@ -86,7 +82,6 @@ When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in ot
 
 - Be respectful, civil, and open-minded.
 - Before opening a new pull request, try searching through the [issue tracker](https://github.com/captableinc/captable/issues) for known issues or fixes.
-
 
 <h3 id="setup">Setup development environment</h3>
 
@@ -110,38 +105,37 @@ When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in ot
 - Copy `.env.example` to `.env`
 
   ```bash
-  cp .env.example .env`
+  cp .env.example .env
   ```
 
 - Run the following command to start the development environment
 
   ```bash
-  
+
   # With pnpm installed
   pnpm dx
 
   # Without pnpm installed
   docker compose up
-  
+
   ```
 
 - Run the following command to migrate and seed the database
 
   ```bash
-  
+
   docker compose run app pnpm db:migrate
   docker compose run app pnpm db:seed
 
   ```
 
-  > **Note**
-  > Everytime you make changes to Dockerfile.dev or compose.yml, you need to rebuild the docker image by running `docker compose up --build`
-
 - Running `docker compose up` will start all the services on their respective ports.
+
   - App will be running on [http://localhost:3000](http://localhost:3000)
   - Emails will be intercepted: [http://localhost:8025](http://localhost:8025)
   - SMTP will be on PORT `http://localhost:1025`
   - Postgres will be on PORT `http://localhost:5432`
+  - Prisma studio will be on PORT `http://localhost:5555`
 
 - Frequently used commands
   - `docker compose up` - Start the development environment

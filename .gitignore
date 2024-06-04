@@ -52,3 +52,5 @@ yarn-error.log*
 
 
 /prisma/enums.ts
+
+/.pnpm-store

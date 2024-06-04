@@ -3,6 +3,7 @@ import path from "node:path";
 import { generatePublicId } from "@/common/id";
 import { uploadFile } from "@/common/uploads";
 import { invariant } from "@/lib/error";
+import { TAG } from "@/lib/tags";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
@@ -60,7 +61,7 @@ export const createSafeProcedure = withAuth
           const { fileUrl: _fileUrl, ...rest } = uploadData;
           const { name: bucketName, id: bucketId } = await createBucketHandler({
             db: tx,
-            input: rest,
+            input: { ...rest, tags: [TAG.SAFE] },
           });
 
           document = { name: bucketName, bucketId };

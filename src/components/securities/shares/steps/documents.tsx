@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/stepper";
 import Uploader from "@/components/ui/uploader";
 import { invariant } from "@/lib/error";
+import { TAG } from "@/lib/tags";
 import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";
@@ -52,6 +53,7 @@ export const Documents = () => {
         mimeType,
         name,
         size,
+        tags: [TAG.EQUITY],
       });
       uploadedDocuments.push({ bucketId, name: docName });
     }

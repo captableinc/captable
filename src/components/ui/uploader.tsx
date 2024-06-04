@@ -12,8 +12,8 @@ import {
 import { toast } from "sonner";
 import { Button } from "./button";
 
-import type { TypeKeyPrefixes } from "@/server/file-uploads";
 import type { TagType } from "@/lib/tags";
+import type { TypeKeyPrefixes } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
@@ -78,8 +78,8 @@ export function Uploader({
 
         for (const file of acceptedFiles) {
           const { key, mimeType, name, size } = await uploadFile(file, {
-            identifier: props.identifier,
-            keyPrefix: props.keyPrefix,
+            identifier: identifier as string,
+            keyPrefix: keyPrefix as TypeKeyPrefixes,
           });
 
           const data = await mutateAsync({

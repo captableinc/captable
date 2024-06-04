@@ -1,11 +1,14 @@
 "use client";
 
+import Tldr from "@/components/common/tldr";
+import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RiAddFill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
@@ -99,10 +102,6 @@ const EquityPlanForm = ({
     type === "create"
       ? await createMutation.mutateAsync(values)
       : await updateMutation.mutateAsync(values);
-  };
-
-  const parseBigInt = (value: number) => {
-    return Number(value);
   };
 
   return (
@@ -221,9 +220,41 @@ const EquityPlanForm = ({
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>
-                          {shareClasses.length > 0
-                            ? "Share classes"
-                            : "No share classes"}
+                          {shareClasses.length > 0 ? (
+                            "Share classes"
+                          ) : (
+                            <div className="text-sm text-muted-foreground">
+                              <p className="mb-2">
+                                You don't have any share classes yet.
+                              </p>
+                              <Button
+                                className="mt-3"
+                                size={"sm"}
+                                variant={"outline"}
+                                onClick={() => {
+                                  pushModal("ShareClassModal", {
+                                    type: "create",
+                                    title: "Create a share class",
+                                    shareClasses,
+                                    subtitle: (
+                                      <Tldr
+                                        message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+                                        cta={{
+                                          label: "Learn more",
+                                          // TODO - this link should be updated to the correct URL
+                                          href: "https://captable.inc/help",
+                                        }}
+                                      />
+                                    ),
+                                  });
+                                }}
+                              >
+                                <RiAddFill className="mr-2 h-5 w-5" />
+                                Create a share class
+                              </Button>
+                              {/*  */}
+                            </div>
+                          )}
                         </SelectLabel>
 
                         {shareClasses.map((shareClass) => (

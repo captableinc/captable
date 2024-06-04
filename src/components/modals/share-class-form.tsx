@@ -35,19 +35,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { popModal } from ".";
 
 const formSchema = ShareClassMutationSchema;
 
 type ShareClassFormType = {
   type?: string;
   className?: string;
-  setOpen: (val: boolean) => void;
   shareClass?: ShareClassMutationType;
   shareClasses: ShareClassMutationType[];
 };
 
 const ShareClassForm = ({
-  setOpen,
   type = "create",
   shareClasses,
   shareClass = {
@@ -91,7 +90,7 @@ const ShareClassForm = ({
       if (success) {
         toast.success(message);
         form.reset();
-        setOpen(false);
+        popModal("ShareClassModal");
         router.refresh();
       } else {
         toast.error(message);
@@ -104,7 +103,7 @@ const ShareClassForm = ({
       if (success) {
         toast.success(message);
         form.reset();
-        setOpen(false);
+        popModal("ShareClassModal");
         router.refresh();
       } else {
         toast.error(message);
@@ -177,8 +176,8 @@ const ShareClassForm = ({
                     <FormControl>
                       <NumericFormat
                         thousandSeparator
-                        {...rest}
                         decimalScale={0}
+                        {...rest}
                         customInput={Input}
                         onValueChange={(values) => {
                           const { floatValue } = values;

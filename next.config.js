@@ -36,6 +36,7 @@ const config = {
   },
   experimental: {
     instrumentationHook: true,
+    serverComponentsExternalPackages: ["pino", "pino-pretty"],
   },
   eslint: {
     ignoreDuringBuilds: true,

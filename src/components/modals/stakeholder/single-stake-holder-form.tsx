@@ -6,6 +6,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import { popModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,11 +27,8 @@ import {
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-type SingleStakeholderFormType = {
-  setOpen: (val: boolean) => void;
-};
 
-const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
+export const SingleStakeholderForm = () => {
   const form = useForm<AddStakeholderMutationType>({
     resolver: zodResolver(ZodAddStakeholderMutationSchema),
   });
@@ -52,7 +50,7 @@ const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
 
   const onSubmit = async (values: AddStakeholderMutationType) => {
     await mutateAsync([values]);
-    setOpen(false);
+    popModal("SingleStakeholdersModal");
   };
   return (
     <Form {...form}>
@@ -243,5 +241,3 @@ const SingleStakeholderForm = ({ setOpen }: SingleStakeholderFormType) => {
     </Form>
   );
 };
-
-export default SingleStakeholderForm;

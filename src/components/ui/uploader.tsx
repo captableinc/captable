@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Button } from "./button";
 
 import type { TagType } from "@/lib/tags";
+import type { TypeKeyPrefixes } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
 
 export type UploadReturn = RouterOutputs["bucket"]["create"];
@@ -26,22 +27,26 @@ type UploadProps =
   | {
       shouldUpload?: true;
       onSuccess?: (data: UploadReturn) => void | Promise<void>;
+      identifier: string;
+      keyPrefix: TypeKeyPrefixes;
       tags: TagType[];
     }
   | {
       shouldUpload: false;
       onSuccess?: (data: FileWithPath[]) => void | Promise<void>;
+      identifier?: never;
+      keyPrefix?: never;
       tags?: TagType[];
     };
 
 type Props = {
   header?: React.ReactNode;
   // should be companyPublicId or memberId or userId
-  identifier: string;
-  keyPrefix: string;
+
   multiple?: boolean;
 } & DocumentUploadDropzone &
   UploadProps;
+
 export function Uploader({
   header,
   identifier,
@@ -70,10 +75,11 @@ export function Uploader({
           toast.error("Please provide document tags.");
           return;
         }
+
         for (const file of acceptedFiles) {
           const { key, mimeType, name, size } = await uploadFile(file, {
-            identifier,
-            keyPrefix,
+            identifier: identifier as string,
+            keyPrefix: keyPrefix as TypeKeyPrefixes,
           });
 
           const data = await mutateAsync({

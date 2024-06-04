@@ -343,7 +343,7 @@ model EquityPlan {
 }
 
 model Bucket {
-  id       String @id @default(cuid())
+  id       String   @id @default(cuid())
   name     String
   key      String
   mimeType String

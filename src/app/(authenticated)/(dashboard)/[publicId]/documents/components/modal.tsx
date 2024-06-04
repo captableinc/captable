@@ -36,7 +36,7 @@ const DocumentUploadModal = ({
       <Uploader
         shouldUpload={true}
         identifier={companyPublicId}
-        keyPrefix="generic-document"
+        keyPrefix="generic-documents"
         tags={[TAG.GENERIC]}
         onSuccess={async (uploadedData: UploadReturn) => {
           await mutateAsync({

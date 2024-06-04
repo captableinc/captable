@@ -69,7 +69,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
     }
     const { key, mimeType, name, size } = await uploadFile(document, {
       identifier: companyPublicId,
-      keyPrefix: "EsignDocs",
+      keyPrefix: "unsigned-esign-doc",
     });
 
     const { id: bucketId, name: templateName } = await handleBucketUpload({

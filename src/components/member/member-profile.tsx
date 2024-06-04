@@ -113,12 +113,15 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
 
   async function handleImageUpload(file: File): Promise<{ imageUrl: string }> {
     if (session?.user.id) {
-      const options = {
-        expiresIn: 3600,
-        keyPrefix: "profile-avatars",
-        identifier: session.user.id,
-      };
-      const { fileUrl } = await uploadFile(file, options, "publicBucket");
+      const { fileUrl } = await uploadFile(
+        file,
+        {
+          expiresIn: 3600,
+          keyPrefix: "profile-avatars",
+          identifier: session.user.id,
+        },
+        "publicBucket",
+      );
 
       return { imageUrl: fileUrl };
     }

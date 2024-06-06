@@ -4,7 +4,7 @@ export const getProductsProcedure = withAuth.query(async ({ ctx }) => {
   const { db } = ctx;
 
   const { products } = await db.$transaction(async (tx) => {
-    const products = await db.product.findMany({
+    const products = await tx.product.findMany({
       where: {
         active: true,
       },
@@ -14,9 +14,11 @@ export const getProductsProcedure = withAuth.query(async ({ ctx }) => {
             active: true,
           },
           select: {
+            id: true,
             interval: true,
             unitAmount: true,
             currency: true,
+            type: true,
           },
         },
       },

@@ -1,6 +1,7 @@
 "use client";
 
-import type { PricingPlanInterval } from "@/prisma/enums";
+import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
+import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
 import { useState } from "react";
 import { EmptyPlans } from "./empty-plans";
@@ -10,9 +11,15 @@ import { PricingCard } from "./pricing-card";
 type Products = RouterOutputs["billing"]["getProducts"]["products"];
 type TSubscription =
   RouterOutputs["billing"]["getSubscription"]["subscription"];
+
 interface PricingProps {
   products: Products;
   subscription: TSubscription;
+}
+
+interface handleStripeCheckoutOptions {
+  priceId: string;
+  priceType: PricingType;
 }
 
 function Plans({ products, subscription }: PricingProps) {
@@ -26,8 +33,22 @@ function Plans({ products, subscription }: PricingProps) {
   const [billingInterval, setBillingInterval] =
     useState<PricingPlanInterval>("month");
 
+  const [priceIdLoading, setPriceIdLoading] = useState<string>();
+
+  const { mutateAsync: checkoutWithStripe } = api.billing.checkout.useMutation({
+    onSuccess: ({ stripeSessionId }) => {},
+  });
+
   const handleBilling = (interval: PricingPlanInterval) => {
     setBillingInterval(interval);
+  };
+
+  const handleStripeCheckout = async (price: handleStripeCheckoutOptions) => {
+    setPriceIdLoading(price.priceId);
+
+    await checkoutWithStripe(price);
+
+    setPriceIdLoading(undefined);
   };
 
   return (
@@ -72,6 +93,13 @@ function Plans({ products, subscription }: PricingProps) {
               price={priceString}
               interval={billingInterval}
               subscribed={!!subscription}
+              onClick={() =>
+                handleStripeCheckout({
+                  priceId: price.id,
+                  priceType: price.type,
+                })
+              }
+              loading={priceIdLoading === price.id}
             />
           );
         })}

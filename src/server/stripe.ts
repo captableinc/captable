@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import { invariant } from "@/lib/error";
 import Stripe from "stripe";
-import { db } from "./db";
+import { type TPrismaOrTransaction, db } from "./db";
 
 const toDateTime = (secs: number) => {
   const t = new Date(+0); // Unix epoch start.
@@ -133,3 +133,95 @@ export const manageSubscriptionStatusChange = async (
     },
   });
 };
+
+interface upsertCustomerOptions {
+  customerId: string;
+  companyId: string;
+  tx: TPrismaOrTransaction;
+}
+
+async function upsertCustomer({
+  tx,
+  companyId,
+  customerId,
+}: upsertCustomerOptions) {
+  const data = { companyId, id: customerId };
+  const customer = await tx.billingCustomer.upsert({
+    where: data,
+    update: data,
+    create: data,
+  });
+
+  return customer.id;
+}
+
+interface createCustomerInStripeOptions {
+  companyId: string;
+  email: string;
+}
+
+const createCustomerInStripe = async ({
+  email,
+  companyId,
+}: createCustomerInStripeOptions) => {
+  const customerData = { metadata: { companyId }, email: email };
+  const newCustomer = await stripe.customers.create(customerData);
+
+  invariant(newCustomer, "Stripe customer creation failed.");
+
+  return newCustomer.id;
+};
+
+interface createOrRetrieveCustomerOptions {
+  companyId: string;
+  tx: TPrismaOrTransaction;
+  email: string;
+}
+
+export async function createOrRetrieveCustomer({
+  companyId,
+  tx,
+  email,
+}: createOrRetrieveCustomerOptions) {
+  const existingCustomer = await tx.billingCustomer.findFirst({
+    where: { companyId },
+  });
+  let stripeCustomerId: string | undefined;
+
+  if (existingCustomer?.id) {
+    const existingStripeCustomer = await stripe.customers.retrieve(
+      existingCustomer.id,
+    );
+    stripeCustomerId = existingStripeCustomer.id;
+  } else {
+    const stripeCustomers = await stripe.customers.list({ email: email });
+
+    stripeCustomerId = stripeCustomers?.data?.[0]
+      ? stripeCustomers.data[0].id
+      : undefined;
+  }
+
+  const stripeId = stripeCustomerId
+    ? stripeCustomerId
+    : await createCustomerInStripe({ email, companyId });
+
+  if (existingCustomer && stripeCustomerId) {
+    await tx.billingCustomer.update({
+      where: {
+        id: existingCustomer.id,
+      },
+      data: {
+        id: stripeCustomerId,
+      },
+    });
+
+    return stripeCustomerId;
+  }
+  const upsertedStripeCustomer = await upsertCustomer({
+    tx,
+    companyId,
+    customerId: stripeId,
+  });
+
+  return upsertedStripeCustomer;
+}

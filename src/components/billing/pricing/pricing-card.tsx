@@ -6,34 +6,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import type { PricingPlanInterval } from "@/prisma/enums";
 
 interface PricingCardProps {
   title: string;
-  description: string;
-  price: number;
-  interval: string;
+  description?: string | null;
+  price: string;
+  interval: PricingPlanInterval;
+  subscribed: boolean;
 }
+
+const humanizedInterval: Record<PricingPlanInterval, string> = {
+  day: "Daily",
+  month: "Monthly",
+  week: "Weekly",
+  year: "Yearly",
+};
 
 export function PricingCard({
   description,
   title,
   interval,
   price,
+  subscribed,
 }: PricingCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">{title}</CardTitle>
         <div className="flex gap-0.5">
-          <h3 className="text-3xl font-bold">${price}</h3>
+          <h3 className="text-3xl font-bold">{price}</h3>
           <span className="flex flex-col justify-end text-sm mb-1">
-            /{interval}
+            /{humanizedInterval[interval]}
           </span>
         </div>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button>Subscribe</Button>
+        <Button>{subscribed ? "Manage" : "Subscribe"}</Button>
       </CardFooter>
     </Card>
   );

@@ -93,8 +93,9 @@ export const manageSubscriptionStatusChange = async (
 
   invariant(item, "item not found");
 
+  const id = subscription.id;
+
   const data = {
-    id: subscription.id,
     customerId: customer?.id,
     metadata: subscription.metadata,
     status: subscription.status,
@@ -126,10 +127,10 @@ export const manageSubscriptionStatusChange = async (
   };
 
   await db.subscription.upsert({
-    create: data,
+    create: { ...data, id },
     update: data,
     where: {
-      id: subscription.id,
+      id,
     },
   });
 };

@@ -39,7 +39,7 @@ function Plans({ products, subscription }: PricingProps) {
   const { mutateAsync: checkoutWithStripe } = api.billing.checkout.useMutation({
     onSuccess: async ({ stripeSessionId }) => {
       const stripe = await getStripeClient();
-      stripe?.redirectToCheckout({ sessionId: stripeSessionId });
+      await stripe?.redirectToCheckout({ sessionId: stripeSessionId });
     },
   });
 

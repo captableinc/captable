@@ -2,6 +2,7 @@
 
 import Modal from "@/components/common/modal";
 import Uploader, { type UploadReturn } from "@/components/ui/uploader";
+import { TAG } from "@/lib/tags";
 import { api } from "@/trpc/react";
 import type { DataRoom } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -37,9 +38,11 @@ const DataRoomUploader = ({
       }}
     >
       <Uploader
+        shouldUpload
         multiple={true}
         identifier={companyPublicId}
-        keyPrefix={`data-room/${dataRoom.publicId}/file`}
+        keyPrefix={`data-room/${dataRoom.publicId}`}
+        tags={[TAG.DATA_ROOM]}
         onSuccess={async (upload: UploadReturn) => {
           const document = await documentMutation.mutateAsync({
             name: upload.name,

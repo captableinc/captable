@@ -1,5 +1,6 @@
-FROM --platform=linux/amd64 node:20-alpine AS base
+ARG NODE_VERSION=20.11.0
 
+FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine AS base
 LABEL fly_launch_runtime="Next.js/Prisma"
 
 FROM base AS deps

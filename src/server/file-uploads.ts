@@ -1,6 +1,4 @@
 "use server";
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import path from "node:path";
 import { customId } from "@/common/id";
@@ -33,11 +31,23 @@ const S3 = new S3Client({
     : undefined,
 });
 
+export type TypeKeyPrefixes =
+  | "new-safes"
+  | "existing-safes"
+  | "signed-esign-doc"
+  | "unsigned-esign-doc"
+  | "stock-option-docs"
+  | "company-logos"
+  | "profile-avatars"
+  | "generic-documents"
+  | "shares-docs"
+  | `data-room/${string}`;
+
 export interface getPresignedUrlOptions {
   contentType: string;
   expiresIn?: number;
   fileName: string;
-  keyPrefix: string;
+  keyPrefix: TypeKeyPrefixes;
   // should be companyPublicId or memberId or userId
   identifier: string;
   bucketMode: "privateBucket" | "publicBucket";
@@ -81,7 +91,7 @@ export const getPresignedGetUrl = async (key: string) => {
     Bucket: PrivateBucket,
     Key: key,
     // ResponseContentDisposition: `attachment; filename="${key}"`,
-    ResponseContentDisposition: `inline`,
+    ResponseContentDisposition: "inline",
   });
 
   const url = await getSignedUrl(S3, getObjectCommand, {

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 import { dayjsExt } from "@/common/dayjs";
 import { type TUploadFile, getFileFromS3, uploadFile } from "@/common/uploads";
+import { TAG } from "@/lib/tags";
 import { AuditLogTemplate } from "@/pdf-templates/audit-log-template";
 import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
@@ -210,7 +211,7 @@ export async function uploadEsignDocuments({
 
   const data = await uploadFile(file, {
     identifier: companyId,
-    keyPrefix: "generic-document",
+    keyPrefix: "signed-esign-doc",
   });
 
   return data;
@@ -263,7 +264,7 @@ export async function completeEsignDocuments({
 
   const { id: bucketId, name } = await createBucketHandler({
     db,
-    input: bucketData,
+    input: { ...bucketData, tags: [TAG.ESIGN] },
   });
 
   await createDocumentHandler({

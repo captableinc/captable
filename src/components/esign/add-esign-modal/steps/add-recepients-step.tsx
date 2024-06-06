@@ -16,6 +16,7 @@ import {
   StepperPrev,
   StepperStep,
 } from "@/components/ui/stepper";
+import { TAG } from "@/lib/tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -68,7 +69,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
     }
     const { key, mimeType, name, size } = await uploadFile(document, {
       identifier: companyPublicId,
-      keyPrefix: "EsignDocs",
+      keyPrefix: "unsigned-esign-doc",
     });
 
     const { id: bucketId, name: templateName } = await handleBucketUpload({
@@ -76,6 +77,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
       mimeType,
       name,
       size,
+      tags: [TAG.ESIGN],
     });
 
     const template = await handleTemplateCreation({

@@ -11,6 +11,7 @@ import type { FileWithPath } from "react-dropzone";
 
 import { uploadFile } from "@/common/uploads";
 import { invariant } from "@/lib/error";
+import { TAG } from "@/lib/tags";
 import { api } from "@/trpc/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -54,6 +55,7 @@ export function SafeDocuments() {
         mimeType,
         name,
         size,
+        tags: [TAG.SAFE],
       });
 
       uploadedDocuments.push({ bucketId, name: docName });
@@ -66,8 +68,6 @@ export function SafeDocuments() {
       <div>
         <Uploader
           multiple={true}
-          identifier={""}
-          keyPrefix="existing-safes"
           shouldUpload={false}
           onSuccess={(bucketData) => {
             setDocumentsList(bucketData);

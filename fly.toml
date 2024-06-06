@@ -9,8 +9,8 @@ primary_region = 'lax'
 [experimental]
 allowed_public_ports = []
 auto_rollback = true
-cmd = "./scripts/migrate.sh"
-entrypoint = "sh"
+# cmd = "./scripts/migrate.sh"
+# entrypoint = "sh"
 
 [http_service]
 internal_port = 3000

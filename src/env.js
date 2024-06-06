@@ -43,6 +43,7 @@ export const env = createEnv({
     // stripe
     STRIPE_API_KEY: z.string().optional(),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
+    STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   },
 
   /**
@@ -83,6 +84,9 @@ export const env = createEnv({
 
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_PUBLISHABLE_KEY: readRuntimePublicEnvVariable(
+      "STRIPE_PUBLISHABLE_KEY",
+    ),
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

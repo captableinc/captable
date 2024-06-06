@@ -1,5 +1,6 @@
 "use client";
 
+import { getStripeClient } from "@/client-only/stripe";
 import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
@@ -36,7 +37,10 @@ function Plans({ products, subscription }: PricingProps) {
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
 
   const { mutateAsync: checkoutWithStripe } = api.billing.checkout.useMutation({
-    onSuccess: ({ stripeSessionId }) => {},
+    onSuccess: async ({ stripeSessionId }) => {
+      const stripe = await getStripeClient();
+      stripe?.redirectToCheckout({ sessionId: stripeSessionId });
+    },
   });
 
   const handleBilling = (interval: PricingPlanInterval) => {

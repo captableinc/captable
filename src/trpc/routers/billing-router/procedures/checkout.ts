@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { invariant } from "@/lib/error";
 import { checkMembership } from "@/server/auth";
 import { createOrRetrieveCustomer, stripe } from "@/server/stripe";
@@ -37,6 +38,7 @@ export const checkoutProcedure = withAuth
           },
         ],
         mode: priceType === "recurring" ? "subscription" : "payment",
+        success_url: env.NEXT_PUBLIC_BASE_URL,
       };
 
       let stripeSession: Stripe.Checkout.Session | undefined;

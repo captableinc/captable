@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -7,8 +7,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { PricingPlanInterval } from "@/prisma/enums";
+import type { ComponentProps } from "react";
 
-interface PricingCardProps {
+interface PricingCardProps extends Omit<ButtonProps, "children"> {
   title: string;
   description?: string | null;
   price: string;
@@ -29,6 +30,7 @@ export function PricingCard({
   interval,
   price,
   subscribed,
+  ...rest
 }: PricingCardProps) {
   return (
     <Card>
@@ -43,7 +45,7 @@ export function PricingCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button>{subscribed ? "Manage" : "Subscribe"}</Button>
+        <Button {...rest}>{subscribed ? "Manage" : "Subscribe"}</Button>
       </CardFooter>
     </Card>
   );

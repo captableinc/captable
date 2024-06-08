@@ -479,6 +479,9 @@ model UpdateRecipient {
   @@index([stakeholderId])
 }
 
+// Create the required modal inside main function and run go()
+// Create public column and turn the feature on/off
+
 model DocumentShare {
   id       String @id @default(cuid())
   link     String
@@ -881,6 +884,7 @@ model Update {
   title    String
   content  Json
   html     String
+  public   Boolean          @default(false)
   status   UpdateStatusEnum @default(DRAFT)
 
   authorId  String

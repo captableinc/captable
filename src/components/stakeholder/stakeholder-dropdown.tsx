@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RiAddFill, RiGroupLine, RiUserLine } from "@remixicon/react";
+import { RiAccountCircleFill, RiAddFill, RiGroup2Fill } from "@remixicon/react";
 
 export default function StakeholderDropdown() {
   return (
@@ -22,31 +20,35 @@ export default function StakeholderDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem
-          asChild
-          onClick={() => {
-            pushModal("SingleStakeholdersModal", {
-              title: "Add Stakeholder",
-              subtitle: (
-                <Tldr
-                  message="Manage stakeholders by adding them. 
-          Categorize, assign roles, and maintain contact info for investors, partners, and clients."
-                  cta={{
-                    label: "Learn more",
-                    href: "https://captable.inc/help",
-                  }}
-                />
-              ),
-            });
-          }}
-        >
-          <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
-            <RiUserLine className="mr-2 h-5 w-5" />
-            Create one stakeholder
-          </div>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
+        <ul>
+          <li>
+            <Button
+              variant="ghost"
+              size="sm"
+              type="submit"
+              onClick={() => {
+                pushModal("SingleStakeholdersModal", {
+                  title: "Add Stakeholder",
+                  subtitle: (
+                    <Tldr
+                      message="Manage stakeholders by adding them. 
+              Categorize, assign roles, and maintain contact info for investors, partners, and clients."
+                      cta={{
+                        label: "Learn more",
+                        href: "https://captable.inc/help",
+                      }}
+                    />
+                  ),
+                });
+              }}
+            >
+              <>
+                <RiAccountCircleFill className="mr-2 h-4 w-4" />
+                Add one stakeholder
+              </>
+            </Button>
+          </li>
+
           <MultipleStakeholdersModal
             title="Add or Import Stakeholders"
             subtitle={
@@ -61,13 +63,17 @@ export default function StakeholderDropdown() {
               />
             }
             trigger={
-              <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
-                <RiGroupLine className="mr-2 h-5 w-5" />
-                Import multiple stakeholders
-              </div>
+              <li>
+                <Button variant="ghost" size="sm" type="submit">
+                  <>
+                    <RiGroup2Fill className="mr-2 h-4 w-4" />
+                    Import multiple stakeholders
+                  </>
+                </Button>
+              </li>
             }
           />
-        </DropdownMenuItem>
+        </ul>
       </DropdownMenuContent>
     </DropdownMenu>
   );

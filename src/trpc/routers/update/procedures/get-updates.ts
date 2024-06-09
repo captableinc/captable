@@ -12,7 +12,9 @@ export const getUpdatesProcedure = withAuth.query(async ({ ctx }) => {
     where: {
       companyId: user.companyId,
     },
-
+    include: {
+      recipients: true,
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -22,7 +24,7 @@ export const getUpdatesProcedure = withAuth.query(async ({ ctx }) => {
 });
 
 export const getRecipientsProcedure = withAuth
-  .input(z.object({ updateId: z.string(), publicUpdateId: z.string() }))
+  .input(z.object({ updateId: z.string() }))
   .query(async ({ ctx, input }) => {
     const {
       db,

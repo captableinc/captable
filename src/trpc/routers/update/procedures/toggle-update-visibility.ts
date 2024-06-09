@@ -3,10 +3,10 @@ import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { ToggleUpdateStatusSchema } from "../schema";
+import { z } from "zod";
 
 export const toggleUpdateVisibilityProcedure = withAuth
-  .input(ToggleUpdateStatusSchema)
+  .input(z.object({ updateId: z.string() }))
   .mutation(async ({ ctx: { db, session, requestIp, userAgent }, input }) => {
     try {
       const authorId = session.user.memberId;

@@ -4,7 +4,7 @@ import { dayjsExt } from "@/common/dayjs";
 import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { RiMoreLine } from "@remixicon/react";
+import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -77,7 +77,7 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                   <div className="flex items-center gap-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger>
-                        <RiMoreLine className="cursor-pointer text-muted-foreground hover:text-primary/80" />
+                        <RiMore2Fill className="cursor-pointer text-muted-foreground hover:text-primary/80" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuLabel>Options</DropdownMenuLabel>

@@ -29,7 +29,7 @@ const ActivityCard = async ({ className, publicId }: Props) => {
       <CardContent>
         {activity.data.length ? (
           <>
-            <ul role="list" className="-mb-8">
+            <ul className="-mb-8">
               {activity.data.map((activityItem) => (
                 <li key={activityItem.id} className="group">
                   <div className="relative pb-8">

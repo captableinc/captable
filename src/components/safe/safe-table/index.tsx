@@ -37,7 +37,7 @@ import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SafeTableToolbar } from "./safe-table-toolbar";
@@ -269,7 +269,7 @@ export const columns: ColumnDef<Safe[number]>[] = [
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <>
                   <span className="sr-only">Open menu</span>
-                  <RiMoreLine aria-hidden className="h-4 w-4" />
+                  <RiMore2Fill aria-hidden className="h-4 w-4" />
                 </>
               </Button>
             </DropdownMenuTrigger>

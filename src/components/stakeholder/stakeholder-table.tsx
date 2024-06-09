@@ -9,6 +9,7 @@ import { DataTableContent } from "@/components/ui/data-table/data-table-content"
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import type { RouterOutputs } from "@/trpc/shared";
+import { RiUserSettingsLine } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -162,9 +163,19 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => (
-      <div>{getCurrentRelationship(row.original.currentRelationship)}</div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <div>{getCurrentRelationship(row.original.currentRelationship)}</div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    // biome-ignore lint/correctness/noUnusedVariables: <explanation>
+    cell: ({ row }) => {
+      return <RiUserSettingsLine className="h-5 w-5 cursor-pointer" />;
+    },
   },
 ];
 

@@ -41,7 +41,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { RiFileDownloadLine, RiMoreLine } from "@remixicon/react";
+import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ShareTableToolbar } from "./share-table-toolbar";
@@ -324,7 +324,7 @@ export const columns: ColumnDef<Share[number]>[] = [
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <>
                   <span className="sr-only">Open menu</span>
-                  <RiMoreLine aria-hidden className="h-4 w-4" />
+                  <RiMore2Fill aria-hidden className="h-4 w-4" />
                 </>
               </Button>
             </DropdownMenuTrigger>

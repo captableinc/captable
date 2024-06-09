@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
@@ -130,7 +131,7 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => <div>{row.original.institutionName ?? "None"}</div>,
+    cell: ({ row }) => <div>{row.original.institutionName ?? ""}</div>,
   },
   {
     accessorKey: "Type",
@@ -142,9 +143,14 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => (
-      <div>{getStakeholderType(row.original.stakeholderType)}</div>
-    ),
+    cell: ({ row }) => {
+      const type = row.original.stakeholderType as string;
+      return (
+        <Badge variant={type === "INDIVIDUAL" ? "info" : "success"}>
+          {getStakeholderType(type)}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "Association",

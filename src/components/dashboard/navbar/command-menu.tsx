@@ -43,11 +43,11 @@ const Pages: CommandOption[] = [
   },
   {
     id: "stakeholders",
-    title: "Add Stakeholder",
+    title: "Add a stakeholder",
     icon: RiAccountCircleFill,
     onClick: () => {
       pushModal("SingleStakeholdersModal", {
-        title: "Add Stakeholder",
+        title: "Add a stakeholder",
         subtitle: (
           <Tldr
             message="Manage stakeholders by adding them. 

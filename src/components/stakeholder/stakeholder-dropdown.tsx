@@ -28,7 +28,7 @@ export default function StakeholderDropdown() {
               type="submit"
               onClick={() => {
                 pushModal("SingleStakeholdersModal", {
-                  title: "Add Stakeholder",
+                  title: "Add a stakeholder",
                   subtitle: (
                     <Tldr
                       message="Manage stakeholders by adding them. 

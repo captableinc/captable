@@ -1,7 +1,8 @@
 "use client";
 import Modal from "@/components/common/modal";
 import TeamMemberUploader from "@/components/member/member-uploader";
-import { RiGroupLine } from "@remixicon/react";
+import { Button } from "@/components/ui/button";
+import { RiGroup2Fill } from "@remixicon/react";
 import { useState } from "react";
 
 export default function MemberBulkImportModal() {
@@ -18,10 +19,14 @@ export default function MemberBulkImportModal() {
         },
       }}
       trigger={
-        <div className="flex cursor-default items-center rounded-sm py-1.5 pr-2 text-sm">
-          <RiGroupLine className="mr-2 h-5 w-5" />
-          Invite multiple team members
-        </div>
+        <li>
+          <Button variant="ghost" size="sm" type="submit">
+            <>
+              <RiGroup2Fill className="mr-2 h-4 w-4" />
+              Invite multiple team members
+            </>
+          </Button>
+        </li>
       }
     >
       <TeamMemberUploader setOpen={setOpen} />

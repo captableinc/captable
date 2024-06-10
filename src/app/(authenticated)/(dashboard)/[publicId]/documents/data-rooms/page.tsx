@@ -45,7 +45,7 @@ const DataRoomPage = async () => {
         <Fragment>
           <EmptyState
             icon={<RiFolderCheckFill />}
-            title="No data rooms found 🙈"
+            title="You don't have any data rooms yet."
             subtitle="A secure spaces to share multiple documents with investors, stakeholders and external parties."
           >
             <DataRoomPopover

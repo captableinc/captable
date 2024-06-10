@@ -15,7 +15,6 @@ export const CreateShareButton = ({
 }: CreateShareClassButtonProps) => {
   return (
     <Button
-      size="lg"
       onClick={() => {
         pushModal("ShareClassModal", {
           type: "create",

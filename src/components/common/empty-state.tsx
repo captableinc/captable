@@ -1,7 +1,6 @@
 "use client";
 
-{
-  /* Usage:
+/* Usage:
   <EmptyState
     icon={<RiLandscapeFill />}
     title="This is title"
@@ -9,7 +8,6 @@
     <Button size="lg">Button</Button>
   </EmptyState>
 */
-}
 
 import { cn } from "@/lib/utils";
 

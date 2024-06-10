@@ -1,5 +1,6 @@
 "use client";
 
+import { pushModal } from "@/components/modals";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
@@ -172,9 +173,19 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
   {
     id: "actions",
     enableHiding: false,
-    // biome-ignore lint/correctness/noUnusedVariables: <explanation>
     cell: ({ row }) => {
-      return <RiUserSettingsLine className="h-5 w-5 cursor-pointer" />;
+      return (
+        <RiUserSettingsLine
+          onClick={() => {
+            console.log(row.original);
+            pushModal("WipModal", {
+              title: "Work in progress",
+              subtitle: "TODO: Implement this modal",
+            });
+          }}
+          className="h-4 w-4 cursor-pointer"
+        />
+      );
     },
   },
 ];

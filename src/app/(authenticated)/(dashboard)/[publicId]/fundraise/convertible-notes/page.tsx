@@ -1,7 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { RiPieChartFill } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Convertible notes",
@@ -14,7 +14,7 @@ const ConvertibleNotesPage = () => {
       title="Work in progress."
       subtitle="This page is not yet available."
     >
-      <Button size="lg">Coming soon...</Button>
+      <Button>Coming soon...</Button>
     </EmptyState>
   );
 };

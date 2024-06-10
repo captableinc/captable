@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { RiAddFill, RiPieChart2Line } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import EquityPlanModal from "./modal";
 import EquityPlanTable from "./table";
 
@@ -64,7 +64,7 @@ const EquityPlanPage = async () => {
             />
           }
           trigger={
-            <Button size="lg">
+            <Button>
               <RiAddFill className="mr-2 h-5 w-5" />
               Create an equity plan
             </Button>

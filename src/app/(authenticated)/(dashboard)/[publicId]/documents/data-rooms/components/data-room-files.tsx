@@ -169,7 +169,7 @@ const DataRoomFiles = ({
                 dataRoom={dataRoom}
                 companyPublicId={companyPublicId}
                 trigger={
-                  <Button size="lg">
+                  <Button>
                     <RiAddFill className="mr-2 h-5 w-5" />
                     Upload documents
                   </Button>

@@ -26,7 +26,7 @@ const OptionsPage = async () => {
           title="Create an option"
           subtitle="Please fill in the details to create an option."
           trigger={
-            <Button size="lg">
+            <Button>
               <RiAddFill className="mr-2 h-5 w-5" />
               Issue a stock option
             </Button>

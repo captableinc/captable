@@ -9,7 +9,7 @@ import { Fragment } from "react";
 import DataRoomPopover from "./components/data-room-popover";
 import Folders from "./components/dataroom-folders";
 
-const getDataRooms = async (companyId: string) => {
+const getDataRooms = (companyId: string) => {
   return db.dataRoom.findMany({
     where: {
       companyId,
@@ -34,7 +34,7 @@ const DataRoomPage = async () => {
     return null;
   }
 
-  const { companyId, companyPublicId } = session?.user;
+  const { companyId, companyPublicId } = session.user;
   const dataRooms = await getDataRooms(companyId);
 
   return (
@@ -50,7 +50,7 @@ const DataRoomPage = async () => {
           >
             <DataRoomPopover
               trigger={
-                <Button size="lg">
+                <Button>
                   <RiAddFill className="mr-2 h-5 w-5" />
                   Create a data room
                 </Button>

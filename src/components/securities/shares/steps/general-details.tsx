@@ -1,5 +1,7 @@
 "use client";
-import { EmptySelect } from "@/components/securities/shared/EmptySelect";
+import Tldr from "@/components/common/tldr";
+import { pushModal } from "@/components/modals";
+// import { EmptySelect } from "@/components/securities/shared/EmptySelect";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,6 +16,8 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectItemStyle,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -39,6 +43,7 @@ import {
 import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RiAddFill } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
@@ -119,7 +124,7 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 name="shareClassId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Share class</FormLabel>
+                    <FormLabel>Select a share class</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
@@ -127,18 +132,42 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {shareClasses.length ? (
-                          shareClasses.map((sc) => (
-                            <SelectItem key={sc.id} value={sc.id}>
-                              {sc.name}
-                            </SelectItem>
-                          ))
-                        ) : (
-                          <EmptySelect
-                            title="Share class not found!"
-                            description="Please add required share class."
-                          />
-                        )}
+                        {shareClasses.map((sc) => (
+                          <SelectItem key={sc.id} value={sc.id}>
+                            {sc.name}
+                          </SelectItem>
+                        ))}
+
+                        <SelectSeparator />
+
+                        <button
+                          type="button"
+                          className="cursor-pointer w-full text-left"
+                          onClick={() => {
+                            pushModal("ShareClassModal", {
+                              type: "create",
+                              title: "Create a share class",
+                              subtitle: (
+                                <Tldr
+                                  message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+                                  cta={{
+                                    label: "Learn more",
+                                    // TODO - this link should be updated to the correct URL
+                                    href: "https://captable.inc/help",
+                                  }}
+                                />
+                              ),
+                            });
+                          }}
+                        >
+                          <div className={SelectItemStyle}>
+                            <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
+                              <RiAddFill className="h-4 w-4" aria-hidden />
+                            </span>
+
+                            <div>Create new share class</div>
+                          </div>
+                        </button>
                       </SelectContent>
                     </Select>
                     <FormMessage className="text-xs font-light" />

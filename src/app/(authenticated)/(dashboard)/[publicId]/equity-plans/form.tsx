@@ -24,7 +24,9 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectItemStyle,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -252,7 +254,6 @@ const EquityPlanForm = ({
                                 <RiAddFill className="mr-2 h-5 w-5" />
                                 Create a share class
                               </Button>
-                              {/*  */}
                             </div>
                           )}
                         </SelectLabel>
@@ -265,6 +266,37 @@ const EquityPlanForm = ({
                             {shareClass.name}
                           </SelectItem>
                         ))}
+
+                        <SelectSeparator />
+                        <button
+                          type="button"
+                          className="cursor-pointer w-full text-left"
+                          onClick={() => {
+                            pushModal("ShareClassModal", {
+                              type: "create",
+                              title: "Create a share class",
+                              shareClasses,
+                              subtitle: (
+                                <Tldr
+                                  message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+                                  cta={{
+                                    label: "Learn more",
+                                    // TODO - this link should be updated to the correct URL
+                                    href: "https://captable.inc/help",
+                                  }}
+                                />
+                              ),
+                            });
+                          }}
+                        >
+                          <div className={SelectItemStyle}>
+                            <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
+                              <RiAddFill className="h-4 w-4" aria-hidden />
+                            </span>
+
+                            <div>Create new share class</div>
+                          </div>
+                        </button>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

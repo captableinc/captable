@@ -25,7 +25,7 @@ export async function upsertProductRecord(product: Stripe.Product) {
     metadata: product.metadata,
   };
 
-  await db.product.upsert({
+  await db.billingProduct.upsert({
     create: productData,
     update: productData,
     where: {
@@ -35,7 +35,7 @@ export async function upsertProductRecord(product: Stripe.Product) {
 }
 
 export async function deleteProductRecord(product: Stripe.Product) {
-  await db.product.delete({
+  await db.billingProduct.delete({
     where: {
       id: product.id,
     },
@@ -43,7 +43,7 @@ export async function deleteProductRecord(product: Stripe.Product) {
 }
 
 export async function deletePriceRecord(price: Stripe.Price) {
-  await db.price.delete({
+  await db.billingPrice.delete({
     where: {
       id: price.id,
     },
@@ -65,7 +65,7 @@ export async function upsertPriceRecord(price: Stripe.Price) {
     trialPeriodDays: price.recurring?.trial_period_days ?? TRIAL_PERIOD_DAYS,
   };
 
-  await db.price.upsert({
+  await db.billingPrice.upsert({
     create: priceData,
     update: priceData,
     where: {
@@ -126,7 +126,7 @@ export const manageSubscriptionStatusChange = async (
       : undefined,
   };
 
-  await db.subscription.upsert({
+  await db.billingSubscription.upsert({
     create: { ...data, id },
     update: data,
     where: {

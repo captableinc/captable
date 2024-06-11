@@ -1,5 +1,7 @@
 "use client";
 
+import { pushModal } from "@/components/modals";
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
@@ -8,6 +10,7 @@ import { DataTableContent } from "@/components/ui/data-table/data-table-content"
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import type { RouterOutputs } from "@/trpc/shared";
+import { RiUserSettingsLine } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -130,7 +133,7 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => <div>{row.original.institutionName ?? "None"}</div>,
+    cell: ({ row }) => <div>{row.original.institutionName ?? ""}</div>,
   },
   {
     accessorKey: "Type",
@@ -142,9 +145,14 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => (
-      <div>{getStakeholderType(row.original.stakeholderType)}</div>
-    ),
+    cell: ({ row }) => {
+      const type = row.original.stakeholderType as string;
+      return (
+        <Badge variant={type === "INDIVIDUAL" ? "info" : "success"}>
+          {getStakeholderType(type)}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "Association",
@@ -156,9 +164,29 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
         />
       );
     },
-    cell: ({ row }) => (
-      <div>{getCurrentRelationship(row.original.currentRelationship)}</div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <div>{getCurrentRelationship(row.original.currentRelationship)}</div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <RiUserSettingsLine
+          onClick={() => {
+            console.log(row.original);
+            pushModal("WipModal", {
+              title: "Work in progress",
+              subtitle: "TODO: Implement this modal",
+            });
+          }}
+          className="h-4 w-4 cursor-pointer"
+        />
+      );
+    },
   },
 ];
 

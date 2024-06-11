@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/command";
 
 import { Button } from "@/components/ui/button";
+import Kbd from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
 import { RiSearchLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
@@ -43,11 +44,11 @@ const Pages: CommandOption[] = [
   },
   {
     id: "stakeholders",
-    title: "Add Stakeholder",
+    title: "Add a stakeholder",
     icon: RiAccountCircleFill,
     onClick: () => {
       pushModal("SingleStakeholdersModal", {
-        title: "Add Stakeholder",
+        title: "Add a stakeholder",
         subtitle: (
           <Tldr
             message="Manage stakeholders by adding them. 
@@ -134,15 +135,9 @@ export function CommandMenu() {
           <RiSearchLine className="mr-2 h-5 w-5" />
           <span>Type a command or search</span>
         </div>
-        <p className="text-sm text-muted-foreground">
-          {" "}
-          <kbd className="pointer-events-none mr-1.5 inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono shadow">
-            ⌘
-          </kbd>
-          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1 font-mono text-xs shadow">
-            K
-          </kbd>
-        </p>
+        <Kbd>
+          <span className="text-sm">⌘</span> + K
+        </Kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />

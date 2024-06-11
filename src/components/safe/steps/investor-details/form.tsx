@@ -169,7 +169,7 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
                       </span>
 
                       <SelectPrimitive.ItemText>
-                        Add Stakeholder
+                        Add a stakeholder
                       </SelectPrimitive.ItemText>
                     </SelectPrimitive.Item>
                   </SelectContent>

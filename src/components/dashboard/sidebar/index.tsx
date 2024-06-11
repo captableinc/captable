@@ -125,16 +125,16 @@ const navigation = [
     activeIcon: RiFolder5Fill,
     subNav: [
       {
-        name: "Storage",
-        href: "/",
-      },
-      {
         name: "Data rooms",
         href: "/data-rooms",
       },
       {
         name: "eSign documents",
         href: "/esign",
+      },
+      {
+        name: "All documents",
+        href: "/",
       },
       // {
       //   name: "Share documents",

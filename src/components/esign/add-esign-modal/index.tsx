@@ -19,7 +19,7 @@ export function AddEsignModal({ companyPublicId }: AddEsignModalProps) {
       subtitle=""
       trigger={
         <Button>
-          <RiAddFill className="mr-2 h-5 w-5" /> Document
+          <RiAddFill className="mr-2 h-5 w-5" /> Upload a document
         </Button>
       }
     >

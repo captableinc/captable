@@ -31,8 +31,8 @@ import { api } from "@/trpc/react";
 
 import MemberModal from "@/components/member/member-modal";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { type RouterOutputs } from "@/trpc/shared";
-import { RiMoreLine } from "@remixicon/react";
+import type { RouterOutputs } from "@/trpc/shared";
+import { RiMore2Fill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { DataTable } from "../ui/data-table/data-table";
@@ -187,8 +187,9 @@ export const columns: ColumnDef<Member[number]>[] = [
           }
 
           router.refresh();
-          // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-        } catch (error) {}
+        } catch (error) {
+          console.error("Error revoking invite or removing member", error);
+        }
       };
 
       const handleToggleActivation = async () => {
@@ -197,8 +198,9 @@ export const columns: ColumnDef<Member[number]>[] = [
             status: isActive ? "INACTIVE" : "ACTIVE",
             memberId,
           });
-          // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-        } catch (error) {}
+        } catch (_error) {
+          console.error("Error toggling activation");
+        }
       };
 
       const handleReinvite = () => {
@@ -211,7 +213,7 @@ export const columns: ColumnDef<Member[number]>[] = [
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <RiMoreLine aria-hidden className="h-4 w-4" />
+                <RiMore2Fill aria-hidden className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
           </div>

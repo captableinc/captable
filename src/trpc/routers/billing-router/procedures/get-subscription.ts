@@ -20,7 +20,7 @@ export const getSubscriptionProcedure = withAuth.query(async ({ ctx }) => {
       return { subscription: null };
     }
 
-    const subscription = await db.subscription.findFirst({
+    const subscription = await db.billingSubscription.findFirst({
       where: {
         customerId: customer.id,
         status: {

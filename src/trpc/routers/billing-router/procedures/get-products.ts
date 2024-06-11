@@ -4,7 +4,7 @@ export const getProductsProcedure = withAuth.query(async ({ ctx }) => {
   const { db } = ctx;
 
   const { products } = await db.$transaction(async (tx) => {
-    const products = await tx.product.findMany({
+    const products = await tx.billingProduct.findMany({
       where: {
         active: true,
       },

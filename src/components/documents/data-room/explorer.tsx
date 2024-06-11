@@ -21,10 +21,7 @@ const DataRoomFileExplorer = ({
 }: DocumentExplorerProps) => {
   return (
     <Card className="border-none bg-transparent shadow-none">
-      <ul
-        role="list"
-        className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
-      >
+      <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {documents.map((document) => (
           <li key={document.id}>
             <Link

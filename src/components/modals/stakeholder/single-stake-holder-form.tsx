@@ -234,7 +234,7 @@ export const SingleStakeholderForm = () => {
         </div>
         <div className="mt-8 flex justify-end">
           <Button loading={isSubmitting} type="submit">
-            {isSubmitting ? "Adding..." : "Add"}
+            {isSubmitting ? "Adding stakeholder..." : "Add a stakeholder"}
           </Button>
         </div>
       </form>

@@ -14,7 +14,7 @@ const CaptablePage = () => {
       title="Work in progress."
       subtitle="This page is not yet available."
     >
-      <Button size="lg">Import existing captable</Button>
+      <Button>Import existing captable</Button>
     </EmptyState>
   );
 };

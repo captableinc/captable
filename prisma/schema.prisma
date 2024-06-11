@@ -946,7 +946,7 @@ enum SubscriptionStatus {
   paused
 }
 
-model Product {
+model BillingProduct {
   id String @id
   // Product ID from Stripe, e.g. prod_1234.
 
@@ -962,10 +962,10 @@ model Product {
   metadata Json?
   // additional data.
 
-  prices Price[]
+  prices BillingPrice[]
 }
 
-model Price {
+model BillingPrice {
   id String @id
   // Price ID from Stripe, e.g. price_1234.
 
@@ -996,13 +996,13 @@ model Price {
   metadata Json?
   // additional data.
 
-  product      Product        @relation(fields: [productId], references: [id])
-  Subscription Subscription[]
+  product      BillingProduct        @relation(fields: [productId], references: [id])
+  Subscription BillingSubscription[]
 
   @@index([productId])
 }
 
-model Subscription {
+model BillingSubscription {
   id String @id
   // Subscription ID from Stripe, e.g. sub_1234.
 
@@ -1044,7 +1044,7 @@ model Subscription {
   metadata Json?
   // additional data.
 
-  price Price @relation(fields: [priceId], references: [id])
+  price BillingPrice @relation(fields: [priceId], references: [id])
 
   customer   BillingCustomer @relation(fields: [customerId], references: [id])
   customerId String
@@ -1057,8 +1057,8 @@ model BillingCustomer {
   id        String  @id
   companyId String?
 
-  company       Company?       @relation(fields: [companyId], references: [id])
-  subscriptions Subscription[]
+  company       Company?              @relation(fields: [companyId], references: [id])
+  subscriptions BillingSubscription[]
 
   @@index([companyId])
 }

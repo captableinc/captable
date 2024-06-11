@@ -8,18 +8,18 @@ CREATE TYPE "PricingPlanInterval" AS ENUM ('day', 'week', 'month', 'year');
 CREATE TYPE "SubscriptionStatus" AS ENUM ('trialing', 'active', 'canceled', 'incomplete', 'incomplete_expired', 'past_due', 'unpaid', 'paused');
 
 -- CreateTable
-CREATE TABLE "Product" (
+CREATE TABLE "BillingProduct" (
     "id" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "metadata" JSONB,
 
-    CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BillingProduct_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Price" (
+CREATE TABLE "BillingPrice" (
     "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL,
@@ -32,11 +32,11 @@ CREATE TABLE "Price" (
     "trialPeriodDays" INTEGER,
     "metadata" JSONB,
 
-    CONSTRAINT "Price_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BillingPrice_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Subscription" (
+CREATE TABLE "BillingSubscription" (
     "id" TEXT NOT NULL,
     "priceId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE "Subscription" (
     "metadata" JSONB,
     "customerId" TEXT NOT NULL,
 
-    CONSTRAINT "Subscription_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BillingSubscription_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -65,13 +65,13 @@ CREATE TABLE "BillingCustomer" (
 );
 
 -- CreateIndex
-CREATE INDEX "Price_productId_idx" ON "Price"("productId");
+CREATE INDEX "BillingPrice_productId_idx" ON "BillingPrice"("productId");
 
 -- CreateIndex
-CREATE INDEX "Subscription_priceId_idx" ON "Subscription"("priceId");
+CREATE INDEX "BillingSubscription_priceId_idx" ON "BillingSubscription"("priceId");
 
 -- CreateIndex
-CREATE INDEX "Subscription_customerId_idx" ON "Subscription"("customerId");
+CREATE INDEX "BillingSubscription_customerId_idx" ON "BillingSubscription"("customerId");
 
 -- CreateIndex
 CREATE INDEX "BillingCustomer_companyId_idx" ON "BillingCustomer"("companyId");

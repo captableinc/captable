@@ -25,7 +25,10 @@
     <img src="https://img.shields.io/github/license/captableinc/captable?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
   </a>
   <a href="https://discord.gg/rCpqnD6G6p">
-    <img src="https://img.shields.io/badge/Discord-Join%20us%20on%20Discord-blue" alt="Join us on Discord" />
+    <img src="https://img.shields.io/badge/Discord-Join%20us%20on%20Discord-purple" alt="Join us on Discord" />
+  </a>
+  <a href="https://hub.docker.com/r/captable/captable">
+    <img src="https://img.shields.io/badge/Docker-captable/captable-blue" alt="Docker image" />
   </a>
 </p>
 

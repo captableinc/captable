@@ -12,23 +12,27 @@
 
 <p align="center">
   <a href="https://github.com/captableinc/captable/stargazers">
-    <img src="https://img.shields.io/github/stars/captableinc/captable??style=flat&label=captable&logo=Github&color=2dd4bf&logoColor=fff" alt="Github" />
+    <img src="https://img.shields.io/github/stars/captableinc/captable" alt="Github" />
   </a>
   
   <a href="https://twitter.com/captableinc">
-    <img src="https://img.shields.io/twitter/follow/captableinc?style=flat&label=%40Captable, Inc.&logo=twitter&color=0bf&logoColor=0bf" alt="Twitter" />
+    <img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/captableinc">
   </a>
-  <a href="https://github.com/captableinc/captable/actions/workflows/release.yml">
-    <img src="https://github.com/captableinc/captable/actions/workflows/release.yml/badge.svg?branch=main&title=CI" alt="CI" />
-  </a>
-  <a href="https://github.com/captableinc/captable/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/captableinc/captable?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
-  </a>
+
   <a href="https://discord.gg/rCpqnD6G6p">
     <img src="https://img.shields.io/badge/Discord-Join%20us%20on%20Discord-purple" alt="Join us on Discord" />
   </a>
+
+  <a href="https://github.com/captableinc/captable/actions/workflows/release.yml">
+    <img src="https://github.com/captableinc/captable/actions/workflows/release.yml/badge.svg?branch=main&title=CI" alt="CI" />
+  </a>
+
+  <a href="https://github.com/captableinc/captable/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/captableinc/captable?label=license&logo=github&color=f80&logoColor=fff" alt="License" />
+  </a>
+
   <a href="https://hub.docker.com/r/captable/captable">
-    <img src="https://img.shields.io/badge/Docker-captable/captable-blue" alt="Docker image" />
+    <img src="https://img.shields.io/badge/Docker%20Hub-captable/captable-blue" alt="Docker image" />
   </a>
 </p>
 
@@ -73,10 +77,8 @@ We have a community of developers, designers, and entrepreneurs who are passiona
 <h3 id="stack">Stack</h3>
 
 - [Next.js](https://nextjs.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-- [@shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind](https://tailwindcss.com)
+- [Prisma ORM](https://prisma.io)
 
 ---
 
@@ -127,8 +129,8 @@ When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in ot
 
   ```bash
 
-  docker compose run app pnpm db:migrate
-  docker compose run app pnpm db:seed
+  docker compose exec app pnpm db:migrate
+  docker compose exec app pnpm db:seed
 
   ```
 
@@ -176,7 +178,7 @@ When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in ot
 - Install [mailpit](https://mailpit.axllent.org/docs/install/) for SMTP and email interception
 - Create database `captable` in postgres database
 - Update `.env` file's `DATABASE_URL` with database credentials
-- For a quick start, you can use [Supabase](https://supabase.com/) or [Neon](https://neon.tech/) as well.
+- For a quick start, you can use [Supabase database](https://supabase.com/) or [Neon](https://neon.tech/) as well.
 - Run the following command to install dependencies
 
   ```bash

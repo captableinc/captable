@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { cn } from "@/lib/utils";
 
 type KbdProps = {
@@ -20,3 +21,14 @@ const Kbd = ({ children, className }: KbdProps) => {
 };
 
 export default Kbd;
+=======
+export const Kbd = ({ className }: { className?: string }) => {
+  return (
+    <span
+      className={`border rounded-sm flex items-center justify-center size-[18px] text-xs text-primary ${className}`}
+    >
+      <kbd>P</kbd>
+    </span>
+  );
+};
+>>>>>>> 3b6d278 (feat: create kbd component)

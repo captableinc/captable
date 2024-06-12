@@ -1,5 +1,4 @@
 import EmptyState from "@/components/common/empty-state";
-import Tldr from "@/components/common/tldr";
 import { ShareModal } from "@/components/securities/shares/share-modal";
 import ShareTable from "@/components/securities/shares/share-table";
 import { Button } from "@/components/ui/button";
@@ -27,7 +26,7 @@ const SharesPage = async () => {
           title="Create a share"
           subtitle="Please fill in the details to create and issue a share."
           trigger={
-            <Button size="lg">
+            <Button>
               <RiAddFill className="mr-2 h-5 w-5" />
               Create a share
             </Button>

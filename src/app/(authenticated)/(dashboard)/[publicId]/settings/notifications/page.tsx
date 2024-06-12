@@ -1,10 +1,10 @@
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Notifications",
 };
 const NotificationsSettingsPage = () => {
-  return <div>Notifications settings page</div>;
+  return <div>Work in progress...</div>;
 };
 
 export default NotificationsSettingsPage;

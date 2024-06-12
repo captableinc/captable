@@ -26,7 +26,7 @@ import { dayjsExt } from "@/common/dayjs";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { api } from "@/trpc/react";
-import { RiMoreLine } from "@remixicon/react";
+import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../../ui/button";
@@ -181,7 +181,7 @@ export const columns: ColumnDef<Passkey[number]>[] = [
                 asChild
               >
                 <Button variant="ghost" className="h-8 w-8 p-0">
-                  <RiMoreLine aria-hidden className="h-4 w-4" />
+                  <RiMore2Fill aria-hidden className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
             </div>

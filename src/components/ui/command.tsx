@@ -1,6 +1,6 @@
 "use client";
 
-import { type DialogProps } from "@radix-ui/react-dialog";
+import type { DialogProps } from "@radix-ui/react-dialog";
 import { RiSearchLine } from "@remixicon/react";
 import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";

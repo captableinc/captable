@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { DataRoom } from "@prisma/client";
 import {
   RiFolder3Fill as FolderIcon,
-  RiMore2Line as MoreIcon,
+  RiMore2Fill as MoreIcon,
   RiAddFill,
 } from "@remixicon/react";
 import Link from "next/link";
@@ -43,10 +43,7 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
       <hr className="my-3" />
 
       <Card className="mt-3 border-none bg-transparent shadow-none">
-        <ul
-          role="list"
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
-        >
+        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {folders.map((folder) => (
             <li key={folder.id}>
               <Link

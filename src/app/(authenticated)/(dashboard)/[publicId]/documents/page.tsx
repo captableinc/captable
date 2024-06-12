@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import DocumentUploadModal from "./components/modal";
 import DocumentsTable from "./components/table";
 
@@ -27,7 +27,7 @@ const DocumentsPage = async () => {
         <DocumentUploadModal
           companyPublicId={session.user.companyPublicId}
           trigger={
-            <Button size="lg">
+            <Button>
               <RiAddFill className="mr-2 h-5 w-5" />
               Upload a document
             </Button>

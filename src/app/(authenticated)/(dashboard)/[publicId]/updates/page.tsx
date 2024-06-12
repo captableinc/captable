@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import UpdateTable from "@/components/update/update-table";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiMailSendLine } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -26,9 +26,9 @@ const UpdatesPage = async ({
         subtitle="Please click the button below to send an update to your stakeholders."
       >
         <Link href={`/${publicId}/updates/new`} passHref>
-          <Button size="lg" asChild>
+          <Button asChild>
             <RiAddFill className="mr-2 h-5 w-5" />
-            Draft an update
+            Create an update
           </Button>
         </Link>
       </EmptyState>
@@ -47,7 +47,7 @@ const UpdatesPage = async ({
 
         <div>
           <Link href={`/${publicId}/updates/new`} passHref>
-            <Button size="lg" asChild>
+            <Button asChild>
               <RiAddFill className="mr-2 h-5 w-5" />
               Draft an update
             </Button>

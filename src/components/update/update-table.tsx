@@ -50,7 +50,7 @@ const getUpdateStatus = (status: string) => {
     case "PUBLIC":
       return <Badge variant="success">Public</Badge>;
     case "PRIVATE":
-      return <Badge variant="outline">Private</Badge>;
+      return <Badge variant="destructive">Private</Badge>;
   }
 };
 
@@ -83,22 +83,6 @@ const UpdateActions = (row: { original: Update[number] }) => {
           </DropdownMenuItem>
         )}
 
-        <DropdownMenuItem
-          asChild
-          onClick={() => {
-            pushModal("ShareUpdateModal", {
-              update: {
-                id: updateId,
-                publicId: updatePublicId,
-              },
-            });
-          }}
-        >
-          <div className="relative hover:bg-gray-100 flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-            Share this update
-          </div>
-        </DropdownMenuItem>
-
         {status !== "DRAFT" && (
           <DropdownMenuItem asChild>
             <ChangeUpdateVisibilityAlertDialog
@@ -114,6 +98,22 @@ const UpdateActions = (row: { original: Update[number] }) => {
             />
           </DropdownMenuItem>
         )}
+
+        <DropdownMenuItem
+          asChild
+          onClick={() => {
+            pushModal("ShareUpdateModal", {
+              update: {
+                id: updateId,
+                publicId: updatePublicId,
+              },
+            });
+          }}
+        >
+          <div className="relative hover:bg-gray-100 flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+            Share this update
+          </div>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -98,8 +98,8 @@ export function ChangeUpdateVisibilityAlertDialog({
           </AlertDialogTitle>
           <AlertDialogDescription>
             {isPublic
-              ? "Making update private prevents users to view."
-              : "Sharing the update allows public users to view"}
+              ? "Making it private prevents public users from accessing it."
+              : "Publicly sharing this update allows public users to view it, it may also be indexed by search engines."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -35,6 +35,7 @@ export const getSubscriptionProcedure = withAuth.query(async ({ ctx }) => {
                 name: true,
               },
             },
+            unitAmount: true,
           },
         },
       },

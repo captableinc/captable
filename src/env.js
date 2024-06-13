@@ -2,9 +2,18 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+const PUBLIC_ENV_KEY = "___ENV";
+
+function isBrowser() {
+  return typeof window !== "undefined";
+}
+
 const readRuntimePublicEnvVariable = (key) => {
-  if (typeof window === "undefined") return process.env[key];
-  return window.___ENV[key];
+  if (isBrowser()) {
+    return window?.[PUBLIC_ENV_KEY]?.[key];
+  }
+
+  return process.env[key];
 };
 
 export const env = createEnv({
@@ -60,7 +69,7 @@ export const env = createEnv({
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
    * middlewares) or client-side so we need to destruct manually.
    */
-  runtimeEnv: {
+  experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_BASE_URL: readRuntimePublicEnvVariable("NEXT_PUBLIC_BASE_URL"),
     DATABASE_URL: process.env.DATABASE_URL,
@@ -98,4 +107,14 @@ export const env = createEnv({
    * `SOME_VAR=''` will throw an error.
    */
   emptyStringAsUndefined: true,
+
+  onValidationError: (error) => {
+    if (!isBrowser()) {
+      console.error(
+        "❌ Invalid environment variables:",
+        error.flatten().fieldErrors,
+      );
+      throw new Error("Invalid environment variables");
+    }
+  },
 });

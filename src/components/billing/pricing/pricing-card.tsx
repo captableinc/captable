@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { PricingPlanInterval } from "@/prisma/enums";
-import type { ComponentProps } from "react";
 
 interface PricingCardProps extends Omit<ButtonProps, "children"> {
   title: string;
@@ -54,11 +53,9 @@ export function PricingCard({
       <CardFooter>
         <Button {...rest}>
           {subscribedUnitAmount
-            ? unitAmount < subscribedUnitAmount
-              ? "Downgrade Plan"
-              : unitAmount > subscribedUnitAmount
-                ? "Upgrade Plan"
-                : "Manage Current Plan"
+            ? unitAmount === subscribedUnitAmount
+              ? "Manage Current Plan"
+              : "Change Plan"
             : "Subscribe"}
         </Button>
       </CardFooter>

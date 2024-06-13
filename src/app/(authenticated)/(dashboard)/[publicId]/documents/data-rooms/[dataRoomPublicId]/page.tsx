@@ -1,6 +1,5 @@
 "use server";
 
-import { type ExtendedRecipientType } from "@/components/common/share-modal";
 import { api } from "@/trpc/server";
 import type { Bucket, DataRoom } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -11,15 +10,14 @@ const DataRoomSettinsPage = async ({
 }: {
   params: { publicId: string; dataRoomPublicId: string };
 }) => {
-  const { dataRoom, documents, recipients } =
-    await api.dataRoom.getDataRoom.query({
-      dataRoomPublicId,
-      include: {
-        company: false,
-        recipients: true,
-        documents: true,
-      },
-    });
+  const { dataRoom, documents } = await api.dataRoom.getDataRoom.query({
+    dataRoomPublicId,
+    include: {
+      company: false,
+      recipients: true,
+      documents: true,
+    },
+  });
   const contacts = await api.common.getContacts.query();
 
   if (!dataRoom) {
@@ -30,7 +28,6 @@ const DataRoomSettinsPage = async ({
     <DataRoomFiles
       contacts={contacts}
       dataRoom={dataRoom as DataRoom}
-      recipients={recipients as ExtendedRecipientType[]}
       documents={documents as Bucket[]}
       companyPublicId={publicId}
     />

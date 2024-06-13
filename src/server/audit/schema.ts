@@ -44,6 +44,9 @@ export const AuditSchema = z.object({
     "documentShare.created",
 
     "password.updated",
+
+    "update.public-status",
+    "update.private-status",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -60,6 +63,7 @@ export const AuditSchema = z.object({
         "option",
         "documentShare",
         "share",
+        "update",
       ]),
       id: z.string().optional().nullable(),
     }),

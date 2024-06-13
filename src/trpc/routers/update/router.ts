@@ -9,12 +9,14 @@ import {
   shareUpdateProcedure,
   unshareUpdateProcedure,
 } from "./procedures/share-update";
+import { toggleUpdateVisibilityProcedure } from "./procedures/toggle-update-visibility";
 
 export const updateRouter = createTRPCRouter({
   save: saveUpdateProcedure,
   get: getUpdatesProcedure,
-  getRecipiants: getRecipientsProcedure,
+  getRecipients: getRecipientsProcedure,
   clone: cloneUpdateProcedure,
   share: shareUpdateProcedure,
   unShare: unshareUpdateProcedure,
+  toggleVisibility: toggleUpdateVisibilityProcedure,
 });

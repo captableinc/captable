@@ -91,6 +91,7 @@ function Plans({ products, subscription }: PricingProps) {
 
           return (
             <PricingCard
+              active={subscription?.priceId === price.id}
               key={product.id}
               title={product.name}
               description={product.description}

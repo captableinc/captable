@@ -15,6 +15,7 @@ interface PricingCardProps extends Omit<ButtonProps, "children"> {
   price: string;
   interval: PricingPlanInterval;
   subscribed: boolean;
+  active: boolean;
 }
 
 const humanizedInterval: Record<PricingPlanInterval, string> = {
@@ -30,6 +31,7 @@ export function PricingCard({
   interval,
   price,
   subscribed,
+  active,
   ...rest
 }: PricingCardProps) {
   return (

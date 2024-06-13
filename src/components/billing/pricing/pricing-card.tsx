@@ -16,6 +16,8 @@ interface PricingCardProps extends Omit<ButtonProps, "children"> {
   interval: PricingPlanInterval;
   subscribed: boolean;
   active: boolean;
+  subscribedUnitAmount?: bigint | null;
+  unitAmount: number;
 }
 
 const humanizedInterval: Record<PricingPlanInterval, string> = {
@@ -32,8 +34,13 @@ export function PricingCard({
   price,
   subscribed,
   active,
+  subscribedUnitAmount: subscribedUnitAmount_,
+  unitAmount,
   ...rest
 }: PricingCardProps) {
+  const subscribedUnitAmount = subscribedUnitAmount_
+    ? Number(subscribedUnitAmount_)
+    : null;
   return (
     <Card>
       <CardHeader>
@@ -47,7 +54,15 @@ export function PricingCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button {...rest}>{subscribed ? "Manage" : "Subscribe"}</Button>
+        <Button {...rest}>
+          {subscribedUnitAmount
+            ? subscribedUnitAmount < unitAmount
+              ? "Upgrade Plan"
+              : subscribedUnitAmount > unitAmount
+                ? "Downgrade Plan"
+                : "Manage Current Plan"
+            : "Subscribe"}
+        </Button>
       </CardFooter>
     </Card>
   );

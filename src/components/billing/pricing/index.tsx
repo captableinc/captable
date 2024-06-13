@@ -4,6 +4,7 @@ import { getStripeClient } from "@/client-only/stripe";
 import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EmptyPlans } from "./empty-plans";
 import { PricingButton } from "./pricing-button";
@@ -24,6 +25,7 @@ interface handleStripeCheckoutOptions {
 }
 
 function Plans({ products, subscription }: PricingProps) {
+  const router = useRouter();
   const intervals = Array.from(
     new Set(
       products.flatMap((product) =>
@@ -43,6 +45,12 @@ function Plans({ products, subscription }: PricingProps) {
     },
   });
 
+  const { mutateAsync: stripePortal } = api.billing.stripePortal.useMutation({
+    onSuccess: ({ url }) => {
+      router.push(url);
+    },
+  });
+
   const handleBilling = (interval: PricingPlanInterval) => {
     setBillingInterval(interval);
   };
@@ -53,6 +61,10 @@ function Plans({ products, subscription }: PricingProps) {
     await checkoutWithStripe(price);
 
     setPriceIdLoading(undefined);
+  };
+
+  const handleBillingPortal = async () => {
+    await stripePortal();
   };
 
   return (
@@ -98,13 +110,18 @@ function Plans({ products, subscription }: PricingProps) {
               price={priceString}
               interval={billingInterval}
               subscribed={!!subscription}
-              onClick={() =>
-                handleStripeCheckout({
+              onClick={() => {
+                if (subscription) {
+                  return handleBillingPortal();
+                }
+                return handleStripeCheckout({
                   priceId: price.id,
                   priceType: price.type,
-                })
-              }
+                });
+              }}
               loading={priceIdLoading === price.id}
+              subscribedUnitAmount={subscription?.price.unitAmount}
+              unitAmount={unitAmount}
             />
           );
         })}

@@ -1,13 +1,13 @@
 "use client";
 
 import Loading from "@/components/common/loading";
-import Modal from "@/components/common/modal";
+import Modal from "@/components/common/push-modal";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
 
 import type { ShareContactType } from "@/schema/contacts";
-import type { DataRoomRecipient } from "@prisma/client";
+import type { DataRoomRecipient, UpdateRecipient } from "@prisma/client";
 import {
   RiCheckLine as CheckIcon,
   RiDeleteBin2Line as DeleteIcon,
@@ -15,38 +15,48 @@ import {
 } from "@remixicon/react";
 import { Fragment, useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
+import { popModal } from "../modals";
 
-export interface ExtendedRecipientType extends DataRoomRecipient {
+export interface ExtendedDataRoomRecipientType extends DataRoomRecipient {
   token: string | object;
 }
+export interface ExtendedUpdateRecipientType extends UpdateRecipient {
+  token: string | object;
+}
+type Recipients =
+  | {
+      type: "dataroom";
+      recipients: ExtendedDataRoomRecipientType[] | [];
+    }
+  | {
+      type: "update";
+      recipients: ExtendedUpdateRecipientType[] | [];
+    };
 
 export type Props = {
   title: string;
   subtitle: string;
   baseLink: string;
-  trigger: React.ReactNode;
-  contacts: ShareContactType[];
-  recipients: ExtendedRecipientType[];
-
+  contacts: ShareContactType[] | [];
+  recipientsPayload: Recipients;
   onShare: (data: { others: object[]; selectedContacts: object[] }) => void;
-  removeAccess: (data: { recipientId: string }) => void;
+  removeAccess?: (data: { recipientId: string }) => void;
 };
 
 const Share = ({
   title,
   subtitle,
   baseLink,
-  trigger,
   contacts,
-  recipients,
+  recipientsPayload,
   onShare,
   removeAccess,
 }: Props) => {
-  const [open, setOpen] = useState(false);
   const [loading, _setLoading] = useState<boolean>(false);
   const [_copiedText, copy] = useCopyToClipboard();
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Option[]>([]);
+  const { recipients } = recipientsPayload;
 
   const copyToClipboard = (id: string, text: string) => {
     copy(text)
@@ -63,19 +73,7 @@ const Share = ({
   };
 
   return (
-    <Modal
-      size="lg"
-      title={title}
-      subtitle={subtitle}
-      trigger={trigger}
-      scrollable={true}
-      dialogProps={{
-        open,
-        onOpenChange: (val) => {
-          setOpen(val);
-        },
-      }}
-    >
+    <Modal size="lg" title={title} subtitle={subtitle} scrollable={true}>
       <Fragment>
         {loading ? (
           <Loading />
@@ -86,7 +84,7 @@ const Share = ({
               className="bg-white py-3"
               selected={selected}
               setSelected={setSelected}
-              options={contacts.map((contact) => ({
+              options={contacts?.map((contact) => ({
                 label:
                   // biome-ignore lint: It's okay to concatenate with + ;)
                   `${contact.name}` +
@@ -109,14 +107,14 @@ const Share = ({
 
             <h5 className="mt-6 font-medium">People with access</h5>
 
-            {recipients.length === 0 && (
+            {recipients?.length === 0 && (
               <p className="text-sm text-primary/50">
                 No one has access to this yet.
               </p>
             )}
 
             <ul>
-              {recipients.map((recipient) => (
+              {recipients?.map((recipient) => (
                 <li
                   key={recipient.id}
                   className="group flex items-center justify-between gap-x-2 py-2"
@@ -142,7 +140,9 @@ const Share = ({
                         variant={"secondary"}
                         className=" hidden text-sm font-medium text-red-500/70 hover:text-red-500 group-hover:flex"
                         onClick={() => {
-                          removeAccess({ recipientId: recipient.id });
+                          if (removeAccess) {
+                            removeAccess({ recipientId: recipient.id });
+                          }
                         }}
                       >
                         <DeleteIcon className="h-4 w-4" />
@@ -179,12 +179,11 @@ const Share = ({
                 <Button
                   variant={"outline"}
                   onClick={() => {
-                    setOpen(false);
+                    popModal();
                   }}
                 >
                   Cancel
                 </Button>
-
                 <Button
                   type="submit"
                   onClick={() => {

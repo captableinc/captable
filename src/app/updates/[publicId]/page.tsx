@@ -5,7 +5,9 @@ import { SharePageLayout } from "@/components/share/page-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import UpdateRenderer from "@/components/update/renderer";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
+import { UpdateStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
+import { RiLock2Line } from "@remixicon/react";
 import { render } from "jsx-email";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
@@ -22,6 +24,7 @@ const PublicUpdatePage = async ({
   try {
     decodedToken = await decode(token);
   } catch (error) {
+    console.error(error);
     return notFound();
   }
 
@@ -66,6 +69,22 @@ const PublicUpdatePage = async ({
 
   if (!update) {
     return notFound();
+  }
+
+  const canRenderInPublic =
+    update.status === UpdateStatusEnum.PUBLIC && update.public;
+
+  if (!canRenderInPublic) {
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <div className="flex items-center space-x-5">
+          <RiLock2Line className="h-10 w-10" />
+          <p className="text-lg font-semibold text-gray-600">
+            Public access denied
+          </p>
+        </div>
+      </div>
+    );
   }
 
   const recipients = await db.updateRecipient.findFirst({
@@ -116,6 +135,7 @@ const PublicUpdatePage = async ({
         <div className="mt-5">
           <article
             className="prose"
+            //biome-ignore lint/security/noDangerouslySetInnerHtml: allow dangerouslySetInnerHtml
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>

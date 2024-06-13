@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import { RiAddCircleLine } from "@remixicon/react";
 import {
   type ColumnDef,
@@ -32,7 +32,9 @@ import {
 } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { pushModal } from "../modals";
+import { ChangeUpdateVisibilityAlertDialog } from "./change-update-visibility-alert-dialog";
 import { UpdateTableToolbar } from "./update-table-toolbar";
 
 type Update = RouterOutputs["update"]["get"]["data"];
@@ -48,14 +50,19 @@ const getUpdateStatus = (status: string) => {
     case "PUBLIC":
       return <Badge variant="success">Public</Badge>;
     case "PRIVATE":
-      return <Badge variant="outline">Private</Badge>;
+      return <Badge variant="destructive">Private</Badge>;
   }
 };
 
-const UpdateActions = (row: {
-  original: { publicId: string; status: string };
-}) => {
-  const { publicId, status } = row.original;
+const UpdateActions = (row: { original: Update[number] }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const {
+    id: updateId,
+    publicId: updatePublicId,
+    status,
+    public: isPublic,
+  } = row.original;
+
   const { data } = useSession();
   const companyPublicId = data?.user.companyPublicId;
 
@@ -70,17 +77,43 @@ const UpdateActions = (row: {
       <DropdownMenuContent>
         {status === "DRAFT" && (
           <DropdownMenuItem>
-            <Link href={`/${companyPublicId}/updates/${publicId}`}>
+            <Link href={`/${companyPublicId}/updates/${updatePublicId}`}>
               Edit this update
             </Link>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem>Share this update</DropdownMenuItem>
+
         {status !== "DRAFT" && (
-          <DropdownMenuItem>
-            {status === "PUBLIC" ? "Make it private" : "Make it public"}
+          <DropdownMenuItem asChild>
+            <ChangeUpdateVisibilityAlertDialog
+              dialogProps={{ open, setOpen }}
+              updateId={updateId}
+              updatePublicId={updatePublicId}
+              isPublic={isPublic}
+              trigger={
+                <p className="relative hover:bg-gray-100 flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                  {status === "PUBLIC" ? "Make it private" : "Make it public"}
+                </p>
+              }
+            />
           </DropdownMenuItem>
         )}
+
+        <DropdownMenuItem
+          asChild
+          onClick={() => {
+            pushModal("ShareUpdateModal", {
+              update: {
+                id: updateId,
+                publicId: updatePublicId,
+              },
+            });
+          }}
+        >
+          <div className="relative hover:bg-gray-100 flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+            Share this update
+          </div>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

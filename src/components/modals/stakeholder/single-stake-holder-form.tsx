@@ -129,7 +129,7 @@ export const SingleStakeholderForm = () => {
               name="currentRelationship"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Association</FormLabel>
+                  <FormLabel>Group</FormLabel>
                   <Select onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="w-full">

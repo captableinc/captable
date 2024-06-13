@@ -4,7 +4,9 @@ import {
   type UpdateSharePayloadType,
 } from "@/jobs/share-update-email";
 import { encode } from "@/lib/jwt";
+import { UpdateStatusEnum } from "@/prisma/enums";
 import { ShareRecipientSchema } from "@/schema/contacts";
+import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { z } from "zod";
 
@@ -19,7 +21,9 @@ export const shareUpdateProcedure = withAuth
   .mutation(async ({ ctx, input }) => {
     const { session, db } = ctx;
     const { updateId, others, selectedContacts } = input;
-    const { name: senderName, email: senderEmail, companyId } = session.user;
+    const { name: senderName, email: senderEmail } = session.user;
+
+    const { companyId } = await checkMembership({ session, tx: db });
 
     const update = await db.update.findUniqueOrThrow({
       where: {
@@ -33,7 +37,7 @@ export const shareUpdateProcedure = withAuth
     });
 
     if (!update) {
-      throw new Error("Data room not found");
+      throw new Error("Update found");
     }
 
     const company = update.company;
@@ -100,18 +104,21 @@ export const shareUpdateProcedure = withAuth
     };
 
     await upsertManyRecipients();
-    await db.update.update({
-      where: {
-        id: updateId,
-      },
-      data: {
-        status: "PRIVATE",
-      },
-    });
+
+    if (update.status === UpdateStatusEnum.DRAFT) {
+      await db.update.update({
+        where: {
+          id: updateId,
+        },
+        data: {
+          status: "PRIVATE",
+        },
+      });
+    }
 
     return {
       success: true,
-      message: "Data room successfully shared!",
+      message: "Update successfully shared!",
     };
   });
 

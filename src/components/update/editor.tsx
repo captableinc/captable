@@ -2,14 +2,10 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import Loading from "@/components/common/loading";
-import ShareModal, {
-  type ExtendedRecipientType,
-} from "@/components/common/share-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
-import type { ShareContactType, ShareRecipientType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
 import type { Block } from "@blocknote/core";
 import type { Update } from "@prisma/client";
@@ -19,28 +15,29 @@ import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
 
-import { env } from "@/env";
 import "@/styles/editor.css";
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
 import "@blocknote/react/style.css";
+import { UpdateStatusEnum } from "@/prisma/enums";
+import { pushModal } from "../modals";
+import { ChangeUpdateVisibilityAlertDialog } from "./change-update-visibility-alert-dialog";
 
 type UpdatesEditorProps = {
   update?: Update;
   mode: "edit" | "new";
-  contacts?: ShareContactType[];
-  recipients?: ExtendedRecipientType[];
   companyPublicId?: string;
 };
 
 const UpdatesEditor = ({
   mode,
   update,
-  contacts,
-  recipients,
   companyPublicId,
 }: UpdatesEditorProps) => {
+  const isUpdatePrivate = update?.status === UpdateStatusEnum.PRIVATE;
+  const isUpdatePublic = update?.status === UpdateStatusEnum.PUBLIC;
+
   const router = useRouter();
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+  const [open, setOpen] = useState<boolean>(false);
 
   const date = new Date();
   const formattedDate = dayjsExt(date).format("MMM YYYY");
@@ -180,11 +177,11 @@ const UpdatesEditor = ({
   });
 
   const draftMutation = api.update.save.useMutation({
-    onSuccess: ({ publicId, success }) => {
+    onSuccess: ({ publicId, success, message }) => {
       if (success) {
         toast.success("🎉 Successfully saved");
       } else {
-        toast.error("Uh oh! Something went wrong.");
+        toast.error(message);
         return;
       }
 
@@ -251,38 +248,26 @@ const UpdatesEditor = ({
     cloneMutation.mutate(data);
   };
 
-  const { mutateAsync: shareUpdateMutation } = api.update.share.useMutation({
-    onSuccess: () => {
-      router.refresh();
-      toast.success("🎉 Successfully shared");
-    },
-
-    onError: (error) => {
-      toast.error(`Uh oh! Something went wrong. ${error.message}`);
-    },
-  });
-
-  const { mutateAsync: unshareUpdateMutation } = api.update.unShare.useMutation(
-    {
-      onSuccess: (r) => {
-        router.refresh();
-
-        toast.success("🎉 Successfully removed access");
-      },
-
-      onError: (error: { message: string }) => {
-        toast.error(`Uh oh! Something went wrong. ${error.message}`);
-      },
-    },
-  );
-
   return (
     <div className="flex flex-col gap-y-3">
       <form className="flex items-center justify-between gap-y-2">
         <div className="gap-y-3">
           <div className="flex w-full font-medium">
-            <Badge variant="warning" className="mr-2">
-              Draft
+            <Badge
+              variant={
+                isUpdatePrivate
+                  ? "secondary"
+                  : isUpdatePublic
+                    ? "success"
+                    : "warning"
+              }
+              className="mr-2"
+            >
+              {isUpdatePrivate
+                ? "Private"
+                : isUpdatePublic
+                  ? "Public"
+                  : "Draft"}
             </Badge>
             <Link
               href={`/${companyPublicId}/updates`}
@@ -323,6 +308,7 @@ const UpdatesEditor = ({
             <ul>
               <li>
                 <Button
+                  disabled={isUpdatePrivate || isUpdatePublic}
                   variant="ghost"
                   size="sm"
                   type="submit"
@@ -331,42 +317,43 @@ const UpdatesEditor = ({
                   Save as draft
                 </Button>
               </li>
-
-              {/* TODO - implement this feature */}
-              {/* <li>
-                <Button variant="ghost" size="sm">
-                  Make it public
-                </Button>
-              </li> */}
-
-              {update && mode === "edit" && recipients && contacts && (
+              {update && (
                 <li>
-                  <ShareModal
-                    recipients={recipients}
-                    contacts={contacts}
-                    baseLink={`${baseUrl}/updates/${update?.publicId}`}
-                    title={`Share - "${title}"`}
-                    subtitle="Share this update with team members, stakeholders and others."
-                    onShare={async ({ selectedContacts, others }) => {
-                      await shareUpdateMutation({
-                        updateId: update?.id,
-                        selectedContacts:
-                          selectedContacts as ShareRecipientType[],
-                        others: others as ShareRecipientType[],
-                      });
-                    }}
-                    removeAccess={async ({ recipientId }) => {
-                      await unshareUpdateMutation({
-                        updateId: update?.id,
-                        recipientId,
-                      });
-                    }}
+                  <ChangeUpdateVisibilityAlertDialog
+                    dialogProps={{ open, setOpen }}
+                    updateId={update.id}
+                    updatePublicId={update.publicId}
+                    isPublic={update.public}
                     trigger={
-                      <Button variant="ghost" size="sm">
-                        Share this update
+                      <Button
+                        disabled={!isUpdatePrivate && !isUpdatePublic}
+                        variant="ghost"
+                        size="sm"
+                      >
+                        {isUpdatePublic ? "Make it private" : "Make it public"}
                       </Button>
                     }
                   />
+                </li>
+              )}
+
+              {update && mode === "edit" && (
+                <li>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    type="submit"
+                    onClick={() => {
+                      pushModal("ShareUpdateModal", {
+                        update: {
+                          id: update.id,
+                          publicId: update.publicId,
+                        },
+                      });
+                    }}
+                  >
+                    Share this update
+                  </Button>
                 </li>
               )}
 

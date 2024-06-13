@@ -881,6 +881,7 @@ model Update {
   title    String
   content  Json
   html     String
+  public   Boolean          @default(false)
   status   UpdateStatusEnum @default(DRAFT)
 
   authorId  String

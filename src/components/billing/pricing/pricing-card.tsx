@@ -15,7 +15,6 @@ interface PricingCardProps extends Omit<ButtonProps, "children"> {
   price: string;
   interval: PricingPlanInterval;
   subscribed: boolean;
-  active: boolean;
   subscribedUnitAmount?: bigint | null;
   unitAmount: number;
 }
@@ -33,7 +32,6 @@ export function PricingCard({
   interval,
   price,
   subscribed,
-  active,
   subscribedUnitAmount: subscribedUnitAmount_,
   unitAmount,
   ...rest
@@ -56,10 +54,10 @@ export function PricingCard({
       <CardFooter>
         <Button {...rest}>
           {subscribedUnitAmount
-            ? subscribedUnitAmount < unitAmount
-              ? "Upgrade Plan"
-              : subscribedUnitAmount > unitAmount
-                ? "Downgrade Plan"
+            ? unitAmount < subscribedUnitAmount
+              ? "Downgrade Plan"
+              : unitAmount > subscribedUnitAmount
+                ? "Upgrade Plan"
                 : "Manage Current Plan"
             : "Subscribe"}
         </Button>

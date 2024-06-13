@@ -36,36 +36,34 @@ function Plans({ products, subscription }: PricingProps) {
   const [billingInterval, setBillingInterval] =
     useState<PricingPlanInterval>("month");
 
-  const [priceIdLoading, setPriceIdLoading] = useState<string>();
+  const { mutateAsync: checkoutWithStripe, isLoading: checkoutLoading } =
+    api.billing.checkout.useMutation({
+      onSuccess: async ({ stripeSessionId }) => {
+        const stripe = await getStripeClient();
+        await stripe?.redirectToCheckout({ sessionId: stripeSessionId });
+      },
+    });
 
-  const { mutateAsync: checkoutWithStripe } = api.billing.checkout.useMutation({
-    onSuccess: async ({ stripeSessionId }) => {
-      const stripe = await getStripeClient();
-      await stripe?.redirectToCheckout({ sessionId: stripeSessionId });
-    },
-  });
-
-  const { mutateAsync: stripePortal } = api.billing.stripePortal.useMutation({
-    onSuccess: ({ url }) => {
-      router.push(url);
-    },
-  });
+  const { mutateAsync: stripePortal, isLoading: stripePortalLoading } =
+    api.billing.stripePortal.useMutation({
+      onSuccess: ({ url }) => {
+        router.push(url);
+      },
+    });
 
   const handleBilling = (interval: PricingPlanInterval) => {
     setBillingInterval(interval);
   };
 
   const handleStripeCheckout = async (price: handleStripeCheckoutOptions) => {
-    setPriceIdLoading(price.priceId);
-
     await checkoutWithStripe(price);
-
-    setPriceIdLoading(undefined);
   };
 
   const handleBillingPortal = async () => {
     await stripePortal();
   };
+
+  const loading = checkoutLoading || stripePortalLoading;
 
   return (
     <div>
@@ -101,9 +99,9 @@ function Plans({ products, subscription }: PricingProps) {
             minimumFractionDigits: 0,
           }).format(unitAmount / 100);
 
+          const active = subscription?.priceId === price.id;
           return (
             <PricingCard
-              active={subscription?.priceId === price.id}
               key={product.id}
               title={product.name}
               description={product.description}
@@ -119,9 +117,10 @@ function Plans({ products, subscription }: PricingProps) {
                   priceType: price.type,
                 });
               }}
-              loading={priceIdLoading === price.id}
+              loading={loading}
               subscribedUnitAmount={subscription?.price.unitAmount}
               unitAmount={unitAmount}
+              variant={active ? "default" : "secondary"}
             />
           );
         })}

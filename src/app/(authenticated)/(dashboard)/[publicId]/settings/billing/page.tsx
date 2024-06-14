@@ -1,5 +1,4 @@
 import { PlanDetails } from "@/components/billing/plan-details";
-import { Pricing } from "@/components/billing/pricing";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { api } from "@/trpc/server";
 import type { Metadata } from "next";
@@ -15,8 +14,7 @@ const BillingPage = async () => {
 
   return (
     <PageLayout title="Billing" description="manage your billing">
-      <PlanDetails subscription={subscription} />
-      <Pricing products={products} subscription={subscription} />
+      <PlanDetails products={products} subscription={subscription} />
     </PageLayout>
   );
 };

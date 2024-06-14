@@ -1,36 +1,36 @@
 import { dayjsExt } from "@/common/dayjs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { badgeVariants } from "@/components/ui/badge";
+import { PricingModal, type PricingModalProps } from "../pricing-modal";
 
-import type { RouterOutputs } from "@/trpc/shared";
+interface PlanDetailsProps extends PricingModalProps {}
 
-type TSubscription =
-  RouterOutputs["billing"]["getSubscription"]["subscription"];
-
-interface PlanDetailsProps {
-  subscription: TSubscription;
-}
-
-export function PlanDetails({ subscription }: PlanDetailsProps) {
+export function PlanDetails({ subscription, products }: PlanDetailsProps) {
   return (
     <div>
       <Alert>
         <AlertTitle>Plan Details</AlertTitle>
         <AlertDescription>
-          <p>
-            You are currently on the{" "}
-            <span className={badgeVariants()}>
-              {subscription ? subscription.price.product.name : "Free"}
-            </span>{" "}
-            plan.{" "}
-            {subscription ? (
-              <>
-                Current billing cycle:{" "}
-                {dayjsExt(subscription?.currentPeriodStart).format("ll")} -{" "}
-                {dayjsExt(subscription?.currentPeriodEnd).format("ll")}
-              </>
-            ) : null}
-          </p>
+          <div className="flex flex-col gap-y-3">
+            <p>
+              You are currently on the{" "}
+              <span className={badgeVariants()}>
+                {subscription ? subscription.price.product.name : "Free"}
+              </span>{" "}
+              plan.{" "}
+              {subscription ? (
+                <>
+                  Current billing cycle:{" "}
+                  {dayjsExt(subscription?.currentPeriodStart).format("ll")} -{" "}
+                  {dayjsExt(subscription?.currentPeriodEnd).format("ll")}
+                </>
+              ) : null}
+            </p>
+
+            <div className="flex items-center justify-center">
+              <PricingModal subscription={subscription} products={products} />
+            </div>
+          </div>
         </AlertDescription>
       </Alert>
     </div>

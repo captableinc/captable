@@ -13,10 +13,21 @@ import { CaptableLogo } from "@/components/common/logo";
 import { cn } from "@/lib/utils";
 import type { DialogProps } from "@radix-ui/react-dialog";
 
+const sizes = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  "3xl": "max-w-3xl",
+  "4xl": "max-w-4xl",
+  screen: "max-w-[96vw]",
+};
+
 export type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+  size?: keyof typeof sizes;
   trigger: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;
@@ -36,17 +47,7 @@ const Modal = ({
     <Dialog {...dialogProps}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
-        className={cn(
-          "mb-10 mt-10 gap-0 bg-white p-0",
-          size === "sm" && "sm:max-w-sm",
-          size === "md" && "sm:max-w-md",
-          size === "lg" && "sm:max-w-lg",
-          size === "xl" && "sm:max-w-xl",
-          size === "2xl" && "sm:max-w-2xl",
-          size === "3xl" && "sm:max-w-3xl",
-          size === "4xl" && "sm:max-w-4xl",
-          size === "5xl" && "sm:max-w-5xl",
-        )}
+        className={cn("mb-10 mt-10 gap-0 bg-white p-0", sizes[size])}
       >
         <div
           className={cn(

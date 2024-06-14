@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { CheckIcon, type IconProps } from "./icons";
-import Kbd from "./kbd";
 
 type Option = {
   value: string;
@@ -27,7 +26,7 @@ type Option = {
 export const LinearCombobox = ({
   options,
   onValueChange,
-}: { options: Option[]; onValueChange?: (value: string) => void }) => {
+}: { options: Option[]; onValueChange?: (option: Option) => void }) => {
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [searchValue, setSearchValue] = useState("");
@@ -35,7 +34,7 @@ export const LinearCombobox = ({
 
   useEffect(() => {
     if (selectedOption && onValueChange) {
-      onValueChange(selectedOption.value);
+      onValueChange(selectedOption);
     }
   }, [selectedOption, onValueChange]);
 

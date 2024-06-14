@@ -1,6 +1,8 @@
 "use client";
 
 import { getStripeClient } from "@/client-only/stripe";
+import Modal, { type ModalProps } from "@/components/common/modal";
+import { Button } from "@/components/ui/button";
 import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
@@ -134,5 +136,19 @@ export function Pricing({ products, subscription }: PricingProps) {
     <Plans products={products} subscription={subscription} />
   ) : (
     <EmptyPlans />
+  );
+}
+
+export type PricingModalProps = PricingProps;
+
+export function PricingModal({ products, subscription }: PricingModalProps) {
+  return (
+    <Modal
+      title="Upgrade or manage plans"
+      trigger={<Button variant="secondary">Upgrade or Manage plan</Button>}
+      size="screen"
+    >
+      <Pricing products={products} subscription={subscription} />
+    </Modal>
   );
 }

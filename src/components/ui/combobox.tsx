@@ -89,9 +89,6 @@ export const LinearCombobox = ({
             className="text-[0.8125rem] leading-normal"
             placeholder="Type Option no"
           />
-          <Kbd className="absolute left-44 top-4">
-            <p>P</p>
-          </Kbd>
 
           <CommandList>
             <CommandGroup>

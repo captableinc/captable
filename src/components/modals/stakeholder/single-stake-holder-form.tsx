@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 
 import { popModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -101,6 +102,14 @@ export const SingleStakeholderForm = ({
     }
   };
 
+<<<<<<< HEAD
+=======
+  const stakeHolderTypeOpts = [
+    { value: "INDIVIDUAL", label: "Individual" },
+    { value: "INSTITUTION", label: "Institution" },
+  ];
+
+>>>>>>> 0ed5092 (chore: add LinearCombobox and drop Select in stakeholder modal)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -156,6 +165,7 @@ export const SingleStakeholderForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
+<<<<<<< HEAD
                   <Select
                     defaultValue={field.value}
                     onValueChange={field.onChange}
@@ -170,6 +180,16 @@ export const SingleStakeholderForm = ({
                       <SelectItem value="INSTITUTION">Institution</SelectItem>
                     </SelectContent>
                   </Select>
+=======
+                  <div className="relative right-1">
+                    <LinearCombobox
+                      options={stakeHolderTypeOpts}
+                      onValueChange={(option) => {
+                        field.onChange(option.value);
+                      }}
+                    />
+                  </div>
+>>>>>>> 0ed5092 (chore: add LinearCombobox and drop Select in stakeholder modal)
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}

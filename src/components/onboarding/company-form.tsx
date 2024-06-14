@@ -37,6 +37,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import Loading from "../common/loading";
+import { LinearCombobox } from "../ui/combobox";
 
 const formSchema = ZodOnboardingMutationSchema;
 
@@ -192,6 +193,13 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
   const isSubmitting = form.formState.isSubmitting;
 
   const isDirty = form.formState.isDirty;
+
+  const incorpTypeOpts = [
+    { value: "llc", label: "LLC - Limited Liability Company" },
+    { value: "c-corp", label: "C-Corp - C Corporation" },
+    { value: "s-corp", label: "S-Corp - S Corporation" },
+    { value: "other", label: "Others or International" },
+  ];
 
   return (
     <Form {...form}>
@@ -413,27 +421,17 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Incorporation type</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="llc">
-                          LLC - Limited Liability Company
-                        </SelectItem>
-                        <SelectItem value="c-corp">
-                          C-Corp - C Corporation
-                        </SelectItem>
-                        <SelectItem value="s-corp">
-                          S-Corp - S Corporation
-                        </SelectItem>
-                        <SelectItem value="other">
-                          Others or International
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+
+                    {/* Used Linear-combobox instead of Select Component */}
+                    <div className="relative right-1">
+                      <LinearCombobox
+                        options={incorpTypeOpts}
+                        onValueChange={(option) => {
+                          field.onChange(option.value);
+                        }}
+                      />
+                    </div>
+
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
                 )}

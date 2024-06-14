@@ -53,9 +53,11 @@ export function PricingCard({
       <CardFooter>
         <Button {...rest}>
           {subscribedUnitAmount
-            ? unitAmount === subscribedUnitAmount
-              ? "Manage Current Plan"
-              : "Change Plan"
+            ? unitAmount < subscribedUnitAmount
+              ? "Downgrade Plan"
+              : unitAmount > subscribedUnitAmount
+                ? "Upgrade Plan"
+                : "Manage Current Plan"
             : "Subscribe"}
         </Button>
       </CardFooter>

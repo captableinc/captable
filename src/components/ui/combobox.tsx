@@ -15,7 +15,7 @@ import {
 import { useListenPkey } from "@/hooks/use-listen-pkey";
 import { cn } from "@/lib/utils";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckIcon, type IconProps } from "./icons";
 import Kbd from "./kbd";
 
@@ -25,7 +25,10 @@ type Option = {
   icon?: React.FC<IconProps>;
 };
 
-export const LinearCombobox = ({ options }: { options: Option[] }) => {
+export const LinearCombobox = ({
+  options,
+  onValueChange,
+}: { options: Option[]; onValueChange?: (value: string) => void }) => {
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [searchValue, setSearchValue] = useState("");
@@ -33,6 +36,12 @@ export const LinearCombobox = ({ options }: { options: Option[] }) => {
 
   //Listens for keypress of p key
   useListenPkey(setOpenPopover);
+
+  useEffect(() => {
+    if (selectedOption && onValueChange) {
+      onValueChange(selectedOption.value);
+    }
+  }, [selectedOption, onValueChange]);
 
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover}>

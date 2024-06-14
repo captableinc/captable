@@ -12,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useListenPkey } from "@/hooks/use-listen-pkey";
 import { cn } from "@/lib/utils";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -34,9 +33,6 @@ export const LinearCombobox = ({
   const [searchValue, setSearchValue] = useState("");
   const isSearching = searchValue.length > 0;
 
-  //Listens for keypress of p key
-  useListenPkey(setOpenPopover);
-
   useEffect(() => {
     if (selectedOption && onValueChange) {
       onValueChange(selectedOption.value);
@@ -49,7 +45,7 @@ export const LinearCombobox = ({
         <Button
           aria-label="Select option"
           variant="ghost"
-          size="sm"
+          size="lg"
           className="w-fit px-2 h-8 text-[0.8125rem] leading-normal font-medium text-primary"
         >
           {selectedOption ? (

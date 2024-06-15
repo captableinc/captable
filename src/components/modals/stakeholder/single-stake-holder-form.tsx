@@ -18,13 +18,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -57,6 +50,22 @@ export const SingleStakeholderForm = () => {
   const stakeHolderTypeOpts = [
     { value: "INDIVIDUAL", label: "Individual" },
     { value: "INSTITUTION", label: "Institution" },
+  ];
+
+  const groupTypeOpts = [
+    { value: "ADVISOR", label: "Advisor" },
+    { value: "BOARD_MEMBER", label: "Board member" },
+    { value: "CONSULTANT", label: "Consultant" },
+    { value: "EMPLOYEE", label: "Employee" },
+    { value: "EX_ADVISOR", label: "Ex advisor" },
+    { value: "EX_CONSULTANT", label: "Ex consultant" },
+    { value: "EX_EMPLOYEE", label: "Ex employee" },
+    { value: "EXECUTIVE", label: "Executive" },
+    { value: "FOUNDER", label: "Founder" },
+    { value: "INVESTOR", label: "Investor" },
+    { value: "NON_US_EMPLOYEE", label: "Non US employee" },
+    { value: "OFFICER", label: "Officer" },
+    { value: "OTHER", label: "Other" },
   ];
 
   return (
@@ -134,32 +143,12 @@ export const SingleStakeholderForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Group</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select association" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="ADVISOR">Advisor</SelectItem>
-                      <SelectItem value="BOARD_MEMBER">Board member</SelectItem>
-                      <SelectItem value="CONSULTANT">Consultant</SelectItem>
-                      <SelectItem value="EMPLOYEE">Employee</SelectItem>
-                      <SelectItem value="EX_ADVISOR">Ex advisor</SelectItem>
-                      <SelectItem value="EX_CONSULTANT">
-                        Ex consultant
-                      </SelectItem>
-                      <SelectItem value="EX_EMPLOYEE">Ex employee</SelectItem>
-                      <SelectItem value="EXECUTIVE">Executive</SelectItem>
-                      <SelectItem value="FOUNDER">Founder</SelectItem>
-                      <SelectItem value="INVESTOR">Investor</SelectItem>
-                      <SelectItem value="NON_US_EMPLOYEE">
-                        Non US employee
-                      </SelectItem>
-                      <SelectItem value="OFFICER">Officer</SelectItem>
-                      <SelectItem value="OTHER">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="relative right-1">
+                    <LinearCombobox
+                      options={groupTypeOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                    />
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}

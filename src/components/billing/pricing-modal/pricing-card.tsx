@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { PricingPlanInterval } from "@/prisma/enums";
 
 interface PricingCardProps extends Omit<ButtonProps, "children"> {
@@ -38,6 +39,9 @@ export function PricingCard({
   const subscribedUnitAmount = subscribedUnitAmount_
     ? Number(subscribedUnitAmount_)
     : null;
+
+  const active = unitAmount === subscribedUnitAmount;
+
   return (
     <Card>
       <CardHeader>
@@ -51,13 +55,20 @@ export function PricingCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button {...rest}>
+        <Button
+          {...rest}
+          className={cn(
+            rest.className,
+            !active && "bg-teal-500 hover:bg-teal-500/80",
+          )}
+          {...(active && { variant: "destructive" })}
+        >
           {subscribedUnitAmount
             ? unitAmount < subscribedUnitAmount
               ? "Downgrade Plan"
               : unitAmount > subscribedUnitAmount
                 ? "Upgrade Plan"
-                : "Manage Current Plan"
+                : "Cancel Current Plan"
             : "Subscribe"}
         </Button>
       </CardFooter>

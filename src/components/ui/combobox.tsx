@@ -6,6 +6,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from "@/components/ui/command";
 import {
   Popover,
@@ -27,10 +28,12 @@ export const LinearCombobox = ({
   options,
   onValueChange,
   defaultOption,
+  children,
 }: {
   options: ComboBoxOption[];
   onValueChange?: (option: ComboBoxOption) => void;
   defaultOption?: ComboBoxOption;
+  children?: React.ReactNode;
 }) => {
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedOption, setSelectedOption] = useState<ComboBoxOption | null>(
@@ -128,6 +131,8 @@ export const LinearCombobox = ({
                   </div>
                 </CommandItem>
               ))}
+              <CommandSeparator />
+              <CommandItem>{children}</CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>

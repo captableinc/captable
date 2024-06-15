@@ -90,6 +90,23 @@ function Plans({ products, subscription }: PricingProps) {
       </div>
 
       <section className="flex flex-col sm:flex-row sm:flex-wrap gap-8 pt-8">
+        <PricingCard
+          title="Free"
+          description=""
+          price="$0"
+          interval="month"
+          subscribedUnitAmount={subscription?.price.unitAmount}
+          unitAmount={0}
+          isSubmitting={isSubmitting}
+          {...(subscription && {
+            handleClick: () => {
+              return handleBillingPortal({
+                type: "cancel",
+                subscription: subscription.id,
+              });
+            },
+          })}
+        />
         {products.map((product) => {
           const price = product?.prices?.find(
             (price) => price.interval === billingInterval,

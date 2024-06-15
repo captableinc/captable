@@ -68,7 +68,7 @@ function Plans({ products, subscription }: PricingProps) {
     await stripePortal(data);
   };
 
-  const loading = checkoutLoading || stripePortalLoading;
+  const isSubmitting = checkoutLoading || stripePortalLoading;
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -112,8 +112,7 @@ function Plans({ products, subscription }: PricingProps) {
               description={product.description}
               price={priceString}
               interval={billingInterval}
-              subscribed={!!subscription}
-              onClick={() => {
+              handleClick={() => {
                 if (subscription) {
                   return handleBillingPortal({
                     ...(active
@@ -132,9 +131,9 @@ function Plans({ products, subscription }: PricingProps) {
                   priceType: price.type,
                 });
               }}
-              loading={loading}
               subscribedUnitAmount={subscription?.price.unitAmount}
               unitAmount={unitAmount}
+              isSubmitting={isSubmitting}
             />
           );
         })}

@@ -36,6 +36,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { popModal } from ".";
+import { type ComboBoxOption, LinearCombobox } from "../ui/combobox";
 
 const formSchema = ShareClassMutationSchema;
 
@@ -76,7 +77,7 @@ const ShareClassForm = ({
   const isSubmitting = form.formState.isSubmitting;
   const watchConversionRights = watch("conversionRights") as string;
   const [renderShareClassInput, setRenderShareClassInput] = useState(false);
-
+  const [defShareTypeOpt, setDefShareTypeOpt] = useState<ComboBoxOption>();
   useEffect(() => {
     if (watchConversionRights === "CONVERTS_TO_SHARE_CLASS_ID") {
       setRenderShareClassInput(true);
@@ -117,6 +118,19 @@ const ShareClassForm = ({
       : await updateMutation.mutateAsync(values);
   };
 
+  useEffect(() => {
+    setDefShareTypeOpt(
+      shareClassTypeOpts.find(
+        (opt) => opt.value === form.getValues().classType,
+      ),
+    );
+  }, [form.getValues]);
+
+  const shareClassTypeOpts = [
+    { value: "COMMON", label: "Common share" },
+    { value: "PREFERRED", label: "Preferred share" },
+  ];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -144,20 +158,13 @@ const ShareClassForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type of share class</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="COMMON">Common share</SelectItem>
-                      <SelectItem value="PREFERRED">Preferred share</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <LinearCombobox
+                      options={shareClassTypeOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                      defaultOption={defShareTypeOpt}
+                    />
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}

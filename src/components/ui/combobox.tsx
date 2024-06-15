@@ -47,7 +47,7 @@ export const LinearCombobox = ({
   }, [selectedOption]);
 
   return (
-    <Popover open={openPopover} onOpenChange={setOpenPopover}>
+    <Popover open={openPopover} onOpenChange={setOpenPopover} modal>
       <PopoverTrigger asChild>
         <Button
           aria-label="Select option"

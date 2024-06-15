@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckIcon, type IconProps } from "./icons";
 
 type Option = {
@@ -30,13 +30,14 @@ export const LinearCombobox = ({
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const [searchValue, setSearchValue] = useState("");
+  const onValueChangeRef = useRef(onValueChange);
   const isSearching = searchValue.length > 0;
 
   useEffect(() => {
-    if (selectedOption && onValueChange) {
-      onValueChange(selectedOption);
+    if (selectedOption && onValueChangeRef.current) {
+      onValueChangeRef.current(selectedOption);
     }
-  }, [selectedOption, onValueChange]);
+  }, [selectedOption]);
 
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover}>

@@ -18,7 +18,7 @@ interface PricingCardProps {
   subscribedUnitAmount?: bigint | null;
   unitAmount: number;
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  handleClick: () => Promise<any>;
+  handleClick?: () => Promise<any>;
   isSubmitting: boolean;
 }
 
@@ -52,9 +52,11 @@ export function PricingCard({
         <CardTitle className="text-lg">{title}</CardTitle>
         <div className="flex gap-0.5">
           <h3 className="text-3xl font-bold">{price}</h3>
-          <span className="flex flex-col justify-end text-sm mb-1">
-            /{humanizedInterval[interval]}
-          </span>
+          {unitAmount !== 0 && (
+            <span className="flex flex-col justify-end text-sm mb-1">
+              /{humanizedInterval[interval]}
+            </span>
+          )}
         </div>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
@@ -63,12 +65,15 @@ export function PricingCard({
           className={cn(!active && "bg-teal-500 hover:bg-teal-500/80")}
           {...(active && { variant: "destructive" })}
           onClick={async () => {
-            setIsLoading(true);
-            await handleClick();
-            setIsLoading(false);
+            if (handleClick) {
+              setIsLoading(true);
+              await handleClick();
+              setIsLoading(false);
+            }
           }}
           loading={isLoading}
           {...(!isLoading && { disabled: isSubmitting })}
+          {...(unitAmount === 0 && !subscribedUnitAmount && { disabled: true })}
         >
           {subscribedUnitAmount
             ? unitAmount < subscribedUnitAmount
@@ -76,7 +81,9 @@ export function PricingCard({
               : unitAmount > subscribedUnitAmount
                 ? "Upgrade Plan"
                 : "Cancel Current Plan"
-            : "Subscribe"}
+            : !subscribedUnitAmount && unitAmount === 0
+              ? "Active plan"
+              : "Subscribe"}
         </Button>
       </CardFooter>
     </Card>

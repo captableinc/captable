@@ -5,6 +5,7 @@ import Modal, { type ModalProps } from "@/components/common/modal";
 import { Button } from "@/components/ui/button";
 import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
 import { api } from "@/trpc/react";
+import type { TypeZodStripePortalMutationSchema } from "@/trpc/routers/billing-router/schema";
 import type { RouterOutputs } from "@/trpc/shared";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -61,14 +62,16 @@ function Plans({ products, subscription }: PricingProps) {
     await checkoutWithStripe(price);
   };
 
-  const handleBillingPortal = async () => {
-    await stripePortal();
+  const handleBillingPortal = async (
+    data: TypeZodStripePortalMutationSchema,
+  ) => {
+    await stripePortal(data);
   };
 
   const loading = checkoutLoading || stripePortalLoading;
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
         {intervals.includes("month") && (
           <PricingButton
@@ -112,7 +115,17 @@ function Plans({ products, subscription }: PricingProps) {
               subscribed={!!subscription}
               onClick={() => {
                 if (subscription) {
-                  return handleBillingPortal();
+                  return handleBillingPortal({
+                    ...(active
+                      ? {
+                          type: "cancel",
+                          subscription: subscription.id,
+                        }
+                      : {
+                          type: "update",
+                          subscription: subscription.id,
+                        }),
+                  });
                 }
                 return handleStripeCheckout({
                   priceId: price.id,
@@ -122,7 +135,6 @@ function Plans({ products, subscription }: PricingProps) {
               loading={loading}
               subscribedUnitAmount={subscription?.price.unitAmount}
               unitAmount={unitAmount}
-              variant={active ? "default" : "secondary"}
             />
           );
         })}

@@ -3,6 +3,7 @@ import Tldr from "@/components/common/tldr";
 import { pushModal } from "@/components/modals";
 // import { EmptySelect } from "@/components/securities/shared/EmptySelect";
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -12,15 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectItemStyle,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   MultiSelector,
   MultiSelectorContent,
@@ -95,6 +87,21 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
     next();
   };
 
+  const shareClassOpts = shareClasses.map((share) => ({
+    value: share.id,
+    label: share.name,
+  }));
+
+  const vestingScheduleOpts = vestingSchedule.map((vs) => ({
+    value: vs,
+    label: VestingSchedule[vs] || "",
+  }));
+
+  const statusOpts = status.map((s) => ({
+    value: s,
+    label: s,
+  }));
+
   return (
     <Form {...form}>
       <form
@@ -125,21 +132,11 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Select a share class</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select a share class" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {shareClasses.map((sc) => (
-                          <SelectItem key={sc.id} value={sc.id}>
-                            {sc.name}
-                          </SelectItem>
-                        ))}
-
-                        <SelectSeparator />
-
+                    <div className="relative right-1">
+                      <LinearCombobox
+                        options={shareClassOpts}
+                        onValueChange={(option) => field.onChange(option.value)}
+                      >
                         <button
                           type="button"
                           className="cursor-pointer w-full text-left"
@@ -160,16 +157,16 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                             });
                           }}
                         >
-                          <div className={SelectItemStyle}>
-                            <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
+                          <div className="flex justify-between items-center">
+                            <span>
                               <RiAddFill className="h-4 w-4" aria-hidden />
                             </span>
 
                             <div>Create new share class</div>
                           </div>
                         </button>
-                      </SelectContent>
-                    </Select>
+                      </LinearCombobox>
+                    </div>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
                 )}
@@ -182,25 +179,12 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value as string}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {status
-                          ? status.map((s) => (
-                              <SelectItem key={s} value={s}>
-                                {s}
-                              </SelectItem>
-                            ))
-                          : null}
-                      </SelectContent>
-                    </Select>
+                    <div className="relative right-1">
+                      <LinearCombobox
+                        options={statusOpts}
+                        onValueChange={(option) => field.onChange(option.value)}
+                      />
+                    </div>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
                 )}
@@ -274,24 +258,12 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Vesting schedule</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value as string}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select vesting schedule" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {vestingSchedule?.length &&
-                      vestingSchedule.map((vs) => (
-                        <SelectItem key={vs} value={vs}>
-                          {VestingSchedule[vs]}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative right-1">
+                  <LinearCombobox
+                    options={vestingScheduleOpts}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  />
+                </div>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}

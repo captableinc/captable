@@ -18,98 +18,56 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { api } from "@/trpc/react";
-import type { RouterOutputs } from "@/trpc/shared";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export type TStakeholder =
-  RouterOutputs["stakeholder"]["getStakeholders"][number];
-
-type TSingleStakeholderForm =
-  | {
-      type: "create";
-      stakeholder?: never;
-    }
-  | {
-      type: "update";
-      stakeholder: TStakeholder;
-    };
-
-export const SingleStakeholderForm = ({
-  type,
-  stakeholder,
-}: TSingleStakeholderForm) => {
+export const SingleStakeholderForm = () => {
   const form = useForm<AddStakeholderMutationType>({
-    defaultValues: {
-      name: stakeholder?.name ?? "",
-      email: stakeholder?.email ?? "",
-      institutionName: stakeholder?.institutionName ?? "",
-      stakeholderType: stakeholder?.stakeholderType ?? "INDIVIDUAL",
-      currentRelationship: stakeholder?.currentRelationship ?? "INVESTOR",
-      taxId: stakeholder?.taxId ?? "",
-      streetAddress: stakeholder?.streetAddress ?? "",
-      city: stakeholder?.city ?? "",
-      state: stakeholder?.state ?? "",
-      zipcode: stakeholder?.zipcode ?? "",
-    },
     resolver: zodResolver(ZodAddStakeholderMutationSchema),
   });
 
   const isSubmitting = form.formState.isSubmitting;
   const router = useRouter();
 
-  const { mutateAsync: updateStakeholderMutation } =
-    api.stakeholder.updateStakeholder.useMutation({
-      onSuccess: ({ success, message }) => {
-        if (success) {
-          router.refresh();
-          form.reset();
-          toast.success(message);
-          popModal();
-        } else {
-          toast.error(`🔥 Error - ${message}`);
-        }
-      },
-    });
-
-  const { mutateAsync: addStakeholderMutation } =
-    api.stakeholder.addStakeholders.useMutation({
-      onSuccess: ({ success, message }) => {
-        if (success) {
-          router.refresh();
-          form.reset();
-          toast.success("🎉 Successfully created!");
-          popModal();
-        } else {
-          toast.error(`🔥 Error - ${message}`);
-        }
-      },
-    });
+  const { mutateAsync } = api.stakeholder.addStakeholders.useMutation({
+    onSuccess: ({ success, message }) => {
+      if (success) {
+        form.reset();
+        router.refresh();
+        toast.success("🎉 Successfully created!");
+      } else {
+        toast.error(`🔥 Error - ${message}`);
+      }
+    },
+  });
 
   const onSubmit = async (values: AddStakeholderMutationType) => {
-    if (type === "update") {
-      await updateStakeholderMutation({ ...values, id: stakeholder.id });
-    } else {
-      await addStakeholderMutation([values]);
-    }
+    await mutateAsync([values]);
+    popModal("SingleStakeholdersModal");
   };
 
-<<<<<<< HEAD
-=======
   const stakeHolderTypeOpts = [
     { value: "INDIVIDUAL", label: "Individual" },
     { value: "INSTITUTION", label: "Institution" },
   ];
 
->>>>>>> 0ed5092 (chore: add LinearCombobox and drop Select in stakeholder modal)
+  const groupTypeOpts = [
+    { value: "ADVISOR", label: "Advisor" },
+    { value: "BOARD_MEMBER", label: "Board member" },
+    { value: "CONSULTANT", label: "Consultant" },
+    { value: "EMPLOYEE", label: "Employee" },
+    { value: "EX_ADVISOR", label: "Ex advisor" },
+    { value: "EX_CONSULTANT", label: "Ex consultant" },
+    { value: "EX_EMPLOYEE", label: "Ex employee" },
+    { value: "EXECUTIVE", label: "Executive" },
+    { value: "FOUNDER", label: "Founder" },
+    { value: "INVESTOR", label: "Investor" },
+    { value: "NON_US_EMPLOYEE", label: "Non US employee" },
+    { value: "OFFICER", label: "Officer" },
+    { value: "OTHER", label: "Other" },
+  ];
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -165,23 +123,7 @@ export const SingleStakeholderForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
-<<<<<<< HEAD
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="INDIVIDUAL">Individual</SelectItem>
-                      <SelectItem value="INSTITUTION">Institution</SelectItem>
-                    </SelectContent>
-                  </Select>
-=======
-                  <div className="relative right-1">
+                  <div>
                     <LinearCombobox
                       options={stakeHolderTypeOpts}
                       onValueChange={(option) => {
@@ -189,7 +131,6 @@ export const SingleStakeholderForm = ({
                       }}
                     />
                   </div>
->>>>>>> 0ed5092 (chore: add LinearCombobox and drop Select in stakeholder modal)
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
@@ -202,35 +143,12 @@ export const SingleStakeholderForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Group</FormLabel>
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select association" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="ADVISOR">Advisor</SelectItem>
-                      <SelectItem value="BOARD_MEMBER">Board member</SelectItem>
-                      <SelectItem value="CONSULTANT">Consultant</SelectItem>
-                      <SelectItem value="EMPLOYEE">Employee</SelectItem>
-                      <SelectItem value="EX_ADVISOR">Ex advisor</SelectItem>
-                      <SelectItem value="EX_CONSULTANT">
-                        Ex consultant
-                      </SelectItem>
-                      <SelectItem value="EX_EMPLOYEE">Ex employee</SelectItem>
-                      <SelectItem value="EXECUTIVE">Executive</SelectItem>
-                      <SelectItem value="FOUNDER">Founder</SelectItem>
-                      <SelectItem value="INVESTOR">Investor</SelectItem>
-                      <SelectItem value="NON_US_EMPLOYEE">
-                        Non US employee
-                      </SelectItem>
-                      <SelectItem value="OFFICER">Officer</SelectItem>
-                      <SelectItem value="OTHER">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <LinearCombobox
+                      options={groupTypeOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                    />
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
@@ -309,13 +227,7 @@ export const SingleStakeholderForm = ({
         </div>
         <div className="mt-8 flex justify-end">
           <Button loading={isSubmitting} type="submit">
-            {type === "create"
-              ? isSubmitting
-                ? "Adding stakeholder"
-                : "Add a stakeholder"
-              : isSubmitting
-                ? "Updating stakeholder"
-                : "Update stakeholder"}
+            {isSubmitting ? "Adding stakeholder..." : "Add a stakeholder"}
           </Button>
         </div>
       </form>

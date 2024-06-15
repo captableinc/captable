@@ -9,3 +9,12 @@ export const ZodCheckoutMutationSchema = z.object({
 export type TypeZodCheckoutMutationSchema = z.infer<
   typeof ZodCheckoutMutationSchema
 >;
+
+export const ZodStripePortalMutationSchema = z.object({
+  type: z.enum(["cancel", "update"]),
+  subscription: z.string(),
+});
+
+export type TypeZodStripePortalMutationSchema = z.infer<
+  typeof ZodStripePortalMutationSchema
+>;

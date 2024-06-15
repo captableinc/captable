@@ -131,8 +131,13 @@ export const LinearCombobox = ({
                   </div>
                 </CommandItem>
               ))}
-              <CommandSeparator />
-              <CommandItem>{children}</CommandItem>
+
+              {children && (
+                <>
+                  <CommandSeparator />
+                  <CommandItem>{children}</CommandItem>
+                </>
+              )}
             </CommandGroup>
           </CommandList>
         </Command>

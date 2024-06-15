@@ -8,15 +8,18 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { PricingPlanInterval } from "@/prisma/enums";
+import { useState } from "react";
 
-interface PricingCardProps extends Omit<ButtonProps, "children"> {
+interface PricingCardProps {
   title: string;
   description?: string | null;
   price: string;
   interval: PricingPlanInterval;
-  subscribed: boolean;
   subscribedUnitAmount?: bigint | null;
   unitAmount: number;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  handleClick: () => Promise<any>;
+  isSubmitting: boolean;
 }
 
 const humanizedInterval: Record<PricingPlanInterval, string> = {
@@ -31,11 +34,12 @@ export function PricingCard({
   title,
   interval,
   price,
-  subscribed,
   subscribedUnitAmount: subscribedUnitAmount_,
   unitAmount,
-  ...rest
+  handleClick,
+  isSubmitting,
 }: PricingCardProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const subscribedUnitAmount = subscribedUnitAmount_
     ? Number(subscribedUnitAmount_)
     : null;
@@ -56,12 +60,15 @@ export function PricingCard({
       </CardHeader>
       <CardFooter>
         <Button
-          {...rest}
-          className={cn(
-            rest.className,
-            !active && "bg-teal-500 hover:bg-teal-500/80",
-          )}
+          className={cn(!active && "bg-teal-500 hover:bg-teal-500/80")}
           {...(active && { variant: "destructive" })}
+          onClick={async () => {
+            setIsLoading(true);
+            await handleClick();
+            setIsLoading(false);
+          }}
+          loading={isLoading}
+          {...(!isLoading && { disabled: isSubmitting })}
         >
           {subscribedUnitAmount
             ? unitAmount < subscribedUnitAmount

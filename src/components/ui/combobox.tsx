@@ -17,7 +17,7 @@ import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { CheckIcon, type IconProps } from "./icons";
 
-type Option = {
+export type ComboBoxOption = {
   value: string;
   label: string;
   icon?: React.FC<IconProps>;
@@ -26,9 +26,16 @@ type Option = {
 export const LinearCombobox = ({
   options,
   onValueChange,
-}: { options: Option[]; onValueChange?: (option: Option) => void }) => {
+  defaultOption,
+}: {
+  options: ComboBoxOption[];
+  onValueChange?: (option: ComboBoxOption) => void;
+  defaultOption?: ComboBoxOption;
+}) => {
   const [openPopover, setOpenPopover] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [selectedOption, setSelectedOption] = useState<ComboBoxOption | null>(
+    null,
+  );
   const [searchValue, setSearchValue] = useState("");
   const onValueChangeRef = useRef(onValueChange);
   const isSearching = searchValue.length > 0;
@@ -58,8 +65,10 @@ export const LinearCombobox = ({
               )}
               {selectedOption.label}
             </>
+          ) : defaultOption ? (
+            <>{defaultOption.label}</>
           ) : (
-            <>Select an option</>
+            <>Select an Option</>
           )}
         </Button>
       </PopoverTrigger>

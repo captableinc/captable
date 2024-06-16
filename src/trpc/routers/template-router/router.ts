@@ -2,8 +2,14 @@ import { createTRPCRouter } from "@/trpc/api/trpc";
 import { cancelTemplateProcedure } from "./procedures/cancel-template";
 import { createTemplateProcedure } from "./procedures/create-template";
 import { getAllTemplateProcedure } from "./procedures/get-all-template";
+import { getEsignRecipientsProcedure } from "./procedures/get-esign-recipients";
 import { getSigningFieldsProcedure } from "./procedures/get-signing-fields";
 import { getTemplateProcedure } from "./procedures/get-template";
+import {
+  addRecipientProcedure,
+  removeRecipientProcedure,
+  toggleOrderedDeliveryProcedure,
+} from "./procedures/manage-recipients";
 import { signTemplateProcedure } from "./procedures/sign-template";
 
 export const templateRouter = createTRPCRouter({
@@ -13,4 +19,8 @@ export const templateRouter = createTRPCRouter({
   getSigningFields: getSigningFieldsProcedure,
   all: getAllTemplateProcedure,
   cancel: cancelTemplateProcedure,
+  addRecipient: addRecipientProcedure,
+  removeRecipient: removeRecipientProcedure,
+  toggleOrderedDelivery: toggleOrderedDeliveryProcedure,
+  getRecipients: getEsignRecipientsProcedure,
 });

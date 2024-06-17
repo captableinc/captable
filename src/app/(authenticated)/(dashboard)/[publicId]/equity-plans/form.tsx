@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -105,6 +106,18 @@ const EquityPlanForm = ({
       ? await createMutation.mutateAsync(values)
       : await updateMutation.mutateAsync(values);
   };
+
+  const shareClassOpts = shareClasses.map((share) => ({
+    value: share.id || "",
+    label: share.name || "",
+  }));
+
+  const defaultCancellatonBehaviorOpts = [
+    { value: "RETIRE", label: "Retire" },
+    { value: "RETURN_TO_POOL", label: "Return to pool" },
+    { value: "HOLD_AS_CAPITAL_STOCK", label: "Hold as capital stock" },
+    { value: "DEFINED_PER_PLAN_SECURITY", label: "Defined per plan security" },
+  ];
 
   return (
     <Form {...form}>
@@ -210,64 +223,12 @@ const EquityPlanForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Select a share class</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a share class" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>
-                          {shareClasses.length > 0 ? (
-                            "Share classes"
-                          ) : (
-                            <div className="text-sm text-muted-foreground">
-                              <p className="mb-2">
-                                You don't have any share classes yet.
-                              </p>
-                              <Button
-                                className="mt-3"
-                                size={"sm"}
-                                variant={"outline"}
-                                onClick={() => {
-                                  pushModal("ShareClassModal", {
-                                    type: "create",
-                                    title: "Create a share class",
-                                    shareClasses,
-                                    subtitle: (
-                                      <Tldr
-                                        message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
-                                        cta={{
-                                          label: "Learn more",
-                                          // TODO - this link should be updated to the correct URL
-                                          href: "https://captable.inc/help",
-                                        }}
-                                      />
-                                    ),
-                                  });
-                                }}
-                              >
-                                <RiAddFill className="mr-2 h-5 w-5" />
-                                Create a share class
-                              </Button>
-                            </div>
-                          )}
-                        </SelectLabel>
-
-                        {shareClasses.map((shareClass) => (
-                          <SelectItem
-                            key={shareClass.id}
-                            value={shareClass.id as string}
-                          >
-                            {shareClass.name}
-                          </SelectItem>
-                        ))}
-
-                        <SelectSeparator />
+                  <div>
+                    {shareClasses.length > 0 ? (
+                      <LinearCombobox
+                        options={shareClassOpts}
+                        onValueChange={(option) => field.onChange(option.value)}
+                      >
                         <button
                           type="button"
                           className="cursor-pointer w-full text-left"
@@ -289,17 +250,43 @@ const EquityPlanForm = ({
                             });
                           }}
                         >
-                          <div className={SelectItemStyle}>
-                            <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
+                          <div className="flex justify-between items-center my-1">
+                            <span>
                               <RiAddFill className="h-4 w-4" aria-hidden />
                             </span>
 
                             <div>Create new share class</div>
                           </div>
                         </button>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                      </LinearCombobox>
+                    ) : (
+                      <Button
+                        className="mt-3"
+                        size={"sm"}
+                        variant={"outline"}
+                        onClick={() => {
+                          pushModal("ShareClassModal", {
+                            type: "create",
+                            title: "Create a share class",
+                            shareClasses,
+                            subtitle: (
+                              <Tldr
+                                message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+                                cta={{
+                                  label: "Learn more",
+                                  // TODO - this link should be updated to the correct URL
+                                  href: "https://captable.inc/help",
+                                }}
+                              />
+                            ),
+                          });
+                        }}
+                      >
+                        <RiAddFill className="mr-2 h-5 w-5" />
+                        Create a share class
+                      </Button>
+                    )}
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
@@ -313,28 +300,12 @@ const EquityPlanForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Default cancellation behavior</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a behavior" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="RETIRE">Retire</SelectItem>
-                      <SelectItem value="RETURN_TO_POOL">
-                        Return to pool
-                      </SelectItem>
-                      <SelectItem value="HOLD_AS_CAPITAL_STOCK">
-                        Hold as capital stock
-                      </SelectItem>
-                      <SelectItem value="DEFINED_PER_PLAN_SECURITY">
-                        Defined per plan security
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <LinearCombobox
+                      options={defaultCancellatonBehaviorOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                    />
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}

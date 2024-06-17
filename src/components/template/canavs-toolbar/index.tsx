@@ -31,6 +31,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { TemplateFieldForm } from "@/providers/template-field-provider";
 import type { RouterOutputs } from "@/trpc/shared";
+import { RiAccountBoxLine } from "@remixicon/react";
 import { useCallback, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 
@@ -38,12 +39,34 @@ type Recipients = RouterOutputs["template"]["get"]["recipients"];
 
 interface RecipientListProps {
   recipients: Recipients;
+  templateId: string;
+  orderedDelivery: boolean;
 }
 
-function RecipientList({ recipients }: RecipientListProps) {
+function RecipientList({
+  recipients,
+  templateId,
+  orderedDelivery,
+}: RecipientListProps) {
   const { control, getValues } = useFormContext<TemplateFieldForm>();
 
   const recipientColors = getValues("recipientColors");
+
+  const OpenRecipientSelectorModal = () => {
+    pushModal("ManageEsignRecipientsModal", {
+      title: "Manage e-sign recipients",
+      subtitle: "Add or remove potential esign recipients",
+      templateId,
+      defaultValues: {
+        recipients: recipients.map((recp) => ({
+          id: recp.id,
+          name: recp.name ?? "",
+          email: recp.email,
+        })),
+        orderedDelivery,
+      },
+    });
+  };
 
   return (
     <FormField
@@ -59,6 +82,17 @@ function RecipientList({ recipients }: RecipientListProps) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
+              {/* biome-ignore lint/a11y/useKeyWithClickEvents: fine */}
+              <div
+                className="flex py-3 px-3 hover:bg-gray-100 hover:cursor-pointer items-center space-x-3"
+                onClick={OpenRecipientSelectorModal}
+              >
+                <p>
+                  <RiAccountBoxLine />
+                </p>
+                <p>Manage recipients</p>
+              </div>
+
               {recipients.map((recipient) => (
                 <SelectItem key={recipient.id} value={recipient.id}>
                   <span className="flex items-center">
@@ -82,6 +116,7 @@ function RecipientList({ recipients }: RecipientListProps) {
               ))}
             </SelectContent>
           </Select>
+
           <FormMessage />
         </FormItem>
       )}
@@ -91,9 +126,15 @@ function RecipientList({ recipients }: RecipientListProps) {
 
 interface CanvasToolbarProps {
   recipients: Recipients;
+  templateId: string;
+  orderedDelivery: boolean;
 }
 
-export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
+export function CanvasToolbar({
+  recipients,
+  templateId,
+  orderedDelivery,
+}: CanvasToolbarProps) {
   const [open, setOpen] = useState<boolean>(false);
   const { control, setValue } = useFormContext<TemplateFieldForm>();
   const submitRef = useRef<HTMLButtonElement>(null);
@@ -105,7 +146,7 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
     }
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reason
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fine
   const onSignatureRequest = useCallback((canSubmit: boolean) => {
     if (canSubmit && submitRef.current) {
       setValue("status", "COMPLETE");
@@ -159,7 +200,11 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
           />
 
           <div className="flex items-end gap-x-2">
-            <RecipientList recipients={recipients} />
+            <RecipientList
+              orderedDelivery={orderedDelivery}
+              templateId={templateId}
+              recipients={recipients}
+            />
 
             <DropdownMenu>
               <Toolbar.Button asChild>

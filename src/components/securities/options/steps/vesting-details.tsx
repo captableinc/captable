@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -59,6 +60,22 @@ export const VestingDetails = (props: VestingDetailsProps) => {
   };
 
   const disabled = !stakeholders.length && !equityPlans.data?.length;
+
+  const vestingSchedileOpts = Object.keys(VestingSchedule).map((vKey) => ({
+    value: vKey,
+    label: VestingSchedule[vKey] || "",
+  }));
+
+  const equityPlansOpts = equityPlans?.data?.map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
+
+  const stakeHolderOpts = stakeholders.map((stake) => ({
+    value: stake.id,
+    label: stake.name,
+  }));
+
   return (
     <Form {...form}>
       <form
@@ -72,21 +89,12 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Vesting schedule</FormLabel>
-
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select vesting schedule" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.keys(VestingSchedule).map((vKey) => (
-                      <SelectItem key={vKey} value={vKey}>
-                        {VestingSchedule[vKey]}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="relative right-1">
+                  <LinearCombobox
+                    options={vestingSchedileOpts}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  />
+                </div>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}
@@ -99,21 +107,12 @@ export const VestingDetails = (props: VestingDetailsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Equity plan</FormLabel>
-
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {equityPlans?.data?.map(({ id, name }) => (
-                        <SelectItem key={id} value={id}>
-                          {name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="relative right-1">
+                    <LinearCombobox
+                      options={equityPlansOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                    />
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}
@@ -160,21 +159,12 @@ export const VestingDetails = (props: VestingDetailsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Stakeholder</FormLabel>
-
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {stakeholders?.map((sh) => (
-                        <SelectItem key={sh.id} value={sh.id}>
-                          {sh.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="relative right-1">
+                    <LinearCombobox
+                      options={stakeHolderOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                    />
+                  </div>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               )}

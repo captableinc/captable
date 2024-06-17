@@ -64,7 +64,7 @@ export const ZodUpdateMemberMutationSchema = z
   .merge(
     z
       .object({
-        email: z.string().email(),
+        workEmail: z.string().email(),
         name: z.string(),
         title: z.string(),
       })

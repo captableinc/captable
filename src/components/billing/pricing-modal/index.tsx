@@ -1,14 +1,19 @@
 "use client";
 
 import { getStripeClient } from "@/client-only/stripe";
-import Modal, { type ModalProps } from "@/components/common/modal";
-import { Button } from "@/components/ui/button";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import type { TypeZodStripePortalMutationSchema } from "@/trpc/routers/billing-router/schema";
 import type { RouterOutputs } from "@/trpc/shared";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { EmptyPlans } from "./empty-plans";
 import { PricingButton } from "./pricing-button";
 import { PricingCard } from "./pricing-card";
@@ -170,13 +175,32 @@ export function Pricing({ products, subscription }: PricingProps) {
 export type PricingModalProps = PricingProps;
 
 export function PricingModal({ products, subscription }: PricingModalProps) {
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const upgrade = searchParams.get("upgrade");
+  useEffect(() => {
+    const isOpen = upgrade === "true";
+    if (isOpen) {
+      setOpen(true);
+    }
+  }, [upgrade]);
+
   return (
-    <Modal
-      title="Upgrade or manage plans"
-      trigger={<Button variant="secondary">Upgrade or Manage plan</Button>}
-      size="screen"
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        router.back();
+      }}
     >
-      <Pricing products={products} subscription={subscription} />
-    </Modal>
+      <DialogContent className="max-w-[95vw]">
+        <DialogHeader className="flex items-center justify-center">
+          <DialogTitle>Upgrade or manage plans</DialogTitle>
+        </DialogHeader>
+        <div className="overflow-scroll no-scrollbar max-h-[80vh]">
+          <Pricing products={products} subscription={subscription} />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

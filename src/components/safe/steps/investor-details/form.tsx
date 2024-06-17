@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -69,6 +70,17 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
     setValue(data);
   };
 
+  const stakeHolderOpts = stakeholders.map((sh) => {
+    let label = "";
+    if (sh.institutionName) {
+      label = `${sh.institutionName} - ${sh.name}`;
+    } else {
+      label = sh.name;
+    }
+    const value = sh.id;
+    return { value, label };
+  });
+
   return (
     <Form {...form}>
       <form
@@ -136,44 +148,29 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Stakeholder</FormLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={(val) => {
-                    if (val === ADD_STAKEHOLDER) {
-                      router.push(
-                        `/${session?.user.companyPublicId}/stakeholders`,
-                      );
-                    } else {
-                      return form.setValue("stakeholderId", val);
-                    }
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select stakeholder" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {stakeholders?.map((sh) => (
-                      <SelectItem key={sh.id} value={sh.id}>
-                        {sh.institutionName
-                          ? `${sh.institutionName} - ${sh.name}`
-                          : `${sh.name}`}
-                      </SelectItem>
-                    ))}
-                    <SelectSeparator />
-                    <SelectPrimitive.Item
-                      value={ADD_STAKEHOLDER}
-                      className={SelectItemStyle}
+                <div className="relative right-1">
+                  <LinearCombobox
+                    options={stakeHolderOpts}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  >
+                    <button
+                      type="button"
+                      className="cursor-pointer w-full text-left"
+                      onClick={() => {
+                        router.push(
+                          `/${session?.user.companyPublicId}/stakeholders`,
+                        );
+                      }}
                     >
-                      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-                        <RiAddCircleLine className="h-4 w-4" aria-hidden />
-                      </span>
-
-                      <SelectPrimitive.ItemText>
-                        Add a stakeholder
-                      </SelectPrimitive.ItemText>
-                    </SelectPrimitive.Item>
-                  </SelectContent>
-                </Select>
+                      <div className="flex items-center my-1 gap-x-2">
+                        <span>
+                          <RiAddCircleLine className="h-4 w-4" aria-hidden />
+                        </span>
+                        <div>Add a stakeholder</div>
+                      </div>
+                    </button>
+                  </LinearCombobox>
+                </div>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}

@@ -135,7 +135,11 @@ export const TeamMemberModal = ({
                   {rest.isEditMode ? "Work email" : "Login email"}
                 </FormLabel>
                 <FormControl>
-                  <Input disabled={isSubmitting} type="email" {...field} />
+                  <Input
+                    disabled={isSubmitting || rest.isEditMode}
+                    type="email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage className="text-xs font-light" />
               </FormItem>

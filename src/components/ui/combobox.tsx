@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useDebounce } from "@/hooks/use-debounce";
 import { cn } from "@/lib/utils";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -42,12 +43,24 @@ export const LinearCombobox = ({
   const [searchValue, setSearchValue] = useState("");
   const onValueChangeRef = useRef(onValueChange);
   const isSearching = searchValue.length > 0;
-
+  const { debouncedValue } = useDebounce(searchValue);
   useEffect(() => {
     if (selectedOption && onValueChangeRef.current) {
       onValueChangeRef.current(selectedOption);
     }
   }, [selectedOption]);
+
+  useEffect(() => {
+    if (Number.parseInt(debouncedValue) < options.length) {
+      const possibleOption = options[Number.parseInt(debouncedValue)];
+      if (possibleOption) {
+        setSelectedOption(possibleOption);
+        setOpenPopover(false);
+        setSearchValue("");
+        return;
+      }
+    }
+  }, [debouncedValue, options]);
 
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover} modal>
@@ -85,19 +98,7 @@ export const LinearCombobox = ({
         <Command className="rounded-lg relative">
           <CommandInput
             value={searchValue}
-            onValueChange={(searchValue) => {
-              // If the user types a number, then set as the selected option
-              if (Number.parseInt(searchValue) < options.length) {
-                const possibleOption = options[Number.parseInt(searchValue)];
-                if (possibleOption) {
-                  setSelectedOption(possibleOption);
-                  setOpenPopover(false);
-                  setSearchValue("");
-                  return;
-                }
-              }
-              setSearchValue(searchValue);
-            }}
+            onValueChange={setSearchValue}
             className="text-[0.8125rem] leading-normal"
             placeholder="Type Option no"
           />
@@ -131,7 +132,6 @@ export const LinearCombobox = ({
                   </div>
                 </CommandItem>
               ))}
-
               {children && (
                 <>
                   <CommandSeparator />

@@ -203,7 +203,8 @@ export const signTemplateProcedure = withoutAuth
           });
           const email = nextDelivery.email;
 
-          const uploaderName = template.uploader.user.name;
+          const uploader = template.uploader.user;
+          const uploaderName = uploader.name;
 
           await EsignAudit.create(
             {
@@ -230,7 +231,7 @@ export const signTemplateProcedure = withoutAuth
             documentName: template.name,
             recipient: nextDelivery,
             company: template.company,
-            sender: template.uploader.user,
+            sender: uploader,
           });
         }
       }

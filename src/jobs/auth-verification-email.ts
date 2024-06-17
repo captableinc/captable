@@ -15,10 +15,7 @@ export const sendAuthVerificationEmail = async (
 ) => {
   const { email, token } = payload;
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
-
   const confirmLink = `${baseUrl}/verify-email/${token}`;
-
-  console.log("Sending email to ", email, "with link ", confirmLink);
 
   const html = await render(
     AccountVerificationEmail({

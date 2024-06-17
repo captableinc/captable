@@ -1,6 +1,8 @@
 import { dayjsExt } from "@/common/dayjs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { badgeVariants } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 import { PricingModal, type PricingModalProps } from "../pricing-modal";
 
 interface PlanDetailsProps extends PricingModalProps {}
@@ -28,6 +30,12 @@ export function PlanDetails({ subscription, products }: PlanDetailsProps) {
             </p>
 
             <div className="flex items-center justify-center">
+              <Link
+                className={buttonVariants({ variant: "secondary" })}
+                href="?upgrade=true"
+              >
+                Upgrade or manage plans
+              </Link>
               <PricingModal subscription={subscription} products={products} />
             </div>
           </div>

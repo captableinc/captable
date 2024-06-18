@@ -230,7 +230,7 @@ function PredefinedTemplateSelect() {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Safe template</FormLabel>
-          <div className="relative right-1">
+          <div>
             <LinearCombobox
               options={templateTypes}
               onValueChange={(option) => field.onChange(option.value)}

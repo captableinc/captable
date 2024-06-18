@@ -148,7 +148,7 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Stakeholder</FormLabel>
-                <div className="relative right-1">
+                <div>
                   <LinearCombobox
                     options={stakeHolderOpts}
                     onValueChange={(option) => field.onChange(option.value)}

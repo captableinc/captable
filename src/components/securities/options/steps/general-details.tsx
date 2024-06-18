@@ -85,7 +85,7 @@ export const GeneralDetails = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Grant type</FormLabel>
-                <div className="relative right-1">
+                <div>
                   <LinearCombobox
                     options={typesOpts}
                     onValueChange={(option) => field.onChange(option.value)}
@@ -129,7 +129,7 @@ export const GeneralDetails = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <div className="relative right-1">
+                <div>
                   <LinearCombobox
                     options={STATUSES}
                     onValueChange={(option) => field.onChange(option.value)}

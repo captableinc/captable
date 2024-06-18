@@ -89,7 +89,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Vesting schedule</FormLabel>
-                <div className="relative right-1">
+                <div>
                   <LinearCombobox
                     options={vestingSchedileOpts}
                     onValueChange={(option) => field.onChange(option.value)}
@@ -107,7 +107,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Equity plan</FormLabel>
-                  <div className="relative right-1">
+                  <div>
                     <LinearCombobox
                       options={equityPlansOpts}
                       onValueChange={(option) => field.onChange(option.value)}
@@ -159,7 +159,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Stakeholder</FormLabel>
-                  <div className="relative right-1">
+                  <div>
                     <LinearCombobox
                       options={stakeHolderOpts}
                       onValueChange={(option) => field.onChange(option.value)}

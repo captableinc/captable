@@ -132,7 +132,7 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Select a share class</FormLabel>
-                    <div className="relative right-1">
+                    <div>
                       <LinearCombobox
                         options={shareClassOpts}
                         onValueChange={(option) => field.onChange(option.value)}
@@ -179,7 +179,7 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <div className="relative right-1">
+                    <div>
                       <LinearCombobox
                         options={statusOpts}
                         onValueChange={(option) => field.onChange(option.value)}
@@ -258,7 +258,7 @@ export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Vesting schedule</FormLabel>
-                <div className="relative right-1">
+                <div>
                   <LinearCombobox
                     options={vestingScheduleOpts}
                     onValueChange={(option) => field.onChange(option.value)}

@@ -123,7 +123,7 @@ export const SingleStakeholderForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
-                  <div className="relative right-1">
+                  <div>
                     <LinearCombobox
                       options={stakeHolderTypeOpts}
                       onValueChange={(option) => {
@@ -143,7 +143,7 @@ export const SingleStakeholderForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Group</FormLabel>
-                  <div className="relative right-1">
+                  <div>
                     <LinearCombobox
                       options={groupTypeOpts}
                       onValueChange={(option) => field.onChange(option.value)}

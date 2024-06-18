@@ -3,13 +3,13 @@
 import Modal from "@/components/common/push-modal";
 import {
   SingleStakeholderForm,
-  type Stakeholder,
+  type TStakeholder,
 } from "./single-stake-holder-form";
 
 type StakeholderType = {
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
-  stakeholder: Stakeholder;
+  stakeholder: TStakeholder;
 };
 
 export const UpdateSingleStakeholderModal = ({

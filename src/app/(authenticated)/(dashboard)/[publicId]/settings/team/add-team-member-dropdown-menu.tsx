@@ -32,8 +32,9 @@ export const AddTeamMemberDropdownMenu = () => {
                   subtitle: "Invite a team member to your company.",
                   member: {
                     name: "",
-                    email: "",
+                    loginEmail: "",
                     title: "",
+                    workEmail: "",
                   },
                 });
               }}

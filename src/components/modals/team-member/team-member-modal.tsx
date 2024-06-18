@@ -16,20 +16,25 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
-import {
-  type TypeZodInviteMemberMutationSchema,
-  ZodInviteMemberMutationSchema,
-} from "@/trpc/routers/member-router/schema";
-
 import { popModal } from "@/components/modals";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const ZodTeamMemberSchema = z.object({
+  name: z.string(),
+  loginEmail: z.string(),
+  workEmail: z.string(),
+  title: z.string(),
+});
+
+type TypeZodTeamMemberSchema = z.infer<typeof ZodTeamMemberSchema>;
 
 type MemberModalType = {
   title: string;
   subtitle: string;
-  member: TypeZodInviteMemberMutationSchema;
+  member: TypeZodTeamMemberSchema;
 } & editModeType;
 
 type editModeType =
@@ -42,11 +47,12 @@ export const TeamMemberModal = ({
   member,
   ...rest
 }: MemberModalType) => {
+  console.log({ rest });
   const router = useRouter();
   const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
       popModal("TeamMemberModal");
-      toast.success("You have successfully invited the stakeholder.");
+      toast.success("You have successfully invited the member.");
       router.refresh();
     },
     onError: (error) => {
@@ -57,7 +63,7 @@ export const TeamMemberModal = ({
   const updateMember = api.member.updateMember.useMutation({
     onSuccess: () => {
       popModal("TeamMemberModal");
-      toast.success("You have successfully updated the stakeholder.");
+      toast.success("You have successfully updated the member.");
       router.refresh();
     },
     onError: (error) => {
@@ -65,26 +71,35 @@ export const TeamMemberModal = ({
     },
   });
 
-  const form = useForm<TypeZodInviteMemberMutationSchema>({
-    resolver: zodResolver(ZodInviteMemberMutationSchema),
+  const form = useForm<TypeZodTeamMemberSchema>({
+    resolver: zodResolver(ZodTeamMemberSchema),
     defaultValues: {
       name: member.name ?? "",
-      email: member.email ?? "",
+      loginEmail: member.loginEmail ?? "",
+      workEmail: member.workEmail ?? "",
       title: member.title ?? "",
     },
   });
 
   const isSubmitting = form.formState.isSubmitting;
 
-  const onSubmit = async (values: TypeZodInviteMemberMutationSchema) => {
+  const onSubmit = async (values: TypeZodTeamMemberSchema) => {
+    console.log({ values });
+    const { name, title, workEmail, loginEmail } = values;
     try {
       if (rest.isEditMode) {
         await updateMember.mutateAsync({
-          ...values,
+          name,
+          title,
+          workEmail,
           memberId: rest.memberId,
         });
       } else {
-        await inviteMember.mutateAsync(values);
+        await inviteMember.mutateAsync({
+          name,
+          title,
+          email: loginEmail,
+        });
       }
       // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
     } catch (error) {}
@@ -113,13 +128,15 @@ export const TeamMemberModal = ({
 
           <FormField
             control={form.control}
-            name="email"
+            name={rest.isEditMode ? "workEmail" : "loginEmail"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Work email</FormLabel>
+                <FormLabel>
+                  {rest.isEditMode ? "Work email" : "Login email"}
+                </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={isSubmitting || rest.isEditMode === true}
+                    disabled={isSubmitting || rest.isEditMode}
                     type="email"
                     {...field}
                   />

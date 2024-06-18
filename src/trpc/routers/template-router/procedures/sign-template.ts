@@ -28,6 +28,7 @@ export const signTemplateProcedure = withoutAuth
       const bucketKey = template.bucket.key;
       const companyId = template.companyId;
       const templateName = template.name;
+      const sender = template.uploader.user;
 
       const totalGroups = new Set(
         template.fields.map((item) => item.recipientId),
@@ -106,7 +107,9 @@ export const signTemplateProcedure = withoutAuth
             },
           });
 
-          const data = values.reduce<Record<string, string>>((prev, curr) => {
+          const data: Record<string, string> = values.reduce<
+            Record<string, string>
+          >((prev, curr) => {
             prev[curr.id] = curr.prefilledValue ?? "";
 
             return prev;
@@ -133,7 +136,6 @@ export const signTemplateProcedure = withoutAuth
             companyId,
             templateName,
             fields: template.fields,
-            uploaderName: "Captable, Inc.",
             data,
             templateId: template.id,
             db: tx,
@@ -144,6 +146,8 @@ export const signTemplateProcedure = withoutAuth
               email: item.email,
               name: item.name,
             })),
+            sender,
+            uploaderName: sender.name || "Captable",
           });
         }
       } else {
@@ -168,12 +172,12 @@ export const signTemplateProcedure = withoutAuth
           companyId,
           templateName,
           fields: template.fields,
-          uploaderName: recipient.name ?? "unknown signer",
           data: input.data,
           templateId: template.id,
           db: tx,
           requestIp,
           userAgent,
+          sender,
           recipients: [
             {
               email: recipient.email,
@@ -181,6 +185,7 @@ export const signTemplateProcedure = withoutAuth
             },
           ],
           company: template.company,
+          uploaderName: sender.name || "Captable",
         });
       }
 
@@ -203,8 +208,6 @@ export const signTemplateProcedure = withoutAuth
           });
           const email = nextDelivery.email;
 
-          const uploaderName = template.uploader.user.name;
-
           await EsignAudit.create(
             {
               action: "document.email.sent",
@@ -214,7 +217,7 @@ export const signTemplateProcedure = withoutAuth
               ip: ctx.requestIp,
               location: "",
               userAgent: ctx.userAgent,
-              summary: `${uploaderName ? uploaderName : ""} sent "${
+              summary: `${sender.name ? sender.name : ""} sent "${
                 template.name
               }" to ${
                 recipient.name ? recipient.name : ""
@@ -226,11 +229,11 @@ export const signTemplateProcedure = withoutAuth
           await new EsignNotificationEmailJob().emit({
             email,
             token,
+            sender,
             message: template.message,
             documentName: template.name,
             recipient: nextDelivery,
             company: template.company,
-            sender: template.uploader.user,
           });
         }
       }
@@ -248,6 +251,7 @@ interface TSignPdfOptions
     name: string;
     logo?: string | null;
   };
+  sender: { name: string | null; email: string | null };
   recipients: { name: string | null; email: string }[];
 }
 
@@ -260,7 +264,7 @@ async function signPdf({
   templateName,
   data,
   fields,
-  uploaderName,
+  sender,
   templateId,
   recipients,
   company,
@@ -277,9 +281,9 @@ async function signPdf({
       requestIp,
       templateId,
       templateName,
-      uploaderName,
       userAgent,
       recipients,
+      sender: sender as { email: string; name: string },
       company,
     },
     { singletonKey: `esign-${templateId}`, useSingletonQueue: true },

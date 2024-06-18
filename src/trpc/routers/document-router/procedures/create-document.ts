@@ -1,7 +1,7 @@
 import { generatePublicId } from "@/common/id";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
-import { type TPrismaOrTransaction } from "@/server/db";
+import type { TPrismaOrTransaction } from "@/server/db";
 import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateDocumentMutationSchema,

@@ -39,6 +39,10 @@ export const sendShareDataRoomEmail = async (
         link,
       }),
     ),
+
+    headers: {
+      "X-From-Name": senderName,
+    },
   });
 };
 

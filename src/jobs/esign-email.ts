@@ -33,18 +33,23 @@ export type ExtendedEsignPayloadType = EsignEmailPayloadType &
   AdditionalPayloadType;
 
 export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
-  const { email, token, ...rest } = payload;
+  const { email, token, sender, ...rest } = payload;
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
   const html = await render(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,
+      sender,
       ...rest,
     }),
   );
   await sendMail({
     to: email,
-    subject: "eSign Link",
+    ...(sender?.email && { replyTo: sender.email }),
+    subject: "eSign Document Request",
     html,
+    headers: {
+      "X-From-Name": sender?.name || "Captable",
+    },
   });
 };
 

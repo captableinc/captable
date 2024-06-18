@@ -39,6 +39,10 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
         link,
       }),
     ),
+
+    headers: {
+      "X-From-Name": senderName,
+    },
   });
 };
 

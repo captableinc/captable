@@ -12,10 +12,21 @@ const getTransport = () => {
   });
 };
 
+type RecordType = Record<string, string | undefined>;
+
 export const sendMail = (options: Omit<SendMailOptions, "from">) => {
+  let from = `Captable <${env.EMAIL_FROM}>`;
+  const headers = (options.headers || {}) as RecordType;
+
+  const senderName = headers["X-From-Name"];
+
+  if (senderName) {
+    from = `${senderName} <${env.EMAIL_FROM}>`;
+  }
+
   const transport = getTransport();
   return transport.sendMail({
-    from: env.EMAIL_FROM,
+    from,
     ...options,
   });
 };

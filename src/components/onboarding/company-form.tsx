@@ -423,7 +423,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                     <FormLabel>Incorporation type</FormLabel>
 
                     {/* Used Linear-combobox instead of Select Component */}
-                    <div className="relative right-1">
+                    <div>
                       <LinearCombobox
                         options={incorpTypeOpts}
                         onValueChange={(option) => {

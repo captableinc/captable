@@ -77,7 +77,7 @@ export const ContributionDetails = ({
               <FormItem>
                 <FormLabel>Stakeholder</FormLabel>
                 {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-                <div className="relative right-1">
+                <div>
                   <LinearCombobox
                     options={stakeHoldersOpts}
                     onValueChange={(option) => field.onChange(option.value)}

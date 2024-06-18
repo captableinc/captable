@@ -116,17 +116,20 @@ export const LinearCombobox = ({
                   }}
                   className="group rounded-md flex justify-between items-center w-full text-[0.8125rem] leading-normal text-primary"
                 >
-                  <div className="flex items-center">
-                    {option.icon && (
-                      <option.icon className="mr-2 size-4 fill-muted-foreground group-hover:fill-primary" />
-                    )}
-                    <span>{option.label}</span>
+                  <div className="flex items-center gap-x-2">
+                    <div className="min-w-3 text-center">{index}</div>
+                    <div className="flex items-center">
+                      {option.icon && (
+                        <option.icon className="mr-2 size-4 fill-muted-foreground group-hover:fill-primary" />
+                      )}
+                      <span>{option.label}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center">
+
+                  <div>
                     {selectedOption?.value === option.value && (
                       <CheckIcon className="mr-3 size-4 fill-muted-foreground group-hover:fill-primary" />
                     )}
-                    {!isSearching && <span className="text-xs">{index}</span>}
                   </div>
                 </CommandItem>
               ))}

@@ -38,6 +38,7 @@ export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
   const html = await render(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,
+      sender,
       ...rest,
     }),
   );

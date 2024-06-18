@@ -30,8 +30,8 @@ export type EsignPdfPayloadType = {
   bucketKey: string;
   templateName: string;
   companyId: string;
-  uploaderName: string;
   recipients: { email: string; name?: string | null }[];
+  sender: { email: string; name?: string | null };
 };
 
 export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
@@ -47,7 +47,7 @@ export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
       templateName,
       requestIp,
       userAgent,
-      uploaderName,
+      sender,
       templateId,
       recipients,
       company,
@@ -73,7 +73,7 @@ export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
         requestIp,
         templateId,
         templateName,
-        uploaderName,
+        uploaderName: sender.name || "Captable",
         userAgent,
       });
     });
@@ -87,7 +87,8 @@ export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
           documentName: templateName,
           recipient,
           company,
-          senderName: uploaderName,
+          senderName: sender.name || "Captable",
+          senderEmail: sender.email as string,
         },
       }));
 

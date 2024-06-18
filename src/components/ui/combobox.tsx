@@ -13,7 +13,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useDebounce } from "@/hooks/use-debounce";
 import { cn } from "@/lib/utils";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
@@ -43,24 +42,12 @@ export const LinearCombobox = ({
   const [searchValue, setSearchValue] = useState("");
   const onValueChangeRef = useRef(onValueChange);
   const isSearching = searchValue.length > 0;
-  const { debouncedValue } = useDebounce(searchValue);
+
   useEffect(() => {
     if (selectedOption && onValueChangeRef.current) {
       onValueChangeRef.current(selectedOption);
     }
   }, [selectedOption]);
-
-  useEffect(() => {
-    if (Number.parseInt(debouncedValue) < options.length) {
-      const possibleOption = options[Number.parseInt(debouncedValue)];
-      if (possibleOption) {
-        setSelectedOption(possibleOption);
-        setOpenPopover(false);
-        setSearchValue("");
-        return;
-      }
-    }
-  }, [debouncedValue, options]);
 
   return (
     <Popover open={openPopover} onOpenChange={setOpenPopover} modal>
@@ -98,7 +85,18 @@ export const LinearCombobox = ({
         <Command className="rounded-lg relative">
           <CommandInput
             value={searchValue}
-            onValueChange={setSearchValue}
+            onValueChange={(value) => {
+              if (Number.parseInt(value) < options.length) {
+                const possibleOption = options[Number.parseInt(value)];
+                if (possibleOption) {
+                  setSelectedOption(possibleOption);
+                  setOpenPopover(false);
+                  setSearchValue("");
+                  return;
+                }
+              }
+              setSearchValue(value);
+            }}
             className="text-[0.8125rem] leading-normal"
             placeholder="Type Option no"
           />

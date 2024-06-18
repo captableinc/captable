@@ -14,7 +14,7 @@ export const SingleStakeholdersModal = ({
 }: StakeholderType) => {
   return (
     <Modal size="2xl" title={title} subtitle={subtitle}>
-      <SingleStakeholderForm />
+      <SingleStakeholderForm type="create" />
     </Modal>
   );
 };

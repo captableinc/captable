@@ -67,9 +67,9 @@ export const LinearCombobox = ({
       <PopoverTrigger asChild>
         <Button
           aria-label="Select option"
-          variant="ghost"
+          variant="outline"
           size="lg"
-          className="w-fit px-2 h-8 text-[0.8125rem] leading-normal font-medium text-primary"
+          className="w-full px-3 h-10 text-[0.8125rem] leading-normal font-medium text-primary"
         >
           {selectedOption ? (
             <>

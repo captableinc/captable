@@ -29,12 +29,12 @@ import {
 
 import { api } from "@/trpc/react";
 
-import MemberModal from "@/components/member/member-modal";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { pushModal } from "../modals";
 import { DataTable } from "../ui/data-table/data-table";
 import { DataTableBody } from "../ui/data-table/data-table-body";
 import { SortButton } from "../ui/data-table/data-table-buttons";
@@ -171,7 +171,7 @@ export const columns: ColumnDef<Member[number]>[] = [
 
       const status = member.status;
       const memberId = member.id;
-      const email = member.user?.email;
+      const email = member?.user?.email;
 
       const isActive = status === "ACTIVE";
       const isPending = status === "PENDING";
@@ -226,21 +226,24 @@ export const columns: ColumnDef<Member[number]>[] = [
             )}
 
             {status === "ACTIVE" && (
-              <MemberModal
-                isEditMode
-                memberId={member.id}
-                title="Update team member"
-                subtitle="Update team member's account information."
-                member={{
-                  name: member.user?.name ?? "",
-                  email: email ?? "",
-                  title: member.title ?? "",
+              <DropdownMenuItem
+                onClick={() => {
+                  pushModal("TeamMemberModal", {
+                    isEditMode: true,
+                    memberId,
+                    title: "Update team member",
+                    subtitle: "Update team member's account information.",
+                    member: {
+                      name: member.user.name ?? "",
+                      loginEmail: "",
+                      title: member.title ?? "",
+                      workEmail: member.workEmail ?? "",
+                    },
+                  });
                 }}
               >
-                <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                  Update member
-                </span>
-              </MemberModal>
+                Update member
+              </DropdownMenuItem>
             )}
 
             <DropdownMenuSeparator />

@@ -25,33 +25,82 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/trpc/react";
+import type { RouterOutputs } from "@/trpc/shared";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export const SingleStakeholderForm = () => {
+export type TStakeholder =
+  RouterOutputs["stakeholder"]["getStakeholders"][number];
+
+type TSingleStakeholderForm =
+  | {
+      type: "create";
+      stakeholder?: never;
+    }
+  | {
+      type: "update";
+      stakeholder: TStakeholder;
+    };
+
+export const SingleStakeholderForm = ({
+  type,
+  stakeholder,
+}: TSingleStakeholderForm) => {
   const form = useForm<AddStakeholderMutationType>({
+    defaultValues: {
+      name: stakeholder?.name ?? "",
+      email: stakeholder?.email ?? "",
+      institutionName: stakeholder?.institutionName ?? "",
+      stakeholderType: stakeholder?.stakeholderType ?? "INDIVIDUAL",
+      currentRelationship: stakeholder?.currentRelationship ?? "INVESTOR",
+      taxId: stakeholder?.taxId ?? "",
+      streetAddress: stakeholder?.streetAddress ?? "",
+      city: stakeholder?.city ?? "",
+      state: stakeholder?.state ?? "",
+      zipcode: stakeholder?.zipcode ?? "",
+    },
     resolver: zodResolver(ZodAddStakeholderMutationSchema),
   });
 
   const isSubmitting = form.formState.isSubmitting;
   const router = useRouter();
 
-  const { mutateAsync } = api.stakeholder.addStakeholders.useMutation({
-    onSuccess: ({ success, message }) => {
-      if (success) {
-        form.reset();
-        router.refresh();
-        toast.success("🎉 Successfully created!");
-      } else {
-        toast.error(`🔥 Error - ${message}`);
-      }
-    },
-  });
+  const { mutateAsync: updateStakeholderMutation } =
+    api.stakeholder.updateStakeholder.useMutation({
+      onSuccess: ({ success, message }) => {
+        if (success) {
+          router.refresh();
+          form.reset();
+          toast.success(message);
+          popModal();
+        } else {
+          toast.error(`🔥 Error - ${message}`);
+        }
+      },
+    });
+
+  const { mutateAsync: addStakeholderMutation } =
+    api.stakeholder.addStakeholders.useMutation({
+      onSuccess: ({ success, message }) => {
+        if (success) {
+          router.refresh();
+          form.reset();
+          toast.success("🎉 Successfully created!");
+          popModal();
+        } else {
+          toast.error(`🔥 Error - ${message}`);
+        }
+      },
+    });
 
   const onSubmit = async (values: AddStakeholderMutationType) => {
-    await mutateAsync([values]);
-    popModal("SingleStakeholdersModal");
+    if (type === "update") {
+      await updateStakeholderMutation({ ...values, id: stakeholder.id });
+    } else {
+      await addStakeholderMutation([values]);
+    }
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -107,7 +156,10 @@ export const SingleStakeholderForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
-                  <Select onValueChange={field.onChange}>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select type" />
@@ -130,7 +182,10 @@ export const SingleStakeholderForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Group</FormLabel>
-                  <Select onValueChange={field.onChange}>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select association" />
@@ -234,7 +289,13 @@ export const SingleStakeholderForm = () => {
         </div>
         <div className="mt-8 flex justify-end">
           <Button loading={isSubmitting} type="submit">
-            {isSubmitting ? "Adding stakeholder..." : "Add a stakeholder"}
+            {type === "create"
+              ? isSubmitting
+                ? "Adding stakeholder"
+                : "Add a stakeholder"
+              : isSubmitting
+                ? "Updating stakeholder"
+                : "Update stakeholder"}
           </Button>
         </div>
       </form>

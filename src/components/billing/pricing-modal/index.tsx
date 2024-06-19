@@ -12,7 +12,7 @@ import type { PricingPlanInterval, PricingType } from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import type { TypeZodStripePortalMutationSchema } from "@/trpc/routers/billing-router/schema";
 import type { RouterOutputs } from "@/trpc/shared";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { EmptyPlans } from "./empty-plans";
 import { PricingButton } from "./pricing-button";
@@ -178,19 +178,24 @@ export function PricingModal({ products, subscription }: PricingModalProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const path = usePathname();
   const upgrade = searchParams.get("upgrade");
+
   useEffect(() => {
     const isOpen = upgrade === "true";
     if (isOpen) {
       setOpen(true);
     }
+    return () => {
+      setOpen(false);
+    };
   }, [upgrade]);
 
   return (
     <Dialog
       open={open}
       onOpenChange={() => {
-        router.back();
+        router.push(path);
       }}
     >
       <DialogContent className="max-w-[95vw]">

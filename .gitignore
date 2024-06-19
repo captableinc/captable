@@ -54,3 +54,6 @@ yarn-error.log*
 /prisma/enums.ts
 
 /.pnpm-store
+
+# Sentry Config File
+.env.sentry-build-plugin

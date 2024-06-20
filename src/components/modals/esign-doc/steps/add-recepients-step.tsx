@@ -1,5 +1,6 @@
 import { uploadFile } from "@/common/uploads";
 import { popModal } from "@/components/modals";
+import Loading from "@/components/common/loading";
 import { Button } from "@/components/ui/button";
 import {
   StepperModalContent,
@@ -11,6 +12,7 @@ import { TAG } from "@/lib/tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   ManageEsignRecipientsForm,
   type TRecipientFormSchema,
@@ -21,6 +23,7 @@ interface AddRecipientStepProps {
 }
 
 export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const { value } = useEsignValues();
   const { mutateAsync: handleBucketUpload } = api.bucket.create.useMutation();
@@ -28,6 +31,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
     api.template.create.useMutation();
 
   const onSubmit = async (data: TRecipientFormSchema) => {
+    setLoading(true);
     const document = value?.document?.[0];
     if (!document) {
       throw new Error("no document found to upload");
@@ -67,6 +71,7 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
           Save & Continue
         </Button>
       </StepperModalFooter>
+      {loading && <Loading />}
     </StepperStep>
   );
 }

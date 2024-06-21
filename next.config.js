@@ -1,4 +1,5 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
@@ -11,7 +12,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {
+const nextConfig = {
   output: process.env.DOCKER_OUTPUT ? "standalone" : undefined,
   images: {
     remotePatterns: [
@@ -43,4 +44,18 @@ const config = {
   },
 };
 
-export default bundleAnalyzer(config);
+const sentryOptions = {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  silent: true,
+  widenClientFileUpload: true,
+  hideSourceMaps: true,
+  disableLogger: true,
+  automaticVercelMonitors: true,
+};
+
+const hasSentry = !!process.env.NEXT_PUBLIC_SENTRY_DSN;
+
+export default hasSentry
+  ? withSentryConfig(bundleAnalyzer(nextConfig), sentryOptions)
+  : bundleAnalyzer(nextConfig);

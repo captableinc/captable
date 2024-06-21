@@ -52,6 +52,10 @@ export const env = createEnv({
     // stripe
     STRIPE_API_KEY: z.string().optional(),
     STRIPE_WEBHOOK_SECRET: z.string().optional(),
+
+    // sentry
+    SENTRY_ORG: z.string().optional(),
+    SENTRY_PROJECT: z.string().optional(),
   },
 
   /**
@@ -63,6 +67,7 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+    NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
   },
 
   /**

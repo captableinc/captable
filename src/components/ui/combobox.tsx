@@ -8,20 +8,21 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import Kbd from "@/components/ui/kbd";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { RiCheckFill as CheckIcon } from "@remixicon/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { CheckIcon, type IconProps } from "./icons";
 
 export type ComboBoxOption = {
   value: string;
   label: string;
-  icon?: React.FC<IconProps>;
+  icon?: React.FC<{ className: string }>;
 };
 
 export const LinearCombobox = ({
@@ -41,7 +42,6 @@ export const LinearCombobox = ({
   );
   const [searchValue, setSearchValue] = useState("");
   const onValueChangeRef = useRef(onValueChange);
-  const isSearching = searchValue.length > 0;
 
   useEffect(() => {
     if (selectedOption && onValueChangeRef.current) {
@@ -56,7 +56,7 @@ export const LinearCombobox = ({
           aria-label="Select option"
           variant="outline"
           size="lg"
-          className="w-full px-3 h-10 text-[0.8125rem] leading-normal font-medium text-primary"
+          className="w-full px-3 h-10 text-[0.8125rem] leading-normal font-medium text-primary text-left items-center justify-start"
         >
           {selectedOption ? (
             <>
@@ -98,7 +98,7 @@ export const LinearCombobox = ({
               setSearchValue(value);
             }}
             className="text-[0.8125rem] leading-normal"
-            placeholder="Type Option no"
+            placeholder="Search or type option #"
           />
 
           <CommandList>
@@ -117,7 +117,9 @@ export const LinearCombobox = ({
                   className="group rounded-md flex justify-between items-center w-full text-[0.8125rem] leading-normal text-primary"
                 >
                   <div className="flex items-center gap-x-2">
-                    <div className="min-w-3 text-center">{index}</div>
+                    <div className="min-w-3 text-center">
+                      <Kbd className="mr-3">{index}</Kbd>
+                    </div>
                     <div className="flex items-center">
                       {option.icon && (
                         <option.icon className="mr-2 size-4 fill-muted-foreground group-hover:fill-primary" />

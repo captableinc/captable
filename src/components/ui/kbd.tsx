@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 type KbdProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
 };
 

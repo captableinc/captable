@@ -36,6 +36,7 @@ import { z } from "zod";
 
 import { uploadFile } from "@/common/uploads";
 import { Checkbox } from "@/components/ui/checkbox";
+import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { invariant } from "@/lib/error";
 import { TAG } from "@/lib/tags";
@@ -229,21 +230,12 @@ function PredefinedTemplateSelect() {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Safe template</FormLabel>
-
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {templateTypes.map((item) => (
-                <SelectItem key={item.label} value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            <LinearCombobox
+              options={templateTypes}
+              onValueChange={(option) => field.onChange(option.value)}
+            />
+          </div>
           <FormMessage className="text-xs font-light" />
         </FormItem>
       )}

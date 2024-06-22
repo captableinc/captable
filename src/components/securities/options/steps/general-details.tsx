@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -35,7 +36,7 @@ const STATUSES = Object.values(OptionStatusEnum).map((val) => ({
   value: val,
 }));
 const TYPES = Object.values(OptionTypeEnum);
-
+const typesOpts = TYPES.map((type) => ({ value: type, label: type }));
 const formSchema = z.object({
   grantId: z.string(),
   type: z.nativeEnum(OptionTypeEnum),
@@ -84,21 +85,12 @@ export const GeneralDetails = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Grant type</FormLabel>
-
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {TYPES.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div>
+                  <LinearCombobox
+                    options={typesOpts}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  />
+                </div>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}
@@ -137,8 +129,14 @@ export const GeneralDetails = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
+                <div>
+                  <LinearCombobox
+                    options={STATUSES}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  />
+                </div>
 
-                <Select onValueChange={field.onChange} value={field.value}>
+                {/* <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select status" />
@@ -151,7 +149,7 @@ export const GeneralDetails = () => {
                       </SelectItem>
                     ))}
                   </SelectContent>
-                </Select>
+                </Select> */}
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}

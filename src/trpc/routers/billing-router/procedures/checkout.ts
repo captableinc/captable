@@ -38,7 +38,7 @@ export const checkoutProcedure = withAuth
           },
         ],
         mode: priceType === "recurring" ? "subscription" : "payment",
-        success_url: env.NEXT_PUBLIC_BASE_URL,
+        success_url: `${env.NEXT_PUBLIC_BASE_URL}/${session.user.companyPublicId}/settings/billing`,
       };
 
       let stripeSession: Stripe.Checkout.Session | undefined;

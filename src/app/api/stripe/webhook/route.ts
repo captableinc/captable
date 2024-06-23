@@ -84,16 +84,20 @@ export async function POST(req: Request) {
       }
     } catch (error) {
       console.log(error);
+      // We dealing with webhooks return a 200 to acknowledge receipt of the event
       return new Response(
         "Webhook handler failed. View your Next.js function logs.",
         {
-          status: 400,
+          status: 200,
         },
       );
     }
   } else {
+    console.log(`❌  Unhandled event type: ${event.type}`);
+
+    // We dealing with webhooks return a 200 to acknowledge receipt of the event
     return new Response(`Unsupported event type: ${event.type}`, {
-      status: 400,
+      status: 200,
     });
   }
   return new Response(JSON.stringify({ received: true }));

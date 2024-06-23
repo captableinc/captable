@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -56,6 +57,12 @@ export const ContributionDetails = ({
     setValue(data);
     next();
   };
+
+  const stakeHoldersOpts = stakeholders.map((stakeHolder) => ({
+    value: stakeHolder.id,
+    label: `${stakeHolder.company.name} - ${stakeHolder.name}`,
+  }));
+
   return (
     <Form {...form}>
       <form
@@ -70,27 +77,12 @@ export const ContributionDetails = ({
               <FormItem>
                 <FormLabel>Stakeholder</FormLabel>
                 {/* eslint-disable-next-line  @typescript-eslint/no-unsafe-assignment */}
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select stakeholder" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {stakeholders.length ? (
-                      stakeholders.map((sh) => (
-                        <SelectItem key={sh.id} value={sh.id}>
-                          {sh.company.name} - {sh.name}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <EmptySelect
-                        title="Stakeholders not found"
-                        description="Please add a stakeholder first."
-                      />
-                    )}
-                  </SelectContent>
-                </Select>
+                <div>
+                  <LinearCombobox
+                    options={stakeHoldersOpts}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  />
+                </div>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}

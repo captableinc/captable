@@ -87,7 +87,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <div className="grid gap-3">
-                      <FormLabel htmlFor="password">Passowrd</FormLabel>
+                      <FormLabel htmlFor="password">Password</FormLabel>
                       <FormControl>
                         <PasswordInput
                           id="password"
@@ -111,7 +111,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <div className="grid gap-3">
-                      <FormLabel htmlFor="password">Repeat Passowrd</FormLabel>
+                      <FormLabel htmlFor="password">Confirm password</FormLabel>
                       <FormControl>
                         <Input
                           id="repeatPassword"

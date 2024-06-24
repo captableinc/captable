@@ -7,7 +7,7 @@ export const getSubscriptionProcedure = withAuth.query(async ({ ctx }) => {
   const { subscription } = await db.$transaction(async (tx) => {
     const { companyId } = await checkMembership({ session, tx });
 
-    const customer = await db.billingCustomer.findFirst({
+    const customer = await tx.billingCustomer.findFirst({
       where: {
         companyId,
       },
@@ -20,11 +20,23 @@ export const getSubscriptionProcedure = withAuth.query(async ({ ctx }) => {
       return { subscription: null };
     }
 
-    const subscription = await db.billingSubscription.findFirst({
+    const subscription = await tx.billingSubscription.findFirst({
       where: {
         customerId: customer.id,
         status: {
           in: ["active", "trialing"],
+        },
+      },
+      include: {
+        price: {
+          select: {
+            product: {
+              select: {
+                name: true,
+              },
+            },
+            unitAmount: true,
+          },
         },
       },
     });

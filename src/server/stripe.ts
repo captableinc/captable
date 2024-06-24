@@ -83,7 +83,7 @@ export const manageSubscriptionStatusChange = async (
     where: { id: customerId },
   });
 
-  invariant(customer, "Customer lookup failed");
+  invariant(customer?.id, "Customer lookup failed");
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ["default_payment_method"],
@@ -96,7 +96,7 @@ export const manageSubscriptionStatusChange = async (
   const id = subscription.id;
 
   const data = {
-    customerId: customer?.id,
+    customerId: customer.id,
     metadata: subscription.metadata,
     status: subscription.status,
     priceId: item.price.id,

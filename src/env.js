@@ -66,7 +66,11 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
+
+    // stripe
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
+
+    // sentry
     NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
   },
 
@@ -96,10 +100,16 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 
+    /// stripe
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: readRuntimePublicEnvVariable(
       "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+    ),
+
+    /// sentry
+    NEXT_PUBLIC_SENTRY_DSN: readRuntimePublicEnvVariable(
+      "NEXT_PUBLIC_SENTRY_DSN",
     ),
   },
   /**

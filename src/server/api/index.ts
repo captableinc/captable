@@ -1,9 +1,9 @@
 import { PublicAPI } from "./hono";
-import companyRoute from "./routes/company";
+import companyRoutes from "./routes/company";
 
 export const api = PublicAPI();
 
-// Restful routes for company
-companyRoute(api);
+// RESTful routes for company
+companyRoutes(api);
 
 export default api;

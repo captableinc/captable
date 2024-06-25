@@ -4,11 +4,11 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-const companyRoute = (api: PublicAPI) => {
+const companyRoutes = (api: PublicAPI) => {
   getOne(api);
   getMany(api);
   create(api);
   update(api);
 };
 
-export default companyRoute;
+export default companyRoutes;

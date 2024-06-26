@@ -41,14 +41,14 @@ import { type ComboBoxOption, LinearCombobox } from "../ui/combobox";
 const formSchema = ShareClassMutationSchema;
 
 type ShareClassFormType = {
-  type?: string;
+  type: "create" | "update";
   className?: string;
   shareClass?: ShareClassMutationType;
   shareClasses: ShareClassMutationType[];
 };
 
 const ShareClassForm = ({
-  type = "create",
+  type,
   shareClasses,
   shareClass = {
     id: "",

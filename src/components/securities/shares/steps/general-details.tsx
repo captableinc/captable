@@ -68,10 +68,10 @@ type TFormSchema = z.infer<typeof formSchema>;
 type ShareClasses = RouterOutputs["shareClass"]["get"];
 
 interface GeneralDetailsProps {
-  shareClasses: ShareClasses;
+  shareClasses: ShareClasses | [];
 }
 
-export const GeneralDetails = ({ shareClasses }: GeneralDetailsProps) => {
+export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
   const form = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
   });

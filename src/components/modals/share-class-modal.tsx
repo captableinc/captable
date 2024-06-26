@@ -5,7 +5,7 @@ import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import ShareClassForm from "./share-class-form";
 
 type ShareClassType = {
-  type: string;
+  type: "create" | "update";
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
   shareClass?: ShareClassMutationType;

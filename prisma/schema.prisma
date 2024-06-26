@@ -60,6 +60,7 @@ model User {
   companies         Member[]
   passkeys          Passkey[]
   verificationToken VerificationToken[]
+  apiKey            ApiKey?
 
   lastSignedIn     DateTime @default(now())
   identityProvider String?
@@ -1062,4 +1063,18 @@ model BillingCustomer {
   subscriptions BillingSubscription[]
 
   @@index([companyId])
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  secret    String   @unique // scrypt hashed secret
+  userId    String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+  @@index([userId])
 }

@@ -59,6 +59,16 @@ export class RBAC {
   enforce(
     permissions: TPermission[],
   ): Result<{ valid: boolean; message: string }> {
+    const permissionSubjects = new Set(permissions.map((item) => item.subject));
+    for (const subject of this.policy.keys()) {
+      if (!permissionSubjects.has(subject)) {
+        return Ok({
+          valid: false,
+          message: `No matching permissions found for action: ${subject}`,
+        });
+      }
+    }
+
     for (const perm of permissions) {
       const { actions, subject } = perm;
 
@@ -70,7 +80,8 @@ export class RBAC {
 
         if (
           deniedActions &&
-          actions.some((action) => deniedActions.has(action))
+          (deniedActions.has("*") ||
+            actions.some((action) => deniedActions.has(action)))
         ) {
           return Ok({
             valid: false,
@@ -78,9 +89,14 @@ export class RBAC {
           });
         }
 
+        if (actions.includes("*")) {
+          continue;
+        }
+
         if (
           allowedActions &&
-          actions.some((action) => allowedActions.has(action))
+          (allowedActions.has("*") ||
+            actions.some((action) => allowedActions.has(action)))
         ) {
           continue;
         }

@@ -93,7 +93,7 @@ importers:
         specifier: ^4.0.1
         version: 4.2.0(react@18.3.1)
       '@sentry/nextjs':
-        specifier: ^8
+        specifier: ^8.9.2
         version: 8.9.2(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.0)(next@14.2.3(@babel/core@7.24.5)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.92.0)
       '@simplewebauthn/browser':
         specifier: ^10.0.0

@@ -26,7 +26,7 @@ const create = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const req: HonoRequest = await c.req;
     console.log({ req });
-    return c.json({ message: "Hello, World!" });
+    return c.json({ message: "TODO: implement this endpoint" });
   });
 };
 

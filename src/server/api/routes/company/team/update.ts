@@ -5,7 +5,7 @@ import type { Context, HonoRequest } from "hono";
 
 const route = createRoute({
   method: "put",
-  path: "/v1/companies/:cid",
+  path: "/v1/companies/:cid/teams/:tid",
   responses: {
     200: {
       content: {
@@ -15,7 +15,7 @@ const route = createRoute({
           }),
         },
       },
-      description: "Update a company by ID",
+      description: "Update a team member by ID or email in a company.",
     },
 
     ...ErrorResponses,

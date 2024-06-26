@@ -4,8 +4,8 @@ import { createRoute, z } from "@hono/zod-openapi";
 import type { Context, HonoRequest } from "hono";
 
 const route = createRoute({
-  method: "put",
-  path: "/v1/companies/:cid",
+  method: "post",
+  path: "/v1/companies/:cid/teams",
   responses: {
     200: {
       content: {
@@ -15,14 +15,14 @@ const route = createRoute({
           }),
         },
       },
-      description: "Update a company by ID",
+      description: "Create and invite a team member to a company",
     },
 
     ...ErrorResponses,
   },
 });
 
-const update = (app: PublicAPI) => {
+const create = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const req: HonoRequest = await c.req;
     console.log({ req });
@@ -30,4 +30,4 @@ const update = (app: PublicAPI) => {
   });
 };
 
-export default update;
+export default create;

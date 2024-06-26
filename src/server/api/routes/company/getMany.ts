@@ -15,7 +15,7 @@ const route = createRoute({
           }),
         },
       },
-      description: "Get many companies",
+      description: "Get a list of companies you have access to.",
     },
 
     ...ErrorResponses,
@@ -26,7 +26,7 @@ const getMany = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const req: HonoRequest = await c.req;
     console.log({ req });
-    return c.json({ message: "Hello, World!" });
+    return c.json({ message: "TODO: implement this endpoint" });
   });
 };
 

@@ -12,8 +12,13 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { getIp, getUserAgent } from "@/lib/headers";
+import { RBAC, type addPolicyOption } from "@/lib/rbac";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+
+interface Meta {
+  policies: addPolicyOption;
+}
 
 /**
  * 1. CONTEXT
@@ -48,10 +53,12 @@ const withAuthTrpcContext = ({ session, ...rest }: CreateTRPCContextType) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
+  const rbac = new RBAC();
   return {
     ...rest,
     // infers the `session` as non-nullable
     session: { ...session, user: session.user },
+    rbac,
   };
 };
 
@@ -64,19 +71,22 @@ export type withAuthTrpcContextType = ReturnType<typeof withAuthTrpcContext>;
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+const t = initTRPC
+  .context<typeof createTRPCContext>()
+  .meta<Meta>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -109,8 +119,12 @@ export const withoutAuth = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const withAuth = t.procedure.use(({ ctx: ctx_, next }) => {
+export const withAuth = t.procedure.use(({ ctx: ctx_, next, meta }) => {
   const ctx = withAuthTrpcContext(ctx_);
+
+  if (meta?.policies) {
+    ctx.rbac.addPolicies(meta.policies);
+  }
 
   return next({
     ctx,

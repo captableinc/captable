@@ -165,11 +165,20 @@ enum MemberStatusEnum {
   PENDING
 }
 
+enum Roles {
+  SUPER_USER
+  EMPLOYEE
+  INVESTOR
+  BILLING
+  CUSTOM
+}
+
 model Member {
   id           String           @id @default(cuid())
   title        String?
   status       MemberStatusEnum @default(PENDING)
   isOnboarded  Boolean          @default(false)
+  role         Roles            @default(SUPER_USER)
   workEmail    String?
   lastAccessed DateTime         @default(now())
   createdAt    DateTime         @default(now())

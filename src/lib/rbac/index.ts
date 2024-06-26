@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Err, Ok, type Result } from "../error";
+import { Ok, type Result } from "../error";
 import { BaseError } from "../error/errors/base";
 
 const Actions = ["create", "read", "update", "delete", "*"] as const;
@@ -14,7 +14,7 @@ const PermissionSchema = z.object({
   subject: z.enum(Subjects),
 });
 
-type TPermissionSchema = z.infer<typeof PermissionSchema>;
+export type TPermission = z.infer<typeof PermissionSchema>;
 
 export type addPolicyOption = Partial<
   Record<TSubjects, { allow: TActions[]; deny?: TActions[] }>
@@ -63,47 +63,41 @@ export class RBAC {
   }
 
   enforce(
-    permissions: TPermissionSchema[],
+    permissions: TPermission[],
   ): Result<{ valid: boolean; message: string }> {
     for (const perm of permissions) {
       const { actions, subject } = perm;
 
       const rules = this.policy.get(subject);
 
-      if (!rules) {
-        return Err(
-          new RBACError({
-            message: `No rules defined for subject: ${subject}`,
-          }),
-        );
-      }
+      if (rules) {
+        const deniedActions = rules.get("deny");
+        const allowedActions = rules.get("allow");
 
-      const deniedActions = rules.get("deny");
-      const allowedActions = rules.get("allow");
+        if (
+          deniedActions &&
+          actions.some((action) => deniedActions.has(action))
+        ) {
+          return Ok({
+            valid: false,
+            message: `Permission denied for actions: ${actions.join(", ")}`,
+          });
+        }
 
-      if (
-        deniedActions &&
-        actions.some((action) => deniedActions.has(action))
-      ) {
+        if (
+          allowedActions &&
+          actions.some((action) => allowedActions.has(action))
+        ) {
+          continue;
+        }
+
         return Ok({
           valid: false,
-          message: `Permission denied for actions: ${actions.join(", ")}`,
+          message: `No matching permissions found for actions: ${actions.join(
+            ", ",
+          )}`,
         });
       }
-
-      if (
-        allowedActions &&
-        actions.some((action) => allowedActions.has(action))
-      ) {
-        continue;
-      }
-
-      return Ok({
-        valid: false,
-        message: `No matching permissions found for actions: ${actions.join(
-          ", ",
-        )}`,
-      });
     }
 
     return Ok({ valid: true, message: "Permissions granted." });

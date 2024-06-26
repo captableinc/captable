@@ -27,7 +27,7 @@ export function PublicAPI() {
   api.doc("/v1/schema", () => ({
     openapi: "3.0.0",
     info: {
-      version: "1.0.0",
+      version: "v1",
       title: "Captable, Inc. API",
     },
     servers: [{ url: `${env.NEXTAUTH_URL}/api` }],

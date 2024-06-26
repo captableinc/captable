@@ -4,6 +4,63 @@ import { HTTPException } from "hono/http-exception";
 import type { StatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 
+export const ErrorResponses = {
+  400: {
+    content: {
+      "application/json": {
+        schema: z.object({
+          message: z.string(),
+        }),
+      },
+    },
+    description: "Bad Request",
+  },
+
+  401: {
+    content: {
+      "application/json": {
+        schema: z.object({
+          message: z.string(),
+        }),
+      },
+    },
+    description: "Unauthorized",
+  },
+
+  404: {
+    content: {
+      "application/json": {
+        schema: z.object({
+          message: z.string(),
+        }),
+      },
+    },
+    description: "Not Found",
+  },
+
+  429: {
+    content: {
+      "application/json": {
+        schema: z.object({
+          message: z.string(),
+        }),
+      },
+    },
+    description: "Rate Limited",
+  },
+
+  500: {
+    content: {
+      "application/json": {
+        schema: z.object({
+          message: z.string(),
+        }),
+      },
+    },
+    description: "Internal Server Error",
+  },
+};
+
 const ErrorCode = z.enum([
   "BAD_REQUEST",
   "FORBIDDEN",

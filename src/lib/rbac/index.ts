@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { Ok, type Result } from "../error";
-import { BaseError } from "../error/errors/base";
 
 const Actions = ["create", "read", "update", "delete", "*"] as const;
 const Subjects = ["billing", "invite"] as const;
@@ -17,13 +16,8 @@ const PermissionSchema = z.object({
 export type TPermission = z.infer<typeof PermissionSchema>;
 
 export type addPolicyOption = Partial<
-  Record<TSubjects, { allow: TActions[]; deny?: TActions[] }>
+  Record<TSubjects, { allow?: TActions[]; deny?: TActions[] }>
 >;
-
-class RBACError extends BaseError {
-  public name = "RBACError";
-  public retry = false;
-}
 
 export class RBAC {
   private policy: Map<TSubjects, Map<Effect, Set<TActions>>>;
@@ -107,14 +101,20 @@ export class RBAC {
     for (const [subject, policy] of Object.entries(policies)) {
       const { allow, deny } = policy;
 
-      for (const action of allow) {
-        this.allow(subject as TSubjects, action);
+      if (allow) {
+        for (const action of allow) {
+          this.allow(subject as TSubjects, action);
+        }
       }
 
       if (deny) {
         for (const action of deny) {
           this.deny(subject as TSubjects, action);
         }
+      }
+
+      if (!allow && !deny) {
+        throw new Error("allow or deny option should be present");
       }
     }
 

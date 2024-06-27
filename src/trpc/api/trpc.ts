@@ -13,6 +13,10 @@ import { ZodError } from "zod";
 
 import { getIp, getUserAgent } from "@/lib/headers";
 import { RBAC, type addPolicyOption } from "@/lib/rbac";
+import {
+  checkAccessControlMembership,
+  getRules,
+} from "@/lib/rbac/access-control";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 
@@ -53,16 +57,67 @@ const withAuthTrpcContext = ({ session, ...rest }: CreateTRPCContextType) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  const rbac = new RBAC();
   return {
     ...rest,
     // infers the `session` as non-nullable
     session: { ...session, user: session.user },
-    rbac,
   };
 };
 
 export type withAuthTrpcContextType = ReturnType<typeof withAuthTrpcContext>;
+
+const withAccessControlTrpcContext = async ({
+  meta,
+  ...rest
+}: CreateTRPCContextType & { meta: Meta | undefined }) => {
+  const ctx = withAuthTrpcContext({ ...rest });
+
+  const rbac = new RBAC();
+
+  if (meta?.policies) {
+    rbac.addPolicies(meta.policies);
+  }
+
+  const { err: membershipError, val: membership } =
+    await checkAccessControlMembership({
+      session: ctx.session,
+      tx: ctx.db,
+    });
+
+  if (membershipError) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: membershipError.message,
+    });
+  }
+
+  const rules = getRules(membership.role);
+
+  const { err, val } = rbac.enforce(rules);
+
+  if (err) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: err.message,
+    });
+  }
+
+  if (!val.valid) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: val.message,
+    });
+  }
+
+  return {
+    ...ctx,
+    membership,
+  };
+};
+
+export type withAccessControlTrpcContextType = ReturnType<
+  typeof withAccessControlTrpcContext
+>;
 
 /**
  * 2. INITIALIZATION
@@ -119,14 +174,20 @@ export const withoutAuth = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const withAuth = t.procedure.use(({ ctx: ctx_, next, meta }) => {
+export const withAuth = t.procedure.use(({ ctx: ctx_, next }) => {
   const ctx = withAuthTrpcContext(ctx_);
-
-  if (meta?.policies) {
-    ctx.rbac.addPolicies(meta.policies);
-  }
 
   return next({
     ctx,
   });
 });
+
+export const withAccessControl = t.procedure.use(
+  async ({ ctx: ctx_, next, meta }) => {
+    const ctx = await withAccessControlTrpcContext({ ...ctx_, meta });
+
+    return next({
+      ctx,
+    });
+  },
+);

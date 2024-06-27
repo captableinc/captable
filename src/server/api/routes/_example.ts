@@ -1,5 +1,4 @@
-import { withCompanyAuth } from "@/server/api/auth";
-import { ApiError, ErrorResponses } from "@/server/api/error";
+import { ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
@@ -46,23 +45,12 @@ const route = createRoute({
   },
 });
 const getOne = (app: PublicAPI) => {
-  app.openapi(route, async (c: Context) => {
+  app.openapi(route, (c: Context) => {
     const params = c.req.param();
-    const headers = c.req.header;
-    const id = params.id as string;
-
-    const { company } = await withCompanyAuth(id, headers);
-
-    if (!company) {
-      throw new ApiError({
-        code: "NOT_FOUND",
-        message: "Company not found",
-      });
-    }
 
     return c.json(
       {
-        id: company.id,
+        id: params.id as string,
       },
       200,
     );

@@ -5,7 +5,7 @@ import type { Context, HonoRequest } from "hono";
 
 const route = createRoute({
   method: "put",
-  path: "/v1/companies/:cid/teams/:tid",
+  path: "/v1/companies/:id/teams/:teamId",
   responses: {
     200: {
       content: {

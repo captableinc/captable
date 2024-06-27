@@ -19,18 +19,6 @@ import {
   type EquityPlanMutationType,
 } from "@/trpc/routers/equity-plan/schema";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectItemStyle,
-  SelectLabel,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
@@ -67,6 +55,7 @@ const EquityPlanForm = ({
   },
 }: EquityFormType) => {
   const router = useRouter();
+
   const form = useForm<EquityPlanMutationType>({
     resolver: zodResolver(formSchema),
     defaultValues: equityPlan,
@@ -234,6 +223,7 @@ const EquityPlanForm = ({
                           className="cursor-pointer w-full text-left"
                           onClick={() => {
                             pushModal("ShareClassModal", {
+                              shouldClientFetch: true,
                               type: "create",
                               title: "Create a share class",
                               shareClasses,
@@ -266,6 +256,7 @@ const EquityPlanForm = ({
                         variant={"outline"}
                         onClick={() => {
                           pushModal("ShareClassModal", {
+                            shouldClientFetch: true,
                             type: "create",
                             title: "Create a share class",
                             shareClasses,

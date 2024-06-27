@@ -73,7 +73,7 @@ const Pages: CommandOption[] = [
     },
   },
   {
-    id: "captable",
+    id: "equity-plan",
     title: "Create an equity plan",
     icon: RiPieChart2Fill,
     onClick: () => {
@@ -96,11 +96,12 @@ const Pages: CommandOption[] = [
     },
   },
   {
-    id: "securities",
+    id: "share-class",
     title: "Create a share class",
     icon: RiPieChart2Fill,
     onClick: () => {
       pushModal("ShareClassModal", {
+        shouldClientFetch: true,
         type: "create",
         title: "Create a share class",
         shareClasses: [],
@@ -118,8 +119,8 @@ const Pages: CommandOption[] = [
     },
   },
   {
-    id: "share",
-    title: "Issue share to stakeholder",
+    id: "issue-share",
+    title: "Issue a share",
     onClick: () => {
       pushModal("IssueShareModal", {
         shouldClientFetch: true,
@@ -132,7 +133,7 @@ const Pages: CommandOption[] = [
     icon: RiPieChart2Fill,
   },
   {
-    id: "stock-option",
+    id: "issue-stock-option",
     title: "Issue a stock option",
     onClick: () => {
       pushModal("IssueStockOptionModal", {
@@ -146,7 +147,7 @@ const Pages: CommandOption[] = [
     icon: RiPieChart2Fill,
   },
   {
-    id: "safe",
+    id: "new-safe",
     title: "Create a new SAFE",
     onClick: () => {
       pushModal("NewSafeModal", {
@@ -158,7 +159,7 @@ const Pages: CommandOption[] = [
     icon: RiPieChart2Fill,
   },
   {
-    id: "safe",
+    id: "existing-safe",
     title: "Create an existing SAFE agreement",
     onClick: () => {
       pushModal("ExistingSafeModal", {

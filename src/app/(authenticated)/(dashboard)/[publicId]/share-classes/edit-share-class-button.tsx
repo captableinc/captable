@@ -19,6 +19,7 @@ export const EditShareClassButton = ({
       className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700"
       onClick={() => {
         pushModal("ShareClassModal", {
+          shouldClientFetch: false,
           type: "update",
           title: "Update share class",
           shareClass,

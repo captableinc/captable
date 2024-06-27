@@ -1,19 +1,9 @@
+import type { TActions, TSubjects } from "@/constants/rbac";
 import { z } from "zod";
 import { Ok, type Result } from "../error";
+import type { TPermission } from "./schema";
 
-const Actions = ["create", "read", "update", "delete", "*"] as const;
-const Subjects = ["billing", "invite"] as const;
-
-type TSubjects = (typeof Subjects)[number];
-type TActions = (typeof Actions)[number];
 type Effect = "allow" | "deny";
-
-const PermissionSchema = z.object({
-  actions: z.array(z.enum(Actions)),
-  subject: z.enum(Subjects),
-});
-
-export type TPermission = z.infer<typeof PermissionSchema>;
 
 export type addPolicyOption = Partial<
   Record<TSubjects, { allow?: TActions[]; deny?: TActions[] }>

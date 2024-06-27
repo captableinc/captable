@@ -52,7 +52,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
     next();
   };
 
-  const disabled = !stakeholders.length && !equityPlans.length;
+  const disabled = !stakeholders?.length && !equityPlans?.length;
 
   const vestingSchedileOpts = Object.keys(VestingSchedule).map((vKey) => ({
     value: vKey,
@@ -93,7 +93,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             )}
           />
 
-          {equityPlans.length ? (
+          {equityPlans?.length ? (
             <FormField
               control={form.control}
               name="equityPlanId"
@@ -145,7 +145,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             }}
           />
 
-          {stakeholders.length ? (
+          {stakeholders?.length ? (
             <FormField
               control={form.control}
               name="stakeholderId"

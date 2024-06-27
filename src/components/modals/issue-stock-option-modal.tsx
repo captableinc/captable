@@ -19,30 +19,16 @@ import type { TStakeholders } from "./issue-share-modal";
 export type TEquityPlans = RouterOutputs["equityPlan"]["getPlans"]["data"];
 
 type VestingDetailsProps = {
-  shouldClientFetch: boolean;
   stakeholders: TStakeholders;
   equityPlans: TEquityPlans;
 };
 
 function VestingDetailsStep({
-  shouldClientFetch,
   stakeholders,
   equityPlans,
 }: VestingDetailsProps) {
-  const _stakeholders = api.stakeholder.getStakeholders.useQuery(undefined, {
-    enabled: shouldClientFetch,
-  }).data;
-  const _equityPlans = api.equityPlan.getPlans.useQuery(undefined, {
-    enabled: shouldClientFetch,
-  }).data?.data;
-
-  console.log({ _stakeholders, _equityPlans });
-
   return (
-    <VestingDetails
-      stakeholders={_stakeholders || stakeholders}
-      equityPlans={_equityPlans || equityPlans}
-    />
+    <VestingDetails stakeholders={stakeholders} equityPlans={equityPlans} />
   );
 }
 
@@ -58,7 +44,21 @@ export const IssueStockOptionModal = ({
   stakeholders,
   ...rest
 }: IssueStockOptionModalProps) => {
-  console.log({ equityPlans, stakeholders });
+  const _stakeholders = api.stakeholder.getStakeholders.useQuery(undefined, {
+    enabled: shouldClientFetch,
+  }).data;
+
+  const _equityPlans = api.equityPlan.getPlans.useQuery(undefined, {
+    enabled: shouldClientFetch,
+  }).data?.data;
+
+  const __stakeholders = stakeholders.length
+    ? stakeholders
+    : (_stakeholders as unknown as TStakeholders);
+  const __equityPlans = equityPlans.length
+    ? equityPlans
+    : (_equityPlans as unknown as TEquityPlans);
+
   return (
     <StepperModal {...rest}>
       <StockOptionFormProvider>
@@ -70,9 +70,8 @@ export const IssueStockOptionModal = ({
         <StepperStep title="Vesting details">
           <StepperModalContent>
             <VestingDetailsStep
-              shouldClientFetch={shouldClientFetch}
-              stakeholders={stakeholders}
-              equityPlans={equityPlans}
+              stakeholders={__stakeholders}
+              equityPlans={__equityPlans}
             />
           </StepperModalContent>
         </StepperStep>

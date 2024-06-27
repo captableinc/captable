@@ -6,7 +6,7 @@ import { ExistingSafeModal } from "./existing-safe-modal";
 import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
 import { NewSafeModal } from "./new-safe-modal";
-import { ShareClassModal } from "./share-class-modal";
+import { ShareClassModal } from "./share-class/share-class-modal";
 import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";
 import { MultipleStakeholdersModal } from "./stakeholder/multiple-stakeholders-modal";

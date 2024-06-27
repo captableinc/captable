@@ -16,23 +16,27 @@ type EquityPlanType = {
 };
 
 export const EquityPlanModal = ({
+  type = "create",
   title,
   subtitle,
   equityPlan,
   shareClasses,
-  type = "create",
   shouldClientFetch,
 }: EquityPlanType) => {
   const _shareClasses = api.shareClass.get.useQuery(undefined, {
     enabled: shouldClientFetch,
   }).data;
 
+  const __shareClasses = shareClasses.length
+    ? shareClasses
+    : (_shareClasses as unknown as ShareClassMutationType[]);
+
   return (
     <Modal size="2xl" title={title} subtitle={subtitle}>
       <EquityPlanForm
         type={type}
         equityPlan={equityPlan}
-        shareClasses={shareClasses || _shareClasses}
+        shareClasses={__shareClasses}
       />
     </Modal>
   );

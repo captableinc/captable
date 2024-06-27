@@ -19,30 +19,14 @@ export type TStakeholders = RouterOutputs["stakeholder"]["getStakeholders"];
 
 function ContributionDetailsStep({
   stakeholders,
-  shouldClientFetch,
 }: {
-  shouldClientFetch: boolean;
   stakeholders: TStakeholders;
 }) {
-  const _stakeholders = api.stakeholder.getStakeholders.useQuery(undefined, {
-    enabled: shouldClientFetch,
-  })?.data;
-
-  return <ContributionDetails stakeholders={stakeholders || stakeholders} />;
+  return <ContributionDetails stakeholders={stakeholders} />;
 }
 
-function GeneralDetailsStep({
-  shareClasses,
-  shouldClientFetch,
-}: {
-  shareClasses: TShareClasses;
-  shouldClientFetch: boolean;
-}) {
-  const _shareClasses = api.shareClass.get.useQuery(undefined, {
-    enabled: shouldClientFetch,
-  }).data;
-
-  return <GeneralDetails shareClasses={shareClasses || _shareClasses} />;
+function GeneralDetailsStep({ shareClasses }: { shareClasses: TShareClasses }) {
+  return <GeneralDetails shareClasses={shareClasses} />;
 }
 
 type IssueShareModalProps = Omit<StepperModalProps, "children"> & {
@@ -57,23 +41,32 @@ export const IssueShareModal = ({
   shareClasses,
   ...rest
 }: IssueShareModalProps) => {
+  const _stakeholders = api.stakeholder.getStakeholders.useQuery(undefined, {
+    enabled: shouldClientFetch,
+  })?.data;
+
+  const _shareClasses = api.shareClass.get.useQuery(undefined, {
+    enabled: shouldClientFetch,
+  })?.data;
+
+  const __stakeholders = stakeholders.length
+    ? stakeholders
+    : (_stakeholders as unknown as TStakeholders);
+  const __shareClasses = shareClasses.length
+    ? shareClasses
+    : (_shareClasses as unknown as TShareClasses);
+
   return (
     <StepperModal {...rest}>
       <AddShareFormProvider>
         <StepperStep title="General details">
           <StepperModalContent>
-            <GeneralDetailsStep
-              shouldClientFetch={shouldClientFetch}
-              shareClasses={shareClasses}
-            />
+            <GeneralDetailsStep shareClasses={__shareClasses} />
           </StepperModalContent>
         </StepperStep>
         <StepperStep title="Contribution details">
           <StepperModalContent>
-            <ContributionDetailsStep
-              shouldClientFetch={shouldClientFetch}
-              stakeholders={stakeholders}
-            />
+            <ContributionDetailsStep stakeholders={__stakeholders} />
           </StepperModalContent>
         </StepperStep>
         <StepperStep title="Relevant dates">

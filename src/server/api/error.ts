@@ -192,3 +192,10 @@ export function handleError(err: Error, c: Context): Response {
     { status: 500 },
   );
 }
+
+export const companyNotFound = () => {
+  throw new ApiError({
+    code: "NOT_FOUND",
+    message: "Company not found",
+  });
+};

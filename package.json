@@ -57,6 +57,7 @@
     "@radix-ui/react-toolbar": "^1.0.4",
     "@react-pdf/renderer": "^3.4.4",
     "@remixicon/react": "^4.0.1",
+    "@scalar/nextjs-api-reference": "^0.4.18",
     "@sentry/nextjs": "^8.9.2",
     "@simplewebauthn/browser": "^10.0.0",
     "@simplewebauthn/server": "^10.0.0",

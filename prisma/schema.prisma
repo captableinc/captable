@@ -1067,6 +1067,7 @@ model BillingCustomer {
 
 model ApiKey {
   id          String    @id @default(cuid())
+  name        String?
   active      Boolean   @default(true)
   hashedToken String    @unique // scrypt hashed token
   createdAt   DateTime  @default(now())

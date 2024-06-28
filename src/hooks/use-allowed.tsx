@@ -12,7 +12,9 @@ export function useAllowed({ action, subject }: useAllowedOptions) {
   const roles = data?.roles ?? new Map<TSubjects, TActions[]>();
 
   const hasSubject = roles.has(subject);
-  const hasAction = roles.get(subject)?.includes(action) ?? false;
+  const hasAction =
+    (roles.get(subject)?.includes(action) ?? false) ||
+    (roles.get(subject)?.includes("*") ?? false);
 
   const isAllowed = hasSubject && hasAction;
 

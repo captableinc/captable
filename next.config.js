@@ -44,18 +44,19 @@ const nextConfig = {
   },
 };
 
-const sentryOptions = {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-  silent: true,
-  widenClientFileUpload: true,
-  hideSourceMaps: true,
-  disableLogger: true,
-  automaticVercelMonitors: true,
-};
-
-const hasSentry = !!process.env.NEXT_PUBLIC_SENTRY_DSN;
+const hasSentry = !!(
+  process.env.SENTRY_ORG &&
+  process.env.SENTRY_PROJECT &&
+  process.env.NEXT_PUBLIC_SENTRY_DSN
+);
 
 export default hasSentry
-  ? withSentryConfig(bundleAnalyzer(nextConfig), sentryOptions)
+  ? withSentryConfig(bundleAnalyzer(nextConfig), {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      silent: true,
+      widenClientFileUpload: true,
+      hideSourceMaps: true,
+      disableLogger: true,
+    })
   : bundleAnalyzer(nextConfig);

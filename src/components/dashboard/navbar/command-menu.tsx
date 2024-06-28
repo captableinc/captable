@@ -73,6 +73,18 @@ const Pages: CommandOption[] = [
     },
   },
   {
+    id: "esign-document",
+    title: "Upload esign document",
+    icon: RiUploadCloud2Fill,
+    onClick: (companyPublicId: string) => {
+      pushModal("AddEsignDocumentModal", {
+        title: "eSign a Document",
+        subtitle: "",
+        companyPublicId,
+      });
+    },
+  },
+  {
     id: "equity-plan",
     title: "Create an equity plan",
     icon: RiPieChart2Fill,
@@ -224,7 +236,10 @@ export function CommandMenu({ companyPublicId }: CommandMenuProps) {
                   } else {
                     if (page.onClick) {
                       setOpen(false);
-                      if (page.id === "documents") {
+                      if (
+                        page.id === "documents" ||
+                        page.id === "esign-document"
+                      ) {
                         page.onClick(companyPublicId);
                       } else {
                         page.onClick("");

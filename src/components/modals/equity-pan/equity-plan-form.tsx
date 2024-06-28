@@ -221,6 +221,7 @@ export const EquityPlanForm = ({
                           className="cursor-pointer w-full text-left"
                           onClick={() => {
                             pushModal("ShareClassModal", {
+                              shouldClientFetch: shareClasses.length === 0,
                               type: "create",
                               title: "Create a share class",
                               shareClasses,
@@ -253,6 +254,7 @@ export const EquityPlanForm = ({
                         variant={"outline"}
                         onClick={() => {
                           pushModal("ShareClassModal", {
+                            shouldClientFetch: shareClasses.length === 0,
                             type: "create",
                             title: "Create a share class",
                             shareClasses,

@@ -142,6 +142,7 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                           className="cursor-pointer w-full text-left"
                           onClick={() => {
                             pushModal("ShareClassModal", {
+                              shouldClientFetch: true,
                               type: "create",
                               title: "Create a share class",
                               subtitle: (

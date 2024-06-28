@@ -15,6 +15,7 @@ import { TeamMemberModal } from "./team-member/team-member-modal";
 import { WipModal } from "./wip-modal";
 
 import { createPushModal } from "pushmodal";
+import { AddEsignDocumentModal } from "./esign-doc";
 
 export const { pushModal, popModal, ModalProvider } = createPushModal({
   modals: {
@@ -31,5 +32,6 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     IssueStockOptionModal,
     NewSafeModal,
     ExistingSafeModal,
+    AddEsignDocumentModal,
   },
 });

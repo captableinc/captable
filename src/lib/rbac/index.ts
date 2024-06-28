@@ -1,5 +1,4 @@
 import type { TActions, TSubjects } from "@/constants/rbac";
-import { z } from "zod";
 import { Ok, type Result } from "../error";
 import type { TPermission } from "./schema";
 

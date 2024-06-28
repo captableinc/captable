@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { RBAC, type TPermission, type addPolicyOption } from ".";
+import { RBAC, type addPolicyOption } from ".";
+import type { TPermission } from "./schema";
 
 describe("evaluating a query", () => {
   const testCases: {
@@ -55,6 +56,12 @@ describe("evaluating a query", () => {
       valid: true,
       permissions: [{ subject: "billing", actions: ["*"] }],
       policies: { billing: { allow: ["read"] } },
+    },
+    {
+      name: "should pass on empty policies",
+      valid: true,
+      permissions: [{ subject: "billing", actions: ["*"] }],
+      policies: {},
     },
   ];
 

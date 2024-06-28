@@ -129,6 +129,19 @@ export class RBAC {
   getPolicies() {
     return this.policy;
   }
+
+  static normalizePermissionsMap(permissions: TPermission[]) {
+    const permissionMap = new Map<TSubjects, TActions[]>();
+
+    for (const permission of permissions) {
+      const { subject, actions } = permission;
+      const currentActions = permissionMap.get(subject) || [];
+
+      permissionMap.set(subject, [...currentActions, ...actions]);
+    }
+
+    return permissionMap;
+  }
 }
 
 // Example usage:

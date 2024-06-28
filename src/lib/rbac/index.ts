@@ -126,6 +126,10 @@ export class RBAC {
 
     return this;
   }
+
+  getPolicies() {
+    return this.policy;
+  }
 }
 
 // Example usage:

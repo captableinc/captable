@@ -1,4 +1,4 @@
-import { defaultRoles } from "@/constants/rbac";
+import { defaultPermissions } from "@/constants/rbac";
 import type { Roles } from "@/prisma/enums";
 import { checkMembership } from "@/server/auth";
 import type { TPrismaOrTransaction } from "@/server/db";
@@ -26,9 +26,9 @@ export async function checkAccessControlMembership({
   );
 }
 
-export function getRules(role: Roles) {
+export function getPermissions(role: Roles) {
   if (role !== "CUSTOM") {
-    return defaultRoles[role];
+    return defaultPermissions[role];
   }
-  return defaultRoles.SUPER_USER;
+  return defaultPermissions.SUPER_USER;
 }

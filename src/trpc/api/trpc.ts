@@ -15,7 +15,7 @@ import { getIp, getUserAgent } from "@/lib/headers";
 import { RBAC, type addPolicyOption } from "@/lib/rbac";
 import {
   checkAccessControlMembership,
-  getRules,
+  getPermissions,
 } from "@/lib/rbac/access-control";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
@@ -91,9 +91,9 @@ const withAccessControlTrpcContext = async ({
     });
   }
 
-  const rules = getRules(membership.role);
+  const permissions = getPermissions(membership.role);
 
-  const { err, val } = rbac.enforce(rules);
+  const { err, val } = rbac.enforce(permissions);
 
   if (err) {
     throw new TRPCError({
@@ -112,6 +112,7 @@ const withAccessControlTrpcContext = async ({
   return {
     ...ctx,
     membership,
+    permissions,
   };
 };
 

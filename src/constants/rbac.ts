@@ -14,7 +14,7 @@ const SUPER_USER = SUBJECTS.map((item) => ({
   subject: item,
 }));
 
-export const defaultRoles: Record<DefaultRoles, TPermission[]> = {
+export const defaultPermissions: Record<DefaultRoles, TPermission[]> = {
   BILLING: [{ actions: ["*"], subject: "billing" }],
   EMPLOYEE: [{ actions: ["*"], subject: "invite" }],
   INVESTOR: [],

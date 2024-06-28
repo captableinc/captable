@@ -14,6 +14,8 @@ import {
   RiLock2Line,
   RiNotificationFill,
   RiNotificationLine,
+  RiShieldUserFill,
+  RiShieldUserLine,
 } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -51,6 +53,12 @@ const accountNav = [
     href: "/settings/security",
     icon: RiLock2Line,
     activeIcon: RiLock2Fill,
+  },
+  {
+    name: "Roles",
+    href: "/settings/role",
+    icon: RiShieldUserLine,
+    activeIcon: RiShieldUserFill,
   },
 ];
 

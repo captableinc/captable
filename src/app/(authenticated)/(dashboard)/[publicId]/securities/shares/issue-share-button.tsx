@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { RiAddFill } from "@remixicon/react";
 import type React from "react";
 
-type CreateShareClassButtonProps = {
+type IssueShareButtonProps = {
   title: string;
   subtitle: string | React.ReactNode;
   stakeholders: TStakeholders;
@@ -21,7 +21,7 @@ export const IssueShareButton = ({
   subtitle,
   stakeholders,
   shareClasses,
-}: CreateShareClassButtonProps) => {
+}: IssueShareButtonProps) => {
   return (
     <Button
       onClick={() => {

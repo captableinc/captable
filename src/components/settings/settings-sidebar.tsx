@@ -56,7 +56,7 @@ const accountNav = [
   },
   {
     name: "Roles",
-    href: "/settings/role",
+    href: "/settings/roles",
     icon: RiShieldUserLine,
     activeIcon: RiShieldUserFill,
   },

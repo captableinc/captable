@@ -14,6 +14,8 @@ import {
   RiLock2Line,
   RiNotificationFill,
   RiNotificationLine,
+  RiTerminalBoxFill,
+  RiTerminalBoxLine,
 } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -41,16 +43,22 @@ const accountNav = [
     activeIcon: RiAccountCircleFill,
   },
   {
-    name: "Notifications",
-    href: "/settings/notifications",
-    icon: RiNotificationLine,
-    activeIcon: RiNotificationFill,
-  },
-  {
     name: "Security",
     href: "/settings/security",
     icon: RiLock2Line,
     activeIcon: RiLock2Fill,
+  },
+  {
+    name: "API Keys",
+    href: "/settings/api",
+    icon: RiTerminalBoxLine,
+    activeIcon: RiTerminalBoxFill,
+  },
+  {
+    name: "Notifications",
+    href: "/settings/notifications",
+    icon: RiNotificationLine,
+    activeIcon: RiNotificationFill,
   },
 ];
 

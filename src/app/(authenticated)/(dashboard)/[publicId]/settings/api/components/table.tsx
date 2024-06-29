@@ -45,14 +45,14 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
         <TableBody>
           {keys.map((key) => (
             <TableRow key={key.keyId}>
-              <TableCell className="flex cursor-pointer items-center hover:underline">
+              <TableCell className="flex cursor-pointer items-center">
                 <code className="text-xs">{`${key.keyId}:xxx...`}</code>
               </TableCell>
               <TableCell suppressHydrationWarning>
                 {dayjsExt().to(key.createdAt)}
               </TableCell>
               <TableCell suppressHydrationWarning>
-                {dayjsExt().to(key.lastUsed)}
+                {key.lastUsed ? dayjsExt().to(key.lastUsed) : "Never"}
               </TableCell>
 
               <TableCell>

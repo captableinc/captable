@@ -55,6 +55,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toolbar": "^1.0.4",
+    "@radix-ui/react-tooltip": "^1.1.2",
     "@react-pdf/renderer": "^3.4.4",
     "@remixicon/react": "^4.0.1",
     "@scalar/nextjs-api-reference": "^0.4.18",

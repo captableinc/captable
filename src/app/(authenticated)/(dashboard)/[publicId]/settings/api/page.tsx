@@ -6,6 +6,7 @@ import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import CreateApiKey from "./components/create-key";
+import ApiKeysTable from "./components/table";
 
 export const metadata: Metadata = {
   title: "API Keys",
@@ -16,8 +17,22 @@ const ApiSettingsPage = async () => {
   const apiKeys = await db.apiKey.findMany({
     where: {
       userId: user.id,
+      active: true,
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    select: {
+      id: true,
+      keyId: true,
+      createdAt: true,
+      lastUsed: true,
     },
   });
+
+  console.log({ apiKeys });
 
   return (
     <Fragment>
@@ -45,9 +60,7 @@ const ApiSettingsPage = async () => {
             </div>
           </div>
 
-          <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-            {/* Table */}
-          </Card>
+          <ApiKeysTable keys={apiKeys} />
         </div>
       )}
     </Fragment>

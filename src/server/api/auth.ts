@@ -22,9 +22,9 @@ const verifyBearerToken = async (headers: Headers) => {
     });
   }
 
-  const [id, hashedToken] = token.split("_");
+  const [keyId, hashedToken] = token.split("_");
 
-  if (!id || !hashedToken) {
+  if (!keyId || !hashedToken) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "Invalid token provided",
@@ -32,8 +32,8 @@ const verifyBearerToken = async (headers: Headers) => {
   }
 
   const apiKey = await db.apiKey.findUnique({
-    where: { id, active: true },
-    select: { id: true, hashedToken: true, user: true },
+    where: { keyId, active: true },
+    select: { id: true, keyId: true, hashedToken: true, user: true },
   });
 
   if (!apiKey) {
@@ -53,7 +53,7 @@ const verifyBearerToken = async (headers: Headers) => {
   }
 
   await db.apiKey.update({
-    where: { id },
+    where: { keyId },
     data: { lastUsed: new Date() },
   });
 

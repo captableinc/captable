@@ -1,4 +1,4 @@
-import { randomBytes, scrypt, subtle } from "node:crypto";
+import { randomBytes, scryptSync, subtle } from "node:crypto";
 
 export const createHash = async (key: string) => {
   const data = new TextEncoder().encode(key);
@@ -10,31 +10,22 @@ export const createHash = async (key: string) => {
     .toString();
 };
 
-export const createApiSecret = async () => {
-  return await randomBytes(32).toString("hex");
+export const createApiToken = async () => {
+  return await randomBytes(32).toString("base64url");
 };
 
-export const createSecureHash = async (key: string) => {
+export const createSecureHash = (key: string) => {
   const data = new TextEncoder().encode(key);
+  const salt = randomBytes(16).toString("hex");
+  const derivedKey = scryptSync(data, salt, 64);
 
-  return new Promise((resolve, reject) => {
-    const salt = randomBytes(16).toString("hex");
-
-    scrypt(data, salt, 64, (err, derivedKey) => {
-      if (err) reject(err);
-      resolve(`${salt}:${derivedKey.toString("hex")}`);
-    });
-  });
+  return `${salt}:${derivedKey.toString("hex")}`;
 };
 
-export const verifySecureHash = async (key: string, hash: string) => {
+export const verifySecureHash = (key: string, hash: string) => {
   const data = new TextEncoder().encode(key);
+  const [salt, storedHash] = hash.split(":");
+  const derivedKey = scryptSync(data, String(salt), 64);
 
-  return new Promise((resolve, reject) => {
-    const [salt, key] = hash.split(":");
-    scrypt(data, String(salt), 64, (err, derivedKey) => {
-      if (err) reject(err);
-      resolve(key === derivedKey.toString("hex"));
-    });
-  });
+  return storedHash === derivedKey.toString("hex");
 };

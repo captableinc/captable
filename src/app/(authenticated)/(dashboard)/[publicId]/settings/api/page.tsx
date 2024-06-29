@@ -1,11 +1,11 @@
 import EmptyState from "@/components/common/empty-state";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { withServerSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { RiAddLine, RiTerminalBoxFill } from "@remixicon/react";
+import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import { Fragment } from "react";
+import CreateApiKey from "./components/create-key";
 
 export const metadata: Metadata = {
   title: "API Keys",
@@ -28,10 +28,7 @@ const ApiSettingsPage = async () => {
           title="API Keys"
           subtitle="Create and manage API keys"
         >
-          <Button>
-            <RiAddLine className="inline-block h-5 w-5" />
-            Create an API Key
-          </Button>
+          <CreateApiKey />
         </EmptyState>
       ) : (
         <div className="flex flex-col gap-y-3">
@@ -44,10 +41,7 @@ const ApiSettingsPage = async () => {
             </div>
 
             <div>
-              <Button className="w-full md:w-auto" size="sm">
-                <RiAddLine className="inline-block h-5 w-5" />
-                API Key
-              </Button>
+              <CreateApiKey />
             </div>
           </div>
 

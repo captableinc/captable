@@ -22,7 +22,7 @@ const verifyBearerToken = async (headers: Headers) => {
     });
   }
 
-  const [keyId, hashedToken] = token.split("_");
+  const [keyId, hashedToken] = token.split(":");
 
   if (!keyId || !hashedToken) {
     throw new ApiError({

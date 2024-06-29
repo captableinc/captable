@@ -23,9 +23,8 @@ const CreateApiKey = () => {
       const key = `${keyId}:${token}` as string;
       setApiKey(key);
       copy(key);
-      setOpen(true);
       toast.success("API key copied to clipboard!");
-      router.refresh();
+      setOpen(true);
     },
 
     onError: (error) => {
@@ -35,6 +34,7 @@ const CreateApiKey = () => {
 
     onSettled: () => {
       setLoading(false);
+      router.refresh();
     },
   });
 

@@ -46,7 +46,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
           {keys.map((key) => (
             <TableRow key={key.keyId}>
               <TableCell className="flex cursor-pointer items-center hover:underline">
-                <code className="text-sm">{`${key.keyId}:xxx...`}</code>
+                <code className="text-xs">{`${key.keyId}:xxx...`}</code>
               </TableCell>
               <TableCell suppressHydrationWarning>
                 {dayjsExt().to(key.createdAt)}
@@ -66,13 +66,13 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
                       <DropdownMenuSeparator />
 
                       <DropdownMenuItem onClick={() => {}}>
-                        Rotate
+                        Rotate key
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-rose-600"
                         onClick={() => {}}
                       >
-                        Delete
+                        Delete key
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

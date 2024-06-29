@@ -60,6 +60,23 @@ const verifyBearerToken = async (headers: Headers) => {
   return apiKey.user;
 };
 
+export const withMemberAuth = async (headers: Headers) => {
+  const user = await verifyBearerToken(headers);
+
+  const membership = await db.member.findMany({
+    where: { userId: user.id, status: "ACTIVE" },
+  });
+
+  if (!membership.length) {
+    throw new ApiError({
+      code: "FORBIDDEN",
+      message: "You do not have access to any companies",
+    });
+  }
+
+  return { user, membership };
+};
+
 export const withCompanyAuth = async (id: string, headers: Headers) => {
   const user = await verifyBearerToken(headers);
 

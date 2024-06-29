@@ -19,14 +19,12 @@ export const RequestSchema = z.object({
     }),
 });
 
-export const ResponseSchema = z
-  .object({
-    id: z.string().cuid().openapi({
-      description: "Company ID",
-      example: "clxwbok580000i7nge8nm1ry0",
-    }),
-  })
-  .openapi("Company");
+export const ResponseSchema = z.object({
+  id: z.string().cuid().openapi({
+    description: "Company ID",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
+});
 
 const route = createRoute({
   method: "get",

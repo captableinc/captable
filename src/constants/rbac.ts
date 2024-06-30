@@ -4,7 +4,7 @@ import type { Roles } from "@/prisma/enums";
 type DefaultRoles = Exclude<Roles, "CUSTOM">;
 
 export const ACTIONS = ["create", "read", "update", "delete", "*"] as const;
-export const SUBJECTS = ["billing", "invite", "stakeholder"] as const;
+export const SUBJECTS = ["billing", "invite", "stakeholder", "roles"] as const;
 
 export type TSubjects = (typeof SUBJECTS)[number];
 export type TActions = (typeof ACTIONS)[number];

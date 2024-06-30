@@ -4,7 +4,6 @@ const config = {
   spec: {
     url: "/api/v1/schema",
   },
-  theme: "deepSpace",
   metaData: {
     title: "Captable API Docs",
     description: "Captable API Docs",

@@ -76,3 +76,5 @@ export const ApiCompanySchema = z.object({
     example: "2024-01-01T00:00:00Z",
   }),
 });
+
+export type ApiCompanyType = z.infer<typeof ApiCompanySchema>;

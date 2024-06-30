@@ -85,8 +85,6 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
 
   const [keyId, token] = bearer.split(":");
 
-  console.log({ keyId, token });
-
   if (!keyId || !token) {
     throw new ApiError({
       code: "UNAUTHORIZED",
@@ -98,8 +96,6 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
     where: { keyId, active: true },
     select: { id: true, keyId: true, hashedToken: true, user: true },
   });
-
-  console.log({ apiKey });
 
   if (!apiKey) {
     throw new ApiError({

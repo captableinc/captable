@@ -115,8 +115,6 @@ export class ApiError extends HTTPException {
 }
 
 export function handleError(err: Error, c: Context): Response {
-  console.log({ err });
-
   if (err instanceof ApiError) {
     if (err.status >= 500) {
       logger.error("ApiError", {

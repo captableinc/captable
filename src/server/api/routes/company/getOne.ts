@@ -28,7 +28,7 @@ export const ResponseSchema = z.object({
 
 const route = createRoute({
   method: "get",
-  path: "api/v1/companies/:id",
+  path: "/v1/companies/:id",
   request: { params: RequestSchema },
   responses: {
     200: {

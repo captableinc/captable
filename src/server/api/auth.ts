@@ -1,12 +1,8 @@
 import { verifySecureHash } from "@/lib/crypto";
 import { ApiError } from "@/server/api/error";
 import { db } from "@/server/db";
-import type { Context } from "hono";
 
-type Headers = Context["req"]["header"];
-
-const verifyBearerToken = async (headers: Headers) => {
-  const bearerToken = headers("Authorization");
+const verifyBearerToken = async (bearerToken: string | null | undefined) => {
   if (!bearerToken) {
     throw new ApiError({
       code: "UNAUTHORIZED",
@@ -14,17 +10,19 @@ const verifyBearerToken = async (headers: Headers) => {
     });
   }
 
-  const token = bearerToken.split(" ")[1];
-  if (!token) {
+  const bearer = bearerToken.split(" ")[1];
+  if (!bearer) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "No bearer token provided",
     });
   }
 
-  const [keyId, hashedToken] = token.split(":");
+  const [keyId, token] = bearer.split(":");
 
-  if (!keyId || !hashedToken) {
+  console.log({ keyId, token });
+
+  if (!keyId || !token) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "Invalid token provided",
@@ -36,6 +34,8 @@ const verifyBearerToken = async (headers: Headers) => {
     select: { id: true, keyId: true, hashedToken: true, user: true },
   });
 
+  console.log({ apiKey });
+
   if (!apiKey) {
     throw new ApiError({
       code: "UNAUTHORIZED",
@@ -43,7 +43,7 @@ const verifyBearerToken = async (headers: Headers) => {
     });
   }
 
-  const isValid = await verifySecureHash(apiKey.hashedToken, hashedToken);
+  const isValid = await verifySecureHash(token, apiKey.hashedToken);
 
   if (!isValid) {
     throw new ApiError({
@@ -60,8 +60,10 @@ const verifyBearerToken = async (headers: Headers) => {
   return apiKey.user;
 };
 
-export const withMemberAuth = async (headers: Headers) => {
-  const user = await verifyBearerToken(headers);
+export const withMemberAuth = async (
+  bearerToken: string | null | undefined,
+) => {
+  const user = await verifyBearerToken(bearerToken);
 
   const membership = await db.member.findMany({
     where: { userId: user.id, status: "ACTIVE" },
@@ -77,8 +79,11 @@ export const withMemberAuth = async (headers: Headers) => {
   return { user, membership };
 };
 
-export const withCompanyAuth = async (id: string, headers: Headers) => {
-  const user = await verifyBearerToken(headers);
+export const withCompanyAuth = async (
+  id: string,
+  bearerToken: string | null | undefined,
+) => {
+  const user = await verifyBearerToken(bearerToken);
 
   const member = await db.member.findFirst({
     where: {

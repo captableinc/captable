@@ -45,11 +45,7 @@ const route = createRoute({
 });
 const getOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
-    const params = c.req.param();
-    const headers = c.req.header;
-    const id = params.id as string;
-
-    const { company } = await withCompanyAuth(id, headers);
+    const { company } = await withCompanyAuth(c);
 
     if (!company) {
       throw new ApiError({

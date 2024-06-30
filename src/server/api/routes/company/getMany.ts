@@ -27,11 +27,7 @@ const route = createRoute({
 });
 const getMany = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
-    const bearerToken = c.req.header("Authorization");
-
-    console.log({ bearerToken });
-
-    const { membership } = await withMemberAuth(bearerToken);
+    const { membership } = await withMemberAuth(c);
     const companyIds = membership.map((m) => m.companyId);
 
     const companies = (await db.company.findMany({

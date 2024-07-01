@@ -7,7 +7,9 @@ export interface useAllowedOptions {
 }
 
 export function useAllowed({ action, subject }: useAllowedOptions) {
-  const { data } = api.rbac.getPermissions.useQuery();
+  const { data } = api.rbac.getPermissions.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   const permissions = data?.permissions ?? new Map<TSubjects, TActions[]>();
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 type TldrProps = {
   message: string;
-  cta: {
+  cta?: {
     label: string;
     href: string;
   };
@@ -23,20 +23,23 @@ const Tldr = ({ message, cta }: TldrProps) => {
           <div className="text-sm text-teal-600">
             <p>{message}</p>
           </div>
-          <div className="mt-4">
-            <div className="-mx-2 -my-1.5 flex">
-              <Link
-                passHref
-                href={cta.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded bg-teal-100 px-2 py-1.5 text-xs font-medium text-teal-700 hover:bg-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-teal-50"
-              >
-                <span className="mr-1">{cta.label}</span>
-                <span aria-hidden="true"> &rarr;</span>
-              </Link>
+
+          {cta && (
+            <div className="mt-4">
+              <div className="-mx-2 -my-1.5 flex">
+                <Link
+                  passHref
+                  href={cta.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded bg-teal-100 px-2 py-1.5 text-xs font-medium text-teal-700 hover:bg-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-teal-50"
+                >
+                  <span className="mr-1">{cta.label}</span>
+                  <span aria-hidden="true"> &rarr;</span>
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

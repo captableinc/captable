@@ -22,7 +22,7 @@ type EmptyStateProps = {
 const EmptyState = ({
   icon,
   title,
-  bordered = false,
+  bordered = true,
   subtitle,
   children,
 }: EmptyStateProps) => {
@@ -32,7 +32,7 @@ const EmptyState = ({
         <div
           className={cn(
             bordered && "rounded-xl border",
-            "border bg-white px-6 shadow-sm",
+            "bg-white px-6 shadow-sm",
           )}
         >
           <div className="mx-auto w-full max-w-2xl py-16 text-center">

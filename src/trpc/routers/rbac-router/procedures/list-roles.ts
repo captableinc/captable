@@ -12,7 +12,7 @@ const humanizedDefaultRoles: Record<Exclude<Roles, "CUSTOM">, string> = {
 const defaultRoleNames = Object.values(humanizedDefaultRoles);
 const defaultRolesList = defaultRoleNames.map((name) => ({
   name,
-  isCustom: false,
+  type: "default" as const,
 }));
 
 export const listRolesProcedure = withAccessControl

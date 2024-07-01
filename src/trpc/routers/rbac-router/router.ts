@@ -1,6 +1,6 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
-import { getRolesProcedure } from "./procedures/get-roles";
+import { getPermissionsProcedure } from "./procedures/get-permissions";
 
 export const rbacRouter = createTRPCRouter({
-  getRoles: getRolesProcedure,
+  getPermissions: getPermissionsProcedure,
 });

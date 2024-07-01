@@ -7,14 +7,14 @@ export interface useAllowedOptions {
 }
 
 export function useAllowed({ action, subject }: useAllowedOptions) {
-  const { data } = api.rbac.getRoles.useQuery();
+  const { data } = api.rbac.getPermissions.useQuery();
 
-  const roles = data?.roles ?? new Map<TSubjects, TActions[]>();
+  const permissions = data?.permissions ?? new Map<TSubjects, TActions[]>();
 
-  const hasSubject = roles.has(subject);
+  const hasSubject = permissions.has(subject);
   const hasAction =
-    (roles.get(subject)?.includes(action) ?? false) ||
-    (roles.get(subject)?.includes("*") ?? false);
+    (permissions.get(subject)?.includes(action) ?? false) ||
+    (permissions.get(subject)?.includes("*") ?? false);
 
   const isAllowed = hasSubject && hasAction;
 

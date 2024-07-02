@@ -17,7 +17,7 @@ const ErrorContent = {
   },
 };
 
-export const ErrorResponses = {
+export const ApiErrorResponses = {
   400: {
     content: ErrorContent,
     description: "Bad Request",

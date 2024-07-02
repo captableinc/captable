@@ -1,6 +1,7 @@
 import { verifySecureHash } from "@/lib/crypto";
 import { ApiError } from "@/server/api/error";
 import { db } from "@/server/db";
+import type { Company, Member, User } from "@prisma/client";
 import type { Context } from "hono";
 
 export const withMemberAuth = async (c: Context) => {
@@ -26,12 +27,12 @@ export const withCompanyAuth = async (c: Context) => {
 
   const bearerToken = await getBearerToken(c);
   const user = await verifyBearerToken(bearerToken);
-  const member = await db.member.findFirst({
+  const member = (await db.member.findFirst({
     where: {
       userId: user.id,
       companyId: id,
     },
-  });
+  })) as Member;
 
   if (!member) {
     throw new ApiError({
@@ -40,9 +41,9 @@ export const withCompanyAuth = async (c: Context) => {
     });
   }
 
-  const company = await db.company.findUnique({
+  const company = (await db.company.findUnique({
     where: { id },
-  });
+  })) as Company;
 
   if (!company) {
     throw new ApiError({
@@ -118,5 +119,5 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
     data: { lastUsed: new Date() },
   });
 
-  return apiKey.user;
+  return apiKey.user as User;
 };

@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ApiCompanySchema } from "@/server/api/schema/company";
+import { ApiDeleteResponseSchema } from "@/server/api/schema/delete";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
 import type { Context } from "hono";
@@ -17,29 +17,42 @@ export const RequestSchema = z.object({
         in: "path",
       },
 
-      example: "clxwbok580000i7nge8nm1ry0",
+      example: "cly405ci60000i7ngbiel3m5l",
+    }),
+
+  securityId: z
+    .string()
+    .cuid()
+    .openapi({
+      description: "Security ID",
+      param: {
+        name: "securityId",
+        in: "path",
+      },
+
+      example: "cly43q7220000i7nggrlj2a8g",
     }),
 });
 
 const route = createRoute({
-  method: "get",
-  path: "/v1/companies/:id",
+  method: "delete",
+  path: "/v1/companies/:id/securities/:securityId",
   request: { params: RequestSchema },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: ApiCompanySchema,
+          schema: ApiDeleteResponseSchema,
         },
       },
-      description: "Get a company by ID",
+      description: "Delete a security by ID",
     },
 
     ...ApiErrorResponses,
   },
-} as const);
+});
 
-const getOne = (app: PublicAPI) => {
+const deleteOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = (await withCompanyAuth(c)) as { company: Company };
 
@@ -49,13 +62,16 @@ const getOne = (app: PublicAPI) => {
         message: "Company not found",
       });
     }
-    const response = {
-      ...company,
-      logo: company.logo ?? undefined,
-      website: company.website ?? undefined,
-    };
-    return c.json(response, 200);
+
+    // TODO: Implement the logic to delete security by ID
+    return c.json(
+      {
+        success: true,
+        message: "Resource successfully deleted",
+      },
+      200,
+    );
   });
 };
 
-export default getOne;
+export default deleteOne;

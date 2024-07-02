@@ -1,5 +1,5 @@
 import { withMemberAuth } from "@/server/api/auth";
-import { ErrorResponses } from "@/server/api/error";
+import { ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { ApiCompanySchema } from "@/server/api/schema/company";
 import { db } from "@/server/db";
@@ -19,12 +19,13 @@ const route = createRoute({
           }),
         },
       },
-      description: "List companies",
+      description: "List of companies",
     },
 
-    ...ErrorResponses,
+    ...ApiErrorResponses,
   },
 });
+
 const getMany = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { membership } = await withMemberAuth(c);

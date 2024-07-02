@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ApiCompanySchema } from "@/server/api/schema/company";
+import { ApiSecuritiesSchema } from "@/server/api/schema/securities";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
 import type { Context } from "hono";
@@ -17,27 +17,40 @@ export const RequestSchema = z.object({
         in: "path",
       },
 
-      example: "clxwbok580000i7nge8nm1ry0",
+      example: "cly405ci60000i7ngbiel3m5l",
+    }),
+
+  securityId: z
+    .string()
+    .cuid()
+    .openapi({
+      description: "Security ID",
+      param: {
+        name: "securityId",
+        in: "path",
+      },
+
+      example: "cly43q7220000i7nggrlj2a8g",
     }),
 });
 
 const route = createRoute({
   method: "get",
-  path: "/v1/companies/:id",
+  path: "/v1/companies/:id/securities/:securityId",
   request: { params: RequestSchema },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: ApiCompanySchema,
+          schema: ApiSecuritiesSchema,
         },
       },
-      description: "Get a company by ID",
+      description: "Get a security by ID",
     },
 
     ...ApiErrorResponses,
   },
-} as const);
+});
 
 const getOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
@@ -49,12 +62,9 @@ const getOne = (app: PublicAPI) => {
         message: "Company not found",
       });
     }
-    const response = {
-      ...company,
-      logo: company.logo ?? undefined,
-      website: company.website ?? undefined,
-    };
-    return c.json(response, 200);
+
+    // TODO: Implement the logic to get security by ID
+    return c.json(company, 200);
   });
 };
 

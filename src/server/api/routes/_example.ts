@@ -1,4 +1,4 @@
-import { ErrorResponses } from "@/server/api/error";
+import { ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
@@ -41,7 +41,7 @@ const route = createRoute({
       description: "Get a company by ID",
     },
 
-    ...ErrorResponses,
+    ...ApiErrorResponses,
   },
 });
 const getOne = (app: PublicAPI) => {

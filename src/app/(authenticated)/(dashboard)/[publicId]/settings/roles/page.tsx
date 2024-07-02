@@ -14,11 +14,7 @@ export default async function RolesPage() {
         description="Manage your roles."
         action={
           <Allow action="create" subject="roles">
-            {/* biome-ignore lint/suspicious/useAwait: <explanation> */}
-            {async () => {
-              "use server";
-              return <CreateRbacModal />;
-            }}
+            <CreateRbacModal />
           </Allow>
         }
       />

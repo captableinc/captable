@@ -4,18 +4,15 @@ import { useAllowed, type useAllowedOptions } from "@/hooks/use-allowed";
 import { type ReactNode, Suspense } from "react";
 
 interface AllowProps extends useAllowedOptions {
-  children: ReactNode | ((authorized: boolean) => ReactNode);
+  children: ReactNode;
+  not?: ReactNode;
 }
 
-export const Allow = ({ children, ...rest }: AllowProps) => {
+export const Allow = ({ children, not, ...rest }: AllowProps) => {
   const { isAllowed } = useAllowed({ ...rest });
 
   if (isAllowed) {
-    if (typeof children === "function") {
-      return <Suspense>{children(isAllowed)}</Suspense>;
-    }
     return children;
   }
-
-  return null;
+  return not ? not : null;
 };

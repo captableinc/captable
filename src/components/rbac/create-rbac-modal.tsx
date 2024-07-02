@@ -2,11 +2,13 @@
 
 import { ACTIONS, SUBJECTS, type TActions } from "@/constants/rbac";
 
+import { api } from "@/trpc/react";
 import {
   type TypeZodCreateRoleMutationSchema,
   ZodCreateRoleMutationSchema,
 } from "@/trpc/routers/rbac-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Modal from "../common/modal";
 import { Button } from "../ui/button";
@@ -50,6 +52,13 @@ export const defaultInputPermissionInputs = SUBJECTS.reduce<
 }, {});
 
 export function CreateRbacModal() {
+  const router = useRouter();
+  const { mutateAsync: createRole } = api.rbac.createRole.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+
   const form = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,8 +67,8 @@ export function CreateRbacModal() {
     },
   });
 
-  const onSubmit = (data: TFormSchema) => {
-    console.log({ data });
+  const onSubmit = async (data: TFormSchema) => {
+    await createRole(data);
   };
   return (
     <Modal

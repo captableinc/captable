@@ -1,13 +1,13 @@
 "use client";
 
-import { ACTIONS, SUBJECTS } from "@/constants/rbac";
+import { ACTIONS, SUBJECTS, type TActions } from "@/constants/rbac";
+
 import {
-  defaultInputPermissionInputs,
-  permissionInputSchema,
-} from "@/lib/rbac/schema";
+  type TypeZodCreateRoleMutationSchema,
+  ZodCreateRoleMutationSchema,
+} from "@/trpc/routers/rbac-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import Modal from "../common/modal";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -29,12 +29,25 @@ import {
   TableRow,
 } from "../ui/table";
 
-const formSchema = z.object({
-  name: z.string().min(1),
-  permissions: permissionInputSchema,
-});
+const formSchema = ZodCreateRoleMutationSchema;
+type TFormSchema = TypeZodCreateRoleMutationSchema;
 
-type TFormSchema = z.infer<typeof formSchema>;
+export const defaultInputPermissionInputs = SUBJECTS.reduce<
+  TFormSchema["permissions"]
+>((prev, curr) => {
+  const actions = ACTIONS.reduce<Partial<Record<TActions, boolean>>>(
+    (prev, curr) => {
+      prev[curr] = false;
+
+      return prev;
+    },
+    {},
+  );
+
+  prev[curr] = actions;
+
+  return prev;
+}, {});
 
 export function CreateRbacModal() {
   const form = useForm<TFormSchema>({

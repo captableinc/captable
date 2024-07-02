@@ -156,6 +156,7 @@ model Company {
   dataRooms        DataRoom[]
   eSignAudits      EsignAudit[]
   billingCustomers BillingCustomer[]
+  Role             Role[]
 
   @@unique([publicId])
 }
@@ -209,10 +210,16 @@ model Member {
 }
 
 model Role {
-  id          String   @id @default(cuid())
-  name        String
+  id   String @id @default(cuid())
+  name String
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
   permissions Json[]
   member      Member[]
+
+  @@index([companyId])
 }
 
 enum StakeholderTypeEnum {

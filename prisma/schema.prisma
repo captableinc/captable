@@ -191,6 +191,9 @@ model Member {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  customRoleId String?
+  customRole   Role?   @relation(fields: [customRoleId], references: [id])
+
   documentReceived EsignRecipient[]
   documents        Document[]
   templates        Template[]
@@ -202,6 +205,14 @@ model Member {
   @@index([companyId])
   @@index([status])
   @@index([userId])
+  @@index([customRoleId])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String
+  permissions Json[]
+  member      Member[]
 }
 
 enum StakeholderTypeEnum {

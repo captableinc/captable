@@ -2,8 +2,8 @@ import { defaultPermissions } from "@/constants/rbac";
 import type { Roles } from "@/prisma/enums";
 import { checkMembership, withServerComponentSession } from "@/server/auth";
 import { type TPrismaOrTransaction, db } from "@/server/db";
-import { api } from "@/trpc/server";
 import type { Session } from "next-auth";
+import { cache } from "react";
 import { RBAC, type addPolicyOption } from ".";
 import { Err, Ok, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
@@ -56,23 +56,30 @@ export async function getPermissions({ db, session }: getPermissionsOptions) {
   return Ok({ permissions, membership });
 }
 
-export const checkPageRole = async (policies: addPolicyOption) => {
-  const rbac = new RBAC();
-  rbac.addPolicies(policies);
-
+export const getServerPermissions = cache(async () => {
   const session = await withServerComponentSession();
-
-  const { err: membershipError, val: membership } =
-    await checkAccessControlMembership({
-      session,
-      tx: db,
-    });
-
-  if (membershipError) {
-    return Err(membershipError);
+  const { err, val } = await getPermissions({ session, db });
+  if (err) {
+    throw err;
   }
 
-  const permissions = getPermissions(membership.role);
+  return val;
+});
 
-  const { err, val } = rbac.enforce(permissions);
+export const checkPageRoleAccess = async (policies: addPolicyOption) => {
+  const rbac = new RBAC();
+
+  rbac.addPolicies(policies);
+
+  const { permissions } = await getServerPermissions();
+
+  const { val, err } = rbac.enforce(permissions);
+
+  if (err) {
+    throw err;
+  }
+
+  const isAllowed = val.valid;
+
+  return { isAllowed };
 };

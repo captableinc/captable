@@ -5,8 +5,9 @@ import { withServerComponentSession } from "@/server/auth";
 import { getCompanyList } from "@/server/company";
 import { redirect } from "next/navigation";
 import "@/styles/hint.css";
+import { RBAC } from "@/lib/rbac";
+import { getServerPermissions } from "@/lib/rbac/access-control";
 import { RolesProvider } from "@/providers/roles-provider";
-import { api } from "@/trpc/server";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
@@ -23,12 +24,18 @@ const DashboardLayout = async ({
     redirect(`/${user.companyPublicId}`);
   }
 
-  const [companies, roles] = await Promise.all([
+  const [companies, permissionsData] = await Promise.all([
     getCompanyList(user.id),
-    api.rbac.getPermissions.query(),
+    getServerPermissions(),
   ]);
+
+  const permissions = RBAC.normalizePermissionsMap(permissionsData.permissions);
   return (
-    <RolesProvider initialData={roles}>
+    <RolesProvider
+      initialData={{
+        permissions,
+      }}
+    >
       <div className="flex min-h-screen bg-gray-50">
         <aside className="sticky top-0 hidden min-h-full w-64 flex-shrink-0 flex-col lg:flex lg:border-r">
           <SideBar companies={companies} publicId={publicId} />

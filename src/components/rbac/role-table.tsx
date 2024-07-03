@@ -15,7 +15,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { use, useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -34,10 +34,11 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-type Role = RouterOutputs["rbac"]["listRoles"]["rolesList"][number];
+type RoleOutput = RouterOutputs["rbac"]["listRoles"];
+type Role = RoleOutput["rolesList"][number];
 
 interface RoleTableProps {
-  roles: Role[];
+  roles: Promise<RoleOutput>;
 }
 
 export const columns: ColumnDef<Role>[] = [
@@ -116,14 +117,15 @@ export const columns: ColumnDef<Role>[] = [
   },
 ];
 
-export function RoleTable({ roles }: RoleTableProps) {
+export function RoleTable({ roles: rolesPromise }: RoleTableProps) {
+  const roles = use(rolesPromise);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
-    data: roles,
+    data: roles.rolesList,
     columns: columns,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,

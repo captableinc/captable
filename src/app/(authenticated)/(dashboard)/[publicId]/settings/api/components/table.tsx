@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 
+import { ApiKeyAlertDialog } from "@/components/apiKey/apiKey-alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 interface ApiKey {
   keyId: string;
@@ -30,6 +33,21 @@ interface ApiKey {
 
 const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
   const router = useRouter();
+
+  const deleteMutation = api.apiKey.delete.useMutation({
+    onSuccess: ({ message }) => {
+      toast.success(message);
+    },
+
+    onError: (error) => {
+      console.error(error);
+      toast.error("An error occurred while creating the API key.");
+    },
+
+    onSettled: () => {
+      router.refresh();
+    },
+  });
 
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
@@ -68,11 +86,9 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
                       <DropdownMenuItem onClick={() => {}}>
                         Rotate key
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-rose-600"
-                        onClick={() => {}}
-                      >
-                        Delete key
+
+                      <DropdownMenuItem onClick={() => {}}>
+                        <ApiKeyAlertDialog />
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

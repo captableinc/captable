@@ -20,6 +20,7 @@ import { type TPrismaOrTransaction, db } from "@/server/db";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import { cache } from "react";
 import { getUserByEmail, getUserById } from "./user";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -292,10 +293,15 @@ export const authOptions: NextAuthOptions = {
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
+
 export const getServerAuthSession = () => getServerSession(authOptions);
 
+export const getServerComponentAuthSession = cache(() =>
+  getServerAuthSession(),
+);
+
 export const withServerSession = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await getServerAuthSession();
 
   if (!session) {
     throw new Error("session not found");
@@ -303,6 +309,16 @@ export const withServerSession = async () => {
 
   return session;
 };
+
+export const withServerComponentSession = cache(async () => {
+  const session = await getServerComponentAuthSession();
+
+  if (!session) {
+    throw new Error("session not found");
+  }
+
+  return session;
+});
 
 export interface checkMembershipOptions {
   session: Session;

@@ -78,20 +78,19 @@ const withAccessControlTrpcContext = async ({
     rbac.addPolicies(meta.policies);
   }
 
-  const { err: membershipError, val: membership } =
-    await checkAccessControlMembership({
-      session: ctx.session,
-      tx: ctx.db,
-    });
+  const { err: permissionError, val: permission } = await getPermissions({
+    db: ctx.db,
+    session: ctx.session,
+  });
 
-  if (membershipError) {
+  if (permissionError) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
-      message: membershipError.message,
+      message: permissionError.message,
     });
   }
 
-  const permissions = getPermissions(membership.role);
+  const { permissions, membership } = permission;
 
   const { err, val } = rbac.enforce(permissions);
 

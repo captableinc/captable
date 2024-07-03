@@ -5,7 +5,7 @@ import { type TPrismaOrTransaction, db } from "@/server/db";
 import { api } from "@/trpc/server";
 import type { Session } from "next-auth";
 import { RBAC, type addPolicyOption } from ".";
-import { Err, wrap } from "../error";
+import { Err, Ok, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
 
 export interface checkMembershipOptions {
@@ -28,11 +28,32 @@ export async function checkAccessControlMembership({
   );
 }
 
-export function getPermissions(role: Roles) {
+export function getPermissionsForRole(role: Roles) {
   if (role !== "CUSTOM") {
     return defaultPermissions[role];
   }
   return defaultPermissions.SUPER_USER;
+}
+
+interface getPermissionsOptions {
+  session: Session;
+  db: TPrismaOrTransaction;
+}
+
+export async function getPermissions({ db, session }: getPermissionsOptions) {
+  const { err: membershipError, val: membership } =
+    await checkAccessControlMembership({
+      session,
+      tx: db,
+    });
+
+  if (membershipError) {
+    return Err(membershipError);
+  }
+
+  const permissions = getPermissionsForRole(membership.role);
+
+  return Ok({ permissions, membership });
 }
 
 export const checkPageRole = async (policies: addPolicyOption) => {

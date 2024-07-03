@@ -1,27 +1,6 @@
 import { withAccessControl } from "@/trpc/api/trpc";
 
-import { permissionSchema } from "@/lib/rbac/schema";
-import type { Roles } from "@/prisma/enums";
-
-const humanizedDefaultRoles: Record<Exclude<Roles, "CUSTOM">, string> = {
-  BILLING: "Billing",
-  EMPLOYEE: "Employee",
-  INVESTOR: "Investor",
-  SUPER_USER: "Super User",
-};
-
-const defaultRoleNames = Object.values(humanizedDefaultRoles);
-const defaultRolesList: RoleList[] = defaultRoleNames.map((name) => ({
-  name,
-  type: "default",
-  id: `default-${name}`,
-}));
-
-type RoleList = {
-  id: string;
-  type: "default" | "custom";
-  name: string;
-};
+import { type RoleList, defaultRolesList } from "@/constants/rbac";
 
 export const listRolesProcedure = withAccessControl
   .meta({

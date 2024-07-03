@@ -21,7 +21,9 @@ export default async function RolesPage() {
 
       <Card className="mt-3">
         <div className="p-6">
-          <RoleTable roles={data.rolesList} />
+          <Allow action="read" subject="roles">
+            <RoleTable roles={data.rolesList} />
+          </Allow>
         </div>
       </Card>
     </div>

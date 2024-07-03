@@ -336,6 +336,7 @@ export async function checkMembership({ session, tx }: checkMembershipOptions) {
       id: true,
       companyId: true,
       role: true,
+      customRoleId: true,
     },
   });
 

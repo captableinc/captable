@@ -4,9 +4,11 @@ import { checkMembership, withServerComponentSession } from "@/server/auth";
 import { type TPrismaOrTransaction, db } from "@/server/db";
 import type { Session } from "next-auth";
 import { cache } from "react";
+import { z } from "zod";
 import { RBAC, type addPolicyOption } from ".";
 import { Err, Ok, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
+import { permissionSchema } from "./schema";
 
 export interface checkMembershipOptions {
   session: Session;
@@ -28,11 +30,63 @@ export async function checkAccessControlMembership({
   );
 }
 
-export function getPermissionsForRole(role: Roles) {
+interface getPermissionsForRoleOptions {
+  role: Roles;
+  tx: TPrismaOrTransaction;
+  companyId: string;
+  customRoleId: string | null;
+}
+
+class GetPermissionForRoleError extends BaseError {
+  public readonly name = "GetPermissionForRoleError";
+  public readonly retry = false;
+}
+
+export async function getPermissionsForRole({
+  role,
+  companyId,
+  customRoleId,
+  tx,
+}: getPermissionsForRoleOptions) {
   if (role !== "CUSTOM") {
-    return defaultPermissions[role];
+    return Ok(defaultPermissions[role]);
   }
-  return defaultPermissions.SUPER_USER;
+
+  if (!customRoleId) {
+    return Err(
+      new GetPermissionForRoleError({ message: "customRoleId not found" }),
+    );
+  }
+
+  const customRole = await tx.role.findFirst({
+    where: {
+      companyId,
+      id: customRoleId,
+    },
+    select: {
+      permissions: true,
+    },
+  });
+
+  if (!customRole) {
+    return Err(
+      new GetPermissionForRoleError({ message: "custom role not found" }),
+    );
+  }
+
+  const { success, data } = z
+    .array(permissionSchema)
+    .safeParse(customRole.permissions);
+
+  if (!success) {
+    return Err(
+      new GetPermissionForRoleError({
+        message: "error passing permission schema",
+      }),
+    );
+  }
+
+  return Ok(data);
 }
 
 interface getPermissionsOptions {
@@ -51,7 +105,16 @@ export async function getPermissions({ db, session }: getPermissionsOptions) {
     return Err(membershipError);
   }
 
-  const permissions = getPermissionsForRole(membership.role);
+  const { err, val: permissions } = await getPermissionsForRole({
+    role: membership.role,
+    tx: db,
+    companyId: membership.companyId,
+    customRoleId: membership.customRoleId,
+  });
+
+  if (err) {
+    return Err(err);
+  }
 
   return Ok({ permissions, membership });
 }

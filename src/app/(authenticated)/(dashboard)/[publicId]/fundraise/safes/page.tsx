@@ -3,7 +3,7 @@ import { PageLayout } from "@/components/dashboard/page-layout";
 import { SafeActions } from "@/components/safe/safe-actions";
 import { SafeTable } from "@/components/safe/safe-table";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiSafeFill } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const SafePage = async () => {
   const safes = await api.safe.getSafes.query();
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
   const user = session.user;
 
   if (!safes?.data?.length) {

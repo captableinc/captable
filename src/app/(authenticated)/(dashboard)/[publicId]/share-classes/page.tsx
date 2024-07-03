@@ -1,6 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { RiPieChart2Line } from "@remixicon/react";
@@ -19,7 +19,7 @@ const getShareClasses = async (companyId: string) => {
 };
 
 const SharesPage = async () => {
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
   const companyId = session?.user?.companyId;
   let shareClasses: ShareClassMutationType[] = [];
 

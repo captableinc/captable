@@ -2,10 +2,10 @@ import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { AddEsignModal } from "@/components/esign/add-esign-modal";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiUploadCloudLine } from "@remixicon/react";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { ESignTable } from "./components/table";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 const EsignDocumentPage = async () => {
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
   const { documents } = await api.template.all.query();
 
   if (documents.length === 0) {

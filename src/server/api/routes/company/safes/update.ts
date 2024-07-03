@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ApiSecuritiesSchema } from "@/server/api/schema/securities";
+import { ApiSafesSchema } from "@/server/api/schema/safes";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
 import type { Context } from "hono";
@@ -20,13 +20,13 @@ export const RequestSchema = z.object({
       example: "cly405ci60000i7ngbiel3m5l",
     }),
 
-  securityId: z
+  safeId: z
     .string()
     .cuid()
     .openapi({
-      description: "Security ID",
+      description: "SAFE ID",
       param: {
-        name: "securityId",
+        name: "safeId",
         in: "path",
       },
 
@@ -35,24 +35,24 @@ export const RequestSchema = z.object({
 });
 
 const route = createRoute({
-  method: "get",
-  path: "/v1/companies/:id/securities/:securityId",
+  method: "put",
+  path: "/v1/companies/:id/safes/:safeId",
   request: { params: RequestSchema },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: ApiSecuritiesSchema,
+          schema: ApiSafesSchema,
         },
       },
-      description: "Get a security by ID",
+      description: "Create a SAFE",
     },
 
     ...ApiErrorResponses,
   },
 });
 
-const getOne = (app: PublicAPI) => {
+const update = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = (await withCompanyAuth(c)) as { company: Company };
 
@@ -63,9 +63,9 @@ const getOne = (app: PublicAPI) => {
       });
     }
 
-    // TODO: Implement the logic to get security by ID
+    // TODO: Implement the logic to update a SAFE
     return c.json(company, 200);
   });
 };
 
-export default getOne;
+export default update;

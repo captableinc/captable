@@ -5,7 +5,7 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-const securitiesRoutes = (api: PublicAPI) => {
+const safeRoutes = (api: PublicAPI) => {
   update(api);
   create(api);
   getOne(api);
@@ -13,4 +13,4 @@ const securitiesRoutes = (api: PublicAPI) => {
   deleteOne(api);
 };
 
-export default securitiesRoutes;
+export default safeRoutes;

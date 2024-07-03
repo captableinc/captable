@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ApiSecuritiesSchema } from "@/server/api/schema/securities";
+import { ApiDeleteResponseSchema } from "@/server/api/schema/delete";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
 import type { Context } from "hono";
@@ -19,27 +19,40 @@ export const RequestSchema = z.object({
 
       example: "cly405ci60000i7ngbiel3m5l",
     }),
+
+  safeId: z
+    .string()
+    .cuid()
+    .openapi({
+      description: "Security ID",
+      param: {
+        name: "safeId",
+        in: "path",
+      },
+
+      example: "cly43q7220000i7nggrlj2a8g",
+    }),
 });
 
 const route = createRoute({
-  method: "post",
-  path: "/v1/companies/:id/securities",
+  method: "delete",
+  path: "/v1/companies/:id/safes/:safeId",
   request: { params: RequestSchema },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: ApiSecuritiesSchema,
+          schema: ApiDeleteResponseSchema,
         },
       },
-      description: "Create a security",
+      description: "Delete a SAFE by ID",
     },
 
     ...ApiErrorResponses,
   },
 });
 
-const create = (app: PublicAPI) => {
+const deleteOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = (await withCompanyAuth(c)) as { company: Company };
 
@@ -50,9 +63,15 @@ const create = (app: PublicAPI) => {
       });
     }
 
-    // TODO: Implement the logic to create a security
-    return c.json(company, 200);
+    // TODO: Implement the logic to delete SAFE by ID
+    return c.json(
+      {
+        success: true,
+        message: "Resource successfully deleted",
+      },
+      200,
+    );
   });
 };
 
-export default create;
+export default deleteOne;

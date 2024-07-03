@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ApiSecuritiesSchema } from "@/server/api/schema/securities";
+import { ApiSafesSchema } from "@/server/api/schema/safes";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
 import type { Context } from "hono";
@@ -19,40 +19,27 @@ export const RequestSchema = z.object({
 
       example: "cly405ci60000i7ngbiel3m5l",
     }),
-
-  securityId: z
-    .string()
-    .cuid()
-    .openapi({
-      description: "Security ID",
-      param: {
-        name: "securityId",
-        in: "path",
-      },
-
-      example: "cly43q7220000i7nggrlj2a8g",
-    }),
 });
 
 const route = createRoute({
-  method: "put",
-  path: "/v1/companies/:id/securities/:securityId",
+  method: "post",
+  path: "/v1/companies/:id/safes",
   request: { params: RequestSchema },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: ApiSecuritiesSchema,
+          schema: ApiSafesSchema,
         },
       },
-      description: "Create a security",
+      description: "Create a SAFE",
     },
 
     ...ApiErrorResponses,
   },
 });
 
-const update = (app: PublicAPI) => {
+const create = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = (await withCompanyAuth(c)) as { company: Company };
 
@@ -63,9 +50,9 @@ const update = (app: PublicAPI) => {
       });
     }
 
-    // TODO: Implement the logic to update a security
+    // TODO: Implement the logic to create a SAFE
     return c.json(company, 200);
   });
 };
 
-export default update;
+export default create;

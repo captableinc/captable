@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ApiErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ApiSecuritiesSchema } from "@/server/api/schema/securities";
+import { ApiSafesSchema } from "@/server/api/schema/safes";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
 import type { Context } from "hono";
@@ -11,7 +11,7 @@ export const RequestSchema = z.object({
     .string()
     .cuid()
     .openapi({
-      description: "Security ID",
+      description: "SAFE ID",
       param: {
         name: "id",
         in: "path",
@@ -23,16 +23,16 @@ export const RequestSchema = z.object({
 
 const route = createRoute({
   method: "get",
-  path: "/v1/companies/:id/securities",
+  path: "/v1/companies/:id/safes",
   request: { params: RequestSchema },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: ApiSecuritiesSchema,
+          schema: ApiSafesSchema,
         },
       },
-      description: "Get a security by ID",
+      description: "Get a SAFE by ID",
     },
 
     ...ApiErrorResponses,
@@ -50,7 +50,7 @@ const getMany = (app: PublicAPI) => {
       });
     }
 
-    // TODO: Implement the logic to get many securities
+    // TODO: Implement the logic to get many safes
     return c.json(company, 200);
   });
 };

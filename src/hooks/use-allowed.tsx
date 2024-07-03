@@ -1,15 +1,23 @@
 import type { TActions, TSubjects } from "@/constants/rbac";
 import { api } from "@/trpc/react";
+import type { RouterOutputs } from "@/trpc/shared";
 
 export interface useAllowedOptions {
   subject: TSubjects;
   action: TActions;
 }
 
-export function useAllowed({ action, subject }: useAllowedOptions) {
-  const { data } = api.rbac.getPermissions.useQuery(undefined, {
+export type initialData = RouterOutputs["rbac"]["getPermissions"];
+
+export const usePermission = (initialData?: initialData) => {
+  return api.rbac.getPermissions.useQuery(undefined, {
     refetchOnWindowFocus: false,
+    initialData,
   });
+};
+
+export function useAllowed({ action, subject }: useAllowedOptions) {
+  const { data } = usePermission();
 
   const permissions = data?.permissions ?? new Map<TSubjects, TActions[]>();
 

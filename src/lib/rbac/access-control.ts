@@ -1,9 +1,11 @@
 import { defaultPermissions } from "@/constants/rbac";
 import type { Roles } from "@/prisma/enums";
-import { checkMembership } from "@/server/auth";
-import type { TPrismaOrTransaction } from "@/server/db";
+import { checkMembership, withServerComponentSession } from "@/server/auth";
+import { type TPrismaOrTransaction, db } from "@/server/db";
+import { api } from "@/trpc/server";
 import type { Session } from "next-auth";
-import { wrap } from "../error";
+import { RBAC, type addPolicyOption } from ".";
+import { Err, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
 
 export interface checkMembershipOptions {
@@ -32,3 +34,24 @@ export function getPermissions(role: Roles) {
   }
   return defaultPermissions.SUPER_USER;
 }
+
+export const checkPageRole = async (policies: addPolicyOption) => {
+  const rbac = new RBAC();
+  rbac.addPolicies(policies);
+
+  const session = await withServerComponentSession();
+
+  const { err: membershipError, val: membership } =
+    await checkAccessControlMembership({
+      session,
+      tx: db,
+    });
+
+  if (membershipError) {
+    return Err(membershipError);
+  }
+
+  const permissions = getPermissions(membership.role);
+
+  const { err, val } = rbac.enforce(permissions);
+};

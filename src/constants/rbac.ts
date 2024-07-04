@@ -1,3 +1,4 @@
+import { invariant } from "@/lib/error";
 import type { TPermission } from "@/lib/rbac/schema";
 import type { Roles } from "@/prisma/enums";
 
@@ -9,8 +10,7 @@ export const SUBJECTS = ["billing", "members", "stakeholder", "roles"] as const;
 export type TSubjects = (typeof SUBJECTS)[number];
 export type TActions = (typeof ACTIONS)[number];
 
-const generateDefaultId = (name: Roles): `default-${Roles}` =>
-  `default-${name}`;
+const generateDefaultId = (name: DefaultRoles) => `default-${name}`;
 export interface RoleList {
   id: string;
   type: "default" | "custom";
@@ -56,3 +56,18 @@ export const defaultRolesIdMap = defaultRoleKeys.reduce<
   prev[key] = curr;
   return prev;
 }, {});
+
+interface getRoleIdOption {
+  role: Roles;
+  customRoleId: string | null;
+}
+
+export const getRoleId = ({ role, customRoleId }: getRoleIdOption) => {
+  if (role !== "CUSTOM") {
+    return generateDefaultId(role);
+  }
+
+  invariant(customRoleId, "custom role id not found");
+
+  return customRoleId;
+};

@@ -44,6 +44,7 @@ export const AddTeamMemberDropdownMenu = ({
                     loginEmail: "",
                     title: "",
                     workEmail: "",
+                    roleId: "",
                   },
                   roles,
                 });

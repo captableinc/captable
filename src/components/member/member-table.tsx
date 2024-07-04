@@ -30,6 +30,7 @@ import {
 import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { getRoleId } from "@/constants/rbac";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
@@ -240,7 +241,10 @@ export const columns: ColumnDef<Member[number]>[] = [
                       loginEmail: "",
                       title: member.title ?? "",
                       workEmail: member.workEmail ?? "",
-                      roleId: "",
+                      roleId: getRoleId({
+                        role: member.role,
+                        customRoleId: member.customRoleId,
+                      }),
                     },
                     // @ts-expect-error
                     roles: table.options.meta.roles,

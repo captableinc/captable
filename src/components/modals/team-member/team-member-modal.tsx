@@ -90,6 +90,7 @@ export const TeamMemberModal = ({
       loginEmail: member.loginEmail ?? "",
       workEmail: member.workEmail ?? "",
       title: member.title ?? "",
+      roleId: member.roleId ?? "",
     },
   });
 

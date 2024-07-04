@@ -1,18 +1,27 @@
 import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
+import { getRoleById } from "@/lib/rbac/access-control";
 import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
-import { checkMembership } from "@/server/auth";
 import { generateInviteToken, generateMemberIdentifier } from "@/server/member";
-import { withAuth } from "@/trpc/api/trpc";
+import { withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { ZodInviteMemberMutationSchema } from "../schema";
 
-export const inviteMemberProcedure = withAuth
+export const inviteMemberProcedure = withAccessControl
   .input(ZodInviteMemberMutationSchema)
+  .meta({
+    policies: {
+      members: { allow: ["create"] },
+    },
+  })
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
-    const { name, email, title } = input;
-    const { userAgent, requestIp, session } = ctx;
+    const { name, email, title, roleId } = input;
+    const {
+      userAgent,
+      requestIp,
+      membership: { companyId },
+    } = ctx;
 
     const { expires, memberInviteTokenHash } = await generateInviteToken();
 
@@ -21,8 +30,6 @@ export const inviteMemberProcedure = withAuth
 
     const { company, verificationToken } = await ctx.db.$transaction(
       async (tx) => {
-        const { companyId } = await checkMembership({ session, tx });
-
         const company = await tx.company.findFirstOrThrow({
           where: {
             id: companyId,
@@ -66,6 +73,8 @@ export const inviteMemberProcedure = withAuth
           });
         }
 
+        const role = await getRoleById({ id: roleId, tx });
+
         //  create member
         const member = await tx.member.upsert({
           create: {
@@ -75,12 +84,14 @@ export const inviteMemberProcedure = withAuth
             companyId,
             userId: invitedUser.id,
             status: "PENDING",
+            ...role,
           },
           update: {
             title,
             isOnboarded: false,
             lastAccessed: new Date(),
             status: "PENDING",
+            ...role,
           },
           where: {
             companyId_userId: {

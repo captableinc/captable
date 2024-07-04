@@ -1,56 +1,78 @@
+import { getRoleById } from "@/lib/rbac/access-control";
 import { Audit } from "@/server/audit";
-import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { withAccessControl } from "@/trpc/api/trpc";
 import { ZodUpdateMemberMutationSchema } from "../schema";
 
-export const updateMemberProcedure = withAuth
+export const updateMemberProcedure = withAccessControl
   .input(ZodUpdateMemberMutationSchema)
-  .mutation(async ({ ctx: { session, db, requestIp, userAgent }, input }) => {
-    const { memberId, name, ...rest } = input;
-    const user = session.user;
+  .meta({
+    policies: {
+      members: { allow: ["update"] },
+    },
+  })
+  .mutation(
+    async ({
+      ctx: { session, db, requestIp, userAgent, membership },
+      input,
+    }) => {
+      const { memberId, name, roleId, ...rest } = input;
+      const { companyId } = membership;
+      const user = session.user;
 
-    await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ tx, session });
+      await db.$transaction(async (tx) => {
+        const role =
+          typeof roleId === "string"
+            ? await getRoleById({ tx, id: roleId })
+            : undefined;
 
-      const member = await tx.member.update({
-        where: {
-          status: "ACTIVE",
-          id: memberId,
-          companyId,
-        },
-        data: {
-          ...rest,
-          user: {
-            update: {
-              name,
+        const member = await tx.member.update({
+          where: {
+            status: "ACTIVE",
+            id: memberId,
+            companyId,
+          },
+          data: {
+            ...rest,
+            ...(role && { role: role.role }),
+            ...(role?.customRoleId && {
+              customRole: {
+                connect: {
+                  id: role.customRoleId,
+                },
+              },
+            }),
+            user: {
+              update: {
+                name,
+              },
             },
           },
-        },
-        select: {
-          userId: true,
-          user: {
-            select: {
-              name: true,
+          select: {
+            userId: true,
+            user: {
+              select: {
+                name: true,
+              },
             },
           },
-        },
+        });
+
+        await Audit.create(
+          {
+            action: "member.updated",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              requestIp,
+              userAgent,
+            },
+            target: [{ type: "user", id: member.userId }],
+            summary: `${user.name} updated ${member.user?.name} details`,
+          },
+          tx,
+        );
       });
 
-      await Audit.create(
-        {
-          action: "member.updated",
-          companyId: user.companyId,
-          actor: { type: "user", id: user.id },
-          context: {
-            requestIp,
-            userAgent,
-          },
-          target: [{ type: "user", id: member.userId }],
-          summary: `${user.name} updated ${member.user?.name} details`,
-        },
-        tx,
-      );
-    });
-
-    return { success: true };
-  });
+      return { success: true };
+    },
+  );

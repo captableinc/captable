@@ -9,6 +9,8 @@ export const SUBJECTS = ["billing", "members", "stakeholder", "roles"] as const;
 export type TSubjects = (typeof SUBJECTS)[number];
 export type TActions = (typeof ACTIONS)[number];
 
+const generateDefaultId = (name: Roles): `default-${Roles}` =>
+  `default-${name}`;
 export interface RoleList {
   id: string;
   type: "default" | "custom";
@@ -34,9 +36,23 @@ const humanizedDefaultRoles: Record<Exclude<Roles, "CUSTOM">, string> = {
   SUPER_USER: "Super User",
 };
 
-const defaultRoleNames = Object.values(humanizedDefaultRoles);
-export const defaultRolesList: RoleList[] = defaultRoleNames.map((name) => ({
-  name,
-  type: "default",
-  id: `default-${name}`,
-}));
+const defaultRoleKeys = Object.keys(humanizedDefaultRoles) as DefaultRoles[];
+
+export const defaultRolesList: RoleList[] = defaultRoleKeys.map((item) => {
+  const key = item as keyof typeof humanizedDefaultRoles;
+  const name = humanizedDefaultRoles[key];
+
+  return {
+    name,
+    type: "default",
+    id: generateDefaultId(key),
+  };
+});
+
+export const defaultRolesIdMap = defaultRoleKeys.reduce<
+  Record<string, DefaultRoles>
+>((prev, curr) => {
+  const key = generateDefaultId(curr);
+  prev[key] = curr;
+  return prev;
+}, {});

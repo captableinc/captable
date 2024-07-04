@@ -2,8 +2,9 @@ import {
   type TActions,
   type TSubjects,
   defaultPermissions,
+  defaultRolesIdMap,
 } from "@/constants/rbac";
-import type { Roles } from "@/prisma/enums";
+import { Roles } from "@/prisma/enums";
 import { checkMembership, withServerComponentSession } from "@/server/auth";
 import { type TPrismaOrTransaction, db } from "@/server/db";
 import type { Session } from "next-auth";
@@ -122,6 +123,25 @@ export async function getPermissions({ db, session }: getPermissionsOptions) {
 
   return Ok({ permissions, membership });
 }
+
+interface getRoleByIdOption {
+  id: string;
+  tx: TPrismaOrTransaction;
+}
+
+export const getRoleById = async ({ id, tx }: getRoleByIdOption) => {
+  const defaultRole = defaultRolesIdMap?.[id];
+
+  if (defaultRole) {
+    return { role: defaultRole, customRoleId: null };
+  }
+  const { id: customRoleId } = await tx.role.findFirstOrThrow({
+    where: { id },
+    select: { id: true },
+  });
+
+  return { role: Roles.CUSTOM, customRoleId };
+};
 
 export const getServerPermissions = cache(async () => {
   const session = await withServerComponentSession();

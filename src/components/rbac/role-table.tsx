@@ -1,6 +1,8 @@
 "use client";
 
+import { RBAC } from "@/lib/rbac";
 import { api } from "@/trpc/react";
+import type { TypeZodCreateRoleMutationSchema } from "@/trpc/routers/rbac-router/schema";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import {
@@ -18,6 +20,8 @@ import {
 } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { pushModal } from "../modals";
+import { defaultInputPermissionInputs } from "../modals/role-create-update-modal";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -99,6 +103,7 @@ export const columns: ColumnDef<Role>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const role = row.original;
       const router = useRouter();
       const { mutateAsync: deleteRole } = api.rbac.deleteRole.useMutation({
         onSuccess: () => {
@@ -108,6 +113,30 @@ export const columns: ColumnDef<Role>[] = [
 
       const handleDeleteRole = async () => {
         await deleteRole({ roleId: row.original.id });
+      };
+
+      const handleUpdateRole = () => {
+        if (role.type === "custom") {
+          const permissions = { ...defaultInputPermissionInputs };
+
+          for (const permission of role.permissions) {
+            if (permissions?.[permission.subject]) {
+              for (const action of permission.actions) {
+                if (permissions?.[permission.subject]?.[action] !== undefined) {
+                  // @ts-expect-error
+                  permissions[permission.subject][action] = true;
+                }
+              }
+            }
+          }
+
+          pushModal("RoleCreateUpdate", {
+            type: "edit",
+            title: `edit role ${role.name}`,
+            defaultValues: { name: role.name, permissions },
+            roleId: role.id,
+          });
+        }
       };
       return (
         <DropdownMenu>
@@ -120,7 +149,11 @@ export const columns: ColumnDef<Role>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <Allow action="update" subject="roles">
+              <DropdownMenuItem onSelect={handleUpdateRole}>
+                Edit
+              </DropdownMenuItem>
+            </Allow>
             <Allow action="delete" subject="roles">
               <DropdownMenuItem
                 onSelect={handleDeleteRole}

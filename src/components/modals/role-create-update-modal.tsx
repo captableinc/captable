@@ -55,7 +55,9 @@ export const defaultInputPermissionInputs = SUBJECTS.reduce<
   return prev;
 }, {});
 
-type FormProps = { type: "create" } | { type: "edit" };
+type FormProps =
+  | { type: "create"; defaultValues?: never; roleId?: never }
+  | { type: "edit"; defaultValues: TFormSchema; roleId: string };
 
 type RoleCreateUpdateModalProps = {
   title: string | React.ReactNode;
@@ -65,15 +67,16 @@ type RoleCreateUpdateModalProps = {
 export const RoleCreateUpdateModal = ({
   title,
   subtitle,
+  ...rest
 }: RoleCreateUpdateModalProps) => {
   return (
     <Modal size="4xl" title={title} subtitle={subtitle}>
-      <RoleForm />
+      <RoleForm {...rest} />
     </Modal>
   );
 };
 
-function RoleForm() {
+function RoleForm(props: FormProps) {
   const router = useRouter();
   const { mutateAsync: createRole } = api.rbac.createRole.useMutation({
     onSuccess: ({ message }) => {
@@ -84,16 +87,31 @@ function RoleForm() {
     },
   });
 
-  const form = useForm<TFormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      permissions: defaultInputPermissionInputs,
+  const { mutateAsync: updateRole } = api.rbac.updateRole.useMutation({
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      form.reset();
+      popModal("RoleCreateUpdate");
+      router.refresh();
     },
   });
 
+  const form = useForm<TFormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: props?.defaultValues
+      ? props.defaultValues
+      : {
+          name: "",
+          permissions: defaultInputPermissionInputs,
+        },
+  });
+
   const onSubmit = async (data: TFormSchema) => {
-    await createRole(data);
+    if (props.type === "create") {
+      await createRole(data);
+    } else {
+      await updateRole({ ...data, roleId: props.roleId });
+    }
   };
   return (
     <Form {...form}>

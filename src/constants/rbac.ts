@@ -11,11 +11,20 @@ export type TSubjects = (typeof SUBJECTS)[number];
 export type TActions = (typeof ACTIONS)[number];
 
 const generateDefaultId = (name: DefaultRoles) => `default-${name}`;
-export interface RoleList {
+
+export type RoleList = {
   id: string;
-  type: "default" | "custom";
   name: string;
-}
+} & (
+  | {
+      type: "custom";
+      permissions: TPermission[];
+    }
+  | {
+      type: "default";
+      permissions?: never;
+    }
+);
 
 const SUPER_USER = SUBJECTS.map((item) => ({
   actions: ["*" as TActions],

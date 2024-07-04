@@ -4,10 +4,13 @@ import { CreateRbacModal } from "@/components/rbac/create-rbac-modal";
 import { RoleTable } from "@/components/rbac/role-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { checkPageRoleAccess } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
 
-export default function RolesPage() {
-  const data = api.rbac.listRoles.query();
+export default async function RolesPage() {
+  const { allow } = await checkPageRoleAccess({ roles: { allow: ["*"] } });
+
+  const data = await allow(api.rbac.listRoles.query(), ["roles", "read"]);
   return (
     <div className="flex flex-col gap-y-3">
       <PageLayout
@@ -26,9 +29,7 @@ export default function RolesPage() {
 
       <Card className="mt-3">
         <div className="p-6">
-          <Allow action="read" subject="roles">
-            <RoleTable roles={data} />
-          </Allow>
+          {data ? <RoleTable roles={data.rolesList} /> : null}
         </div>
       </Card>
     </div>

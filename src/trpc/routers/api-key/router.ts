@@ -31,7 +31,6 @@ export const apiKeyRouter = createTRPCRouter({
     return data;
   }),
 
-  //TODO: put the schema in the schema file
   delete: withAuth
     .input(z.object({ keyId: z.string() }))
     .mutation(async ({ ctx, input }) => {

@@ -10,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 const TeamMembersPage = async () => {
-  const members = await api.member.getMembers.query();
+  const [members, roles] = await Promise.all([
+    api.member.getMembers.query(),
+    api.rbac.listRoles.query(),
+  ]);
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">
@@ -22,12 +25,12 @@ const TeamMembersPage = async () => {
         </div>
 
         <div>
-          <AddTeamMemberDropdownMenu />
+          <AddTeamMemberDropdownMenu roles={roles.rolesList} />
         </div>
       </div>
 
       <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-        <MemberTable members={members.data} />
+        <MemberTable members={members.data} roles={roles.rolesList} />
       </Card>
     </div>
   );

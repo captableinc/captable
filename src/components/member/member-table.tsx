@@ -44,9 +44,11 @@ import { DataTablePagination } from "../ui/data-table/data-table-pagination";
 import { MemberTableToolbar } from "./member-table-toolbar";
 
 type Member = RouterOutputs["member"]["getMembers"]["data"];
+type Roles = RouterOutputs["rbac"]["listRoles"]["rolesList"];
 
 type MembersType = {
   members: Member;
+  roles: Roles;
 };
 
 const humanizeStatus = (status: string) => {
@@ -154,7 +156,7 @@ export const columns: ColumnDef<Member[number]>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -238,7 +240,10 @@ export const columns: ColumnDef<Member[number]>[] = [
                       loginEmail: "",
                       title: member.title ?? "",
                       workEmail: member.workEmail ?? "",
+                      roleId: "",
                     },
+                    // @ts-expect-error
+                    roles: table.options.meta.roles,
                   });
                 }}
               >
@@ -271,7 +276,7 @@ export const columns: ColumnDef<Member[number]>[] = [
   },
 ];
 
-const MemberTable = ({ members }: MembersType) => {
+const MemberTable = ({ members, roles }: MembersType) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
@@ -299,6 +304,9 @@ const MemberTable = ({ members }: MembersType) => {
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    meta: {
+      roles,
     },
   });
 

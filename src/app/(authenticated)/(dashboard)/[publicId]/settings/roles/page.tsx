@@ -1,6 +1,8 @@
 import { PageLayout } from "@/components/dashboard/page-layout";
+import { pushModal } from "@/components/modals";
+import { RoleCreateUpdateModalAction } from "@/components/modals/role-create-update-modal";
 import { Allow } from "@/components/rbac/allow";
-import { CreateRbacModal } from "@/components/rbac/create-rbac-modal";
+
 import { RoleTable } from "@/components/rbac/role-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,20 +13,13 @@ export default async function RolesPage() {
   const { allow } = await checkPageRoleAccess({ roles: { allow: ["*"] } });
 
   const data = await allow(api.rbac.listRoles.query(), ["roles", "read"]);
+  const canCreate = await allow(true, ["roles", "create"]);
   return (
     <div className="flex flex-col gap-y-3">
       <PageLayout
         title="Roles"
         description="Manage your roles."
-        action={
-          <Allow
-            action="create"
-            subject="roles"
-            not={<Button disabled>Create Role</Button>}
-          >
-            <CreateRbacModal />
-          </Allow>
-        }
+        action={<RoleCreateUpdateModalAction disabled={!canCreate} />}
       />
 
       <Card className="mt-3">

@@ -170,7 +170,7 @@ export const checkPageRoleAccess = async (policies: addPolicyOption) => {
 
   const roleMap = RBAC.normalizePermissionsMap(permissions);
 
-  const allow = <T>(p: Promise<T> | T, permissions: [TSubjects, TActions]) => {
+  const allow = <T>(p: T, permissions: [TSubjects, TActions]) => {
     const subject = permissions[0];
     const action = permissions[1];
 

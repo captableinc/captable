@@ -1,4 +1,8 @@
-import { defaultPermissions } from "@/constants/rbac";
+import {
+  type TActions,
+  type TSubjects,
+  defaultPermissions,
+} from "@/constants/rbac";
 import type { Roles } from "@/prisma/enums";
 import { checkMembership, withServerComponentSession } from "@/server/auth";
 import { type TPrismaOrTransaction, db } from "@/server/db";
@@ -144,5 +148,21 @@ export const checkPageRoleAccess = async (policies: addPolicyOption) => {
 
   const isAllowed = val.valid;
 
-  return { isAllowed };
+  const roleMap = RBAC.normalizePermissionsMap(permissions);
+
+  const allow = <T>(p: Promise<T> | T, permissions: [TSubjects, TActions]) => {
+    const subject = permissions[0];
+    const action = permissions[1];
+
+    const getSubject = roleMap.get(subject);
+    const allowed =
+      !!getSubject && (getSubject.includes(action) || getSubject.includes("*"));
+
+    if (allowed) {
+      return p;
+    }
+    return undefined;
+  };
+
+  return { isAllowed, roleMap, allow };
 };

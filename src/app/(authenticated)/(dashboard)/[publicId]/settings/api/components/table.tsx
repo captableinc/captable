@@ -3,7 +3,6 @@
 import { dayjsExt } from "@/common/dayjs";
 import { Card } from "@/components/ui/card";
 import { RiMore2Fill } from "@remixicon/react";
-import { useRouter } from "next/navigation";
 
 import { ApiKeyAlertDialog } from "@/components/apiKey/apiKey-alert-dialog";
 import {
@@ -22,8 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { api } from "@/trpc/react";
-import { toast } from "sonner";
 
 interface ApiKey {
   keyId: string;
@@ -32,23 +29,6 @@ interface ApiKey {
 }
 
 const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
-  const router = useRouter();
-
-  const deleteMutation = api.apiKey.delete.useMutation({
-    onSuccess: ({ message }) => {
-      toast.success(message);
-    },
-
-    onError: (error) => {
-      console.error(error);
-      toast.error("An error occurred while creating the API key.");
-    },
-
-    onSettled: () => {
-      router.refresh();
-    },
-  });
-
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
       <Table>
@@ -87,9 +67,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
                         Rotate key
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem onClick={() => {}}>
-                        <ApiKeyAlertDialog />
-                      </DropdownMenuItem>
+                      <ApiKeyAlertDialog keyId={key.keyId} key={key.keyId} />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

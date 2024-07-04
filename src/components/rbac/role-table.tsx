@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import {
@@ -15,7 +16,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { use, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -33,6 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Allow } from "./allow";
 
 type Role = RouterOutputs["rbac"]["listRoles"]["rolesList"][number];
 
@@ -95,7 +98,17 @@ export const columns: ColumnDef<Role>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
+      const router = useRouter();
+      const { mutateAsync: deleteRole } = api.rbac.deleteRole.useMutation({
+        onSuccess: () => {
+          router.refresh();
+        },
+      });
+
+      const handleDeleteRole = async () => {
+        await deleteRole({ roleId: row.original.id });
+      };
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -108,7 +121,14 @@ export const columns: ColumnDef<Role>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+            <Allow action="delete" subject="roles">
+              <DropdownMenuItem
+                onSelect={handleDeleteRole}
+                disabled={row.original.type === "default"}
+              >
+                Delete
+              </DropdownMenuItem>
+            </Allow>
           </DropdownMenuContent>
         </DropdownMenu>
       );

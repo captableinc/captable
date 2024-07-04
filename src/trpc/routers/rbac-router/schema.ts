@@ -12,3 +12,11 @@ export const ZodCreateRoleMutationSchema = z.object({
 export type TypeZodCreateRoleMutationSchema = z.infer<
   typeof ZodCreateRoleMutationSchema
 >;
+
+export const ZodDeleteRoleMutationSchema = z.object({
+  roleId: z.string().min(1),
+});
+
+export type TypeZodDeleteRoleMutationSchema = z.infer<
+  typeof ZodDeleteRoleMutationSchema
+>;

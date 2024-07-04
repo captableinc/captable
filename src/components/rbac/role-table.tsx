@@ -34,11 +34,10 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-type RoleOutput = RouterOutputs["rbac"]["listRoles"];
-type Role = RoleOutput["rolesList"][number];
+type Role = RouterOutputs["rbac"]["listRoles"]["rolesList"][number];
 
 interface RoleTableProps {
-  roles: Promise<RoleOutput>;
+  roles: Role[];
 }
 
 export const columns: ColumnDef<Role>[] = [
@@ -117,15 +116,14 @@ export const columns: ColumnDef<Role>[] = [
   },
 ];
 
-export function RoleTable({ roles: rolesPromise }: RoleTableProps) {
-  const roles = use(rolesPromise);
+export function RoleTable({ roles }: RoleTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
-    data: roles.rolesList,
+    data: roles,
     columns: columns,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,

@@ -132,7 +132,7 @@ const Pages: CommandOption[] = [
   },
   {
     id: "issue-share",
-    title: "Issue a share",
+    title: "Issue a share certificate",
     onClick: () => {
       pushModal("IssueShareModal", {
         shouldClientFetch: true,

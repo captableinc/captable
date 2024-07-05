@@ -11,6 +11,7 @@ import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";
 import { MultipleStakeholdersModal } from "./stakeholder/multiple-stakeholders-modal";
 import { SingleStakeholdersModal } from "./stakeholder/single-stake-holder-modal";
+import { UpdateSingleStakeholderModal } from "./stakeholder/update-stakeholder-modal";
 import { TeamMemberModal } from "./team-member/team-member-modal";
 import { WipModal } from "./wip-modal";
 
@@ -22,6 +23,7 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     WipModal,
     ShareClassModal,
     TeamMemberModal,
+    UpdateSingleStakeholderModal,
     ShareUpdateModal,
     ShareDataRoomModal,
     SingleStakeholdersModal,

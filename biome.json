@@ -8,6 +8,7 @@
       "dist",
       "public/pdf.worker.min.js",
       "./prisma/enums.ts",
+      "./prisma/generated/*",
       "./src/components/ui/simple-multi-select.tsx"
     ]
   },
@@ -27,6 +28,7 @@
       "dist",
       "public/pdf.worker.min.js",
       "./prisma/enums.ts",
+      "./prisma/generated/*",
       "./src/components/ui/simple-multi-select.tsx"
     ]
   },
@@ -43,7 +45,8 @@
       ".next",
       "dist",
       "public/pdf.worker.min.js",
-      "./prisma/enums.ts"
+      "./prisma/enums.ts",
+      "./prisma/generated/*"
     ]
   }
 }

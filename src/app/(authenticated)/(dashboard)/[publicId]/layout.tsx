@@ -4,6 +4,7 @@ import { ModalProvider } from "@/components/modals";
 import { withServerSession } from "@/server/auth";
 import { getCompanyList } from "@/server/company";
 import { redirect } from "next/navigation";
+import "@/styles/hint.css";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;

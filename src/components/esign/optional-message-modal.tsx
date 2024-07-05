@@ -39,7 +39,6 @@ export const OptionalMessageModal = ({
   return (
     <Modal
       size="lg"
-      trigger={<p />}
       title={title}
       subtitle={subtitle}
       dialogProps={dialogProps}

@@ -28,7 +28,7 @@ export type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
   size?: keyof typeof sizes;
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;
   scrollable?: boolean;
@@ -45,7 +45,7 @@ const Modal = ({
 }: ModalProps) => {
   return (
     <Dialog {...dialogProps}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
         className={cn("mb-10 mt-10 gap-0 bg-white p-0", sizes[size])}
       >

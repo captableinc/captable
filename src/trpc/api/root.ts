@@ -1,4 +1,5 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
+import { apiKeyRouter } from "../routers/api-key/router";
 import { auditRouter } from "../routers/audit-router/router";
 import { authRouter } from "../routers/auth/router";
 import { billingRouter } from "../routers/billing-router/router";
@@ -48,6 +49,7 @@ export const appRouter = createTRPCRouter({
   passkey: passkeyRouter,
   security: securityRouter,
   billing: billingRouter,
+  apiKey: apiKeyRouter,
 });
 
 // export type definition of API

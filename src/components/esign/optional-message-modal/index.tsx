@@ -11,7 +11,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import React, { type SetStateAction } from "react";
+import type React from "react";
+import type { SetStateAction } from "react";
 import { useFormContext } from "react-hook-form";
 
 type OptionalMessageModalProps = {
@@ -38,7 +39,6 @@ export const OptionalMessageModal = ({
   return (
     <Modal
       size="lg"
-      trigger={<></>}
       title={title}
       subtitle={subtitle}
       dialogProps={dialogProps}

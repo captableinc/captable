@@ -1,20 +1,20 @@
 "use client";
 
 import Modal from "@/components/common/push-modal";
-import { SingleStakeholderForm } from "./single-stake-holder-form";
+import StakeholderUploader from "../../stakeholder/stakeholder-uploader";
 
 type StakeholderType = {
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
 };
 
-export const SingleStakeholdersModal = ({
+export const MultipleStakeholdersModal = ({
   title,
   subtitle,
 }: StakeholderType) => {
   return (
-    <Modal size="2xl" title={title} subtitle={subtitle}>
-      <SingleStakeholderForm type="create" />
+    <Modal size="xl" title={title} subtitle={subtitle}>
+      <StakeholderUploader />
     </Modal>
   );
 };

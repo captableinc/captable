@@ -1,18 +1,30 @@
 "use client";
 
-import { type initialData, usePermission } from "@/hooks/use-allowed";
-import type { ReactNode } from "react";
+import { invariant } from "@/lib/error";
+import type { RouterOutputs } from "@/trpc/shared";
+import { type ReactNode, createContext, useContext } from "react";
+
+type initialData = RouterOutputs["rbac"]["getPermissions"];
+
+const RolesProviderContext = createContext<initialData | null>(null);
 
 interface RolesProviderProps {
   children: ReactNode;
-  initialData: initialData;
+  data: initialData;
 }
 
-export const RolesProvider = ({
-  children,
-  initialData,
-}: RolesProviderProps) => {
-  usePermission(initialData);
+export const RolesProvider = ({ children, data }: RolesProviderProps) => {
+  return (
+    <RolesProviderContext.Provider value={data}>
+      {children}
+    </RolesProviderContext.Provider>
+  );
+};
 
-  return children;
+export const useRoles = () => {
+  const data = useContext(RolesProviderContext);
+
+  invariant(data, "useRoles should be used inside RolesProvider");
+
+  return data;
 };

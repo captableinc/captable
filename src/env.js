@@ -32,7 +32,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production", "staging"])
       .default("development"),
-    DEBUG: z
+    LOGS: z
       .string()
       .default("0")
       .transform((s) => s !== "false" && s !== "0"),

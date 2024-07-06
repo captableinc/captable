@@ -1,11 +1,9 @@
+import { env } from "@/env";
 import pino, { type Logger } from "pino";
 
-export const logger: Logger =
-  process.env.NODE_ENV === "production"
-    ? // JSON in production
-      pino({ level: "info" })
-    : // Pretty print in development
-      pino({
+export const logger: Logger = pino({
+  ...(env.NODE_ENV === "development"
+    ? {
         transport: {
           target: "pino-pretty",
           options: {
@@ -13,4 +11,8 @@ export const logger: Logger =
           },
         },
         level: "debug",
-      });
+      }
+    : {
+        level: "info",
+      }),
+});

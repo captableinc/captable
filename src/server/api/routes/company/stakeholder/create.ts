@@ -1,32 +1,43 @@
 import { withCompanyAuth } from "@/server/api/auth";
-import { ErrorResponses } from "@/server/api/error";
-import {
-  AddStakeholderRequestSchema,
-  StakeholderApiResponseSchema,
-} from "@/server/api/schema/stakeholder";
-import { getIp } from "@/server/api/utils";
+import { ApiError, ErrorResponses } from "@/server/api/error";
+import { StakeholderSchema } from "@/server/api/schema/stakeholder";
+import { getIp, getParsedJson } from "@/server/api/utils";
 import { db } from "@/server/db";
 import { addStakeholders } from "@/server/services/stakeholder/add-stakeholders";
+import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
 import { createRoute, z } from "@hono/zod-openapi";
-
-import type { PublicAPI } from "@/server/api/hono";
-import type { Context } from "hono";
 import { RequestParamsSchema } from "./getMany";
 
-const RequestQuerySchema = z.object({
-  data: z.array(AddStakeholderRequestSchema).openapi({
-    description: "Add stakeholders to a company.",
-  }),
-});
+import type { PublicAPI } from "@/server/api/hono";
+import { Prisma } from "@prisma/client";
+import type { Context } from "hono";
+
+const RequestJsonSchema = z
+  .array(StakeholderSchema)
+  .refine(
+    (stakeholders) => {
+      const emails = stakeholders.map((stakeholder) => stakeholder.email);
+      const uniqueEmails = new Set(emails);
+      return uniqueEmails.size === emails.length;
+    },
+    {
+      message: "Please provide unique email to each stakeholder.",
+      path: ["email"],
+    },
+  )
+  .openapi("Add many stakeholders in a company");
 
 const ResponseSchema = z.object({
-  data: StakeholderApiResponseSchema,
+  message: z.string(),
 });
 
 const route = createRoute({
   method: "post",
-  path: "api/v1/companies/:id/stakeholders",
-  request: { params: RequestParamsSchema, query: RequestQuerySchema },
+  path: "/v1/companies/{id}/stakeholders",
+  request: {
+    params: RequestParamsSchema,
+    json: RequestJsonSchema,
+  },
   responses: {
     200: {
       content: {
@@ -34,7 +45,7 @@ const route = createRoute({
           schema: ResponseSchema,
         },
       },
-      description: "Add stakeholders to a company.",
+      description: "Add many stakeholders in a company.",
     },
 
     ...ErrorResponses,
@@ -42,10 +53,18 @@ const route = createRoute({
 });
 
 const create = (app: PublicAPI) => {
-  //@ts-ignore
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
-    const body = await c.req.json();
+    const parsedJson = await getParsedJson(c);
+    const zodParsed = RequestJsonSchema.safeParse(parsedJson);
+
+    if (!zodParsed.success) {
+      const errorMessage = zodParsed.error.errors.map((err) => err.message);
+      throw new ApiError({
+        code: "BAD_REQUEST",
+        message: String(errorMessage),
+      });
+    }
 
     const payload = {
       companyId: company.id,
@@ -55,13 +74,23 @@ const create = (app: PublicAPI) => {
         id: user.id,
         name: user.name as string,
       },
-      data: body,
+      data: zodParsed.data as TypeStakeholderArray,
     };
-
-    await addStakeholders({
-      db,
-      payload,
-    });
+    try {
+      await addStakeholders({
+        db,
+        payload,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new ApiError({
+            code: "BAD_REQUEST",
+            message: "Stakeholder email already exists in database.",
+          });
+        }
+      }
+    }
 
     return c.json({ message: "Stakeholders added successfully" }, 200);
   });

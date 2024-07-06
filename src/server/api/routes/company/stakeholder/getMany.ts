@@ -5,7 +5,10 @@ import {
   PaginationQuerySchema,
   PaginationResponseSchema,
 } from "@/server/api/schema/pagination";
-import { StakeholderApiResponseSchema } from "@/server/api/schema/stakeholder";
+import {
+  StakeholderSchema,
+  type TStakeholderSchema,
+} from "@/server/api/schema/stakeholder";
 import { db } from "@/server/db";
 import { getPaginatedStakeholders } from "@/server/services/stakeholder/get-stakeholders";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -24,7 +27,7 @@ export const RequestParamsSchema = z.object({
 });
 
 const ResponseSchema = z.object({
-  data: StakeholderApiResponseSchema,
+  data: z.array(StakeholderSchema),
   meta: PaginationResponseSchema,
 });
 
@@ -42,29 +45,32 @@ const route = createRoute({
           schema: ResponseSchema,
         },
       },
-      description: "Get a paginated list of stakeholders for a company.",
+      description: "Get paginated stakeholders from a company.",
     },
-
     ...ErrorResponses,
   },
 });
 
 const getMany = (app: PublicAPI) => {
-  //@ts-ignore
   app.openapi(route, async (c: Context) => {
-    const query = c.req.query();
-
     const { company } = await withCompanyAuth(c);
+    const query = c.req.query();
     const { data, meta } = await getPaginatedStakeholders({
       db,
       payload: {
-        limit: Number(query.limit) ?? 10,
-        cursor: query.cursor as string,
+        limit: Number(query.limit),
+        cursor: query?.cursor,
         companyId: company.id,
       },
     });
 
-    return c.json({ data, meta }, 200);
+    return c.json(
+      {
+        data: data as unknown as TStakeholderSchema[],
+        meta,
+      },
+      200,
+    );
   });
 };
 

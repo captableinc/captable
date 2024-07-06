@@ -1,7 +1,10 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { StakeholderApiResponseSchema } from "@/server/api/schema/stakeholder";
+import {
+  StakeholderSchema,
+  type TStakeholderSchema,
+} from "@/server/api/schema/stakeholder";
 import { getIp } from "@/server/api/utils";
 import { db } from "@/server/db";
 import { deleteStakeholder } from "@/server/services/stakeholder/delete-stakeholder";
@@ -9,42 +12,38 @@ import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 
 export const RequestParamsSchema = z.object({
-  id: z
-    .string()
-    // .cuid()
-    .openapi({
-      description: "Company ID",
-      type: "string",
-      param: {
-        name: "id",
-        in: "path",
-      },
-      example: "clxwbok580000i7nge8nm1ry0",
-    }),
-
-  stakeholderId: z
-    .string()
-    // .cuid()
-    .openapi({
-      description: "Stakeholder ID",
-      type: "string",
-      param: {
-        name: "stakeholderId",
-        in: "path",
-      },
-      example: "clxwbok580000i7nge8nm1ry0",
-    }),
-});
-
-const ResponseSchema = z.object({
-  data: StakeholderApiResponseSchema.openapi({
-    description: "Delete a stakeholder by ID in a company.",
+  id: z.string().openapi({
+    param: {
+      name: "id",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
+  stakeholderId: z.string().openapi({
+    param: {
+      name: "stakeholderId",
+      in: "path",
+    },
+    description: "Stakeholder ID",
+    type: "string",
+    example: "clyabgufg004u5tbtnz0r4cax",
   }),
 });
 
+const ResponseSchema = z
+  .object({
+    message: z.string(),
+    data: StakeholderSchema,
+  })
+  .openapi({
+    description: "Delete a stakeholder by ID in a company.",
+  });
+
 const route = createRoute({
   method: "delete",
-  path: "/v1/companies/:id/stakeholders/:stakeholderId",
+  path: "/v1/companies/{id}/stakeholders/{stakeholderId}",
   request: { params: RequestParamsSchema },
   responses: {
     200: {
@@ -61,10 +60,10 @@ const route = createRoute({
 });
 
 const delete_ = (app: PublicAPI) => {
-  //@ts-ignore
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
-    const stakeholderId = c.req.param("stakeholderId");
+    const params = c.req.param();
+    const stakeholderId = params.stakeholderId as string;
 
     const payload = {
       companyId: company.id,
@@ -74,12 +73,18 @@ const delete_ = (app: PublicAPI) => {
       userAgent: c.req.header("User-Agent") || "",
     };
 
-    const deletedStakeholder = await deleteStakeholder({
+    const deletedStakeholder = (await deleteStakeholder({
       db,
       payload,
-    });
+    })) as unknown as TStakeholderSchema;
 
-    return c.json({ data: deletedStakeholder }, 200);
+    return c.json(
+      {
+        message: "Stakeholder deleted successfully",
+        data: deletedStakeholder,
+      },
+      200,
+    );
   });
 };
 

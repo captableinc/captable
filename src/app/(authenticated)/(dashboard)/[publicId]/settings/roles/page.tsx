@@ -2,11 +2,11 @@ import { PageLayout } from "@/components/dashboard/page-layout";
 import { RoleCreateUpdateModalAction } from "@/components/modals/role-create-update-modal";
 import { RoleTable } from "@/components/rbac/role-table";
 import { Card } from "@/components/ui/card";
-import { checkPageRoleAccess } from "@/lib/rbac/access-control";
+import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
 
 export default async function RolesPage() {
-  const { allow } = await checkPageRoleAccess({ roles: { allow: ["*"] } });
+  const { allow } = await serverAccessControl();
 
   const data = await allow(api.rbac.listRoles.query(), ["roles", "read"]);
 

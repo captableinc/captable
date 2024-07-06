@@ -153,20 +153,8 @@ export const getServerPermissions = cache(async () => {
   return val;
 });
 
-export const checkPageRoleAccess = async (policies: addPolicyOption) => {
-  const rbac = new RBAC();
-
-  rbac.addPolicies(policies);
-
+export const serverAccessControl = async () => {
   const { permissions } = await getServerPermissions();
-
-  const { val, err } = rbac.enforce(permissions);
-
-  if (err) {
-    throw err;
-  }
-
-  const isAllowed = val.valid;
 
   const roleMap = RBAC.normalizePermissionsMap(permissions);
 
@@ -184,5 +172,21 @@ export const checkPageRoleAccess = async (policies: addPolicyOption) => {
     return undefined;
   };
 
-  return { isAllowed, roleMap, allow };
+  const isPermissionsAllowed = (policies: addPolicyOption) => {
+    const rbac = new RBAC();
+
+    rbac.addPolicies(policies);
+
+    const { val, err } = rbac.enforce(permissions);
+
+    if (err) {
+      throw err;
+    }
+
+    const isAllowed = val.valid;
+
+    return { isAllowed };
+  };
+
+  return { isPermissionsAllowed, roleMap, allow };
 };

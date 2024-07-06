@@ -11,6 +11,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { isSentryEnabled } from "@/constants/sentry";
 import { getIp, getUserAgent } from "@/lib/headers";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
@@ -93,6 +94,34 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  */
 export const createTRPCRouter = t.router;
 
+const sentryMiddleware = t.middleware(
+  Sentry.trpcMiddleware({
+    attachRpcInput: true,
+  }),
+);
+
+const enforceAuthMiddleware = t.middleware(({ ctx: ctx_, next }) => {
+  const ctx = withAuthTrpcContext(ctx_);
+
+  const { email, id } = ctx.session.user;
+
+  if (isSentryEnabled) {
+    Sentry.setUser({ id, ...(email && { email }) });
+  }
+
+  return next({
+    ctx,
+  });
+});
+
+const pipedSentryMiddleware = sentryMiddleware.unstable_pipe(
+  enforceAuthMiddleware,
+);
+
+const authMiddleware = isSentryEnabled
+  ? pipedSentryMiddleware
+  : enforceAuthMiddleware;
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -100,10 +129,7 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const withoutAuth = t.procedure.use(({ path, next }) => {
-  trackMetrics({ path });
-  return next();
-});
+export const withoutAuth = t.procedure;
 
 /**
  * Protected (authenticated) procedure
@@ -113,23 +139,4 @@ export const withoutAuth = t.procedure.use(({ path, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const withAuth = t.procedure.use(({ ctx: ctx_, next, path }) => {
-  const ctx = withAuthTrpcContext(ctx_);
-
-  const { email, name } = ctx.session.user;
-  trackMetrics({ path, email: email || "", name: name || "" });
-
-  return next({
-    ctx,
-  });
-});
-
-// Sends metrics to Sentry
-
-const trackMetrics = ({
-  path,
-  name,
-  email,
-}: { path: string; name?: string; email?: string }) => {
-  Sentry.metrics.increment(path, 1, { tags: { email, name } });
-};
+export const withAuth = t.procedure.use(authMiddleware);

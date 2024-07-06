@@ -27,4 +27,5 @@ export const addStakeholdersProcedure = withAccessControl
         message: "Oops, something went wrong. Please try again later.",
       };
     }
-  });
+  }
+  );

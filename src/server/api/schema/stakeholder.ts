@@ -12,8 +12,8 @@ const StakeholderRelationshipArray = Object.values(
   StakeholderRelationshipEnum,
 ) as [string, ...string[]];
 
-export const StakeholderApiSchema = z.object({
-  id: z.string().cuid().openapi({
+export const StakeholderSchema = z.object({
+  id: z.string().cuid().optional().openapi({
     description: "Stakeholder ID",
     example: "cly13ipa40000i7ng42mv4x7b",
   }),
@@ -68,13 +68,15 @@ export const StakeholderApiSchema = z.object({
     example: "USA",
   }),
 
-  createdAt: z.string().date().openapi({
+  createdAt: z.string().date().optional().openapi({
     description: "Date the stakeholder was created",
     example: "2022-01-01T00:00:00Z",
   }),
 
-  updatedAt: z.string().date().openapi({
+  updatedAt: z.string().date().optional().openapi({
     description: "Date the stakeholder was last updated",
     example: "2022-01-01T00:00:00Z",
   }),
 });
+
+export type TStakeholderSchema = z.infer<typeof StakeholderSchema>;

@@ -2,9 +2,9 @@ import { z } from "zod";
 
 export const PaginationQuerySchema = z.object({
   limit: z
-    .number()
-    .int()
-    .positive()
+    .any()
+    // .int()
+    // .positive()
     .optional()
     .openapi({
       description: "Number of items to take",
@@ -29,6 +29,8 @@ export const PaginationQuerySchema = z.object({
       example: "cly151kxq0000i7ngb3erchgo", // CUID of the last item
     }),
 });
+
+export type TPaginationQuerySchema = z.infer<typeof PaginationQuerySchema>;
 
 export const PaginationResponseSchema = z.object({
   count: z.number().int().positive().openapi({

@@ -3,9 +3,8 @@ import type { PaginationData, ProxyFunctions } from "./types";
 interface Paginated<T> {
   data: T[];
   count: number;
-  cursor: string | null;
-  limit: number;
   total: number;
+  cursor?: string;
 }
 
 /**
@@ -15,8 +14,8 @@ interface Paginated<T> {
  */
 export type FindManyPaginated<F extends ProxyFunctions> = {
   findManyPaginated: (
-    data?: Omit<Parameters<F["findMany"]>[0], "take" | "skip" | "cursor">,
-    pagination?: PaginationData,
+    data: Omit<Parameters<F["findMany"]>[0], "take" | "skip" | "cursor">,
+    pagination: PaginationData,
   ) => Promise<Paginated<Awaited<ReturnType<F["findMany"]>>[0]>>;
 };
 
@@ -30,7 +29,7 @@ export type FindManyPaginated<F extends ProxyFunctions> = {
 export function makeFindManyPaginated(model: ProxyFunctions) {
   return new Proxy(model.findMany, {
     apply: async (target, thisArg, [data, paginationInfo]) => {
-      const limit = paginationInfo?.limit || 10;
+      const limit = paginationInfo?.limit;
       const cursor = paginationInfo?.cursor;
 
       const query = data || {};
@@ -40,6 +39,7 @@ export function makeFindManyPaginated(model: ProxyFunctions) {
         query.skip = 1; // Skip the cursor item itself
       }
 
+      // @TODO(Implement caching for total counts)
       const total = await model.count({
         where: query.where,
       });
@@ -53,9 +53,8 @@ export function makeFindManyPaginated(model: ProxyFunctions) {
       return {
         data: docs,
         count: docs.length,
-        cursor: nextCursor,
-        limit,
         total,
+        cursor: nextCursor,
       };
     },
   });

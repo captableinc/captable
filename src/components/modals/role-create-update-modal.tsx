@@ -57,7 +57,8 @@ export const defaultInputPermissionInputs = SUBJECTS.reduce<
 
 type FormProps =
   | { type: "create"; defaultValues?: never; roleId?: never }
-  | { type: "edit"; defaultValues: TFormSchema; roleId: string };
+  | { type: "edit"; defaultValues: TFormSchema; roleId: string }
+  | { type: "view"; defaultValues: TFormSchema; roleId?: never };
 
 type RoleCreateUpdateModalProps = {
   title: string | React.ReactNode;
@@ -109,7 +110,9 @@ function RoleForm(props: FormProps) {
   const onSubmit = async (data: TFormSchema) => {
     if (props.type === "create") {
       await createRole(data);
-    } else {
+    }
+
+    if (props.type === "edit") {
       await updateRole({ ...data, roleId: props.roleId });
     }
   };
@@ -120,19 +123,21 @@ function RoleForm(props: FormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div>
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {props.type !== "view" ? (
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ) : null}
           <Table>
             <TableHeader>
               <TableRow>
@@ -158,6 +163,8 @@ function RoleForm(props: FormProps) {
                               <Checkbox
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
+                                disabled={props.type === "view"}
+                                aria-readonly={props.type === "view"}
                               />
                             </FormControl>
                             <div className="sr-only">
@@ -174,9 +181,11 @@ function RoleForm(props: FormProps) {
           </Table>
         </div>
 
-        <div>
-          <Button type="submit">Save</Button>
-        </div>
+        {props.type !== "view" ? (
+          <div>
+            <Button type="submit">Save</Button>
+          </div>
+        ) : null}
       </form>
     </Form>
   );

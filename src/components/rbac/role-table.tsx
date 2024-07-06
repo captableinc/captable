@@ -1,8 +1,8 @@
 "use client";
 
-import { RBAC } from "@/lib/rbac";
+import { defaultPermissions } from "@/constants/rbac";
+import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";
-import type { TypeZodCreateRoleMutationSchema } from "@/trpc/routers/rbac-router/schema";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import {
@@ -116,28 +116,33 @@ export const columns: ColumnDef<Role>[] = [
       };
 
       const handleUpdateRole = () => {
-        if (role.type === "custom") {
-          const permissions = { ...defaultInputPermissionInputs };
-
-          for (const permission of role.permissions) {
-            if (permissions?.[permission.subject]) {
-              for (const action of permission.actions) {
-                if (permissions?.[permission.subject]?.[action] !== undefined) {
-                  // @ts-expect-error
-                  permissions[permission.subject][action] = true;
-                }
-              }
-            }
-          }
-
-          pushModal("RoleCreateUpdate", {
-            type: "edit",
-            title: `edit role ${role.name}`,
-            defaultValues: { name: role.name, permissions },
-            roleId: role.id,
-          });
+        if (role.type !== "custom") {
+          return;
         }
+
+        const permissions = getPermission(role.permissions);
+
+        pushModal("RoleCreateUpdate", {
+          type: "edit",
+          title: `edit role ${role.name}`,
+          defaultValues: { name: role.name, permissions },
+          roleId: role.id,
+        });
       };
+
+      const viewRole = () => {
+        const permissions = getPermission(
+          role?.permissions ?? defaultPermissions[role.role],
+        );
+
+        pushModal("RoleCreateUpdate", {
+          type: "view",
+          title: `view role ${role.name}`,
+          defaultValues: { name: role.name, permissions },
+          roleId: role.id,
+        });
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -154,6 +159,9 @@ export const columns: ColumnDef<Role>[] = [
                 Edit
               </DropdownMenuItem>
             </Allow>
+            <Allow action="read" subject="roles">
+              <DropdownMenuItem onSelect={viewRole}>View</DropdownMenuItem>
+            </Allow>
             <Allow action="delete" subject="roles">
               <DropdownMenuItem
                 onSelect={handleDeleteRole}
@@ -168,6 +176,22 @@ export const columns: ColumnDef<Role>[] = [
     },
   },
 ];
+
+function getPermission(permissions_: TPermission[]) {
+  const permissions = { ...defaultInputPermissionInputs };
+
+  for (const permission of permissions_) {
+    if (permissions?.[permission.subject]) {
+      for (const action of permission.actions) {
+        if (permissions?.[permission.subject]?.[action] !== undefined) {
+          // @ts-expect-error
+          permissions[permission.subject][action] = true;
+        }
+      }
+    }
+  }
+  return permissions;
+}
 
 export function RoleTable({ roles }: RoleTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);

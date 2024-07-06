@@ -17,12 +17,14 @@ export type RoleList = {
   name: string;
 } & (
   | {
+      role?: never;
       type: "custom";
       permissions: TPermission[];
     }
   | {
       type: "default";
       permissions?: never;
+      role: DefaultRoles;
     }
 );
 
@@ -55,6 +57,7 @@ export const defaultRolesList: RoleList[] = defaultRoleKeys.map((item) => {
     name,
     type: "default",
     id: generateDefaultId(key),
+    role: key,
   };
 });
 

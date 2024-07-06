@@ -84,7 +84,7 @@ const update = (app: PublicAPI) => {
     if (!updatedStakeholder) {
       throw new ApiError({
         code: "BAD_REQUEST",
-        message: "Stakeholder not updated",
+        message: "Stakeholder not updated.",
       });
     }
 

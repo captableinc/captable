@@ -30,8 +30,12 @@ export const env = createEnv({
         "You forgot to change the default URL",
       ),
     NODE_ENV: z
-      .enum(["development", "test", "production"])
+      .enum(["development", "test", "production", "staging"])
       .default("development"),
+    DEBUG: z
+      .string()
+      .default("0")
+      .transform((s) => s !== "false" && s !== "0"),
     NEXTAUTH_URL: z.string(),
     NEXTAUTH_SECRET: z.string(),
     EMAIL_SERVER: z.string().optional(),

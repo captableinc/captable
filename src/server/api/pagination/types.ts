@@ -13,7 +13,6 @@ export type PaginationData = {
  */
 export type ProxyFunctions = {
   // biome-ignore lint/suspicious/noExplicitAny: <any is legal here>
-  findMany: (params: any, pagination: PaginationData) => Promise<any>;
-  // biome-ignore lint/suspicious/noExplicitAny: <any is legal here>
-  count: (params: any) => Promise<number>;
+  findMany: (params: unknown, pagination: PaginationData) => Promise<any>;
+  count: (params: unknown) => Promise<number>;
 };

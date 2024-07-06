@@ -2,7 +2,12 @@
 
 import Modal from "@/components/common/push-modal";
 
-import { ACTIONS, SUBJECTS, type TActions } from "@/constants/rbac";
+import {
+  ACTIONS,
+  SUBJECTS,
+  type TActions,
+  type TSubjects,
+} from "@/constants/rbac";
 
 import { api } from "@/trpc/react";
 import {
@@ -12,7 +17,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import type { ComponentProps } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { popModal, pushModal } from ".";
 import { Button } from "../ui/button";
@@ -54,6 +59,14 @@ export const defaultInputPermissionInputs = SUBJECTS.reduce<
 
   return prev;
 }, {});
+
+const humanizedAction: Record<TActions, string> = {
+  "*": "All",
+  create: "Create",
+  delete: "Delete",
+  read: "Read",
+  update: "Update",
+};
 
 type FormProps =
   | { type: "create"; defaultValues?: never; roleId?: never }
@@ -143,7 +156,7 @@ function RoleForm(props: FormProps) {
               <TableRow>
                 <TableHead>Permissions</TableHead>
                 {ACTIONS.map((item) => (
-                  <TableHead key={item}>{item}</TableHead>
+                  <TableHead key={item}>{humanizedAction[item]}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -153,27 +166,12 @@ function RoleForm(props: FormProps) {
                   <TableCell className="font-medium">{subject}</TableCell>
 
                   {ACTIONS.map((action) => (
-                    <TableCell key={action}>
-                      <FormField
-                        control={form.control}
-                        name={`permissions.${subject}.${action}`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                disabled={props.type === "view"}
-                                aria-readonly={props.type === "view"}
-                              />
-                            </FormControl>
-                            <div className="sr-only">
-                              <FormLabel>{action}</FormLabel>
-                            </div>
-                          </FormItem>
-                        )}
-                      />
-                    </TableCell>
+                    <PermissionCheckBox
+                      key={action}
+                      action={action}
+                      subject={subject}
+                      isReadOnlyMode={props.type === "view"}
+                    />
                   ))}
                 </TableRow>
               ))}
@@ -210,3 +208,47 @@ export const RoleCreateUpdateModalAction = (
     </Button>
   );
 };
+
+interface PermissionCheckBoxProps {
+  action: TActions;
+  subject: TSubjects;
+  isReadOnlyMode: boolean;
+}
+
+function PermissionCheckBox({
+  action,
+  subject,
+  isReadOnlyMode,
+}: PermissionCheckBoxProps) {
+  const form = useFormContext<TFormSchema>();
+
+  const allValue = useWatch({
+    control: form.control,
+    name: `permissions.${subject}.*`,
+    exact: true,
+  });
+
+  return (
+    <TableCell>
+      <FormField
+        control={form.control}
+        name={`permissions.${subject}.${action}`}
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Checkbox
+                checked={allValue || field.value}
+                onCheckedChange={field.onChange}
+                disabled={isReadOnlyMode}
+                aria-readonly={isReadOnlyMode}
+              />
+            </FormControl>
+            <div className="sr-only">
+              <FormLabel>{action}</FormLabel>
+            </div>
+          </FormItem>
+        )}
+      />
+    </TableCell>
+  );
+}

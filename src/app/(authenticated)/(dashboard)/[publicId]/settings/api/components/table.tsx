@@ -4,8 +4,8 @@ import { dayjsExt } from "@/common/dayjs";
 import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
 import { RiMore2Fill } from "@remixicon/react";
-import { useRouter } from "next/navigation";
 
+import { ApiKeyAlertDialog } from "@/components/apiKey/apiKey-alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,8 +30,6 @@ interface ApiKey {
 }
 
 const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
-  const router = useRouter();
-
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
       <div className="mx-3">
@@ -79,12 +77,8 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
                       <DropdownMenuItem onClick={() => {}}>
                         Rotate key
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-rose-600"
-                        onClick={() => {}}
-                      >
-                        Delete key
-                      </DropdownMenuItem>
+
+                      <ApiKeyAlertDialog keyId={key.keyId} key={key.keyId} />
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

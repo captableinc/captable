@@ -19,6 +19,7 @@ import {
 } from "@/lib/rbac/access-control";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 interface Meta {
   policies: addPolicyOption;
@@ -164,7 +165,10 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const withoutAuth = t.procedure;
+export const withoutAuth = t.procedure.use(({ path, next }) => {
+  trackMetrics({ path });
+  return next();
+});
 
 /**
  * Protected (authenticated) procedure
@@ -174,8 +178,11 @@ export const withoutAuth = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const withAuth = t.procedure.use(({ ctx: ctx_, next }) => {
+export const withAuth = t.procedure.use(({ ctx: ctx_, next, path }) => {
   const ctx = withAuthTrpcContext(ctx_);
+
+  const { email, name } = ctx.session.user;
+  trackMetrics({ path, email: email || "", name: name || "" });
 
   return next({
     ctx,
@@ -191,3 +198,12 @@ export const withAccessControl = t.procedure.use(
     });
   },
 );
+// Sends metrics to Sentry
+
+const trackMetrics = ({
+  path,
+  name,
+  email,
+}: { path: string; name?: string; email?: string }) => {
+  Sentry.metrics.increment(path, 1, { tags: { email, name } });
+};

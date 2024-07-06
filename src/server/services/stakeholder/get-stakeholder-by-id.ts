@@ -1,11 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 
-export type PrismaTransactionalClient = Parameters<
-  Parameters<PrismaClient["$transaction"]>[0]
->[0];
-
 type GetStakeholderById = {
-  db: PrismaTransactionalClient;
+  db: PrismaClient;
   stakeholderId: string;
 };
 

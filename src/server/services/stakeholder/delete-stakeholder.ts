@@ -1,9 +1,6 @@
 import { Audit } from "@/server/audit";
 import type { PrismaClient } from "@prisma/client";
-
-export type PrismaTransactionalClient = Parameters<
-  Parameters<PrismaClient["$transaction"]>[0]
->[0];
+import { commonRouter } from "./../../../trpc/routers/common/router";
 
 type DeleteStakeholderOption = {
   db: PrismaClient;

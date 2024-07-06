@@ -30,7 +30,6 @@ export const addStakeholders = async ({
 
     const addedStakeholders = await tx.stakeholder.createManyAndReturn({
       data: inputDataWithCompanyId,
-      skipDuplicates: true,
       select: {
         id: true,
         name: true,
@@ -48,7 +47,7 @@ export const addStakeholders = async ({
             userAgent,
           },
           target: [{ type: "stakeholder", id: stakeholder.id }],
-          summary: `${user.name} deleted the stakholder from the company : ${stakeholder.name}`,
+          summary: `${user.name} added the stakholder in the company : ${stakeholder.name}`,
         },
         tx,
       ),

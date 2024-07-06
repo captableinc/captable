@@ -13,7 +13,7 @@ export type UpdateStakeholderOptions = {
       id: string;
       name: string;
     };
-    data: UpdateStakeholderMutationType;
+    data: Omit<UpdateStakeholderMutationType, "id">;
   };
 };
 
@@ -30,13 +30,6 @@ export const updateStakeholder = async ({
         companyId: payload.companyId,
       },
       data,
-      include: {
-        company: {
-          select: {
-            name: true,
-          },
-        },
-      },
     });
     await Audit.create(
       {
@@ -48,7 +41,7 @@ export const updateStakeholder = async ({
           userAgent,
         },
         target: [{ type: "stakeholder", id: updatedStakeholder.id }],
-        summary: `${user.name} updated the stakholder in the company : ${updatedStakeholder.name}`,
+        summary: `${user.name} updated the stakholder details in the company : ${updatedStakeholder.name}`,
       },
       tx,
     );

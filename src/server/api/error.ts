@@ -4,7 +4,7 @@ import { HTTPException } from "hono/http-exception";
 import type { StatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 
-const log = logger.child({ module: "api" });
+const log = logger.child({ module: "api-error" });
 
 const ErrorSchema = z.object({
   error: z.object({

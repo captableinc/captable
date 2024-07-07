@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 import { Audit } from "@/server/audit";
 import { withAccessControl } from "@/trpc/api/trpc";
 import { ZodUpdateStakeholderMutationSchema } from "./../schema";
+=======
+import { checkMembership } from "@/server/auth";
+import { updateStakeholder } from "@/server/services/stakeholder/update-stakeholder";
+import { withAuth } from "@/trpc/api/trpc";
+import { TRPCError } from "@trpc/server";
+import { ZodUpdateStakeholderMutationSchema } from "../schema";
+>>>>>>> 13cb12e (fix: stakeholder form type errors)
 
 export const updateStakeholderProcedure = withAccessControl
   .meta({ policies: { stakeholder: { allow: ["update"] } } })

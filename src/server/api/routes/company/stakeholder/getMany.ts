@@ -66,7 +66,7 @@ const getMany = (app: PublicAPI) => {
 
     return c.json(
       {
-        data: data as TStakeholderSchema[],
+        data: data as unknown as TStakeholderSchema[],
         meta,
       },
       200,

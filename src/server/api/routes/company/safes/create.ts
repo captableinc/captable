@@ -21,10 +21,14 @@ export const RequestSchema = z.object({
     }),
 });
 
+export const RequestJsonSchema = z.object({
+  name: z.string().min(1),
+});
+
 const route = createRoute({
   method: "post",
   path: "/v1/companies/:id/safes",
-  request: { params: RequestSchema },
+  request: { params: RequestSchema, json: RequestJsonSchema },
   responses: {
     200: {
       content: {

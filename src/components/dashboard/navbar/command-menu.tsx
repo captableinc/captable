@@ -165,7 +165,7 @@ const Pages: CommandOption[] = [
       pushModal("NewSafeModal", {
         title: "Create a new SAFE agreement",
         subtitle:
-          "Create, sign and send a new SAFE agreement to your investors.",
+          "Create, send and send a new SAFE agreement to your investors.",
       });
     },
     icon: RiPieChart2Fill,

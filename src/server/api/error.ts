@@ -4,6 +4,8 @@ import { HTTPException } from "hono/http-exception";
 import type { StatusCode } from "hono/utils/http-status";
 import { z } from "zod";
 
+const log = logger.child({ module: "api-error" });
+
 const ErrorSchema = z.object({
   error: z.object({
     code: z.string(),
@@ -117,7 +119,7 @@ export class ApiError extends HTTPException {
 export function handleError(err: Error, c: Context): Response {
   if (err instanceof ApiError) {
     if (err.status >= 500) {
-      logger.error("ApiError", {
+      log.error("ApiError", {
         name: err.name,
         code: err.code,
         status: err.status,
@@ -137,7 +139,7 @@ export function handleError(err: Error, c: Context): Response {
 
   if (err instanceof HTTPException) {
     if (err.status >= 500) {
-      logger.error("HTTPException", {
+      log.error("HTTPException", {
         name: err.name,
         status: err.status,
         message: err.message,
@@ -159,7 +161,7 @@ export function handleError(err: Error, c: Context): Response {
    * This is a generic error, we should log it and return a 500
    */
 
-  logger.error("UnhandledError", {
+  log.error("UnhandledError", {
     name: err.name,
     message: err.message,
     cause: err.cause,

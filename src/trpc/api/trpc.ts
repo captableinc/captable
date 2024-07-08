@@ -70,10 +70,8 @@ export type withAuthTrpcContextType = ReturnType<typeof withAuthTrpcContext>;
 
 const withAccessControlTrpcContext = async ({
   meta,
-  ...rest
-}: CreateTRPCContextType & { meta: Meta | undefined }) => {
-  const ctx = withAuthTrpcContext({ ...rest });
-
+  ...ctx
+}: withAuthTrpcContextType & { meta: Meta | undefined }) => {
   const rbac = new RBAC();
 
   if (meta?.policies) {
@@ -207,11 +205,11 @@ export const withoutAuth = t.procedure;
 export const withAuth = t.procedure.use(authMiddleware);
 
 export const withAccessControl = t.procedure.use(
-  async ({ ctx: ctx_, next, meta }) => {
+  authMiddleware.unstable_pipe(async ({ ctx: ctx_, next, meta }) => {
     const ctx = await withAccessControlTrpcContext({ ...ctx_, meta });
 
     return next({
       ctx,
     });
-  },
+  }),
 );

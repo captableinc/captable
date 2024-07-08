@@ -6,6 +6,7 @@ import { ExistingSafeModal } from "./existing-safe-modal";
 import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
 import { NewSafeModal } from "./new-safe-modal";
+import { SafeModal } from "./safe";
 import { ShareClassModal } from "./share-class/share-class-modal";
 import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";
@@ -32,8 +33,11 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     EquityPlanModal,
     IssueShareModal,
     IssueStockOptionModal,
+    AddEsignDocumentModal,
+
+    // Safe modals
+    SafeModal,
     NewSafeModal,
     ExistingSafeModal,
-    AddEsignDocumentModal,
   },
 });

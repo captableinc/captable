@@ -215,12 +215,13 @@ interface StepperModalContentProps {
 }
 
 export function StepperModalContent({ children }: StepperModalContentProps) {
-  const steps = useDescendants(StepperDescendantContext);
-  const { activeIndex } = useStepper();
-  const currentTitle = steps?.[activeIndex]?.data?.title ?? "";
+  // const steps = useDescendants(StepperDescendantContext);
+  // const { activeIndex } = useStepper();
+  // const currentTitle = steps?.[activeIndex]?.data?.title ?? "";
+
   return (
     <div>
-      <h5 className="text-lg font-medium">{currentTitle}</h5>
+      {/* <h5 className="text-lg font-medium mb-8">{currentTitle}</h5> */}
       {children}
     </div>
   );

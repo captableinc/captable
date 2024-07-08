@@ -1,5 +1,6 @@
 "use client";
 
+import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { RiAddFill, RiSafe2Fill, RiSafeFill } from "@remixicon/react";
-import { pushModal } from "../modals";
 
 export function SafeActions() {
   return (
@@ -27,10 +27,8 @@ export function SafeActions() {
               size="sm"
               type="submit"
               onClick={() => {
-                pushModal("NewSafeModal", {
-                  title: "Create a new SAFE agreement",
-                  subtitle:
-                    "Create, sign and send a new SAFE agreement to your investors.",
+                pushModal("SafeModal", {
+                  type: "create",
                 });
               }}
             >
@@ -45,10 +43,8 @@ export function SafeActions() {
               size="sm"
               type="submit"
               onClick={() => {
-                pushModal("ExistingSafeModal", {
-                  title: "Create an existing SAFE agreement",
-                  subtitle:
-                    "Record an existing SAFE agreement to keep track of it in your captable.",
+                pushModal("SafeModal", {
+                  type: "import",
                 });
               }}
             >

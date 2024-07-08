@@ -793,9 +793,9 @@ model Safe {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   issueDate         DateTime
-  boardApprovalDate DateTime
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  boardApprovalDate DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@unique([publicId, companyId])
   @@index([companyId])

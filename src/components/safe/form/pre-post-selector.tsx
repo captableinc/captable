@@ -8,12 +8,12 @@ import { useEffect, useState } from "react";
 const options = [
   {
     id: "POST_MONEY",
-    title: "Post-money",
+    title: "Post money valuation",
     description: "Value of the company after the investment is made.",
   },
   {
     id: "PRE_MONEY",
-    title: "Pre-money",
+    title: "Pre money valuation",
     description: "Value of the company before the investment is made.",
   },
 ];

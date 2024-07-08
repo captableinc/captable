@@ -1,9 +1,12 @@
 import type { JOB_TYPES } from "@/constants/job";
 import { env } from "@/env";
+import { logger } from "@/lib/logger";
 import { singleton } from "@/lib/singleton";
 import pgBoss from "pg-boss";
 
 type JobTypes = typeof JOB_TYPES;
+
+const log = logger.child({ module: "jobs" });
 
 export type JobType = {
   [Key in keyof JobTypes]: `${Key}.${JobTypes[Key][number]}`;
@@ -59,9 +62,30 @@ export class JobManager {
   }
 
   async start(): Promise<void> {
+    const startTime = Date.now();
+    log.info("Starting pg-boss job queue manager");
+
     await this.boss.start();
-    for (const job of this.jobs.values()) {
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    log.info(
+      `Successfully started pg-boss job queue manager in ${elapsedTime}ms`,
+    );
+
+    for (const [jobName, job] of this.jobs.entries()) {
+      const jobStartTime = Date.now();
+      log.info(`Registering pg-boss job:${jobName}`);
+
       await job.start();
+
+      const jobEndTime = Date.now();
+      const jobElapsedTime = jobEndTime - jobStartTime;
+
+      log.info(
+        `Successfully registered pg-boss job:${jobName} in ${jobElapsedTime}ms`,
+      );
     }
   }
 }

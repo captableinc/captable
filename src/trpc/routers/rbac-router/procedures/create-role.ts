@@ -1,4 +1,4 @@
-import type { TActions, TSubjects } from "@/constants/rbac";
+import type { TActions, TSubjects } from "@/lib/rbac/constants";
 import type { TPermission } from "@/lib/rbac/schema";
 import { withAccessControl } from "@/trpc/api/trpc";
 import {

@@ -7,7 +7,7 @@ import {
   SUBJECTS,
   type TActions,
   type TSubjects,
-} from "@/constants/rbac";
+} from "@/lib/rbac/constants";
 
 import { api } from "@/trpc/react";
 import {

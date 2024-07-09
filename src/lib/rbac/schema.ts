@@ -1,4 +1,4 @@
-import { ACTIONS, SUBJECTS, type TActions } from "@/constants/rbac";
+import { ACTIONS, SUBJECTS, type TActions } from "@/lib/rbac/constants";
 import { z } from "zod";
 
 export const permissionSchema = z.object({

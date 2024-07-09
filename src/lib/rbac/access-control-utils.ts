@@ -1,4 +1,4 @@
-import { ADMIN_ROLE_ID } from "@/constants/rbac";
+import { ADMIN_ROLE_ID } from "@/lib/rbac/constants";
 import type { Roles } from "@/prisma/enums";
 import { invariant } from "../error";
 

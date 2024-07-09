@@ -6,7 +6,7 @@ import {
   DEFAULT_PERMISSION,
   type TActions,
   type TSubjects,
-} from "@/constants/rbac";
+} from "@/lib/rbac/constants";
 import { Roles } from "@/prisma/enums";
 import { checkMembership, withServerComponentSession } from "@/server/auth";
 import { type TPrismaOrTransaction, db } from "@/server/db";

@@ -1,4 +1,4 @@
-import type { TActions, TSubjects } from "@/constants/rbac";
+import type { TActions, TSubjects } from "@/lib/rbac/constants";
 import { useRoles } from "@/providers/roles-provider";
 
 export interface useAllowedOptions {

@@ -1,6 +1,6 @@
 "use client";
 
-import { ADMIN_PERMISSION } from "@/constants/rbac";
+import { ADMIN_PERMISSION } from "@/lib/rbac/constants";
 import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";

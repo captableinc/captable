@@ -16,7 +16,7 @@ export const createRolesProcedure = withAccessControl
   .mutation(async ({ input, ctx: { db, membership } }) => {
     const permissions = extractPermission(input.permissions);
 
-    await db.role.create({
+    await db.customRole.create({
       data: {
         companyId: membership.companyId,
         name: input.name,

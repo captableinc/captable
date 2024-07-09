@@ -8,30 +8,33 @@ import type { HonoEnv } from "../hono";
 
 type RouteConfig = Parameters<typeof OpenApiCreateRouteType>[0];
 
-type versions = "v1" | "v2";
+type Version = "v1" | "v2";
 
-const createApi = (version: versions) => {
+const createApi = <V extends Version>(version: V) => {
   const createRoute = <
     T extends Omit<RouteConfig, "path">,
-    P extends string,
+    P extends `/${V}/${string}`,
     U extends T & { path: P },
   >(
     routeConfig: U,
   ) => {
-    const route = OpenApiCreateRoute<P, U>({
+    const updatedRouteConfig: U = {
       ...routeConfig,
       path: `/${version}${routeConfig.path}`,
       responses: {
         ...(routeConfig?.responses && { ...routeConfig.responses }),
         ...ErrorResponses,
       },
-    });
+    };
+
+    const route = OpenApiCreateRoute<P, U>(updatedRouteConfig);
 
     const handler = <R extends typeof route>(
       callback: RouteHandler<R, HonoEnv>,
-    ) => {
-      return { handler: callback, route: route };
-    };
+    ) => ({
+      handler: callback,
+      route: route,
+    });
 
     return { handler };
   };

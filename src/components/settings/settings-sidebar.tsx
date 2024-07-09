@@ -35,6 +35,12 @@ const companyNav = [
     icon: RiGroup2Line,
     activeIcon: RiGroup2Fill,
   },
+  {
+    name: "Roles",
+    href: "/settings/roles",
+    icon: RiShieldUserLine,
+    activeIcon: RiShieldUserFill,
+  },
 ];
 
 const accountNav = [
@@ -50,12 +56,7 @@ const accountNav = [
     icon: RiLock2Line,
     activeIcon: RiLock2Fill,
   },
-  {
-    name: "Roles",
-    href: "/settings/roles",
-    icon: RiShieldUserLine,
-    activeIcon: RiShieldUserFill,
-  },
+
   {
     name: "API Keys",
     href: "/settings/api",

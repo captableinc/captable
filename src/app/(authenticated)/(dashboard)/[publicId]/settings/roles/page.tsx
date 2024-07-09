@@ -20,11 +20,7 @@ export default async function RolesPage() {
         action={<RoleCreateUpdateModalAction disabled={!canCreate} />}
       />
 
-      <Card className="mt-3">
-        <div className="p-6">
-          {data ? <RoleTable roles={data.rolesList} /> : null}
-        </div>
-      </Card>
+      {data ? <RoleTable roles={data.rolesList} /> : null}
     </div>
   );
 }

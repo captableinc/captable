@@ -1,8 +1,9 @@
 import {
+  ADMIN_PERMISSION,
+  ADMIN_ROLE_ID,
+  DEFAULT_PERMISSION,
   type TActions,
   type TSubjects,
-  defaultPermissions,
-  defaultRolesIdMap,
 } from "@/constants/rbac";
 import { Roles } from "@/prisma/enums";
 import { checkMembership, withServerComponentSession } from "@/server/auth";
@@ -11,7 +12,7 @@ import type { Session } from "next-auth";
 import { cache } from "react";
 import { z } from "zod";
 import { RBAC, type addPolicyOption } from ".";
-import { Err, Ok, wrap } from "../error";
+import { Err, Ok, invariant, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
 import { permissionSchema } from "./schema";
 
@@ -36,7 +37,7 @@ export async function checkAccessControlMembership({
 }
 
 interface getPermissionsForRoleOptions {
-  role: Roles;
+  role: Roles | null;
   tx: TPrismaOrTransaction;
   companyId: string;
   customRoleId: string | null;
@@ -53,8 +54,12 @@ export async function getPermissionsForRole({
   customRoleId,
   tx,
 }: getPermissionsForRoleOptions) {
-  if (role !== "CUSTOM") {
-    return Ok(defaultPermissions[role]);
+  if (role === "ADMIN") {
+    return Ok(ADMIN_PERMISSION);
+  }
+
+  if (!role) {
+    return Ok(DEFAULT_PERMISSION);
   }
 
   if (!customRoleId) {
@@ -63,7 +68,7 @@ export async function getPermissionsForRole({
     );
   }
 
-  const customRole = await tx.role.findFirst({
+  const customRole = await tx.customRole.findFirst({
     where: {
       companyId,
       id: customRoleId,
@@ -125,17 +130,20 @@ export async function getPermissions({ db, session }: getPermissionsOptions) {
 }
 
 interface getRoleByIdOption {
-  id: string;
+  id?: string | null | undefined;
   tx: TPrismaOrTransaction;
 }
 
 export const getRoleById = async ({ id, tx }: getRoleByIdOption) => {
-  const defaultRole = defaultRolesIdMap?.[id];
-
-  if (defaultRole) {
-    return { role: defaultRole, customRoleId: null };
+  if (!id || id === "") {
+    return { role: null, customRoleId: null };
   }
-  const { id: customRoleId } = await tx.role.findFirstOrThrow({
+
+  if (id === ADMIN_ROLE_ID) {
+    return { role: Roles.ADMIN, customRoleId: null };
+  }
+
+  const { id: customRoleId } = await tx.customRole.findFirstOrThrow({
     where: { id },
     select: { id: true },
   });
@@ -189,4 +197,23 @@ export const serverAccessControl = async () => {
   };
 
   return { isPermissionsAllowed, roleMap, allow };
+};
+
+interface getRoleIdOption {
+  role: Roles | null;
+  customRoleId: string | null;
+}
+
+export const getRoleId = ({ role, customRoleId }: getRoleIdOption) => {
+  if (role === "ADMIN") {
+    return ADMIN_ROLE_ID;
+  }
+
+  if (!role) {
+    return undefined;
+  }
+
+  invariant(customRoleId, "custom role id not found");
+
+  return customRoleId;
 };

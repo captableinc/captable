@@ -30,7 +30,7 @@ import {
 import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { getRoleId } from "@/constants/rbac";
+import { getRoleId } from "@/lib/rbac/access-control";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { useSession } from "next-auth/react";

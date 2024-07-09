@@ -1,6 +1,6 @@
 "use client";
 
-import { defaultPermissions } from "@/constants/rbac";
+import { ADMIN_PERMISSION } from "@/constants/rbac";
 import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
@@ -132,7 +132,7 @@ export const columns: ColumnDef<Role>[] = [
 
       const viewRole = () => {
         const permissions = getPermission(
-          role?.permissions ?? defaultPermissions[role.role],
+          role?.permissions ?? ADMIN_PERMISSION,
         );
 
         pushModal("RoleCreateUpdate", {
@@ -155,7 +155,10 @@ export const columns: ColumnDef<Role>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Allow action="update" subject="roles">
-              <DropdownMenuItem onSelect={handleUpdateRole}>
+              <DropdownMenuItem
+                disabled={row.original.type === "default"}
+                onSelect={handleUpdateRole}
+              >
                 Edit
               </DropdownMenuItem>
             </Allow>
@@ -222,14 +225,12 @@ export function RoleTable({ roles }: RoleTableProps) {
   });
 
   return (
-    <div className="w-full p-6">
-      <DataTable table={table}>
-        <DataTableContent>
-          <DataTableHeader />
-          <DataTableBody />
-        </DataTableContent>
-        <DataTablePagination />
-      </DataTable>
-    </div>
+    <DataTable table={table}>
+      <DataTableContent>
+        <DataTableHeader />
+        <DataTableBody />
+      </DataTableContent>
+      <DataTablePagination />
+    </DataTable>
   );
 }

@@ -1,7 +1,6 @@
-import { withAccessControl } from "@/trpc/api/trpc";
-
-import { type RoleList, defaultRolesList } from "@/constants/rbac";
+import { DEFAULT_ADMIN_ROLE, type RoleList } from "@/constants/rbac";
 import { permissionSchema } from "@/lib/rbac/schema";
+import { withAccessControl } from "@/trpc/api/trpc";
 import { z } from "zod";
 
 export const listRolesProcedure = withAccessControl
@@ -11,7 +10,7 @@ export const listRolesProcedure = withAccessControl
     },
   })
   .query(async ({ ctx }) => {
-    const customRoles = await ctx.db.role.findMany({
+    const customRoles = await ctx.db.customRole.findMany({
       where: {
         companyId: ctx.membership.companyId,
       },
@@ -22,6 +21,8 @@ export const listRolesProcedure = withAccessControl
       },
     });
 
+    const defaultRolesList = [DEFAULT_ADMIN_ROLE];
+
     const customRolesList: RoleList[] = customRoles.map((data) => {
       const permissions = z.array(permissionSchema).parse(data.permissions);
       return {
@@ -31,5 +32,7 @@ export const listRolesProcedure = withAccessControl
       };
     });
 
-    return { rolesList: defaultRolesList.concat(customRolesList) };
+    return {
+      rolesList: defaultRolesList.concat(customRolesList),
+    };
   });

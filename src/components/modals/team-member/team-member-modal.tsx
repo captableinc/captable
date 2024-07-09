@@ -35,7 +35,7 @@ const ZodTeamMemberSchema = z.object({
   loginEmail: z.string(),
   workEmail: z.string(),
   title: z.string(),
-  roleId: z.string(),
+  roleId: z.string().optional(),
 });
 
 type TypeZodTeamMemberSchema = z.infer<typeof ZodTeamMemberSchema>;

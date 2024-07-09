@@ -20,10 +20,7 @@ export const updateMemberProcedure = withAccessControl
       const user = session.user;
 
       await db.$transaction(async (tx) => {
-        const role =
-          typeof roleId === "string"
-            ? await getRoleById({ tx, id: roleId })
-            : undefined;
+        const role = await getRoleById({ tx, id: roleId });
 
         const member = await tx.member.update({
           where: {
@@ -34,13 +31,15 @@ export const updateMemberProcedure = withAccessControl
           data: {
             ...rest,
             ...(role && { role: role.role }),
-            ...(role?.customRoleId && {
-              customRole: {
-                connect: {
-                  id: role.customRoleId,
-                },
-              },
-            }),
+            customRole: {
+              ...(role.customRoleId
+                ? {
+                    connect: {
+                      id: role.customRoleId,
+                    },
+                  }
+                : { disconnect: true }),
+            },
             user: {
               update: {
                 name,

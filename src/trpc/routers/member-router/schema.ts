@@ -1,4 +1,3 @@
-import { PayloadType } from "@/lib/constants";
 import { AvatarUploadInput, ProfileUpdateInput } from "@/lib/zodSchemas";
 import { string, z } from "zod";
 
@@ -6,7 +5,7 @@ export const ZodInviteMemberMutationSchema = z.object({
   email: z.string().email().min(1),
   name: z.string().min(1),
   title: z.string().min(1),
-  roleId: z.string().min(1),
+  roleId: z.string().optional(),
 });
 
 export type TypeZodInviteMemberMutationSchema = z.infer<

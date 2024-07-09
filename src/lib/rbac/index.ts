@@ -1,6 +1,7 @@
-import type { TActions, TSubjects } from "@/lib/rbac/constants";
 import { Ok, type Result } from "../error";
+import type { TActions } from "./actions";
 import type { TPermission } from "./schema";
+import type { TSubjects } from "./subjects";
 
 type Effect = "allow" | "deny";
 

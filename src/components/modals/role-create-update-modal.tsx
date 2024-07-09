@@ -2,13 +2,8 @@
 
 import Modal from "@/components/common/push-modal";
 
-import {
-  ACTIONS,
-  SUBJECTS,
-  type TActions,
-  type TSubjects,
-} from "@/lib/rbac/constants";
-
+import { ACTIONS, type TActions } from "@/lib/rbac/actions";
+import { SUBJECTS, type TSubjects } from "@/lib/rbac/subjects";
 import { api } from "@/trpc/react";
 import {
   type TypeZodCreateRoleMutationSchema,

@@ -4,8 +4,6 @@ import {
   ADMIN_PERMISSION,
   ADMIN_ROLE_ID,
   DEFAULT_PERMISSION,
-  type TActions,
-  type TSubjects,
 } from "@/lib/rbac/constants";
 import { Roles } from "@/prisma/enums";
 import { checkMembership, withServerComponentSession } from "@/server/auth";
@@ -16,7 +14,9 @@ import { z } from "zod";
 import { RBAC, type addPolicyOption } from ".";
 import { Err, Ok, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
+import type { TActions } from "./actions";
 import { permissionSchema } from "./schema";
+import type { TSubjects } from "./subjects";
 
 export interface checkMembershipOptions {
   session: Session;

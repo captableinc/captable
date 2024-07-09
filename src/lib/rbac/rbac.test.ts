@@ -32,11 +32,11 @@ describe("evaluating a query", () => {
       valid: true,
       permissions: [
         { subject: "billing", actions: ["read", "update", "delete"] },
-        { subject: "invite", actions: ["read", "update"] },
+        { subject: "roles", actions: ["read", "update"] },
       ],
       policies: {
         billing: { allow: ["read", "update"] },
-        invite: { allow: ["read"] },
+        roles: { allow: ["read"] },
       },
     },
     {
@@ -44,11 +44,11 @@ describe("evaluating a query", () => {
       valid: false,
       permissions: [
         { subject: "billing", actions: ["read", "update", "delete"] },
-        { subject: "invite", actions: ["read", "update"] },
+        { subject: "roles", actions: ["read", "update"] },
       ],
       policies: {
         billing: { allow: ["read", "update"] },
-        invite: { allow: ["delete"] },
+        roles: { allow: ["delete"] },
       },
     },
     {

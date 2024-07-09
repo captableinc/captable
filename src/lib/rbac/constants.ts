@@ -1,8 +1,7 @@
 import type { TPermission } from "@/lib/rbac/schema";
 import type { Roles } from "@/prisma/enums";
-
-export const ACTIONS = ["create", "read", "update", "delete", "*"] as const;
-export const SUBJECTS = ["billing", "members", "stakeholder", "roles"] as const;
+import type { TActions } from "./actions";
+import { SUBJECTS } from "./subjects";
 
 export const ADMIN_PERMISSION = SUBJECTS.map((item) => ({
   actions: ["*" as TActions],
@@ -39,6 +38,4 @@ export type RoleList = {
     }
 );
 
-export type TSubjects = (typeof SUBJECTS)[number];
-export type TActions = (typeof ACTIONS)[number];
 type DefaultRoles = Exclude<Roles, "CUSTOM">;

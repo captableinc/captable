@@ -1,5 +1,6 @@
-import type { TActions, TSubjects } from "@/lib/rbac/constants";
+import type { TActions } from "@/lib/rbac/actions";
 import type { TPermission } from "@/lib/rbac/schema";
+import type { TSubjects } from "@/lib/rbac/subjects";
 import { withAccessControl } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateRoleMutationSchema,

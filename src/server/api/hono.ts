@@ -1,29 +1,27 @@
 import { env } from "@/env";
-import { handleError } from "@/server/api/error";
+import { handleError, handleZodError } from "@/server/api/error";
+import type { TPrisma } from "@/server/db";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
+import type { Context as GenericContext, MiddlewareHandler } from "hono";
 
-/**
- * Initializes and configures the public API.
- *
- * This function sets up the public API using OpenAPIHono, including error handling,
- * OpenAPI documentation, and the Swagger UI.
- *
- * @returns {OpenAPIHono} The configured API instance.
- */
+export type HonoEnv = {
+  Bindings: {
+    NODE_ENV: (typeof env)["NODE_ENV"];
+  };
+
+  Variables: {
+    db: TPrisma;
+  };
+};
+
 export function PublicAPI() {
-  const api = new OpenAPIHono().basePath("/api");
+  const api = new OpenAPIHono<HonoEnv>({
+    defaultHook: handleZodError,
+  }).basePath("/api");
+
   api.onError(handleError);
 
-  /**
-   * Provides the OpenAPI schema for the API.
-   *
-   * @route GET /v1/schema
-   * @group Documentation
-   * @description This route returns the OpenAPI schema for the Captable, Inc. API.
-   * @returns {object} 200 - The OpenAPI schema
-   * @returns {Error}  default - Unexpected error
-   */
   api.doc("/v1/schema", () => ({
     openapi: "3.0.0",
     info: {
@@ -43,3 +41,5 @@ export function PublicAPI() {
 }
 
 export type PublicAPI = ReturnType<typeof PublicAPI>;
+export type Context = GenericContext<HonoEnv>;
+export type Middleware = MiddlewareHandler<HonoEnv>;

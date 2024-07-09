@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/form";
 
 import { StakeholderSelector } from "@/components/stakeholder/stakeholder-selector";
+import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { SafeStatusEnum, SafeTypeEnum } from "@/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,22 +30,8 @@ const SafeFormSchema = z.object({
   capital: z.coerce.number(),
   valuationCap: z.coerce.number().optional(),
   discountRate: z.coerce.number().optional(),
-  mfn: z
-    .string()
-    .refine((value) => value === "true" || value === "false", {
-      message: "Value must be a boolean",
-    })
-    .transform((value) => value === "true")
-    .default("false")
-    .optional(),
-  proRata: z
-    .string()
-    .refine((value) => value === "true" || value === "false", {
-      message: "Value must be a boolean",
-    })
-    .transform((value) => value === "true")
-    .default("false")
-    .optional(),
+  mfn: z.boolean().default(false),
+  proRata: z.boolean().default(false),
   issueDate: z.string().date(),
   stakeholderId: z.string(),
 });
@@ -55,7 +43,6 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
     resolver: zodResolver(SafeFormSchema),
     defaultValues: {
       capital: 0,
-      discountRate: 0,
       mfn: false,
       proRata: false,
       type: SafeTypeEnum.POST_MONEY,
@@ -63,6 +50,8 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
       issueDate: new Date().toISOString(),
     },
   });
+
+  const isSubmitting = form.formState.isSubmitting;
 
   const handleSubmit = (data: SafeFormType) => {
     console.log(data);
@@ -82,19 +71,11 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             </p>
           </FormLabel>
 
-          {/* <FormField
-            control={form.control}
-            name="issueDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
-          /> */}
-          <StakeholderSelector />
+          <StakeholderSelector
+            onSelect={(value: string) => {
+              form.setValue("stakeholderId", value);
+            }}
+          />
         </div>
 
         <PrePostSelector
@@ -216,28 +197,25 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
           <FormField
             control={form.control}
             name="capital"
-            render={({ field }) => {
-              const { onChange, ...rest } = field;
-
+            render={() => {
               return (
                 <FormItem>
-                  <FormLabel>Pro-rata rights letter</FormLabel>
+                  <FormLabel>
+                    Pro-rata rights <span className="text-xs">(optional)</span>
+                  </FormLabel>
 
-                  <FormControl>
-                    <NumericFormat
-                      thousandSeparator
-                      allowedDecimalSeparators={["%"]}
-                      decimalScale={2}
-                      prefix={"$  "}
-                      {...rest}
-                      customInput={Input}
-                      onValueChange={(values) => {
-                        const { floatValue } = values;
-                        onChange(floatValue);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
+                  <LinearCombobox
+                    options={[
+                      { value: "true", label: "Include" },
+                      { value: "false", label: "Exclude" },
+                    ]}
+                    onValueChange={(option: {
+                      value: string;
+                      label: string;
+                    }) => {
+                      form.setValue("proRata", option.value === "true");
+                    }}
+                  />
                 </FormItem>
               );
             }}
@@ -246,31 +224,41 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
           <FormField
             control={form.control}
             name="valuationCap"
-            render={({ field }) => {
-              const { onChange, ...rest } = field;
-
+            render={() => {
               return (
                 <FormItem>
-                  <FormLabel>Most favored nation</FormLabel>
-                  <FormControl>
-                    <NumericFormat
-                      thousandSeparator
-                      allowedDecimalSeparators={["%"]}
-                      decimalScale={2}
-                      prefix={"$  "}
-                      {...rest}
-                      customInput={Input}
-                      onValueChange={(values) => {
-                        const { floatValue } = values;
-                        onChange(floatValue);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-xs font-light" />
+                  <FormLabel>
+                    Most favored nation{" "}
+                    <span className="text-xs">(optional)</span>
+                  </FormLabel>
+                  <LinearCombobox
+                    options={[
+                      { value: "true", label: "Include" },
+                      { value: "false", label: "Exclude" },
+                    ]}
+                    onValueChange={(option: {
+                      value: string;
+                      label: string;
+                    }) => {
+                      form.setValue("mfn", option.value === "true");
+                    }}
+                  />
                 </FormItem>
               );
             }}
           />
+        </div>
+
+        <div className="mt-8 flex justify-end">
+          <Button disabled={isSubmitting} loading={isSubmitting} type="submit">
+            {type === "create"
+              ? isSubmitting
+                ? "Creating SAFE"
+                : "Create new SAFE"
+              : isSubmitting
+                ? "Importing SAFE"
+                : "Import existing SAFE"}
+          </Button>
         </div>
       </form>
     </Form>

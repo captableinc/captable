@@ -11,7 +11,7 @@ export const SafeModal: React.FC<SafeModalProps> = ({ type }) => {
 
   return (
     <Modal
-      size="3xl"
+      size="2xl"
       title={
         type === "create"
           ? "Create a new SAFE agreement"

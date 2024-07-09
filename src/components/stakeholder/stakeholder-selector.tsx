@@ -1,5 +1,7 @@
 "use client";
 
+import Tldr from "@/components/common/tldr";
+import { pushModal } from "@/components/modals";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { api } from "@/trpc/react";
 import {
@@ -8,7 +10,11 @@ import {
 } from "@remixicon/react";
 import { useEffect, useState } from "react";
 
-export function StakeholderSelector() {
+type StakeholderSelectorType = {
+  onSelect: (stakeholder: string) => void;
+};
+
+export function StakeholderSelector({ onSelect }: StakeholderSelectorType) {
   const [options, setOptions] = useState<{ value: string; label: string }[]>(
     [],
   );
@@ -33,7 +39,7 @@ export function StakeholderSelector() {
       placeholder="Select a stakeholder"
       options={options}
       onValueChange={(option) => {
-        console.log(option, option.value);
+        onSelect(option.value);
       }}
     >
       <button
@@ -41,13 +47,25 @@ export function StakeholderSelector() {
         className="cursor-pointer w-full text-left"
         disabled={isLoading}
         onClick={() => {
-          alert("Push modal to add a stakeholder");
+          pushModal("SingleStakeholdersModal", {
+            title: "Add a stakeholder",
+            subtitle: (
+              <Tldr
+                message="Manage stakeholders by adding them. 
+              Categorize, assign roles, and maintain contact info for investors, partners, and clients."
+                cta={{
+                  label: "Learn more",
+                  href: "https://captable.inc/help",
+                }}
+              />
+            ),
+          });
         }}
       >
         <div className="flex items-center my-1 gap-x-2">
           <span>
             {isLoading ? (
-              <LoadingIcon className="h-4 w-4 animate-spin" />
+              <LoadingIcon className="h-4 w-4 animate-spin" aria-hidden />
             ) : (
               <RiAddCircleLine className="h-4 w-4" aria-hidden />
             )}

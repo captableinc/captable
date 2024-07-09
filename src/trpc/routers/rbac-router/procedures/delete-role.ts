@@ -20,7 +20,9 @@ export const deleteRoleProcedure = withAccessControl
         throw new Error("default roles cannot be deleted");
       }
 
-      await tx.role.delete({ where: { id: role.customRoleId, companyId } });
+      await tx.customRole.delete({
+        where: { id: role.customRoleId, companyId },
+      });
     });
     return {};
   });

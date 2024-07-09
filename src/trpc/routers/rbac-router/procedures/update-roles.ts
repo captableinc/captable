@@ -20,7 +20,7 @@ export const updateRolesProcedure = withAccessControl
         throw new Error("role id not found");
       }
 
-      await db.role.update({
+      await db.customRole.update({
         where: {
           companyId: membership.companyId,
           id: id.customRoleId,

@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { StakeholderSelector } from "@/components/stakeholder/stakeholder-selector";
 import { Input } from "@/components/ui/input";
 import { SafeStatusEnum, SafeTypeEnum } from "@/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,12 +78,11 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
           <FormLabel>
             Investor <span className="text-xs">(Stakeholder)</span>
             <p className="text-sm font-normal">
-              Please select or create the investor account you want to create
-              the SAFE agreement for.
+              Please select or create the investor account.
             </p>
           </FormLabel>
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="issueDate"
             render={({ field }) => (
@@ -93,7 +93,8 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
                 <FormMessage className="text-xs font-light" />
               </FormItem>
             )}
-          />
+          /> */}
+          <StakeholderSelector />
         </div>
 
         <PrePostSelector

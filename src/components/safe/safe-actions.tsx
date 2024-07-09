@@ -2,14 +2,15 @@
 
 import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
+import { RiAddFill, RiSafe2Fill, RiSafeFill } from "@remixicon/react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RiAddFill, RiSafe2Fill, RiSafeFill } from "@remixicon/react";
 
-export function SafeActions() {
+export const SafeActions = async () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -56,4 +57,4 @@ export function SafeActions() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

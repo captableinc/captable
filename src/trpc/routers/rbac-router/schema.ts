@@ -1,4 +1,5 @@
-import { ACTIONS, SUBJECTS } from "@/lib/rbac/constants";
+import { ACTIONS } from "@/lib/rbac/actions";
+import { SUBJECTS } from "@/lib/rbac/subjects";
 import { z } from "zod";
 
 export const ZodCreateRoleMutationSchema = z.object({

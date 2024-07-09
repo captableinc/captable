@@ -1,3 +1,12 @@
+## Basics
+
+### Subject
+The subject or subject type which you want to check user action on. Usually this is a business (or domain) entity (e.g., billing, roles, members). subjects can be added in the `subjects.ts` file
+
+
+### Action
+explains what users are able to do in the app. User actions are typically verbs determined by how the business operates. Often, these actions will include words like create, read, update, and delete. actions can be added in the `actions.ts` file
+
 ## Usage
 
 ### tRPC procedure

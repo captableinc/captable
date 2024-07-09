@@ -3,6 +3,6 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 
 export const registerCompanyRoutes = (api: PublicAPI) => {
-  getOne(api);
-  getMany(api);
+  api.openapi(getOne.route, getOne.handler);
+  api.openapi(getMany.route, getMany.handler);
 };

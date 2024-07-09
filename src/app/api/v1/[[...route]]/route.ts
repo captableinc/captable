@@ -1,8 +1,6 @@
-// export const runtime = "edge";
-import { api } from "@/server/api";
+import api from "@/server/api";
 import { handle } from "hono/vercel";
 
-export const GET = handle(api);
-export const POST = handle(api);
-export const PUT = handle(api);
-export const DELETE = handle(api);
+const handler = handle(api);
+
+export { handler as GET, handler as POST, handler as PUT, handler as DELETE };

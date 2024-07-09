@@ -1,3 +1,5 @@
+import "server-only";
+
 import {
   ADMIN_PERMISSION,
   ADMIN_ROLE_ID,
@@ -12,7 +14,7 @@ import type { Session } from "next-auth";
 import { cache } from "react";
 import { z } from "zod";
 import { RBAC, type addPolicyOption } from ".";
-import { Err, Ok, invariant, wrap } from "../error";
+import { Err, Ok, wrap } from "../error";
 import { BaseError } from "../error/errors/base";
 import { permissionSchema } from "./schema";
 
@@ -197,23 +199,4 @@ export const serverAccessControl = async () => {
   };
 
   return { isPermissionsAllowed, roleMap, allow };
-};
-
-interface getRoleIdOption {
-  role: Roles | null;
-  customRoleId: string | null;
-}
-
-export const getRoleId = ({ role, customRoleId }: getRoleIdOption) => {
-  if (role === "ADMIN") {
-    return ADMIN_ROLE_ID;
-  }
-
-  if (!role) {
-    return undefined;
-  }
-
-  invariant(customRoleId, "custom role id not found");
-
-  return customRoleId;
 };

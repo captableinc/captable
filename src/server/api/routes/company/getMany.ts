@@ -2,10 +2,8 @@ import { withMemberAuth } from "@/server/api/auth";
 import { ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { ApiCompanySchema } from "@/server/api/schema/company";
-import { db } from "@/server/db";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Company } from "@prisma/client";
-import type { Context } from "hono";
 
 const route = createRoute({
   method: "get",
@@ -26,7 +24,8 @@ const route = createRoute({
   },
 });
 const getMany = (app: PublicAPI) => {
-  app.openapi(route, async (c: Context) => {
+  app.openapi(route, async (c) => {
+    const db = c.get("db");
     const { membership } = await withMemberAuth(c);
     const companyIds = membership.map((m) => m.companyId);
 

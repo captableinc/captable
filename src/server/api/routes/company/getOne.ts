@@ -3,7 +3,6 @@ import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { ApiCompanySchema } from "@/server/api/schema/company";
 import { createRoute, z } from "@hono/zod-openapi";
-import type { Context } from "hono";
 
 export const RequestSchema = z.object({
   id: z
@@ -38,7 +37,7 @@ const route = createRoute({
   },
 });
 const getOne = (app: PublicAPI) => {
-  app.openapi(route, async (c: Context) => {
+  app.openapi(route, async (c) => {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const { company } = (await withCompanyAuth(c)) as { company: any };
 

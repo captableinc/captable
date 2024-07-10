@@ -3,7 +3,7 @@ import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
 import type { TypeZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
 
-interface AddShareType extends TypeZodAddShareMutationSchema {
+export interface AddShareType extends TypeZodAddShareMutationSchema {
   companyId: string;
   memberId: string;
   requestIP: string;

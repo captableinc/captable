@@ -32,10 +32,11 @@ export const PaginationQuerySchema = z.object({
     }),
 
   total: z
-    .number()
-    .int()
-    .positive()
-    .optional()
+    .preprocess(
+      (val) =>
+        val === undefined ? undefined : Number.parseInt(val as string, 10),
+      z.number().int().positive().optional(),
+    )
     .openapi({
       description: "Total Number of Records",
       param: {

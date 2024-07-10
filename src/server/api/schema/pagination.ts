@@ -45,7 +45,7 @@ export const PaginationResponseSchema = z.object({
     example: 100,
   }),
 
-  cursor: z.string().optional().openapi({
+  cursor: z.string().nullable().openapi({
     description: "Next page cursor",
     example: "cly151kxq0000i7ngb3erchgo",
   }),

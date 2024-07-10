@@ -4,7 +4,7 @@ interface Paginated<T> {
   data: T[];
   count: number;
   total: number | undefined;
-  cursor?: string;
+  cursor: string | null;
 }
 
 /**

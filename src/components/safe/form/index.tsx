@@ -30,8 +30,8 @@ const SafeFormSchema = z.object({
   capital: z.coerce.number(),
   valuationCap: z.coerce.number().optional(),
   discountRate: z.coerce.number().optional(),
-  mfn: z.boolean().default(false),
-  proRata: z.boolean().default(false),
+  mfn: z.boolean().optional().default(false),
+  proRata: z.boolean().optional().default(false),
   issueDate: z.string().date(),
   stakeholderId: z.string(),
 });
@@ -42,7 +42,6 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
   const form = useForm<SafeFormType>({
     resolver: zodResolver(SafeFormSchema),
     defaultValues: {
-      capital: 0,
       mfn: false,
       proRata: false,
       type: SafeTypeEnum.POST_MONEY,
@@ -71,9 +70,20 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             </p>
           </FormLabel>
 
-          <StakeholderSelector
-            onSelect={(value: string) => {
-              form.setValue("stakeholderId", value);
+          <FormField
+            control={form.control}
+            name="stakeholderId"
+            render={() => {
+              return (
+                <FormItem>
+                  <StakeholderSelector
+                    onSelect={(value: string) => {
+                      form.setValue("stakeholderId", value);
+                    }}
+                  />
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
             }}
           />
         </div>
@@ -196,7 +206,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
 
           <FormField
             control={form.control}
-            name="capital"
+            name="proRata"
             render={() => {
               return (
                 <FormItem>
@@ -223,7 +233,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
 
           <FormField
             control={form.control}
-            name="valuationCap"
+            name="mfn"
             render={() => {
               return (
                 <FormItem>

@@ -25,7 +25,7 @@ export const createRolesProcedure = withAccessControl
       },
     });
 
-    return { message: "role created successfully" };
+    return { message: "Role successfully created." };
   });
 
 export function extractPermission(

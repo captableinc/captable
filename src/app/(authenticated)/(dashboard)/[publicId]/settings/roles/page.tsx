@@ -16,7 +16,7 @@ export default async function RolesPage() {
     <div className="flex flex-col gap-y-3">
       <PageLayout
         title="Roles"
-        description="Manage your roles."
+        description="Create and manage roles for your company."
         action={<RoleCreateUpdateModalAction disabled={!canCreate} />}
       />
 

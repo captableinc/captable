@@ -239,9 +239,6 @@ importers:
       react-pdf:
         specifier: ^8.0.2
         version: 8.0.2(@types/react@18.3.2)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
-      server-only:
-        specifier: ^0.0.1
-        version: 0.0.1
       sharp:
         specifier: ^0.33.3
         version: 0.33.4
@@ -7630,9 +7627,6 @@ packages:
 
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
-
-  server-only@0.0.1:
-    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
@@ -18123,8 +18117,6 @@ snapshots:
   serialize-javascript@6.0.2:
     dependencies:
       randombytes: 2.1.0
-
-  server-only@0.0.1: {}
 
   set-blocking@2.0.0:
     optional: true

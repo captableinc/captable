@@ -32,5 +32,5 @@ export const updateRolesProcedure = withAccessControl
       });
     });
 
-    return { message: "role created successfully" };
+    return { message: "Role successfully updated." };
   });

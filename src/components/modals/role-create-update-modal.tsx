@@ -79,7 +79,7 @@ export const RoleCreateUpdateModal = ({
   ...rest
 }: RoleCreateUpdateModalProps) => {
   return (
-    <Modal size="4xl" title={title} subtitle={subtitle}>
+    <Modal size="2xl" title={title} subtitle={subtitle}>
       <RoleForm {...rest} />
     </Modal>
   );
@@ -115,6 +115,8 @@ function RoleForm(props: FormProps) {
         },
   });
 
+  const isSubmitting = form.formState.isSubmitting;
+
   const onSubmit = async (data: TFormSchema) => {
     if (props.type === "create") {
       await createRole(data);
@@ -137,10 +139,15 @@ function RoleForm(props: FormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>name</FormLabel>
+                  <FormLabel>Role name</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+
+                  <span className="text-xs text-gray-500">
+                    The name of the role, eg. "Billing", "Investor", "Employee"
+                  </span>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -175,8 +182,15 @@ function RoleForm(props: FormProps) {
         </div>
 
         {props.type !== "view" ? (
-          <div>
-            <Button type="submit">Save</Button>
+          <div className="mt-8 flex justify-end">
+            <Button type="submit" disabled={isSubmitting}>
+              {
+                {
+                  create: isSubmitting ? "Creating ..." : "Create role",
+                  edit: isSubmitting ? "Updating ..." : "Update role",
+                }[props.type]
+              }
+            </Button>
           </div>
         ) : null}
       </form>
@@ -194,12 +208,12 @@ export const RoleCreateUpdateModalAction = (
       {...props}
       onClick={() => {
         pushModal("RoleCreateUpdate", {
-          title: "Create roles",
+          title: "Create a role",
           type: "create",
         });
       }}
     >
-      Create Role
+      Create a role
     </Button>
   );
 };

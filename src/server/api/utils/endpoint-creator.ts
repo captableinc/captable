@@ -10,7 +10,7 @@ type RouteConfig = Parameters<typeof OpenApiCreateRouteType>[0];
 
 type Version = "v1" | "v2";
 
-const createApi = <V extends Version>(version: V) => {
+const createApi = <V extends Version>(_version: V) => {
   const createRoute = <
     T extends Omit<RouteConfig, "path">,
     P extends `/${V}/${string}`,
@@ -20,7 +20,6 @@ const createApi = <V extends Version>(version: V) => {
   ) => {
     const updatedRouteConfig: U = {
       ...routeConfig,
-      path: `/${version}${routeConfig.path}`,
       responses: {
         ...(routeConfig?.responses && { ...routeConfig.responses }),
         ...ErrorResponses,

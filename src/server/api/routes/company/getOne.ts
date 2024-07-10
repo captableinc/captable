@@ -38,7 +38,6 @@ const route = v1Api
   .handler(async (c) => {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const { company } = (await withCompanyAuth(c)) as { company: any };
-    c.req.param("id");
     if (!company) {
       throw new ApiError({
         code: "NOT_FOUND",

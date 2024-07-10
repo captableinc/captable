@@ -1,13 +1,15 @@
 import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { withAccessControl } from "@/trpc/api/trpc";
 
-export const getMembersProcedure = withAuth.query(async ({ ctx }) => {
-  const { db, session } = ctx;
+export const getMembersProcedure = withAccessControl
+  .meta({ policies: { members: { allow: ["read"] } } })
+  .query(async ({ ctx }) => {
+    const {
+      db,
+      membership: { companyId },
+    } = ctx;
 
-  const data = await db.$transaction(async (tx) => {
-    const { companyId } = await checkMembership({ tx, session });
-
-    const data = await tx.member.findMany({
+    const data = await db.member.findMany({
       where: {
         companyId,
       },
@@ -28,8 +30,5 @@ export const getMembersProcedure = withAuth.query(async ({ ctx }) => {
       },
     });
 
-    return data;
+    return { data };
   });
-
-  return { data };
-});

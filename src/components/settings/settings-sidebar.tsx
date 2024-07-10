@@ -14,6 +14,8 @@ import {
   RiLock2Line,
   RiNotificationFill,
   RiNotificationLine,
+  RiShieldUserFill,
+  RiShieldUserLine,
   RiTerminalBoxFill,
   RiTerminalBoxLine,
 } from "@remixicon/react";
@@ -33,6 +35,12 @@ const companyNav = [
     icon: RiGroup2Line,
     activeIcon: RiGroup2Fill,
   },
+  {
+    name: "Roles",
+    href: "/settings/roles",
+    icon: RiShieldUserLine,
+    activeIcon: RiShieldUserFill,
+  },
 ];
 
 const accountNav = [
@@ -48,6 +56,7 @@ const accountNav = [
     icon: RiLock2Line,
     activeIcon: RiLock2Fill,
   },
+
   {
     name: "API Keys",
     href: "/settings/api",

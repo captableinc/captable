@@ -1,10 +1,13 @@
 import { NavBar } from "@/components/dashboard/navbar";
 import { SideBar } from "@/components/dashboard/sidebar";
 import { ModalProvider } from "@/components/modals";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { getCompanyList } from "@/server/company";
 import { redirect } from "next/navigation";
 import "@/styles/hint.css";
+import { RBAC } from "@/lib/rbac";
+import { getServerPermissions } from "@/lib/rbac/access-control";
+import { RolesProvider } from "@/providers/roles-provider";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
@@ -15,16 +18,20 @@ const DashboardLayout = async ({
   children,
   params: { publicId },
 }: DashboardLayoutProps) => {
-  const { user } = await withServerSession();
+  const { user } = await withServerComponentSession();
 
   if (user.companyPublicId !== publicId) {
     redirect(`/${user.companyPublicId}`);
   }
 
-  const companies = await getCompanyList(user.id);
+  const [companies, permissionsData] = await Promise.all([
+    getCompanyList(user.id),
+    getServerPermissions(),
+  ]);
 
+  const permissions = RBAC.normalizePermissionsMap(permissionsData.permissions);
   return (
-    <>
+    <RolesProvider data={{ permissions }}>
       <div className="flex min-h-screen bg-gray-50">
         <aside className="sticky top-0 hidden min-h-full w-64 flex-shrink-0 flex-col lg:flex lg:border-r">
           <SideBar companies={companies} publicId={publicId} />
@@ -37,7 +44,7 @@ const DashboardLayout = async ({
         </div>
       </div>
       <ModalProvider />
-    </>
+    </RolesProvider>
   );
 };
 

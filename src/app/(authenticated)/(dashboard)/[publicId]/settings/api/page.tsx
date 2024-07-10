@@ -1,6 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "API Keys",
 };
 const ApiSettingsPage = async () => {
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
   const { user } = session;
   const apiKeys = await db.apiKey.findMany({
     where: {

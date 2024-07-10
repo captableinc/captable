@@ -1,7 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
@@ -27,7 +27,7 @@ const getShareClasses = async (companyId: string) => {
 };
 
 const EquityPlanPage = async () => {
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
   const companyId = session?.user?.companyId;
   let equityPlans: EquityPlanMutationType[] = [];
 

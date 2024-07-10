@@ -8,12 +8,21 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { RouterOutputs } from "@/trpc/shared";
 import { RiAccountCircleFill, RiAddLine } from "@remixicon/react";
 
-export const AddTeamMemberDropdownMenu = () => {
+type Roles = RouterOutputs["rbac"]["listRoles"]["rolesList"];
+
+interface AddTeamMemberDropdownMenuProps {
+  roles: Roles;
+}
+
+export const AddTeamMemberDropdownMenu = ({
+  roles,
+}: AddTeamMemberDropdownMenuProps) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button className="w-full md:w-auto" size="sm">
           <RiAddLine className="inline-block h-5 w-5" />
           Team member
@@ -35,7 +44,9 @@ export const AddTeamMemberDropdownMenu = () => {
                     loginEmail: "",
                     title: "",
                     workEmail: "",
+                    roleId: "",
                   },
+                  roles,
                 });
               }}
             >

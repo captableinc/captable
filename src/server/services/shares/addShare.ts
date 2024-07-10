@@ -1,10 +1,15 @@
 import { generatePublicId } from "@/common/id";
+import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
 import type { TypeZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
 
 interface AddShareType extends TypeZodAddShareMutationSchema {
   companyId: string;
   memberId: string;
+  requestIP: string;
+  userAgent: string;
+  userId: string;
+  userName: string;
 }
 
 export const addShare = async (input: AddShareType) => {
@@ -49,6 +54,21 @@ export const addShare = async (input: AddShareType) => {
         data: bulkDocuments,
         skipDuplicates: true,
       });
+
+      await Audit.create(
+        {
+          action: "share.created",
+          companyId: input.companyId,
+          actor: { type: "user", id: input.userId },
+          context: {
+            userAgent: input.userAgent,
+            requestIp: input.requestIP,
+          },
+          target: [{ type: "share", id: share.id }],
+          summary: `${input.userName} added share for stakeholder ${input.stakeholderId}`,
+        },
+        tx,
+      );
     });
 
     return {

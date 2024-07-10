@@ -53,14 +53,24 @@ const route = createRoute({
 
 const create = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
-    const { company, member } = await withCompanyAuth(c);
+    const { company, member, user } = await withCompanyAuth(c);
 
     const body = await c.req.json();
+
+    const requestIP =
+      c.req.header("x-forwarded-for") ||
+      c.req.header("remoteAddr") ||
+      "Unknown IP";
+    const userAgent = c.req.header("User-Agent") || "";
 
     const { success } = await addShare({
       ...body,
       companyId: company.id,
       memberId: member.id,
+      requestIP,
+      userAgent,
+      userId: user.id,
+      userName: user.name,
     });
 
     if (!success) {

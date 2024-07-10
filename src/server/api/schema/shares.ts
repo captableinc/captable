@@ -128,3 +128,106 @@ export const ShareSchema = z
   });
 
 export type TShareSchema = z.infer<typeof ShareSchema>;
+
+export const AddShareSchema = z
+  .object({
+    status: z.enum(SecuritiesStatusArr).openapi({
+      description: "Security Status",
+      example: "DRAFT",
+    }),
+
+    certificateId: z.string().openapi({
+      description: "Certificate ID",
+      example: "cly13ipa40000i7ng42mv4x7b",
+    }),
+
+    quantity: z.number().min(0).openapi({
+      description: "Quantity of Shares",
+      example: 234,
+    }),
+
+    pricePerShare: z.number().min(0).openapi({
+      description: "Price Per Share",
+      example: 23.4,
+    }),
+
+    capitalContribution: z.number().min(0).openapi({
+      description: "Total amount of money contributed",
+      example: 25.4,
+    }),
+
+    ipContribution: z.number().min(0).openapi({
+      description: "Value of the intellectual property contributed",
+      example: 43.4,
+    }),
+
+    debtCancelled: z.number().min(0).openapi({
+      description: "Amount of debt cancelled",
+      example: 54.54,
+    }),
+
+    otherContributions: z.number().min(0).openapi({
+      description: "Other contributions",
+      example: 45.54,
+    }),
+
+    vestingSchedule: z.enum(VestingScheduleArr).openapi({
+      description: "Vesting Schedule",
+      example: "VESTING_0_0_0",
+    }),
+
+    companyLegends: z
+      .enum(ShareLegendsArr)
+      .array()
+      .openapi({
+        description: "Company Legends",
+        example: ["US_SECURITIES_ACT", "SALE_AND_ROFR"],
+      }),
+
+    issueDate: z.string().datetime().openapi({
+      description: "Issued Date",
+      example: "1970-01-01T00:00:00.000Z",
+    }),
+
+    rule144Date: z.string().datetime().openapi({
+      description: "Rule 144 Date",
+      example: "1970-01-01T00:00:00.000Z",
+    }),
+
+    vestingStartDate: z.string().datetime().openapi({
+      description: "Vesting Start Date",
+      example: "1970-01-01T00:00:00.000Z",
+    }),
+
+    boardApprovalDate: z.string().datetime().openapi({
+      description: "Board Approval Date",
+      example: "1970-01-01T00:00:00.000Z",
+    }),
+
+    stakeholderId: z.string().cuid().openapi({
+      description: "StakeHolder ID",
+      example: "clydxglyl0000d94ff363egje",
+    }),
+
+    shareClassId: z.string().cuid().openapi({
+      description: "ShareClass ID",
+      example: "clycjzdqo000cjvsqr9rn6479",
+    }),
+
+    documents: z
+      .array(
+        z.object({
+          bucketId: z.string(),
+          name: z.string(),
+        }),
+      )
+      .openapi({
+        description: "Uploaded Documents",
+        example: [{ bucketId: "vbhjewhvjvj3", name: "Bucket Blue" }],
+      }),
+  })
+  .openapi({
+    description: "Create a Share",
+  });
+
+export type TAddShareSchema = z.infer<typeof AddShareSchema>;

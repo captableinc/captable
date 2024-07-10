@@ -38,9 +38,7 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts",
-    "src/components/onboarding/verify-email",
-    "src/app/(unauthenticated)/forgot-password"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

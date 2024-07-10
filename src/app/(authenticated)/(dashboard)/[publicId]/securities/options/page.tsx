@@ -50,7 +50,7 @@ const OptionsPage = async () => {
             buttonDisplayName="Add Options"
             title="Collect options for Stakeholders"
             subtitle={
-              <Tldr
+              <Message
                 description="Manage stock options by adding them. 
              Add approval dates, notes, grantId for the stakeholders. "
                 cta={{

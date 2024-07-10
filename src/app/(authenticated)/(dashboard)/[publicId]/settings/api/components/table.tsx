@@ -58,7 +58,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
       <div className="mx-3">
-        <Tldr
+        <Message
           description="
           For security reasons, we have no ways to retrieve your complete API keys. If you lose your API key, you will need to create or rotate and replace with a new one.
         "

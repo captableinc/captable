@@ -55,7 +55,7 @@ const CreateApiKey = () => {
       <Modal
         title="API key created"
         subtitle={
-          <Tldr
+          <Message
             description="
             You will not see this key again, so please make sure to copy and store it in a safe place.
           "

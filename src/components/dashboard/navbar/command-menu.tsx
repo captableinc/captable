@@ -50,7 +50,7 @@ const Pages: CommandOption[] = [
       pushModal("SingleStakeholdersModal", {
         title: "Add a stakeholder",
         subtitle: (
-          <Tldr
+          <Message
             description="Manage stakeholders by adding them. 
           Categorize, assign roles, and maintain contact info for investors, partners, and clients."
             cta={{
@@ -95,7 +95,7 @@ const Pages: CommandOption[] = [
         title: "Create an equity plan",
         shareClasses: [],
         subtitle: (
-          <Tldr
+          <Message
             description="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
             cta={{
               label: "Learn more",
@@ -118,7 +118,7 @@ const Pages: CommandOption[] = [
         title: "Create a share class",
         shareClasses: [],
         subtitle: (
-          <Tldr
+          <Message
             description="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
             cta={{
               label: "Learn more",

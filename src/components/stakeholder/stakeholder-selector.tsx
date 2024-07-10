@@ -50,7 +50,7 @@ export function StakeholderSelector({ onSelect }: StakeholderSelectorType) {
           pushModal("SingleStakeholdersModal", {
             title: "Add a stakeholder",
             subtitle: (
-              <Tldr
+              <Message
                 description="Manage stakeholders by adding them. 
               Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                 cta={{

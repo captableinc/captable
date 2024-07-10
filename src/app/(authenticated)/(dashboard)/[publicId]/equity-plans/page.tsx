@@ -53,7 +53,7 @@ const EquityPlanPage = async () => {
           title="Create an equity plan"
           shareClasses={shareClasses}
           subtitle={
-            <Tldr
+            <Message
               description="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
               cta={{
                 label: "Learn more",
@@ -83,7 +83,7 @@ const EquityPlanPage = async () => {
             shareClasses={shareClasses}
             title="Create an equity plan"
             subtitle={
-              <Tldr
+              <Message
                 description="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
                 cta={{
                   label: "Learn more",

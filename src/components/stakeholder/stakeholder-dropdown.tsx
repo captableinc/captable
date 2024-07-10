@@ -30,7 +30,7 @@ export default function StakeholderDropdown() {
                 pushModal("SingleStakeholdersModal", {
                   title: "Add a stakeholder",
                   subtitle: (
-                    <Tldr
+                    <Message
                       description="Manage stakeholders by adding them. 
               Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                       cta={{
@@ -58,7 +58,7 @@ export default function StakeholderDropdown() {
                 pushModal("MultipleStakeholdersModal", {
                   title: "Add or Import Stakeholders",
                   subtitle: (
-                    <Tldr
+                    <Message
                       description="Manage stakeholders by adding them. 
               Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                       cta={{

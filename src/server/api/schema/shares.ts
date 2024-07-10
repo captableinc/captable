@@ -45,22 +45,22 @@ export const ShareSchema = z
       example: 23.4,
     }),
 
-    capitalContribution: z.number().optional().openapi({
+    capitalContribution: z.number().nullable().openapi({
       description: "Total amount of money contributed",
       example: 25.4,
     }),
 
-    ipContribution: z.number().optional().openapi({
+    ipContribution: z.number().nullable().openapi({
       description: "Value of the intellectual property contributed",
       example: 43.4,
     }),
 
-    debtCancelled: z.number().optional().openapi({
+    debtCancelled: z.number().nullable().openapi({
       description: "Amount of debt cancelled",
       example: 54.54,
     }),
 
-    otherContributions: z.number().optional().openapi({
+    otherContributions: z.number().nullable().openapi({
       description: "Other contributions",
       example: 45.54,
     }),
@@ -83,12 +83,12 @@ export const ShareSchema = z
       example: "1970-01-01T00:00:00.000Z",
     }),
 
-    rule144Date: z.string().datetime().optional().openapi({
+    rule144Date: z.string().datetime().nullable().openapi({
       description: "Rule 144 Date",
       example: "1970-01-01T00:00:00.000Z",
     }),
 
-    vestingStartDate: z.string().datetime().optional().openapi({
+    vestingStartDate: z.string().datetime().nullable().openapi({
       description: "Vesting Start Date",
       example: "1970-01-01T00:00:00.000Z",
     }),

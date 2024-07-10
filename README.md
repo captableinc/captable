@@ -179,6 +179,42 @@ When contributing to <strong>Captable, Inc.</strong>, whether on GitHub or in ot
 - Create database `captable` in postgres database
 - Update `.env` file's `DATABASE_URL` with database credentials
 - For a quick start, you can use [Supabase database](https://supabase.com/) or [Neon](https://neon.tech/) as well.
+- To simulate file storage locally, install `minio` via homebrew or any other package manager.
+
+  ```bash
+  brew install minio
+  ```
+
+  Once minio is installed run
+  ```bash
+  minio server start --console-address ":9002"
+  ```
+
+  This will start minio server <br>
+  minio api will be available on `http://127.0.0.1:9000` and <br>
+  minio web gui will be available on `http://127.0.0.1:9002`.
+
+  once you see these endpoint in terminal, update the following `.env`:
+  
+  ```bash
+  UPLOAD_ENDPOINT="http://127.0.0.1:9000" # should match minio api server's endpoint
+  NEXT_PUBLIC_UPLOAD_DOMAIN="http://127.0.0.1:9000" # should match minio api server's endpoint
+  UPLOAD_REGION="us-east-1" # don't change it
+  UPLOAD_ACCESS_KEY_ID="minioadmin" # by default minio username is "minioadmin"
+  UPLOAD_SECRET_ACCESS_KEY="minioadmin" # by default minio password is "minioadmin"
+  UPLOAD_BUCKET_PUBLIC="captable-public-bucket"
+  UPLOAD_BUCKET_PRIVATE="captable-private-bucket"
+  ```
+
+  after this,
+  go to minio web gui(`http://127.0.0.1:9002`) and login: <br>
+  username: `minioadmin` <br>
+  password: `minioadmin`
+
+  and create two buckets with the name: <br> `captable-public-bucket` and `captable-private-bucket`,<br> this should match `UPLOAD_BUCKET_PUBLIC` and `UPLOAD_BUCKET_PRIVATE` env's values.
+
+  and you should be done with minio setup.
+
 - Run the following command to install dependencies
 
   ```bash

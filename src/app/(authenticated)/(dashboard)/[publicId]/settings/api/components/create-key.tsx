@@ -1,7 +1,7 @@
 "use client";
 
+import Message from "@/components/common/message";
 import Modal from "@/components/common/modal";
-import Tldr from "@/components/common/tldr";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/react";
@@ -56,7 +56,7 @@ const CreateApiKey = () => {
         title="API key created"
         subtitle={
           <Tldr
-            message="
+            description="
             You will not see this key again, so please make sure to copy and store it in a safe place.
           "
           />

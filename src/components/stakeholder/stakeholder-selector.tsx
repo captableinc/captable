@@ -1,6 +1,6 @@
 "use client";
 
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { pushModal } from "@/components/modals";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { api } from "@/trpc/react";
@@ -51,7 +51,7 @@ export function StakeholderSelector({ onSelect }: StakeholderSelectorType) {
             title: "Add a stakeholder",
             subtitle: (
               <Tldr
-                message="Manage stakeholders by adding them. 
+                description="Manage stakeholders by adding them. 
               Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                 cta={{
                   label: "Learn more",

@@ -1,7 +1,7 @@
 "use client";
 
 import { dayjsExt } from "@/common/dayjs";
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { Card } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { RiMore2Fill } from "@remixicon/react";
@@ -59,7 +59,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
       <div className="mx-3">
         <Tldr
-          message="
+          description="
           For security reasons, we have no ways to retrieve your complete API keys. If you lose your API key, you will need to create or rotate and replace with a new one.
         "
         />

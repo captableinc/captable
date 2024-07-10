@@ -1,15 +1,17 @@
 import { RiInformationLine } from "@remixicon/react";
 import Link from "next/link";
 
-type TldrProps = {
-  message: string;
+type MessageProps = {
+  description: string;
   cta?: {
     label: string;
     href: string;
   };
+
+  children?: React.ReactNode;
 };
 
-const Tldr = ({ message, cta }: TldrProps) => {
+const Message = ({ description, cta, children }: MessageProps) => {
   return (
     <div className="mt-3 rounded-md bg-teal-50 p-4 text-left">
       <div className="flex">
@@ -21,7 +23,7 @@ const Tldr = ({ message, cta }: TldrProps) => {
         </div>
         <div className="ml-3">
           <div className="text-sm text-teal-600">
-            <p>{message}</p>
+            <p>{description}</p>
           </div>
 
           {cta && (
@@ -40,10 +42,12 @@ const Tldr = ({ message, cta }: TldrProps) => {
               </div>
             </div>
           )}
+
+          {children && <div className="mt-4">{children}</div>}
         </div>
       </div>
     </div>
   );
 };
 
-export default Tldr;
+export default Message;

@@ -7,6 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import Message from "@/components/common/message";
 import { StakeholderSelector } from "@/components/stakeholder/stakeholder-selector";
 import { Button } from "@/components/ui/button";
 import { LinearCombobox } from "@/components/ui/combobox";
@@ -258,6 +259,10 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             }}
           />
         </div>
+
+        {/* <Tldr
+          description="A Simple Agreement for Future Equity (SAFE) is an agreement between an investor and a company that provides the investor with the right to receive equity in the future, upon the occurrence of certain events."
+        > */}
 
         <div className="mt-8 flex justify-end">
           <Button disabled={isSubmitting} loading={isSubmitting} type="submit">

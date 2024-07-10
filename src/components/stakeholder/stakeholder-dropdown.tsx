@@ -1,6 +1,6 @@
 "use client";
 
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +31,7 @@ export default function StakeholderDropdown() {
                   title: "Add a stakeholder",
                   subtitle: (
                     <Tldr
-                      message="Manage stakeholders by adding them. 
+                      description="Manage stakeholders by adding them. 
               Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                       cta={{
                         label: "Learn more",
@@ -59,7 +59,7 @@ export default function StakeholderDropdown() {
                   title: "Add or Import Stakeholders",
                   subtitle: (
                     <Tldr
-                      message="Manage stakeholders by adding them. 
+                      description="Manage stakeholders by adding them. 
               Categorize, assign roles, and maintain contact info for investors, partners, and clients."
                       cta={{
                         label: "Learn more",

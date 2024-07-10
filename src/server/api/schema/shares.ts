@@ -231,3 +231,8 @@ export const AddShareSchema = z
   });
 
 export type TAddShareSchema = z.infer<typeof AddShareSchema>;
+
+export const UpdateShareSchema = AddShareSchema.omit({
+  documents: true,
+}).partial();
+export type TUpdateShareSchema = z.infer<typeof UpdateShareSchema>;

@@ -156,6 +156,7 @@ model Company {
   dataRooms        DataRoom[]
   eSignAudits      EsignAudit[]
   billingCustomers BillingCustomer[]
+  Role             CustomRole[]
 
   @@unique([publicId])
 }
@@ -166,11 +167,17 @@ enum MemberStatusEnum {
   PENDING
 }
 
+enum Roles {
+  ADMIN
+  CUSTOM
+}
+
 model Member {
   id           String           @id @default(cuid())
   title        String?
   status       MemberStatusEnum @default(PENDING)
   isOnboarded  Boolean          @default(false)
+  role         Roles?           @default(ADMIN)
   workEmail    String?
   lastAccessed DateTime         @default(now())
   createdAt    DateTime         @default(now())
@@ -181,6 +188,9 @@ model Member {
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  customRoleId String?
+  customRole   CustomRole? @relation(fields: [customRoleId], references: [id])
 
   documentReceived EsignRecipient[]
   documents        Document[]
@@ -193,6 +203,20 @@ model Member {
   @@index([companyId])
   @@index([status])
   @@index([userId])
+  @@index([customRoleId])
+}
+
+model CustomRole {
+  id   String @id @default(cuid())
+  name String
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  permissions Json[]
+  member      Member[]
+
+  @@index([companyId])
 }
 
 enum StakeholderTypeEnum {

@@ -1,9 +1,9 @@
 import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { SigningFields } from "@/components/template/signing-fields";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerComponentAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Document signing",
@@ -23,7 +23,7 @@ export default async function SigningPage(props: SigningPageProps) {
       token,
     });
 
-  const session = await getServerAuthSession();
+  const session = await getServerComponentAuthSession();
   const companyPublicId = session?.user.companyPublicId;
 
   return (

@@ -1,7 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiUploadCloudLine } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const DocumentsPage = async () => {
   const documents = await api.document.getAll.query();
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
 
   if (documents.length === 0) {
     return (

@@ -5,7 +5,7 @@ import { constants } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { NextAuthProvider } from "@/providers/next-auth";
 import { ProgressBarProvider } from "@/providers/progress-bar";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerComponentAuthSession } from "@/server/auth";
 import { robotoMono, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
@@ -29,7 +29,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerAuthSession();
+  const session = await getServerComponentAuthSession();
   const nodeEnv = process.env.NODE_ENV;
 
   return (

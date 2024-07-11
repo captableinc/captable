@@ -5,11 +5,44 @@ import { TRPCError } from "@trpc/server";
 import z from "zod";
 
 export const apiKeyRouter = createTRPCRouter({
+  listAll: withAccessControl
+    .meta({ policies: { "api-keys": { allow: ["read"] } } })
+    .query(async ({ ctx }) => {
+      const {
+        db,
+        membership: { companyId, memberId },
+      } = ctx;
+
+      const apiKeys = await db.apiKey.findMany({
+        where: {
+          active: true,
+          companyId,
+          membershipId: memberId,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+
+        select: {
+          id: true,
+          keyId: true,
+          createdAt: true,
+          lastUsed: true,
+        },
+      });
+
+      return {
+        apiKeys,
+      };
+    }),
   create: withAccessControl
     .meta({ policies: { "api-keys": { allow: ["create"] } } })
     .mutation(async ({ ctx }) => {
-      const { db, session } = ctx;
-      const user = session.user;
+      const {
+        db,
+        membership: { companyId, memberId },
+      } = ctx;
 
       const token = createApiToken();
       const keyId = generatePublicId();
@@ -18,7 +51,8 @@ export const apiKeyRouter = createTRPCRouter({
       const key = await db.apiKey.create({
         data: {
           keyId,
-          userId: user.id,
+          companyId,
+          membershipId: memberId,
           hashedToken,
         },
       });
@@ -34,12 +68,17 @@ export const apiKeyRouter = createTRPCRouter({
     .input(z.object({ keyId: z.string() }))
     .meta({ policies: { "api-keys": { allow: ["delete"] } } })
     .mutation(async ({ ctx, input }) => {
-      const { db } = ctx;
+      const {
+        db,
+        membership: { memberId, companyId },
+      } = ctx;
       const { keyId } = input;
       try {
         await db.apiKey.delete({
           where: {
             keyId,
+            membershipId: memberId,
+            companyId,
           },
         });
 

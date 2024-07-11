@@ -65,7 +65,7 @@ const route = createRoute({
           schema: ResponseSchema,
         },
       },
-      description: "Retrieve the share for the company",
+      description: "Update the Share by ID",
     },
     ...ErrorResponses,
   },

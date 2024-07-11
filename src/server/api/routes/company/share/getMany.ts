@@ -48,7 +48,7 @@ const route = createRoute({
           schema: ResponseSchema,
         },
       },
-      description: "Retrieve the share for the company",
+      description: "Retrieve the shares for the company",
     },
     ...ErrorResponses,
   },

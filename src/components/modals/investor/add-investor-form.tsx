@@ -1,0 +1,180 @@
+import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { StakeholderRelationshipEnum } from "@/prisma/enums";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { StakeholderTypeEnum } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+interface InvestorFormProps {
+  investor?: ZodInvestorType;
+}
+
+const ZodInvestorSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().email().min(1),
+  institutionName: z.string().optional(),
+  investorType: z.nativeEnum(StakeholderTypeEnum, {
+    errorMap: () => ({ message: "Invalid value for investorType" }),
+  }),
+  currentRelationship: z.nativeEnum(StakeholderRelationshipEnum, {
+    errorMap: () => ({ message: "Invalid value for currentRelationship" }),
+  }),
+});
+
+type ZodInvestorType = z.infer<typeof ZodInvestorSchema>;
+
+export const InvestorForm = ({ investor }: InvestorFormProps) => {
+  const investorType =
+    investor?.investorType || investor?.institutionName
+      ? "INSTITUTION"
+      : "INDIVIDUAL";
+
+  const form = useForm<ZodInvestorType>({
+    defaultValues: {
+      name: investor?.name || "",
+      email: investor?.email || "",
+      institutionName: investor?.institutionName || "",
+      investorType,
+      currentRelationship: "INVESTOR",
+    },
+    resolver: zodResolver(ZodInvestorSchema),
+  });
+
+  const isSubmitting = form.formState.isSubmitting;
+
+  const onSubmit = (values: ZodInvestorType) => {
+    // HANDLE THE VALUES :
+
+    console.log("The form values is : ", values);
+  };
+
+  const investorTypeOpts = [
+    { value: "INDIVIDUAL", label: "Individual" },
+    { value: "INSTITUTION", label: "Institution" },
+  ];
+
+  const groupTypeOpts = [
+    { value: "ADVISOR", label: "Advisor" },
+    { value: "BOARD_MEMBER", label: "Board member" },
+    { value: "CONSULTANT", label: "Consultant" },
+    { value: "EMPLOYEE", label: "Employee" },
+    { value: "EX_ADVISOR", label: "Ex advisor" },
+    { value: "EX_CONSULTANT", label: "Ex consultant" },
+    { value: "EX_EMPLOYEE", label: "Ex employee" },
+    { value: "EXECUTIVE", label: "Executive" },
+    { value: "FOUNDER", label: "Founder" },
+    { value: "INVESTOR", label: "Investor" },
+    { value: "NON_US_EMPLOYEE", label: "Non US employee" },
+    { value: "OFFICER", label: "Officer" },
+    { value: "OTHER", label: "Other" },
+  ];
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6 md:col-span-2">
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="institutionName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Institution name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="investorType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <div>
+                    <LinearCombobox
+                      defaultOption={{ value: field.value, label: field.value }}
+                      options={investorTypeOpts}
+                      onValueChange={(option) => {
+                        field.onChange(option.value);
+                      }}
+                    />
+                  </div>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="sm:col-span-3">
+            <FormField
+              control={form.control}
+              name="currentRelationship"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Group</FormLabel>
+                  <div>
+                    <LinearCombobox
+                      defaultOption={{ value: field.value, label: field.value }}
+                      options={groupTypeOpts}
+                      onValueChange={(option) => field.onChange(option.value)}
+                    />
+                  </div>
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="mt-8 flex justify-end">
+          <Button disabled={isSubmitting} loading={isSubmitting} type="submit">
+            {isSubmitting ? "Adding stakeholder" : "Add a stakeholder"}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+};

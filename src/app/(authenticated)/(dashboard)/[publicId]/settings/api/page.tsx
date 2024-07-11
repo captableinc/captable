@@ -1,4 +1,5 @@
 import EmptyState from "@/components/common/empty-state";
+import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
 import { RiTerminalBoxFill } from "@remixicon/react";
@@ -16,14 +17,7 @@ const ApiSettingsPage = async () => {
   const data = await allow(api.apiKey.listAll.query(), ["api-keys", "read"]);
 
   if (!data) {
-    return (
-      <EmptyState
-        bordered={false}
-        icon={<RiTerminalBoxFill />}
-        title="Un Authorized"
-        subtitle=""
-      />
-    );
+    return <UnAuthorizedState />;
   }
 
   return (

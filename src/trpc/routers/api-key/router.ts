@@ -1,19 +1,21 @@
 import { generatePublicId } from "@/common/id";
 import { createApiToken, createSecureHash } from "@/lib/crypto";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+
 export const apiKeyRouter = createTRPCRouter({
-  create: withAuth.mutation(async ({ ctx }) => {
-    const { db, session } = ctx;
-    const user = session.user;
+  create: withAccessControl
+    .meta({ policies: { "api-keys": { allow: ["create"] } } })
+    .mutation(async ({ ctx }) => {
+      const { db, session } = ctx;
+      const user = session.user;
 
-    const data = await db.$transaction(async (tx) => {
-      const token = await createApiToken();
+      const token = createApiToken();
       const keyId = generatePublicId();
-      const hashedToken = await createSecureHash(token);
+      const hashedToken = createSecureHash(token);
 
-      const key = await tx.apiKey.create({
+      const key = await db.apiKey.create({
         data: {
           keyId,
           userId: user.id,
@@ -26,24 +28,19 @@ export const apiKeyRouter = createTRPCRouter({
         keyId: key.keyId,
         createdAt: key.createdAt,
       };
-    });
+    }),
 
-    return data;
-  }),
-
-  delete: withAuth
+  delete: withAccessControl
     .input(z.object({ keyId: z.string() }))
+    .meta({ policies: { "api-keys": { allow: ["delete"] } } })
     .mutation(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const { keyId } = input;
       try {
-        const { db } = ctx;
-        const { keyId } = input;
-
-        await db.$transaction(async (tx) => {
-          await tx.apiKey.delete({
-            where: {
-              keyId,
-            },
-          });
+        await db.apiKey.delete({
+          where: {
+            keyId,
+          },
         });
 
         return {

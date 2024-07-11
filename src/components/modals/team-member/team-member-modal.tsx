@@ -17,6 +17,14 @@ import { api } from "@/trpc/react";
 import { toast } from "sonner";
 
 import { popModal } from "@/components/modals";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -27,14 +35,18 @@ const ZodTeamMemberSchema = z.object({
   loginEmail: z.string(),
   workEmail: z.string(),
   title: z.string(),
+  roleId: z.string().optional(),
 });
 
 type TypeZodTeamMemberSchema = z.infer<typeof ZodTeamMemberSchema>;
+
+type Roles = RouterOutputs["rbac"]["listRoles"]["rolesList"];
 
 type MemberModalType = {
   title: string;
   subtitle: string;
   member: TypeZodTeamMemberSchema;
+  roles: Roles;
 } & editModeType;
 
 type editModeType =
@@ -45,9 +57,9 @@ export const TeamMemberModal = ({
   title,
   subtitle,
   member,
+  roles,
   ...rest
 }: MemberModalType) => {
-  console.log({ rest });
   const router = useRouter();
   const inviteMember = api.member.inviteMember.useMutation({
     onSuccess: () => {
@@ -78,14 +90,14 @@ export const TeamMemberModal = ({
       loginEmail: member.loginEmail ?? "",
       workEmail: member.workEmail ?? "",
       title: member.title ?? "",
+      roleId: member.roleId ?? "",
     },
   });
 
   const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = async (values: TypeZodTeamMemberSchema) => {
-    console.log({ values });
-    const { name, title, workEmail, loginEmail } = values;
+    const { name, title, workEmail, loginEmail, roleId } = values;
     try {
       if (rest.isEditMode) {
         await updateMember.mutateAsync({
@@ -93,16 +105,17 @@ export const TeamMemberModal = ({
           title,
           workEmail,
           memberId: rest.memberId,
+          roleId,
         });
       } else {
         await inviteMember.mutateAsync({
           name,
           title,
           email: loginEmail,
+          roleId,
         });
       }
-      // biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-    } catch (error) {}
+    } catch (_error) {}
   };
 
   return (
@@ -159,6 +172,35 @@ export const TeamMemberModal = ({
                   Eg: Co-Founder & CTO, Lawyer at Law Firm LLP
                 </FormDescription>
                 <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="roleId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Role</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {roles.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <FormMessage />
               </FormItem>
             )}
           />

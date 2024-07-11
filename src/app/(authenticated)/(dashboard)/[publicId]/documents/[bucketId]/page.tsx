@@ -2,7 +2,7 @@ import FileIcon from "@/components/common/file-icon";
 import FilePreview from "@/components/file/preview";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiArrowLeftSLine } from "@remixicon/react";
@@ -15,7 +15,7 @@ const DocumentPreview = async ({
 }: {
   params: { publicId: string; bucketId: string };
 }) => {
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
   const companyId = session?.user?.companyId;
   const document = await db.document.findFirst({
     where: {

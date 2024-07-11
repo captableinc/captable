@@ -1,6 +1,5 @@
 import { SecurityList } from "@/components/security/SecurityList";
 import { SettingsHeader } from "@/components/security/SettingHeader";
-import { getServerAuthSession } from "@/server/auth";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -30,10 +29,6 @@ const SecurityLists = [
 ];
 
 export default async function SecurityPage() {
-  const session = await getServerAuthSession();
-  if (!session?.user) {
-    redirect("/login");
-  }
   return (
     <>
       <SettingsHeader

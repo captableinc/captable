@@ -1,6 +1,6 @@
 import SignInForm from "@/components/onboarding/signin";
 import { IS_GOOGLE_AUTH_ENABLED } from "@/constants/auth";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerComponentAuthSession } from "@/server/auth";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -10,14 +10,13 @@ export const metadata: Metadata = {
 };
 
 export default async function SignIn() {
-  const session = await getServerAuthSession();
+  const session = await getServerComponentAuthSession();
 
   if (session?.user) {
     if (session?.user?.companyPublicId) {
       return redirect(`/${session.user.companyPublicId}`);
-    } else {
-      return redirect("/onboarding");
     }
+    return redirect("/onboarding");
   }
 
   return <SignInForm isGoogleAuthEnabled={IS_GOOGLE_AUTH_ENABLED} />;

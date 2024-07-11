@@ -2,7 +2,7 @@
 
 import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerComponentAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
 import { Fragment } from "react";
@@ -28,7 +28,7 @@ const getDataRooms = (companyId: string) => {
 };
 
 const DataRoomPage = async () => {
-  const session = await getServerAuthSession();
+  const session = await getServerComponentAuthSession();
 
   if (!session || !session.user) {
     return null;

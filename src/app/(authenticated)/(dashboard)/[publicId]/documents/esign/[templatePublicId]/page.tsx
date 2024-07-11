@@ -3,7 +3,7 @@ import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { TemplateFieldForm } from "@/components/template/template-field-form";
 import { Badge } from "@/components/ui/badge";
 import { TemplateFieldProvider } from "@/providers/template-field-provider";
-import { withServerSession } from "@/server/auth";
+import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 
 const EsignTemplateDetailPage = async ({
@@ -11,7 +11,7 @@ const EsignTemplateDetailPage = async ({
 }: {
   params: { templatePublicId: string };
 }) => {
-  const session = await withServerSession();
+  const session = await withServerComponentSession();
 
   const { name, status, url, fields, recipients } =
     await api.template.get.query({

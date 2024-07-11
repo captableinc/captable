@@ -1,11 +1,13 @@
 "use client";
 
+import { createPushModal } from "pushmodal";
 import { DocumentUploadModal } from "./document-upload-modal";
 import { EquityPlanModal } from "./equity-pan/equity-plan-modal";
 import { ExistingSafeModal } from "./existing-safe-modal";
 import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
 import { NewSafeModal } from "./new-safe-modal";
+import { RoleCreateUpdateModal } from "./role-create-update-modal";
 import { ShareClassModal } from "./share-class/share-class-modal";
 import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";
@@ -15,7 +17,6 @@ import { UpdateSingleStakeholderModal } from "./stakeholder/update-stakeholder-m
 import { TeamMemberModal } from "./team-member/team-member-modal";
 import { WipModal } from "./wip-modal";
 
-import { createPushModal } from "pushmodal";
 import { AddEsignDocumentModal } from "./esign-doc";
 
 export const { pushModal, popModal, ModalProvider } = createPushModal({
@@ -26,6 +27,7 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     UpdateSingleStakeholderModal,
     ShareUpdateModal,
     ShareDataRoomModal,
+    RoleCreateUpdate: RoleCreateUpdateModal,
     SingleStakeholdersModal,
     MultipleStakeholdersModal,
     DocumentUploadModal,

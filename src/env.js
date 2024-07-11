@@ -83,6 +83,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   experimental__runtimeEnv: {
+    LOGS: process.env.LOGS,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_BASE_URL: readRuntimePublicEnvVariable("NEXT_PUBLIC_BASE_URL"),
     DATABASE_URL: process.env.DATABASE_URL,

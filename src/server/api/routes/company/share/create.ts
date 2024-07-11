@@ -69,8 +69,10 @@ const create = (app: PublicAPI) => {
       memberId: member.id,
       requestIP,
       userAgent,
-      userId: user.id,
-      userName: user.name,
+      user: {
+        id: user.id,
+        name: user.name,
+      },
     });
 
     if (!success) {

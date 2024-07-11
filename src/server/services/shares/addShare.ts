@@ -8,8 +8,10 @@ export interface AddShareType extends TypeZodAddShareMutationSchema {
   memberId: string;
   requestIP: string;
   userAgent: string;
-  userId: string;
-  userName: string;
+  user: {
+    id: string;
+    name: string;
+  };
 }
 
 export const addShare = async (input: AddShareType) => {
@@ -59,13 +61,13 @@ export const addShare = async (input: AddShareType) => {
         {
           action: "share.created",
           companyId: input.companyId,
-          actor: { type: "user", id: input.userId },
+          actor: { type: "user", id: input.user.id },
           context: {
             userAgent: input.userAgent,
             requestIp: input.requestIP,
           },
           target: [{ type: "share", id: share.id }],
-          summary: `${input.userName} added share for stakeholder ${input.stakeholderId}`,
+          summary: `${input.user.name} added share for stakeholder ${input.stakeholderId}`,
         },
         tx,
       );

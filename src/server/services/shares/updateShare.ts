@@ -51,13 +51,13 @@ export const updateShare = async (input: UpdateShareType) => {
         {
           action: "share.updated",
           companyId: input.companyId,
-          actor: { type: "user", id: input.userId },
+          actor: { type: "user", id: input.user.id },
           context: {
             userAgent: input.userAgent,
             requestIp: input.requestIP,
           },
           target: [{ type: "share", id: share.id }],
-          summary: `${input.userName} updated share for stakeholder ${input.stakeholderId}`,
+          summary: `${input.user.name} updated share for stakeholder ${input.stakeholderId}`,
         },
         tx,
       );

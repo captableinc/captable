@@ -73,8 +73,6 @@ const route = createRoute({
 
 const getOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
-    //TODO : CHECK THIS PROPERLT
-
     const { company, user, member } = await withCompanyAuth(c);
 
     const { shareId: id } = c.req.param();

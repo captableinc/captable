@@ -1,7 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
-import { Card } from "@/components/ui/card";
-import { withServerComponentSession } from "@/server/auth";
-import { db } from "@/server/db";
+import { serverAccessControl } from "@/lib/rbac/access-control";
+import { api } from "@/trpc/server";
 import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import { Fragment } from "react";
@@ -12,31 +11,24 @@ export const metadata: Metadata = {
   title: "API Keys",
 };
 const ApiSettingsPage = async () => {
-  const session = await withServerComponentSession();
-  const { user } = session;
-  const apiKeys = await db.apiKey.findMany({
-    where: {
-      userId: user.id,
-      active: true,
-    },
+  const { allow } = await serverAccessControl();
 
-    orderBy: {
-      createdAt: "desc",
-    },
+  const data = await allow(api.apiKey.listAll.query(), ["api-keys", "read"]);
 
-    select: {
-      id: true,
-      keyId: true,
-      createdAt: true,
-      lastUsed: true,
-    },
-  });
-
-  console.log({ apiKeys });
+  if (!data) {
+    return (
+      <EmptyState
+        bordered={false}
+        icon={<RiTerminalBoxFill />}
+        title="Un Authorized"
+        subtitle=""
+      />
+    );
+  }
 
   return (
     <Fragment>
-      {apiKeys.length === 0 ? (
+      {data.apiKeys.length === 0 ? (
         <EmptyState
           bordered={false}
           icon={<RiTerminalBoxFill />}
@@ -60,7 +52,7 @@ const ApiSettingsPage = async () => {
             </div>
           </div>
 
-          <ApiKeysTable keys={apiKeys} />
+          <ApiKeysTable keys={data.apiKeys} />
         </div>
       )}
     </Fragment>

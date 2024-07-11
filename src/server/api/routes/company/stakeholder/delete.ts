@@ -5,7 +5,7 @@ import {
   StakeholderSchema,
   type TStakeholderSchema,
 } from "@/server/api/schema/stakeholder";
-import { getIp } from "@/server/api/utils";
+import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { db } from "@/server/db";
 import { deleteStakeholder } from "@/server/services/stakeholder/delete-stakeholder";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -62,26 +62,25 @@ const route = createRoute({
 const delete_ = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
-    const params = c.req.param();
-    const stakeholderId = params.stakeholderId as string;
+    const { stakeholderId } = c.req.param();
 
     const payload = {
       companyId: company.id,
-      stakeholderId,
+      stakeholderId: stakeholderId as string,
       user: { id: user.id, name: user.name as string },
       requestIp: getIp(c.req),
-      userAgent: c.req.header("User-Agent") || "",
+      userAgent: getHonoUserAgent(c.req),
     };
 
-    const deletedStakeholder = (await deleteStakeholder({
+    const { deletedStakeholder } = await deleteStakeholder({
       db,
       payload,
-    })) as unknown as TStakeholderSchema;
+    });
 
     return c.json(
       {
         message: "Stakeholder deleted successfully",
-        data: deletedStakeholder,
+        data: deletedStakeholder as unknown as TStakeholderSchema,
       },
       200,
     );

@@ -23,9 +23,11 @@ export const getPaginatedStakeholders = async ({
     },
   };
 
+  const { limit, cursor: _cursor } = payload;
+
   const paginationData = {
-    limit: payload.limit,
-    cursor: payload?.cursor,
+    limit,
+    cursor: _cursor,
   };
 
   const prismaModel = ProxyPrismaModel(db.stakeholder);

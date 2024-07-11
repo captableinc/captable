@@ -1,20 +1,19 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
+import type { PublicAPI } from "@/server/api/hono";
 import {
   StakeholderSchema,
   type TStakeholderSchema,
 } from "@/server/api/schema/stakeholder";
-import { getIp, getParsedJson } from "@/server/api/utils";
+import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { db } from "@/server/db";
-import { createRoute, z } from "@hono/zod-openapi";
-
-import type { PublicAPI } from "@/server/api/hono";
 import { updateStakeholder } from "@/server/services/stakeholder/update-stakeholder";
 import type { UpdateStakeholderMutationType } from "@/trpc/routers/stakeholder-router/schema";
+import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 import { RequestParamsSchema } from "./delete";
 
-const RequestJsonSchema = StakeholderSchema.openapi({
+const RequestBodySchema = StakeholderSchema.openapi({
   description: "Update a stakeholder by ID",
 });
 
@@ -24,13 +23,22 @@ const ResponseSchema = z
     data: StakeholderSchema,
   })
   .openapi({
-    description: "Update stakeholder by ID",
+    description: "Update a stakeholder by ID",
   });
 
 const route = createRoute({
   method: "put",
   path: "/v1/companies/{id}/stakeholders/{stakeholderId}",
-  request: { params: RequestParamsSchema, json: RequestJsonSchema },
+  request: {
+    params: RequestParamsSchema,
+    body: {
+      content: {
+        "application/json": {
+          schema: RequestBodySchema,
+        },
+      },
+    },
+  },
   responses: {
     200: {
       content: {
@@ -51,24 +59,16 @@ const update = (app: PublicAPI) => {
 
     const params = c.req.param();
     const stakeholderId = params.stakeholderId as string;
-    const parsedJson = await getParsedJson(c);
-    const zodParsed = RequestJsonSchema.safeParse(parsedJson);
 
-    if (!zodParsed.success) {
-      const errorMessage = zodParsed.error.errors.map((err) => err.message);
-      throw new ApiError({
-        code: "BAD_REQUEST",
-        message: String(errorMessage),
-      });
-    }
-
-    const { id, ...rest } = zodParsed.data;
+    const body = await c.req.json();
+    console.log({ body });
+    const { id, ...rest } = body;
 
     const payload = {
       stakeholderId: stakeholderId,
       companyId: company.id,
       requestIp: getIp(c.req),
-      userAgent: c.req.header("User-Agent") || "",
+      userAgent: getHonoUserAgent(c.req),
       data: rest as Omit<UpdateStakeholderMutationType, "id">,
       user: {
         id: user.id,
@@ -76,14 +76,14 @@ const update = (app: PublicAPI) => {
       },
     };
 
-    const updatedStakeholder = (await updateStakeholder({
+    const { updatedStakeholder } = await updateStakeholder({
       db,
       payload,
-    })) as unknown as TStakeholderSchema;
+    });
 
     if (!updatedStakeholder) {
       throw new ApiError({
-        code: "BAD_REQUEST",
+        code: "NOT_FOUND",
         message: "Stakeholder not updated.",
       });
     }
@@ -91,7 +91,7 @@ const update = (app: PublicAPI) => {
     return c.json(
       {
         message: "Stakeholder updated successfully",
-        data: updatedStakeholder,
+        data: updatedStakeholder as unknown as TStakeholderSchema,
       },
       200,
     );

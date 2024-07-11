@@ -40,7 +40,7 @@ export const PaginationResponseSchema = z.object({
     example: 50,
   }),
 
-  total: z.union([z.number().int().positive(), z.undefined()]).openapi({
+  total: z.number().int().positive().nullable().openapi({
     description: "Total number of records",
     example: 100,
   }),

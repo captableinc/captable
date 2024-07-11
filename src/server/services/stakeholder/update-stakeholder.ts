@@ -1,3 +1,4 @@
+import { ApiError } from "@/server/api/error";
 import { Audit } from "@/server/audit";
 import type { UpdateStakeholderMutationType } from "@/trpc/routers/stakeholder-router/schema";
 import type { PrismaClient } from "@prisma/client";
@@ -23,6 +24,19 @@ export const updateStakeholder = async ({
 }: UpdateStakeholderOptions) => {
   const { requestIp, userAgent, user, data } = payload;
 
+  const foundStakeholder = await db.stakeholder.findFirst({
+    where: {
+      id: payload.stakeholderId,
+    },
+  });
+
+  if (!foundStakeholder) {
+    throw new ApiError({
+      code: "NOT_FOUND",
+      message: "No stakeholder with provided id",
+    });
+  }
+
   const { updatedStakeholder } = await db.$transaction(async (tx) => {
     const updatedStakeholder = await db.stakeholder.update({
       where: {
@@ -47,5 +61,5 @@ export const updateStakeholder = async ({
     );
     return { updatedStakeholder };
   });
-  return updatedStakeholder;
+  return { updatedStakeholder };
 };

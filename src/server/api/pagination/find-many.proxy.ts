@@ -3,7 +3,7 @@ import type { PaginationData, ProxyFunctions } from "./types";
 interface Paginated<T> {
   data: T[];
   count: number;
-  total: number | undefined;
+  total: number | null;
   cursor: string | null;
 }
 
@@ -42,6 +42,7 @@ export function makeFindManyPaginated(model: ProxyFunctions) {
       let totalCount = 0;
 
       if (!cursor) {
+        //@TODO (Cache totalCount)
         totalCount = await model.count({
           where: query.where,
         });
@@ -56,7 +57,8 @@ export function makeFindManyPaginated(model: ProxyFunctions) {
       return {
         data: docs,
         count: docs.length,
-        total: cursor ? undefined : totalCount,
+        // Send totalCount only for first request, let client side manages it for subsequent requests.
+        total: cursor ? null : totalCount,
         cursor: nextCursor,
       };
     },

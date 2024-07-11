@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import { StakeholderSchema } from "@/server/api/schema/stakeholder";
-import { getIp, getParsedJson } from "@/server/api/utils";
+import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { db } from "@/server/db";
 import { addStakeholders } from "@/server/services/stakeholder/add-stakeholders";
 import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
@@ -12,7 +12,7 @@ import type { PublicAPI } from "@/server/api/hono";
 import { Prisma } from "@prisma/client";
 import type { Context } from "hono";
 
-const RequestJsonSchema = z
+const RequestBodySchema = z
   .array(StakeholderSchema)
   .refine(
     (stakeholders) => {
@@ -36,7 +36,13 @@ const route = createRoute({
   path: "/v1/companies/{id}/stakeholders",
   request: {
     params: RequestParamsSchema,
-    json: RequestJsonSchema,
+    body: {
+      content: {
+        "application/json": {
+          schema: RequestBodySchema,
+        },
+      },
+    },
   },
   responses: {
     200: {
@@ -55,8 +61,9 @@ const route = createRoute({
 const create = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
-    const parsedJson = await getParsedJson(c);
-    const zodParsed = RequestJsonSchema.safeParse(parsedJson);
+
+    const body = await c.req.json();
+    const zodParsed = RequestBodySchema.safeParse(body);
 
     if (!zodParsed.success) {
       const errorMessage = zodParsed.error.errors.map((err) => err.message);
@@ -69,7 +76,7 @@ const create = (app: PublicAPI) => {
     const payload = {
       companyId: company.id,
       requestIp: getIp(c.req),
-      userAgent: c.req.header("User-Agent") || "",
+      userAgent: getHonoUserAgent(c.req),
       user: {
         id: user.id,
         name: user.name as string,

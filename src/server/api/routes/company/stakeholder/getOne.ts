@@ -40,12 +40,11 @@ const getOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = await withCompanyAuth(c);
 
-    const params = c.req.param();
-    const stakeholderId = params.stakeholderId as string;
+    const { stakeholderId } = c.req.param();
 
     const stakeholder = (await db.stakeholder.findFirst({
       where: {
-        id: stakeholderId,
+        id: stakeholderId as string,
         companyId: company.id,
       },
     })) as unknown as TStakeholderSchema;

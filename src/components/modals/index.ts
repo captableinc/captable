@@ -5,13 +5,13 @@ import { createPushModal } from "pushmodal";
 import { BankAccountModal } from "./bank-account-modal";
 import { DocumentUploadModal } from "./document-upload-modal";
 import { EquityPlanModal } from "./equity-pan/equity-plan-modal";
+import { ManageEsignRecipientsModal } from "./esign-recipients/manage-esign-recipients-modal";
 import { ExistingSafeModal } from "./existing-safe-modal";
 import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
 import { NewSafeModal } from "./new-safe-modal";
 import { RoleCreateUpdateModal } from "./role-create-update-modal";
 import { ShareClassModal } from "./share-class/share-class-modal";
-import { ManageEsignRecipientsModal } from "./esign-recipients/manage-esign-recipients-modal";
 import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";
 import { MultipleStakeholdersModal } from "./stakeholder/multiple-stakeholders-modal";
@@ -29,7 +29,6 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     UpdateSingleStakeholderModal,
     ShareUpdateModal,
     ShareDataRoomModal,
-
     RoleCreateUpdate: RoleCreateUpdateModal,
     SingleStakeholdersModal,
     MultipleStakeholdersModal,

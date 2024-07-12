@@ -72,24 +72,18 @@ export const companyRouter = createTRPCRouter({
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.db.$transaction(async (tx) => {
-          const { companyId } = await checkMembership({
-            tx,
-            session: ctx.session,
-          });
+        const { company } = input;
+        const { incorporationDate, ...rest } = company;
+        const { companyId } = ctx.membership;
 
-          const { company } = input;
-          const { incorporationDate, ...rest } = company;
-
-          await tx.company.update({
-            where: {
-              id: companyId,
-            },
-            data: {
-              incorporationDate: new Date(incorporationDate),
-              ...rest,
-            },
-          });
+        await ctx.db.company.update({
+          where: {
+            id: companyId,
+          },
+          data: {
+            incorporationDate: new Date(incorporationDate),
+            ...rest,
+          },
         });
 
         return {

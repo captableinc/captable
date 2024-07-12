@@ -1,6 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Card } from "@/components/ui/card";
+import { serverAccessControl } from "@/lib/rbac/access-control";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiUploadCloudLine } from "@remixicon/react";
@@ -13,8 +14,19 @@ export const metadata: Metadata = {
 };
 
 const DocumentsPage = async () => {
-  const documents = await api.document.getAll.query();
+  const { allow } = await serverAccessControl();
   const session = await withServerComponentSession();
+
+  const documents = await allow(api.document.getAll.query(), [
+    "documents",
+    "read",
+  ]);
+
+  const canUpload = allow(true, ["documents", "read"]);
+
+  if (!documents) {
+    return <div>Access denied</div>;
+  }
 
   if (documents.length === 0) {
     return (
@@ -23,10 +35,12 @@ const DocumentsPage = async () => {
         title="You do not have any documents!"
         subtitle="Please click the button below to upload a new document."
       >
-        <DocumentUploadButton
-          companyPublicId={session.user.companyPublicId}
-          buttonDisplayName="Upload a document"
-        />
+        {canUpload && (
+          <DocumentUploadButton
+            companyPublicId={session.user.companyPublicId}
+            buttonDisplayName="Upload a document"
+          />
+        )}
       </EmptyState>
     );
   }
@@ -37,10 +51,12 @@ const DocumentsPage = async () => {
         title="All documents"
         description="Upload documents to your company's document library."
         action={
-          <DocumentUploadButton
-            companyPublicId={session.user.companyPublicId}
-            buttonDisplayName="Document"
-          />
+          canUpload ? (
+            <DocumentUploadButton
+              companyPublicId={session.user.companyPublicId}
+              buttonDisplayName="Document"
+            />
+          ) : null
         }
       />
       <Card className="mt-3">

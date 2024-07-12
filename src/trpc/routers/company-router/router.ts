@@ -1,5 +1,5 @@
 import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAccessControl, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
 
@@ -67,7 +67,8 @@ export const companyRouter = createTRPCRouter({
 
       return { success: true };
     }),
-  updateCompany: withAuth
+  updateCompany: withAccessControl
+    .meta({ policies: { company: { allow: ["update"] } } })
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {

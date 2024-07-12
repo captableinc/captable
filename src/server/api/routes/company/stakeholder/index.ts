@@ -5,7 +5,7 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-const stakeholderRoutes = (api: PublicAPI) => {
+const registerStakeholderRoutes = (api: PublicAPI) => {
   create(api);
   getOne(api);
   getMany(api);
@@ -13,4 +13,4 @@ const stakeholderRoutes = (api: PublicAPI) => {
   delete_(api);
 };
 
-export default stakeholderRoutes;
+export default registerStakeholderRoutes;

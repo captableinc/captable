@@ -1,15 +1,21 @@
 import { checkMembership } from "@/server/auth";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { withAuth } from "@/trpc/api/trpc";
+import { withAccessControl, withAuth } from "@/trpc/api/trpc";
 import { ZodGetDocumentQuerySchema } from "../schema";
 
-export const getDocumentProcedure = withAuth
-  .input(ZodGetDocumentQuerySchema)
-  .query(async ({ ctx: { db, session }, input }) => {
-    const data = await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ tx, session });
+export const getDocumentProcedure = withAccessControl
 
-      const data = await tx.document.findFirstOrThrow({
+  .input(ZodGetDocumentQuerySchema)
+  .meta({ policies: { documents: { allow: ["read"] } } })
+  .query(
+    async ({
+      ctx: {
+        db,
+        membership: { companyId },
+      },
+      input,
+    }) => {
+      const data = await db.document.findFirstOrThrow({
         where: {
           publicId: input.publicId,
           companyId,
@@ -23,8 +29,6 @@ export const getDocumentProcedure = withAuth
         },
       });
 
-      return data;
-    });
-
-    return getPresignedGetUrl(data.bucket.key);
-  });
+      return getPresignedGetUrl(data.bucket.key);
+    },
+  );

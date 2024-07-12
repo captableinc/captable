@@ -2,7 +2,10 @@ import { generatePublicId } from "@/common/id";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import type { TPrismaOrTransaction } from "@/server/db";
-import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
+import {
+  withAccessControl,
+  type withAuthTrpcContextType,
+} from "@/trpc/api/trpc";
 import {
   type TypeZodCreateDocumentMutationSchema,
   ZodCreateDocumentMutationSchema,
@@ -55,15 +58,19 @@ export const createDocumentHandler = async ({
   return document;
 };
 
-export const createDocumentProcedure = withAuth
+export const createDocumentProcedure = withAccessControl
   .input(ZodCreateDocumentMutationSchema)
+  .meta({ policies: { documents: { allow: ["create"] } } })
   .mutation(async ({ ctx, input }) => {
     const user = ctx.session.user;
-    const { userAgent, requestIp, db, session } = ctx;
+    const {
+      userAgent,
+      requestIp,
+      db,
+      membership: { companyId, memberId },
+    } = ctx;
 
     const data = await db.$transaction(async (tx) => {
-      const { companyId, memberId } = await checkMembership({ session, tx });
-
       const data = await createDocumentHandler({
         input,
         userAgent,

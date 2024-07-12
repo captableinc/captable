@@ -10,7 +10,7 @@ import { DataTableContent } from "@/components/ui/data-table/data-table-content"
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiUserSettingsLine } from "@remixicon/react";
+import { RiMore2Fill } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -25,6 +25,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
+import { Allow } from "../rbac/allow";
+import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { StakeholderTableToolbar } from "./stakeholder-table-toolbar";
 
 type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"];
@@ -176,17 +186,32 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
     cell: ({ row }) => {
       const singleStakeholder = row.original;
       return (
-        <RiUserSettingsLine
-          className="h-4 w-4 cursor-pointer"
-          onClick={() => {
-            console.log(row.original);
-            pushModal("UpdateSingleStakeholderModal", {
-              title: "Update stakeholder",
-              subtitle: "Edit the stakeholder details",
-              stakeholder: singleStakeholder,
-            });
-          }}
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <RiMore2Fill className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+
+            <Allow action="update" subject="stakeholder">
+              <DropdownMenuItem
+                onSelect={() => {
+                  pushModal("UpdateSingleStakeholderModal", {
+                    title: "Update stakeholder",
+                    subtitle: "Edit the stakeholder details",
+                    stakeholder: singleStakeholder,
+                  });
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+            </Allow>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },

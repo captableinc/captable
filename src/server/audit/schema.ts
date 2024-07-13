@@ -58,6 +58,7 @@ export const AuditSchema = z.object({
     "bucket.created",
 
     "stripe.session.created",
+    "stripe.billingPortal.session.created",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -79,6 +80,7 @@ export const AuditSchema = z.object({
         "apiKey",
         "bucket",
         "stripeSession",
+        "stripeBillingPortalSession",
       ]),
       id: z.string().optional().nullable(),
     }),

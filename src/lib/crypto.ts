@@ -1,9 +1,14 @@
 import crypto from "node:crypto";
 
-const ALGORITHM = "aes256";
-const INPUT_ENCODING = "utf8";
-const OUTPUT_ENCODING = "hex";
-const IV_LENGTH = 16; // AES blocksize
+// Utility function to hash the key using SHA-256
+function hashKey(key: string) {
+  return crypto.createHash("sha256").update(key).digest();
+}
+
+// Utility function to generate a random nonce
+function generateNonce() {
+  return crypto.randomBytes(12);
+}
 
 /**
  *
@@ -12,40 +17,62 @@ const IV_LENGTH = 16; // AES blocksize
  *
  * @returns Encrypted value using key
  */
-export const Encrypted = (text: string, key: string) => {
-  const _key = Buffer.from(key, "latin1");
-  const iv = crypto.randomBytes(IV_LENGTH);
-
-  const cipher = crypto.createCipheriv(ALGORITHM, _key, iv);
-  let ciphered = cipher.update(text, INPUT_ENCODING, OUTPUT_ENCODING);
-  ciphered += cipher.final(OUTPUT_ENCODING);
-  const ciphertext = `${iv.toString(OUTPUT_ENCODING)}:${ciphered}`;
-  return ciphertext;
+export type EncryptedOptions = {
+  key: string;
+  data: string;
 };
+
+export function Encrypted({ key, data }: EncryptedOptions) {
+  const keyAsBytes = hashKey(key);
+  const dataAsBytes = Buffer.from(data, "utf8");
+  const nonce = generateNonce();
+
+  const cipher = crypto.createCipheriv("chacha20-poly1305", keyAsBytes, nonce, {
+    authTagLength: 16,
+  });
+
+  let encrypted = cipher.update(dataAsBytes);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+  const authTag = cipher.getAuthTag();
+  const result = Buffer.concat([nonce, encrypted, authTag]);
+
+  return result.toString("hex");
+}
 
 /**
  *
  * @param text Value to decrypt
  * @param key Key used to decrypt value must be 32 bytes for AES256 encryption algorithm
  */
-export const Decrypted = (text: string, key: string) => {
-  const _key = Buffer.from(key, "latin1");
-
-  const components = text.split(":");
-  const iv_from_ciphertext = Buffer.from(
-    components.shift() || "",
-    OUTPUT_ENCODING,
-  );
-  const decipher = crypto.createDecipheriv(ALGORITHM, _key, iv_from_ciphertext);
-  let deciphered = decipher.update(
-    components.join(":"),
-    OUTPUT_ENCODING,
-    INPUT_ENCODING,
-  );
-  deciphered += decipher.final(INPUT_ENCODING);
-
-  return deciphered;
+export type DecryptedOptions = {
+  key: string;
+  data: string;
 };
+export function Decrypted({ key, data }: DecryptedOptions) {
+  const keyAsBytes = hashKey(key);
+  const dataAsBytes = Buffer.from(data, "hex");
+
+  const nonce = dataAsBytes.slice(0, 12);
+  const encrypted = dataAsBytes.slice(12, -16);
+  const authTag = dataAsBytes.slice(-16);
+
+  const decipher = crypto.createDecipheriv(
+    "chacha20-poly1305",
+    keyAsBytes,
+    nonce,
+    {
+      authTagLength: 16,
+    },
+  );
+
+  decipher.setAuthTag(authTag);
+
+  let decrypted = decipher.update(encrypted);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+  return decrypted.toString("utf8");
+}
 
 export const createHash = async (key: string) => {
   const data = new TextEncoder().encode(key);
@@ -58,7 +85,7 @@ export const createHash = async (key: string) => {
 };
 
 export const createApiToken = () => {
-  return randomBytes(32).toString("base64url");
+  return crypto.randomBytes(32).toString("base64url");
 };
 
 export const createSecureHash = (key: string) => {

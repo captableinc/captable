@@ -9,6 +9,7 @@ import {
   getServerSession,
 } from "next-auth";
 
+import { CAPTABLE_ENCRYPTION_KEY } from "@/constants/crypto";
 import { env } from "@/env";
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import {
@@ -17,10 +18,12 @@ import {
 } from "@/lib/types";
 import type { MemberStatusEnum } from "@/prisma/enums";
 import { type TPrismaOrTransaction, db } from "@/server/db";
+import { User } from "@prisma/client";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { cache } from "react";
+import { validateTwoFactorAuthentication } from "./2FA/validate";
 import { getUserByEmail, getUserById } from "./user";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -155,16 +158,56 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        totpCode: {
+          label: "Two-factor Code",
+          type: "input",
+          placeholder: "Code from authenticator app",
+        },
+        recoveryCode: {
+          label: "Backup Code",
+          type: "input",
+          placeholder: "Two-factor backup code",
+        },
       },
+
       async authorize(credentials) {
-        if (credentials) {
-          const { email, password } = credentials;
-          const user = await getUserByEmail(email);
-          if (!user || !user.password) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
-          if (passwordsMatch) return user;
+        if (!credentials) {
+          throw new Error("Credentials not found");
         }
-        return null;
+
+        const { email, password, totpCode, recoveryCode } = credentials;
+
+        const user = await getUserByEmail(email);
+
+        if (!user || !user.password) return null;
+
+        const is2FAEnabled =
+          user.twoFactorEnabled && typeof CAPTABLE_ENCRYPTION_KEY === "string";
+
+        if (is2FAEnabled && !totpCode && !recoveryCode) {
+          throw new Error("Two factor missing credentials");
+        }
+
+        const passwordsMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordsMatch) {
+          throw new Error("Invalid credentials");
+        }
+
+        if (is2FAEnabled) {
+          const isValid = await validateTwoFactorAuthentication({
+            user,
+            recoveryCode,
+            totpCode,
+          });
+
+          if (!isValid) {
+            throw new Error(
+              totpCode ? "Incorrect totp code" : "Incorrect recovery code",
+            );
+          }
+        }
+        return user;
       },
     }),
 

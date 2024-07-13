@@ -860,6 +860,17 @@ const SafeDocument = ({
             returns or other informational statements).
           </Indent>
         </Text>
+
+        <Text style={[style.bold, style.center, style.pt10]}>
+          (Signature page follows)
+        </Text>
+      </Page>
+
+      <Page size={"A4"} style={style.body}>
+        <Text>
+          IN WITNESS WHEREOF, the undersigned have caused this Safe to be duly
+          executed and delivered.
+        </Text>
       </Page>
     </Document>
   );

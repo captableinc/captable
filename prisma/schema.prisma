@@ -782,13 +782,17 @@ enum SafeStatusEnum {
 
 // YC Standard Safe
 enum SafeTemplateEnum {
-  POST_MONEY_CAP      @map("YC - Valuation Cap, no Discount")
-  POST_MONEY_DISCOUNT @map("YC - Discount, no Valuation Cap")
-  POST_MONEY_MFN      @map("YC - MFN, no Valuation Cap, no Discount")
+  YC_POST_1 @map("YC Post Money - Valuation Cap, no Discount")
+  YC_POST_2 @map("YC Post Money - Discount, no Valuation Cap")
+  YC_POST_3 @map("YC Post Money - MFN, no Valuation Cap, no Discount")
+  YC_POST_4 @map("YC Post Money - Valuation Cap, Pro Rata, no Discount")
+  YC_POST_5 @map("YC Post Money - Discount, Pro Rata, no Valuation Cap")
+  YC_POST_6 @map("YC Post Money - MFN, Pro Rata, no Valuation Cap & Discount")
 
-  POST_MONEY_CAP_WITH_PRO_RATA      @map("YC - Valuation Cap, Pro Rata, no Discount")
-  POST_MONEY_DISCOUNT_WITH_PRO_RATA @map("YC - Discount, Pro Rata, no Valuation Cap")
-  POST_MONEY_MFN_WITH_PRO_RATA      @map("YC - MFN, Pro Rata, no Valuation Cap & Discount")
+  YC_PRE_1 @map("YC Pre Money - Valuation Cap, no Discount")
+  YC_PRE_3 @map("YC Pre Money - Valuation Cap & Discount")
+  YC_PRE_2 @map("YC Pre Money - Discount, no Valuation Cap")
+  YC_PRE_4 @map("YC Pre Money - MFN, no Valuation Cap")
 
   CUSTOM @map("Custom")
 }

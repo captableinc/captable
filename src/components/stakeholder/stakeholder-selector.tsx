@@ -36,7 +36,7 @@ export function StakeholderSelector({ onSelect }: StakeholderSelectorType) {
 
   return (
     <LinearCombobox
-      placeholder="Select a stakeholder"
+      placeholder="Select an investor / stakeholder"
       options={options}
       onValueChange={(option) => {
         onSelect(option.value);

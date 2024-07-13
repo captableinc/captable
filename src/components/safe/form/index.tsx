@@ -291,7 +291,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             {type === "create"
               ? isSubmitting
                 ? "Creating SAFE"
-                : "Create new SAFE"
+                : "Create a new SAFE agreement"
               : isSubmitting
                 ? "Importing SAFE"
                 : "Import existing SAFE"}

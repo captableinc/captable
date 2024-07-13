@@ -54,6 +54,8 @@ export const AuditSchema = z.object({
 
     "apiKey.created",
     "apiKey.deleted",
+
+    "bucket.created",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -73,6 +75,7 @@ export const AuditSchema = z.object({
         "update",
         "stakeholder",
         "apiKey",
+        "bucket",
       ]),
       id: z.string().optional().nullable(),
     }),

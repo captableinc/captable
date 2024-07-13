@@ -1,5 +1,6 @@
 import { env } from "@/env";
 import { invariant } from "@/lib/error";
+import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { createOrRetrieveCustomer, stripe } from "@/server/stripe";
 import { withAuth } from "@/trpc/api/trpc";
@@ -10,7 +11,7 @@ export const checkoutProcedure = withAuth
   .input(ZodCheckoutMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { priceId, priceType } = input;
-    const { db, session } = ctx;
+    const { db, session, userAgent, requestIp } = ctx;
 
     const { stripeSessionId } = await db.$transaction(async (tx) => {
       const { companyId } = await checkMembership({ session, tx });
@@ -50,6 +51,23 @@ export const checkoutProcedure = withAuth
       }
 
       invariant(stripeSession, "session not found");
+
+      const user = session.user;
+
+      await Audit.create(
+        {
+          action: "stripe.session.created",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {
+            userAgent,
+            requestIp,
+          },
+          target: [{ type: "stripeSession", id: stripeSession.id }],
+          summary: `Stripe Session is created for ${user.name}`,
+        },
+        tx,
+      );
 
       return { stripeSessionId: stripeSession.id };
     });

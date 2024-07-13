@@ -1,11 +1,13 @@
 import { generatePublicId } from "@/common/id";
 import { createApiToken, createSecureHash } from "@/lib/crypto";
+import { Audit } from "@/server/audit";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+
 export const apiKeyRouter = createTRPCRouter({
   create: withAuth.mutation(async ({ ctx }) => {
-    const { db, session } = ctx;
+    const { db, session, userAgent, requestIp } = ctx;
     const user = session.user;
 
     const data = await db.$transaction(async (tx) => {
@@ -20,6 +22,21 @@ export const apiKeyRouter = createTRPCRouter({
           hashedToken,
         },
       });
+
+      await Audit.create(
+        {
+          action: "apiKey.created",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {
+            userAgent,
+            requestIp,
+          },
+          target: [{ type: "apiKey", id: key.id }],
+          summary: `${user.name} created the apiKey ${key.name}`,
+        },
+        tx,
+      );
 
       return {
         token,

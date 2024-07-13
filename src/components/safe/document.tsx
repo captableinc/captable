@@ -112,13 +112,25 @@ const formatDate = (date: string) => {
 };
 
 type SafeProps = {
-  investor: string;
   investment: number;
   valuation?: number;
   date: string;
   company: {
     name: string;
     state: string;
+    address?: string;
+  };
+
+  sender?: {
+    name: string;
+    email: string;
+    title: string;
+  };
+
+  investor: {
+    name: string;
+    email: string;
+    address?: string;
   };
 };
 
@@ -177,9 +189,10 @@ const SafeDocument = ({
         <Text style={[style.pt20]}>
           <Indent>
             THIS CERTIFIES THAT in exchange for the payment by{" "}
-            <Text style={{ color: "blue" }}>{investor}</Text> (the “Investor”)
-            of <Text style={{ color: "blue" }}>{formatUsd(investment)}</Text>{" "}
-            (the “Purchase Amount”) on or about{" "}
+            <Text style={{ color: "blue" }}>{investor.name}</Text> (the
+            “Investor”) of{" "}
+            <Text style={{ color: "blue" }}>{formatUsd(investment)}</Text> (the
+            “Purchase Amount”) on or about{" "}
             <Text style={{ color: "blue" }}>{formatDate(date)}</Text>,{" "}
             <Text style={{ color: "blue" }}>{company.name}</Text>, a{" "}
             <Text style={{ color: "blue" }}>{company.state}</Text> corporation
@@ -712,7 +725,7 @@ const SafeDocument = ({
           </Indent>
         </Text>
 
-        <Text style={[style.pt10]}>
+        <Text style={[style.pt20]}>
           <Indent>4. Investor Representations</Indent>
         </Text>
 
@@ -871,6 +884,54 @@ const SafeDocument = ({
           IN WITNESS WHEREOF, the undersigned have caused this Safe to be duly
           executed and delivered.
         </Text>
+
+        <View style={style.pt20}>
+          <Text style={[style.title, { color: "blue" }]}>{company.name}</Text>
+          <Text style={[style.pb20, style.pt20]}>
+            By (signature): __________________________________
+          </Text>
+
+          <Text style={style.pb20}>
+            Name: ________________________________________
+          </Text>
+
+          <Text style={style.pb20}>
+            Title: _________________________________________
+          </Text>
+          <Text style={style.pb20}>
+            Address: ______________________________________
+          </Text>
+          <Text style={style.pb20}>
+            ______________________________________________
+          </Text>
+          <Text style={style.pb20}>
+            Email: ________________________________________
+          </Text>
+        </View>
+
+        <View style={style.pt20}>
+          <Text style={[style.title]}>INVESTOR:</Text>
+          <Text style={[style.pb20, style.pt20]}>
+            By (signature): __________________________________
+          </Text>
+
+          <Text style={style.pb20}>
+            Name: ________________________________________
+          </Text>
+
+          <Text style={style.pb20}>
+            Title: _________________________________________
+          </Text>
+          <Text style={style.pb20}>
+            Address: ______________________________________
+          </Text>
+          <Text style={style.pb20}>
+            ______________________________________________
+          </Text>
+          <Text style={style.pb20}>
+            Email: ________________________________________
+          </Text>
+        </View>
       </Page>
     </Document>
   );

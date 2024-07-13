@@ -51,6 +51,9 @@ export const AuditSchema = z.object({
 
     "update.public-status",
     "update.private-status",
+
+    "apiKey.created",
+    "apiKey.deleted",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -69,6 +72,7 @@ export const AuditSchema = z.object({
         "share",
         "update",
         "stakeholder",
+        "apiKey",
       ]),
       id: z.string().optional().nullable(),
     }),

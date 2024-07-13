@@ -10,7 +10,7 @@ export type TwoFARecoveryCodesPayloadType = {
   recoveryCodes: string[];
 };
 
-export const send2FARecoveryCodesEmail = async (
+export const Send2FARecoveryCodesEmail = async (
   payload: TwoFARecoveryCodesPayloadType,
 ) => {
   const { email, recoveryCodes } = payload;
@@ -32,6 +32,6 @@ export class TwoFARecoveryCodesEmailJob extends BaseJob<TwoFARecoveryCodesPayloa
   readonly type = "email.2fa-recovery-codes";
 
   async work(job: Job<TwoFARecoveryCodesPayloadType>): Promise<void> {
-    await send2FARecoveryCodesEmail(job.data);
+    await Send2FARecoveryCodesEmail(job.data);
   }
 }

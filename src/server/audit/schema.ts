@@ -61,6 +61,14 @@ export const AuditSchema = z.object({
 
     "stripe.session.created",
     "stripe.billingPortal.session.created",
+
+    "dataroom.created",
+    "dataroom.updated",
+    "dataroom.shared",
+    "dataroom.deleted",
+    "dataroom.document.created",
+    "dataroom.recipient.created",
+    "dataroom.recipient.upserted",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -83,6 +91,7 @@ export const AuditSchema = z.object({
         "bucket",
         "stripeSession",
         "stripeBillingPortalSession",
+        "dataroom",
       ]),
       id: z.string().optional().nullable(),
     }),

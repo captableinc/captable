@@ -6,6 +6,7 @@ import {
 } from "@/jobs/share-data-room-email";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
+import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import type { DataRoom } from "@prisma/client";
@@ -112,13 +113,13 @@ export const dataRoomRouter = createTRPCRouter({
   save: withAuth.input(DataRoomSchema).mutation(async ({ ctx, input }) => {
     try {
       let room = {} as DataRoom;
-      const { db, session } = ctx;
+      const { db, session, userAgent, requestIp } = ctx;
 
       const { publicId } = input;
 
       await db.$transaction(async (tx) => {
         const { companyId } = await checkMembership({ tx, session });
-
+        const { user } = session;
         if (!publicId) {
           room = await tx.dataRoom.create({
             data: {
@@ -127,6 +128,21 @@ export const dataRoomRouter = createTRPCRouter({
               publicId: generatePublicId(),
             },
           });
+
+          await Audit.create(
+            {
+              action: "dataroom.created",
+              companyId: user.companyId,
+              actor: { type: "user", id: user.id },
+              context: {
+                userAgent,
+                requestIp,
+              },
+              target: [{ type: "dataroom", id: room.id }],
+              summary: `${user.name} created the data room ${room.name}`,
+            },
+            tx,
+          );
         } else {
           room = await tx.dataRoom.update({
             where: {
@@ -137,6 +153,21 @@ export const dataRoomRouter = createTRPCRouter({
             },
           });
 
+          await Audit.create(
+            {
+              action: "dataroom.updated",
+              companyId: user.companyId,
+              actor: { type: "user", id: user.id },
+              context: {
+                userAgent,
+                requestIp,
+              },
+              target: [{ type: "dataroom", id: room.id }],
+              summary: `${user.name} updated the data room ${room.name}`,
+            },
+            tx,
+          );
+
           const { documents, recipients } = input;
 
           if (documents) {
@@ -146,6 +177,21 @@ export const dataRoomRouter = createTRPCRouter({
                 documentId: document.documentId,
               })),
             });
+
+            await Audit.create(
+              {
+                action: "dataroom.document.created",
+                companyId: user.companyId,
+                actor: { type: "user", id: user.id },
+                context: {
+                  userAgent,
+                  requestIp,
+                },
+                target: [{ type: "dataroom", id: room.id }],
+                summary: `${user.name} created documents for data room ${room.name}`,
+              },
+              tx,
+            );
           }
 
           if (recipients) {
@@ -158,6 +204,21 @@ export const dataRoomRouter = createTRPCRouter({
                 expiresAt: recipient.expiresAt,
               })),
             });
+
+            await Audit.create(
+              {
+                action: "dataroom.recipient.created",
+                companyId: user.companyId,
+                actor: { type: "user", id: user.id },
+                context: {
+                  userAgent,
+                  requestIp,
+                },
+                target: [{ type: "dataroom", id: room.id }],
+                summary: `${user.name} created recipient for the data room ${room.name}`,
+              },
+              tx,
+            );
           }
         }
       });
@@ -186,10 +247,10 @@ export const dataRoomRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { session, db } = ctx;
+      const { session, db, requestIp, userAgent } = ctx;
       const { dataRoomId, others, selectedContacts } = input;
       const { name: senderName, email: senderEmail, companyId } = session.user;
-
+      const { user } = session;
       const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
           id: dataRoomId,
@@ -224,23 +285,41 @@ export const dataRoomRouter = createTRPCRouter({
                 ? { stakeholderId: recipient.id }
                 : {};
 
-          const recipientRecord = await db.dataRoomRecipient.upsert({
-            where: {
-              dataRoomId_email: {
-                dataRoomId,
-                email,
+          const { recipientRecord } = await db.$transaction(async (tx) => {
+            const recipientRecord = await tx.dataRoomRecipient.upsert({
+              where: {
+                dataRoomId_email: {
+                  dataRoomId,
+                  email,
+                },
               },
-            },
-            create: {
-              dataRoomId,
-              name: recipient.name,
-              email,
-              ...memberOrStakeholderId,
-            },
-            update: {
-              name: recipient.name,
-              ...memberOrStakeholderId,
-            },
+              create: {
+                dataRoomId,
+                name: recipient.name,
+                email,
+                ...memberOrStakeholderId,
+              },
+              update: {
+                name: recipient.name,
+                ...memberOrStakeholderId,
+              },
+            });
+
+            await Audit.create(
+              {
+                action: "dataroom.recipient.upserted",
+                companyId: user.companyId,
+                actor: { type: "user", id: user.id },
+                context: {
+                  userAgent,
+                  requestIp,
+                },
+                target: [{ type: "dataroom", id: dataRoom.id }],
+                summary: `${user.name} created the data room ${dataRoom.name}`,
+              },
+              tx,
+            );
+            return { recipientRecord };
           });
 
           const token = await encode({
@@ -262,6 +341,23 @@ export const dataRoomRouter = createTRPCRouter({
           };
 
           await new ShareDataRoomEmailJob().emit(payload);
+
+          await db.$transaction(async (tx) => {
+            await Audit.create(
+              {
+                action: "dataroom.shared",
+                companyId: user.companyId,
+                actor: { type: "user", id: user.id },
+                context: {
+                  userAgent,
+                  requestIp,
+                },
+                target: [{ type: "dataroom", id: dataRoom.id }],
+                summary: `${user.name} shared the data room ${dataRoom.name}`,
+              },
+              tx,
+            );
+          });
         }
       };
 
@@ -281,10 +377,10 @@ export const dataRoomRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { session, db } = ctx;
+      const { session, db, requestIp, userAgent } = ctx;
       const { dataRoomId, recipientId } = input;
       const companyId = session.user.companyId;
-
+      const { user } = session;
       const dataRoom = await db.dataRoom.findUniqueOrThrow({
         where: {
           id: dataRoomId,
@@ -296,11 +392,28 @@ export const dataRoomRouter = createTRPCRouter({
         throw new Error("Data room not found");
       }
 
-      await db.dataRoomRecipient.delete({
-        where: {
-          id: recipientId,
-          dataRoomId,
-        },
+      await db.$transaction(async (tx) => {
+        await tx.dataRoomRecipient.delete({
+          where: {
+            id: recipientId,
+            dataRoomId,
+          },
+        });
+
+        await Audit.create(
+          {
+            action: "dataroom.deleted",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "dataroom", id: dataRoom.id }],
+            summary: `${user.name} deleted the data room ${dataRoom.name}`,
+          },
+          tx,
+        );
       });
 
       return {

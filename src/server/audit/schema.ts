@@ -7,6 +7,8 @@ export const AuditSchema = z.object({
     "user.onboarded",
 
     "company.created",
+    "company.lastAcessed",
+    "company.updated",
 
     "member.invited",
     "member.re-invited",

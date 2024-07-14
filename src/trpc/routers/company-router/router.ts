@@ -1,3 +1,4 @@
+import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
@@ -41,7 +42,7 @@ export const companyRouter = createTRPCRouter({
   switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { db } = ctx;
+      const { db, session, userAgent, requestIp } = ctx;
 
       await db.$transaction(async (tx) => {
         const member = await tx.member.findFirst({
@@ -63,6 +64,21 @@ export const companyRouter = createTRPCRouter({
             lastAccessed: new Date(),
           },
         });
+        const { user } = session;
+        await Audit.create(
+          {
+            action: "company.lastAcessed",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "company", id: user.companyId }],
+            summary: `${user.name} lastly accessed the company ${user.companyId}`,
+          },
+          tx,
+        );
       });
 
       return { success: true };
@@ -79,6 +95,8 @@ export const companyRouter = createTRPCRouter({
 
           const { company } = input;
           const { incorporationDate, ...rest } = company;
+          const { requestIp, userAgent, session } = ctx;
+          const { user } = session;
 
           await tx.company.update({
             where: {
@@ -89,6 +107,21 @@ export const companyRouter = createTRPCRouter({
               ...rest,
             },
           });
+
+          await Audit.create(
+            {
+              action: "company.updated",
+              companyId: user.companyId,
+              actor: { type: "user", id: user.id },
+              context: {
+                userAgent,
+                requestIp,
+              },
+              target: [{ type: "company", id: user.companyId }],
+              summary: `${user.name} updated the company ${company.name}`,
+            },
+            tx,
+          );
         });
 
         return {

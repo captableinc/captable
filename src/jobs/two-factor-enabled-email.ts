@@ -1,4 +1,4 @@
-import TwoFAEnabledEmail from "@/emails/2FARecoveryCodesEmail";
+import TwoFAEnabledEmail from "@/emails/2FAEnabledEmail";
 import { BaseJob } from "@/jobs/base";
 
 import { sendMail } from "@/server/mailer";
@@ -7,21 +7,23 @@ import type { Job } from "pg-boss";
 
 export type TwoFAEnabledPayloadType = {
   email: string;
-  recoveryCodes: string[];
+  userName: string;
+  companyName: string;
 };
 
 export const Send2FAEnabledEmail = async (payload: TwoFAEnabledPayloadType) => {
-  const { email, recoveryCodes } = payload;
+  const { email, userName, companyName } = payload;
 
   const html = await render(
     TwoFAEnabledEmail({
-      recoveryCodes,
+      userName,
+      companyName,
     }),
   );
 
   await sendMail({
     to: email,
-    subject: "2FA recovery codes",
+    subject: "Two factor authentication enabled",
     html,
   });
 };

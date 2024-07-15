@@ -1,15 +1,12 @@
 import crypto from "node:crypto";
-import { CAPTABLE_ENCRYPTION_KEY } from "@/constants/crypto";
-import { Encrypted } from "@/lib/cipher";
-import type { PrismaClient } from "@prisma/client";
+import { env } from "@/env";
+import { Encrypted } from "@/lib/crypto";
+import { db } from "@/server/db";
 import { base32 } from "@scure/base";
 import { TRPCError } from "@trpc/server";
 import { createTOTPKeyURI } from "oslo/otp";
 
-//
-
 type SetupTwoFactorAuthenticationOptions = {
-  db: PrismaClient;
   user: {
     id: string;
     email: string;
@@ -17,10 +14,9 @@ type SetupTwoFactorAuthenticationOptions = {
 };
 
 const ISSUER = "Captable-inc";
-const key = CAPTABLE_ENCRYPTION_KEY;
+const key = env.ENCRYPTION_KEY;
 
 export const setupTwoFactorAuthentication = async ({
-  db,
   user,
 }: SetupTwoFactorAuthenticationOptions) => {
   if (!key) {
@@ -32,10 +28,10 @@ export const setupTwoFactorAuthentication = async ({
 
   const secret = crypto.randomBytes(10);
 
-  const backupCodes = Array.from({ length: 10 })
+  const backupCodes = Array.from({ length: 4 })
     .fill(null)
     .map(() => crypto.randomBytes(5).toString("hex"))
-    .map((code) => `${code.slice(0, 5)}-${code.slice(5)}`.toUpperCase());
+    .map((code) => `${code.slice(0, 4)}-${code.slice(4, 8)}`.toUpperCase());
 
   const accountName = user.email as string;
 
@@ -52,11 +48,6 @@ export const setupTwoFactorAuthentication = async ({
     key,
     data: encodedSecret,
   });
-
-  console.log({ uri });
-  console.log({ secret });
-  console.log({ encodedSecret });
-  console.log({ twoFactorSecret });
 
   await db.user.update({
     where: {

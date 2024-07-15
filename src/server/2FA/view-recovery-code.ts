@@ -42,5 +42,3 @@ export const viewRecoveryCodes = async ({
 
   return recoveryCodes;
 };
-
-// @Please review (nonces handling)

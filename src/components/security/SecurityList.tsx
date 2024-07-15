@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Children } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 
@@ -7,6 +8,7 @@ interface SecurityListProps {
   description: string;
   href: string;
   buttonDisplayName: string;
+  children?: React.ReactNode;
 }
 
 export const SecurityList = ({
@@ -14,6 +16,7 @@ export const SecurityList = ({
   description,
   href,
   buttonDisplayName,
+  children,
 }: SecurityListProps) => {
   return (
     <>
@@ -24,9 +27,12 @@ export const SecurityList = ({
           <AlertDescription className="mr-4">{description}</AlertDescription>
         </div>
 
-        <Button asChild size="sm" variant={"outline"}>
-          <Link href={href}>{buttonDisplayName}</Link>
-        </Button>
+        {href !== "/" && (
+          <Button asChild size="sm" variant={"outline"}>
+            <Link href={href}>{buttonDisplayName}</Link>
+          </Button>
+        )}
+        {children}
       </Alert>
     </>
   );

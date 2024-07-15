@@ -27,7 +27,7 @@ export const BlockUserAccount = async ({
   //@TODO( Audit for userAccount.blocked)
 
   await SendUserAccountBlockedEmail({
-    email: "rajukadel27@gmail.com",
+    email: user.email as string,
     userName: user.name as string,
     companyName,
   });

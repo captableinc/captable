@@ -25,7 +25,7 @@ export const Send2FADisabledEmail = async (
 
   await sendMail({
     to: email,
-    subject: "2FA enabled for your account",
+    subject: "Two factor authentication disabled",
     html,
   });
 };

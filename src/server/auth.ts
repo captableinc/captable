@@ -23,6 +23,7 @@ import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { cache } from "react";
+import { BlockUserAccount } from "./2FA/block-user-account";
 import { validateTwoFactorAuthentication } from "./2FA/validate";
 import { getUserByEmail, getUserById } from "./user";
 
@@ -171,6 +172,8 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials) {
+        let attemptsLeft = 0;
+
         if (!credentials) {
           throw new Error("Credentials not found");
         }
@@ -181,20 +184,60 @@ export const authOptions: NextAuthOptions = {
 
         if (!user || !user.password) return null;
 
-        const is2FAEnabled =
-          user.twoFactorEnabled && typeof CAPTABLE_ENCRYPTION_KEY === "string";
-
-        if (is2FAEnabled && !totpCode && !recoveryCode) {
-          throw new Error("Two factor missing credentials");
-        }
-
         const passwordsMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordsMatch) {
+          if (user.failedAuthAttempts >= env.MAX_AUTH_ATTEMPTS) {
+            throw new Error(
+              "Too many invalid attempts, Your account has been blocked.",
+            );
+          }
+
+          const updated = await db.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              failedAuthAttempts: user.failedAuthAttempts + 1,
+            },
+          });
+
+          attemptsLeft = env.MAX_AUTH_ATTEMPTS - updated.failedAuthAttempts;
+
+          if (attemptsLeft === 0) {
+            await BlockUserAccount({
+              user,
+              companyName: "XYZ company",
+              cause: "Too many invalid auth attempts",
+            });
+            throw new Error(
+              "Too many invalid attempts, Your account has been blocked.",
+            );
+          }
+
+          throw new Error(
+            `Invalid credentials. Attempts left : ${attemptsLeft}`,
+          );
+        }
 
         if (!passwordsMatch) {
           throw new Error("Invalid credentials");
         }
 
+        const is2FAEnabled =
+          user.twoFactorEnabled && typeof CAPTABLE_ENCRYPTION_KEY === "string";
+
         if (is2FAEnabled) {
+          if (user.blocked) {
+            throw new Error(
+              "Your account has been locked. Please contact support for assistance.",
+            );
+          }
+
+          if (!totpCode && !recoveryCode) {
+            throw new Error("Two factor missing credentials");
+          }
+
           const isValid = await validateTwoFactorAuthentication({
             user,
             recoveryCode,
@@ -202,11 +245,53 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!isValid) {
+            if (user.failedAuthAttempts >= env.MAX_AUTH_ATTEMPTS) {
+              throw new Error(
+                "Too many invalid attempts, Your account has been blocked.",
+              );
+            }
+            const updated = await db.user.update({
+              where: {
+                id: user.id,
+              },
+              data: {
+                failedAuthAttempts: user.failedAuthAttempts + 1,
+              },
+            });
+
+            attemptsLeft = env.MAX_AUTH_ATTEMPTS - updated.failedAuthAttempts;
+
+            if (attemptsLeft === 0) {
+              await BlockUserAccount({
+                user,
+                companyName: "XYZ company",
+                cause: "Too many invalid auth attempts",
+              });
+              throw new Error(
+                "Too many invalid attempts, Your account has been blocked.",
+              );
+            }
+
             throw new Error(
-              totpCode ? "Incorrect totp code" : "Incorrect recovery code",
+              totpCode
+                ? `Incorrect totp code. Attempts left : ${attemptsLeft}`
+                : `Incorrect recovery code. Attempts left: ${attemptsLeft}`,
             );
           }
         }
+
+        // Update failedAuthAttempts to 0 on successfull login
+        if (attemptsLeft < env.MAX_AUTH_ATTEMPTS) {
+          await db.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              failedAuthAttempts: 0,
+            },
+          });
+        }
+
         return user;
       },
     }),

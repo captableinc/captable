@@ -55,7 +55,7 @@ export const enableTwoFactorAuthentication = async ({
       },
       data: {
         twoFactorEnabled: true,
-        failed2faAttempts: 0,
+        failedAuthAttempts: 0,
       },
     });
 

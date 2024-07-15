@@ -10,19 +10,19 @@ function generateNonce() {
   return crypto.randomBytes(12);
 }
 
-/**
- *
- * @param text Value to be encrypted
- * @param key Key used to encrypt value must be 32 bytes for AES256 encryption algorithm
- *
- * @returns Encrypted value using key
- */
 export type EncryptedOptions = {
   key: string;
   data: string;
 };
 
-export function Encrypted({ key, data }: EncryptedOptions) {
+/**
+ * Encrypts the given data using the provided key and the ChaCha20-Poly1305 algorithm.
+ *
+ * @param key Key used to encrypt the data. The key must be a string that will be hashed to 32 bytes.
+ * @param data Data to be encrypted.
+ * @returns Encrypted data as a hex string.
+ */
+export function Encrypted({ key, data }: EncryptedOptions): string {
   const keyAsBytes = hashKey(key);
   const dataAsBytes = Buffer.from(data, "utf8");
   const nonce = generateNonce();
@@ -37,25 +37,39 @@ export function Encrypted({ key, data }: EncryptedOptions) {
   const authTag = cipher.getAuthTag();
   const result = Buffer.concat([nonce, encrypted, authTag]);
 
+  // console.log("Encryption successful");
+  // console.log(`Nonce: ${nonce.toString("hex")}`);
+  // console.log(`Auth Tag: ${authTag.toString("hex")}`);
+  // console.log(`Encrypted: ${encrypted.toString("hex")}`);
+
   return result.toString("hex");
 }
 
-/**
- *
- * @param text Value to decrypt
- * @param key Key used to decrypt value must be 32 bytes for AES256 encryption algorithm
- */
 export type DecryptedOptions = {
   key: string;
   data: string;
 };
-export function Decrypted({ key, data }: DecryptedOptions) {
+
+/**
+ * Decrypts the given encrypted data using the provided key and the ChaCha20-Poly1305 algorithm.
+ *
+ * @param key Key used to decrypt the data. The key must be a string that will be hashed to 32 bytes.
+ * @param data Data to be decrypted. This should be a hex string.
+ * @returns Decrypted data as a UTF-8 string.
+ */
+export function Decrypted({ key, data }: DecryptedOptions): string {
   const keyAsBytes = hashKey(key);
   const dataAsBytes = Buffer.from(data, "hex");
 
-  const nonce = dataAsBytes.slice(0, 12);
-  const encrypted = dataAsBytes.slice(12, -16);
-  const authTag = dataAsBytes.slice(-16);
+  const nonce = dataAsBytes.subarray(0, 12);
+  const encrypted = dataAsBytes.subarray(12, dataAsBytes.length - 16);
+  const authTag = dataAsBytes.subarray(dataAsBytes.length - 16);
+
+  // console.log({ key, data });
+  // console.log("Decryption process started");
+  // console.log(`Nonce: ${nonce.toString("hex")}`);
+  // console.log(`Auth Tag: ${authTag.toString("hex")}`);
+  // console.log(`Encrypted: ${encrypted.toString("hex")}`);
 
   const decipher = crypto.createDecipheriv(
     "chacha20-poly1305",
@@ -68,9 +82,9 @@ export function Decrypted({ key, data }: DecryptedOptions) {
 
   decipher.setAuthTag(authTag);
 
-  let decrypted = decipher.update(encrypted);
+  let decrypted: Buffer;
+  decrypted = decipher.update(encrypted);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
-
   return decrypted.toString("utf8");
 }
 

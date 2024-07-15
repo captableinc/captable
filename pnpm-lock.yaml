@@ -27,8 +27,8 @@ importers:
         specifier: ^0.14.8
         version: 0.14.8(hono@4.4.8)(zod@3.23.8)
       '@hookform/resolvers':
-        specifier: ^3.6.0
-        version: 3.6.0(react-hook-form@7.51.5(react@18.3.1))
+        specifier: ^3.9.0
+        version: 3.9.0(react-hook-form@7.51.5(react@18.3.1))
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
         version: 1.0.7(@prisma/client@5.14.0(prisma@5.14.0))(next-auth@4.24.7(next@14.2.4(@babel/core@7.24.5)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.3.1))(react@18.3.1))(nodemailer@6.9.14)(react-dom@18.2.0(react@18.3.1))(react@18.3.1))
@@ -123,8 +123,8 @@ importers:
         specifier: ^8.19.2
         version: 8.19.2(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
       '@tremor/react':
-        specifier: ^3.17.2
-        version: 3.17.2(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.3)
+        specifier: ^3.17.4
+        version: 3.17.4(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.3)
       '@trpc/client':
         specifier: ^10.43.6
         version: 10.45.2(@trpc/server@10.45.2)
@@ -1432,8 +1432,8 @@ packages:
       hono: '>=3.9.0'
       zod: ^3.19.1
 
-  '@hookform/resolvers@3.6.0':
-    resolution: {integrity: sha512-UBcpyOX3+RR+dNnqBd0lchXpoL8p4xC21XP8H6Meb8uve5Br1GCnmg0PcBoKKqPKgGu9GHQ/oygcmPrQhetwqw==}
+  '@hookform/resolvers@3.9.0':
+    resolution: {integrity: sha512-bU0Gr4EepJ/EQsH/IwEzYLsT/PEj5C0ynLQ4m+GSHS+xKH4TfSelhluTgOaoc4kA5s7eCsQbM4wvZLzELmWzUg==}
     peerDependencies:
       react-hook-form: ^7.0.0
 
@@ -3607,8 +3607,8 @@ packages:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
 
-  '@tremor/react@3.17.2':
-    resolution: {integrity: sha512-zQovHBTonoeJbVk23VAqDeu9yL8N9N2884WYtLr0QvEo4kfC/YUYHkwyg5R7i8ahiJcYbR5zbCG8r9Y4Oqg9qQ==}
+  '@tremor/react@3.17.4':
+    resolution: {integrity: sha512-teItTLbZglXJwakW8XYtRfIXZvp1Y6HKsaD9MC8cJqXG3vf1n6D9aPz3OKyWmDkBYE1Yjo/PTmEHKQIwN+2suQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: '>=16.6.0'
@@ -9988,7 +9988,7 @@ snapshots:
       hono: 4.4.8
       zod: 3.23.8
 
-  '@hookform/resolvers@3.6.0(react-hook-form@7.51.5(react@18.3.1))':
+  '@hookform/resolvers@3.9.0(react-hook-form@7.51.5(react@18.3.1))':
     dependencies:
       react-hook-form: 7.51.5(react@18.3.1)
 
@@ -12792,7 +12792,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.2.0(react@18.3.1)
 
-  '@tremor/react@3.17.2(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.3)':
+  '@tremor/react@3.17.4(react-dom@18.2.0(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.3)':
     dependencies:
       '@floating-ui/react': 0.19.2(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
       '@headlessui/react': 1.7.19(react-dom@18.2.0(react@18.3.1))(react@18.3.1)

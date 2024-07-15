@@ -66,9 +66,6 @@ export const AuditSchema = z.object({
     "dataroom.updated",
     "dataroom.shared",
     "dataroom.deleted",
-    "dataroom.document.created",
-    "dataroom.recipient.created",
-    "dataroom.recipient.upserted",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({

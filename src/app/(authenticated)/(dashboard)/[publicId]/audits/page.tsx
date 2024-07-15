@@ -1,13 +1,22 @@
 import { AuditTable } from "@/components/audit/audit-table";
 import { Card } from "@/components/ui/card";
+import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Audits",
 };
 
 const AuditsPage = async () => {
+  const { allow } = await serverAccessControl();
+
+  const canView = allow(true, ["audits", "read"]);
+
+  if (!canView) {
+    return <div>access denied</div>;
+  }
+
   const audits = await api.audit.getAudits.query({});
   return (
     <div className="flex flex-col gap-y-3">

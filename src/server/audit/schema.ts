@@ -70,6 +70,10 @@ export const AuditSchema = z.object({
     "role.created",
     "role.updated",
     "role.deleted",
+
+    "template.field.created",
+
+    "template.created",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -94,6 +98,7 @@ export const AuditSchema = z.object({
         "stripeBillingPortalSession",
         "dataroom",
         "role",
+        "template",
       ]),
       id: z.string().optional().nullable(),
     }),

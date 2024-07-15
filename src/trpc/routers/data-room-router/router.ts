@@ -177,21 +177,6 @@ export const dataRoomRouter = createTRPCRouter({
                 documentId: document.documentId,
               })),
             });
-
-            await Audit.create(
-              {
-                action: "dataroom.document.created",
-                companyId: user.companyId,
-                actor: { type: "user", id: user.id },
-                context: {
-                  userAgent,
-                  requestIp,
-                },
-                target: [{ type: "dataroom", id: room.id }],
-                summary: `${user.name} created documents for data room ${room.name}`,
-              },
-              tx,
-            );
           }
 
           if (recipients) {
@@ -204,21 +189,6 @@ export const dataRoomRouter = createTRPCRouter({
                 expiresAt: recipient.expiresAt,
               })),
             });
-
-            await Audit.create(
-              {
-                action: "dataroom.recipient.created",
-                companyId: user.companyId,
-                actor: { type: "user", id: user.id },
-                context: {
-                  userAgent,
-                  requestIp,
-                },
-                target: [{ type: "dataroom", id: room.id }],
-                summary: `${user.name} created recipient for the data room ${room.name}`,
-              },
-              tx,
-            );
           }
         }
       });
@@ -304,21 +274,6 @@ export const dataRoomRouter = createTRPCRouter({
                 ...memberOrStakeholderId,
               },
             });
-
-            await Audit.create(
-              {
-                action: "dataroom.recipient.upserted",
-                companyId: user.companyId,
-                actor: { type: "user", id: user.id },
-                context: {
-                  userAgent,
-                  requestIp,
-                },
-                target: [{ type: "dataroom", id: dataRoom.id }],
-                summary: `${user.name} created the data room ${dataRoom.name}`,
-              },
-              tx,
-            );
             return { recipientRecord };
           });
 

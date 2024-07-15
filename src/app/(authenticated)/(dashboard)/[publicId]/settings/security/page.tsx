@@ -1,5 +1,9 @@
+import { DisableTwoFactorDialog } from "@/components/2fa/disable-2fa-dialog";
+import { EnableTwoFactorAppDialog } from "@/components/2fa/enable-2fa-dialog";
 import { SecurityList } from "@/components/security/SecurityList";
 import { SettingsHeader } from "@/components/security/SettingHeader";
+import { getServerAuthSession } from "@/server/auth";
+import { db } from "@/server/db";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -20,15 +24,18 @@ const SecurityLists = [
     href: "security/passkey",
     buttonDisplayName: "Manage passkeys",
   },
-  {
-    title: "Two factor authentication",
-    description: "Add an extra layer of security to your account.",
-    href: "security/2fa",
-    buttonDisplayName: "Manage 2FA",
-  },
 ];
 
 export default async function SecurityPage() {
+  const session = await getServerAuthSession();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  const user = await db.user.findFirstOrThrow({
+    where: { id: session.user.id },
+  });
+
   return (
     <>
       <SettingsHeader
@@ -45,6 +52,12 @@ export default async function SecurityPage() {
           buttonDisplayName={security.buttonDisplayName}
         />
       ))}
+
+      {user.twoFactorEnabled ? (
+        <DisableTwoFactorDialog />
+      ) : (
+        <EnableTwoFactorAppDialog />
+      )}
     </>
   );
 }

@@ -1,33 +1,35 @@
-import type { PrismaClient } from "@prisma/client";
+import { db } from "@/server/db";
+import type { User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { getRecoveryCodes } from "./get-recovery-code";
 import { verifyTwoFactorAuthenticationToken } from "./verify-token";
 
+export type ExtendedUser = User & {
+  blocked: {
+    id: string;
+    userId: string;
+    cause: string | null;
+    blockedAt: Date;
+  };
+};
+
 type EnableTwoFactorAuthenticationOptions = {
-  db: PrismaClient;
-  userId: string;
+  user: ExtendedUser;
   code: string;
 };
 
 export const enableTwoFactorAuthentication = async ({
-  db,
-  userId,
+  user,
   code,
 }: EnableTwoFactorAuthenticationOptions) => {
-  const foundUser = await db.user.findUniqueOrThrow({
-    where: {
-      id: userId,
-    },
-  });
-
-  if (foundUser.twoFactorEnabled) {
+  if (user.twoFactorEnabled) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "TWO_FACTOR_ALREADY_ENABLED",
     });
   }
 
-  if (!foundUser.twoFactorSecret) {
+  if (!user.twoFactorSecret) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "TWO_FACTOR_SETUP_REQUIRED",
@@ -35,7 +37,7 @@ export const enableTwoFactorAuthentication = async ({
   }
 
   const isValidToken = await verifyTwoFactorAuthenticationToken({
-    user: foundUser,
+    user: user,
     totpCode: code,
   });
 
@@ -49,10 +51,11 @@ export const enableTwoFactorAuthentication = async ({
   const { recoveryCodes } = await db.$transaction(async (tx) => {
     const updatedUser = await tx.user.update({
       where: {
-        id: foundUser.id,
+        id: user.id,
       },
       data: {
         twoFactorEnabled: true,
+        failed2faAttempts: 0,
       },
     });
 
@@ -65,7 +68,7 @@ export const enableTwoFactorAuthentication = async ({
       });
     }
 
-    //@TODO(2FA__ENABLED__AUDIT)
+    //@TODO(2FA__ENABLED__AUDIT__EVENT)
 
     return { recoveryCodes };
   });

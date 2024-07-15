@@ -1,15 +1,13 @@
-import { type PrismaClient, User } from "@prisma/client";
+import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
 import { validateTwoFactorAuthentication } from "./validate";
 
 type DisableTwoFactorAuthenticationOptions = {
-  db: PrismaClient;
   userId: string;
   token: string;
 };
 
 export const disableTwoFactorAuthentication = async ({
-  db,
   userId,
   token,
 }: DisableTwoFactorAuthenticationOptions) => {
@@ -26,7 +24,7 @@ export const disableTwoFactorAuthentication = async ({
 
   if (!isValid) {
     isValid = await validateTwoFactorAuthentication({
-      backupCode: token,
+      recoveryCode: token,
       user: foundUser,
     });
   }

@@ -41,6 +41,10 @@ export const env = createEnv({
     EMAIL_SERVER: z.string().optional(),
     EMAIL_FROM: z.string(),
 
+    // 2fa
+    MAX_AUTH_ATTEMPTS: z.number(),
+    ENCRYPTION_KEY: z.string(),
+
     // upload
     UPLOAD_ENDPOINT: z.string(),
     UPLOAD_REGION: z.string(),
@@ -91,6 +95,9 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     EMAIL_SERVER: process.env.EMAIL_SERVER,
     EMAIL_FROM: process.env.EMAIL_FROM,
+
+    MAX_AUTH_ATTEMPTS: Number.parseInt(process.env.MAX_AUTH_ATTEMPTS),
+    ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
 
     UPLOAD_ENDPOINT: process.env.UPLOAD_ENDPOINT,
     UPLOAD_REGION: process.env.UPLOAD_REGION,

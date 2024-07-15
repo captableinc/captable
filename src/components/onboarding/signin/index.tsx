@@ -1,6 +1,21 @@
 "use client";
 
+import { api } from "@/trpc/react";
+import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+import { CaptableLogo } from "@/components/common/logo";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { OtpStyledInput } from "@/components/ui/extension/otp-input";
 import {
   Form,
   FormControl,
@@ -11,10 +26,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { api } from "@/trpc/react";
-import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDoorLockLine, RiGoogleFill } from "@remixicon/react";
+import {
+  RiDoorLockLine,
+  RiEyeFill,
+  RiEyeOffLine,
+  RiGoogleFill,
+  RiRotateLockFill,
+} from "@remixicon/react";
 import {
   browserSupportsWebAuthn,
   startAuthentication,
@@ -24,21 +42,39 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
+import { Toaster, toast } from "sonner";
 import { AuthFormHeader } from "../auth-form-header";
+
+const INPUT_NUM = 6;
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: ZCurrentPasswordSchema,
+  totpCode: z.string().optional(),
+  recoveryCode: z.string().optional(),
 });
 
 interface LoginFormProps {
   isGoogleAuthEnabled: boolean;
 }
 
+enum OtpInputType {
+  password = "password",
+  text = "text",
+}
+
 const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const router = useRouter();
+
+  const [isPassword, setIsPassword] = useState<OtpInputType>(
+    OtpInputType.password,
+  );
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [is2faModalOpen, setIs2faModalOpen] = useState<boolean>(false);
+  const [twoFactorAuthMethod, setTwoFactorMethod] = useState<
+    "totp" | "recovery"
+  >("totp");
+
   const [isPasskeyLoading, setIsPasskeyLoading] = useState<boolean>(false);
 
   const { mutateAsync: createPasskeySigninOptions } =
@@ -51,19 +87,55 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       password: process.env.NODE_ENV === "development" ? "P@ssw0rd!" : "",
     },
   });
+
   const isSubmitting = form.formState.isSubmitting;
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
-    const email = values.email;
-    const password = values.password;
-    const result = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/onboarding",
-    });
+  async function onFormSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      const { email, password, totpCode, recoveryCode } = values;
+      const credentials: Record<string, string> = {
+        email,
+        password,
+      };
 
-    if (result?.error) {
-      toast.error("Incorrect email or password");
+      if (totpCode) {
+        credentials.totpCode = totpCode;
+      }
+
+      if (recoveryCode) {
+        credentials.recoveryCode = recoveryCode;
+      }
+
+      if (
+        is2faModalOpen &&
+        !credentials.totpCode &&
+        !credentials.recoveryCode
+      ) {
+        toast.error("OTP or recovery code required.");
+        return;
+      }
+
+      const result = await signIn("credentials", {
+        ...credentials,
+        callbackUrl: "/onboarding",
+        redirect: false,
+      });
+
+      if (result?.error === "Two factor missing credentials") {
+        setIs2faModalOpen(true);
+        return;
+      }
+
+      if (result?.error) {
+        toast.error(result.error);
+      }
+
+      if (result?.ok) {
+        router.push("/onboarding");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An unknown error occured");
     }
   }
 
@@ -72,7 +144,6 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       toast.error("Passkeys are not supported on this browser");
       return;
     }
-
     try {
       setIsPasskeyLoading(true);
 
@@ -107,6 +178,20 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   async function signInWithGoogle() {
     await signIn("google", { callbackUrl: "/onboarding" });
   }
+
+  const onToggle2FAMethod = () => {
+    const newMethod = twoFactorAuthMethod === "recovery" ? "totp" : "recovery";
+    newMethod === "recovery"
+      ? form.setValue("totpCode", "")
+      : form.setValue("recoveryCode", "");
+    setTwoFactorMethod(newMethod);
+  };
+
+  const onCloseTwoFactorAuthDialog = () => {
+    form.setValue("recoveryCode", "");
+    form.setValue("totpCode", "");
+    setIs2faModalOpen(false);
+  };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -146,7 +231,11 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              id="login-form"
+              onSubmit={form.handleSubmit(onFormSubmit)}
+              className="space-y-8"
+            >
               <div className="grid gap-4">
                 <FormField
                   control={form.control}
@@ -212,11 +301,130 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                 <Button
                   loading={isSubmitting}
                   loadingText="Signing in..."
+                  form="login-form"
                   type="submit"
                 >
                   Login with Email
                 </Button>
               </div>
+            </form>
+
+            <form
+              id="otp-submit-form"
+              onSubmit={form.handleSubmit(onFormSubmit)}
+            >
+              <Dialog
+                open={is2faModalOpen}
+                onOpenChange={onCloseTwoFactorAuthDialog}
+              >
+                <DialogContent
+                  className={`${
+                    twoFactorAuthMethod === "recovery"
+                      ? "max-w-2xl w-xl"
+                      : "max-w-lg w-lg"
+                  }`}
+                >
+                  <header className="border-b border-gray-200 py-5 px-5">
+                    <DialogHeader>
+                      <div className="flex justify-center">
+                        <CaptableLogo className="mb-3 h-8 w-8 rounded" />
+                      </div>
+                      <DialogTitle className="mb-4 text-center">
+                        {twoFactorAuthMethod === "totp"
+                          ? "OTP code"
+                          : "Backup code"}
+                      </DialogTitle>
+                      <DialogDescription className="mx-auto text-center">
+                        {twoFactorAuthMethod === "totp"
+                          ? "Please provide a token from the authenticator app,"
+                          : "Please provide your backup code."}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </header>
+
+                  <form onSubmit={form.handleSubmit(onFormSubmit)}>
+                    <fieldset disabled={isSubmitting}>
+                      {twoFactorAuthMethod === "totp" && (
+                        <FormField
+                          control={form.control}
+                          name="totpCode"
+                          render={({ field }) => (
+                            <FormControl>
+                              <>
+                                <FormItem className="flex space-y-0 gap-x-2">
+                                  <OtpStyledInput
+                                    numInputs={INPUT_NUM}
+                                    inputType={isPassword}
+                                    {...field}
+                                  />
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-9"
+                                    type="button"
+                                    onClick={() => {
+                                      setIsPassword(
+                                        isPassword === OtpInputType.password
+                                          ? OtpInputType.text
+                                          : OtpInputType.password,
+                                      );
+                                    }}
+                                  >
+                                    {isPassword === OtpInputType.password ? (
+                                      <RiEyeFill />
+                                    ) : (
+                                      <RiEyeOffLine />
+                                    )}
+                                    <span className="sr-only">
+                                      {isPassword}
+                                    </span>
+                                  </Button>
+                                </FormItem>
+                                <FormMessage />
+                              </>
+                            </FormControl>
+                          )}
+                        />
+                      )}
+
+                      {twoFactorAuthMethod === "recovery" && (
+                        <FormField
+                          control={form.control}
+                          name="recoveryCode"
+                          render={({ field }) => (
+                            <OtpStyledInput
+                              numInputs={9}
+                              inputType="text"
+                              {...field}
+                            />
+                          )}
+                        />
+                      )}
+
+                      <DialogFooter className="mt-4">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={onToggle2FAMethod}
+                        >
+                          <RiRotateLockFill />
+                          {twoFactorAuthMethod === "totp"
+                            ? "Use Backup Code"
+                            : "Use Authenticator"}
+                        </Button>
+
+                        <Button
+                          form="otp-submit-form"
+                          type="submit"
+                          loading={isSubmitting}
+                        >
+                          {isSubmitting ? "Signing in..." : "Sign In"}
+                        </Button>
+                      </DialogFooter>
+                    </fieldset>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </form>
           </Form>
 

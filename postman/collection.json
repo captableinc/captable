@@ -127,35 +127,227 @@
           "name": "Get a stakeholder",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders/{{stakeholderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "companies",
+                "{{id}}",
+                "stakeholders",
+                "{{stakeholderId}}"
+              ]
+            }
           },
-          "response": []
+          "response": {
+            "data": {
+              "id": "cly13ipa40000i7ng42mv4x7b",
+              "name": "John Doe",
+              "email": "email@example.com",
+              "institutionName": "ACME Corp",
+              "stakeholderType": "INDIVIDUAL",
+              "currentRelationship": "EMPLOYEE",
+              "streetAddress": "123 Main St",
+              "city": "San Francisco",
+              "state": "CA",
+              "zipcode": "94105",
+              "country": "USA",
+              "createdAt": "2022-01-01T00:00:00Z",
+              "updatedAt": "2022-01-01T00:00:00Z"
+            }
+          }
         },
         {
           "name": "List stakeholders",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{id}}"]
+            }
           },
-          "response": []
+          "response": {
+            "data": [
+              {
+                "id": "cly13ipa40000i7ng42mv4x7b",
+                "name": "John Doe",
+                "email": "email@example.com",
+                "institutionName": "ACME Corp",
+                "stakeholderType": "INDIVIDUAL",
+                "currentRelationship": "EMPLOYEE",
+                "streetAddress": "123 Main St",
+                "city": "San Francisco",
+                "state": "CA",
+                "zipcode": "94105",
+                "country": "USA",
+                "createdAt": "2022-01-01T00:00:00Z",
+                "updatedAt": "2022-01-01T00:00:00Z"
+              }
+            ],
+            "meta": {
+              "count": 50,
+              "total": 100,
+              "cursor": "cly13ipa40000i7ng42mv4x7b"
+            }
+          }
         },
         {
           "name": "Create a stakeholder",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{id}}"]
+            },
+            "body": [
+              {
+                "name": "John Doe",
+                "email": "email@example.com",
+                "institutionName": "ACME Corp",
+                "stakeholderType": "INDIVIDUAL",
+                "currentRelationship": "EMPLOYEE",
+                "streetAddress": "123 Main St",
+                "city": "San Francisco",
+                "state": "CA",
+                "zipcode": "94105",
+                "country": "USA"
+              }
+            ]
           },
-          "response": []
+          "response": {
+            "message": "…"
+          }
         },
         {
           "name": "Update a stakeholder",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders/{{stakeholderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "companies",
+                "{{id}}",
+                "stakeholders",
+                "{{stakeholderId}}"
+              ]
+            },
+            "body": [
+              {
+                "name": "John Doe",
+                "email": "email@example.com",
+                "institutionName": "ACME Corp",
+                "stakeholderType": "INDIVIDUAL",
+                "currentRelationship": "EMPLOYEE",
+                "streetAddress": "123 Main St",
+                "city": "San Francisco",
+                "state": "CA",
+                "zipcode": "94105",
+                "country": "USA"
+              }
+            ]
           },
-          "response": []
+          "response": {
+            "message": "…",
+            "data": {
+              "id": "cly13ipa40000i7ng42mv4x7b",
+              "name": "John Doe",
+              "email": "email@example.com",
+              "institutionName": "ACME Corp",
+              "stakeholderType": "INDIVIDUAL",
+              "currentRelationship": "EMPLOYEE",
+              "streetAddress": "123 Main St",
+              "city": "San Francisco",
+              "state": "CA",
+              "zipcode": "94105",
+              "country": "USA",
+              "createdAt": "2022-01-01T00:00:00Z",
+              "updatedAt": "2022-01-01T00:00:00Z"
+            }
+          }
         }
       ]
+    },
+
+    {
+      "name": "Delete a stakeholder",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bearerToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders/{{stakeholderId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["companies", "{{id}}", "stakeholders", "{{stakeholderId}}"]
+        }
+      },
+      "response": {
+        "message": "…",
+        "data": {
+          "id": "cly13ipa40000i7ng42mv4x7b",
+          "name": "John Doe",
+          "email": "email@example.com",
+          "institutionName": "ACME Corp",
+          "stakeholderType": "INDIVIDUAL",
+          "currentRelationship": "EMPLOYEE",
+          "streetAddress": "123 Main St",
+          "city": "San Francisco",
+          "state": "CA",
+          "zipcode": "94105",
+          "country": "USA",
+          "createdAt": "2022-01-01T00:00:00Z",
+          "updatedAt": "2022-01-01T00:00:00Z"
+        }
+      }
     }
   ]
 }

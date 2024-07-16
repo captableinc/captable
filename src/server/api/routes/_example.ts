@@ -1,7 +1,6 @@
 import { ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { createRoute, z } from "@hono/zod-openapi";
-import type { Context } from "hono";
 
 export const RequestSchema = z.object({
   id: z
@@ -45,7 +44,7 @@ const route = createRoute({
   },
 });
 const getOne = (app: PublicAPI) => {
-  app.openapi(route, (c: Context) => {
+  app.openapi(route, (c) => {
     const params = c.req.param();
 
     return c.json(

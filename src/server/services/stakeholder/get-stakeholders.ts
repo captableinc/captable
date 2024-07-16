@@ -1,19 +1,15 @@
 import { ProxyPrismaModel } from "@/server/api/pagination/prisma-proxy";
-import type { PrismaClient } from "@prisma/client";
+import { db } from "@/server/db";
 
 type GetPaginatedStakeholders = {
-  db: PrismaClient;
-  payload: {
-    companyId: string;
-    limit: number;
-    cursor?: string;
-  };
+  companyId: string;
+  limit: number;
+  cursor?: string;
 };
 
-export const getPaginatedStakeholders = async ({
-  db,
-  payload,
-}: GetPaginatedStakeholders) => {
+export const getPaginatedStakeholders = async (
+  payload: GetPaginatedStakeholders,
+) => {
   const queryCriteria = {
     where: {
       companyId: payload.companyId,

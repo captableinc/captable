@@ -57,12 +57,9 @@ const getMany = (app: PublicAPI) => {
     const { company } = await withCompanyAuth(c);
     const query = c.req.query();
     const { data, meta } = await getPaginatedStakeholders({
-      db,
-      payload: {
-        limit: Number(query.limit),
-        cursor: query?.cursor,
-        companyId: company.id,
-      },
+      limit: Number(query.limit),
+      cursor: query?.cursor,
+      companyId: company.id,
     });
 
     return c.json(

@@ -1,3 +1,4 @@
+import { popModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import { LinearCombobox } from "@/components/ui/combobox";
 import {
@@ -10,33 +11,41 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { StakeholderRelationshipEnum } from "@/prisma/enums";
+import { api } from "@/trpc/react";
+import { ZodAddStakeholderMutationSchema } from "@/trpc/routers/stakeholder-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StakeholderTypeEnum } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { toast } from "sonner";
+import type { z } from "zod";
 
 interface InvestorFormProps {
   investor?: ZodInvestorType;
 }
 
-const ZodInvestorSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, { message: "Name is required" }),
-  email: z.string().email().min(1),
-  institutionName: z.string().optional(),
-  investorType: z.nativeEnum(StakeholderTypeEnum, {
-    errorMap: () => ({ message: "Invalid value for investorType" }),
-  }),
-  currentRelationship: z.nativeEnum(StakeholderRelationshipEnum, {
-    errorMap: () => ({ message: "Invalid value for currentRelationship" }),
-  }),
-});
-
+const ZodInvestorSchema = ZodAddStakeholderMutationSchema;
 type ZodInvestorType = z.infer<typeof ZodInvestorSchema>;
 
 export const InvestorForm = ({ investor }: InvestorFormProps) => {
-  const investorType =
-    investor?.investorType || investor?.institutionName
+  const router = useRouter();
+
+  const { mutateAsync: addStakeholderMutation } =
+    api.stakeholder.addStakeholders.useMutation({
+      onSuccess: ({ success, message }) => {
+        if (success) {
+          router.refresh();
+          form.reset();
+          toast.success("🎉 Successfully created!");
+          popModal();
+        } else {
+          toast.error(`🔥 Error - ${message}`);
+        }
+      },
+    });
+
+  const stakeholderType =
+    investor?.stakeholderType || investor?.institutionName
       ? "INSTITUTION"
       : "INDIVIDUAL";
 
@@ -45,7 +54,7 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
       name: investor?.name || "",
       email: investor?.email || "",
       institutionName: investor?.institutionName || "",
-      investorType,
+      stakeholderType,
       currentRelationship: "INVESTOR",
     },
     resolver: zodResolver(ZodInvestorSchema),
@@ -54,9 +63,7 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
   const isSubmitting = form.formState.isSubmitting;
 
   const onSubmit = (values: ZodInvestorType) => {
-    // HANDLE THE VALUES :
-
-    console.log("The form values is : ", values);
+    addStakeholderMutation([values]);
   };
 
   const investorTypeOpts = [
@@ -64,21 +71,7 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
     { value: "INSTITUTION", label: "Institution" },
   ];
 
-  const groupTypeOpts = [
-    { value: "ADVISOR", label: "Advisor" },
-    { value: "BOARD_MEMBER", label: "Board member" },
-    { value: "CONSULTANT", label: "Consultant" },
-    { value: "EMPLOYEE", label: "Employee" },
-    { value: "EX_ADVISOR", label: "Ex advisor" },
-    { value: "EX_CONSULTANT", label: "Ex consultant" },
-    { value: "EX_EMPLOYEE", label: "Ex employee" },
-    { value: "EXECUTIVE", label: "Executive" },
-    { value: "FOUNDER", label: "Founder" },
-    { value: "INVESTOR", label: "Investor" },
-    { value: "NON_US_EMPLOYEE", label: "Non US employee" },
-    { value: "OFFICER", label: "Officer" },
-    { value: "OTHER", label: "Other" },
-  ];
+  const groupTypeOpts = [{ value: "INVESTOR", label: "Investor" }];
 
   return (
     <Form {...form}>
@@ -131,7 +124,7 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
           <div className="sm:col-span-3">
             <FormField
               control={form.control}
-              name="investorType"
+              name="stakeholderType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>

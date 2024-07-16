@@ -61,7 +61,7 @@ const update = (app: PublicAPI) => {
     const stakeholderId = params.stakeholderId as string;
 
     const body = await c.req.json();
-    console.log({ body });
+
     const { id, ...rest } = body;
 
     const foundStakeholder = await db.stakeholder.findFirst({

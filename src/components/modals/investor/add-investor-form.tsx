@@ -10,11 +10,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { StakeholderRelationshipEnum } from "@/prisma/enums";
+import { StakeholderTypeEnum } from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import { ZodAddStakeholderMutationSchema } from "@/trpc/routers/stakeholder-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StakeholderTypeEnum } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -66,12 +65,12 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
     addStakeholderMutation([values]);
   };
 
-  const investorTypeOpts = [
-    { value: "INDIVIDUAL", label: "Individual" },
-    { value: "INSTITUTION", label: "Institution" },
-  ];
+  const StakeholderTypeArr = Object.values(StakeholderTypeEnum);
 
-  const groupTypeOpts = [{ value: "INVESTOR", label: "Investor" }];
+  const investorTypeOpts = StakeholderTypeArr.map((st) => ({
+    value: st,
+    label: st,
+  }));
 
   return (
     <Form {...form}>

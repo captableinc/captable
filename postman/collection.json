@@ -1,9 +1,9 @@
 {
   "info": {
-    "_postman_id": "209da849-6850-40d0-a4bf-1b7d004be7ce",
+    "_postman_id": "844d3aaf-c30d-4fc2-be1f-e2f41e9fc5e9",
     "name": "Captable API (v1)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "36586471"
+    "_exporter_id": "28023741"
   },
   "item": [
     {
@@ -90,7 +90,10 @@
           "name": "Get a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -98,7 +101,10 @@
           "name": "List team members",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -106,7 +112,10 @@
           "name": "Create a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -114,7 +123,10 @@
           "name": "Update a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         }
@@ -127,7 +139,10 @@
           "name": "Get a stakeholder",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -135,7 +150,10 @@
           "name": "List stakeholders",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -143,7 +161,10 @@
           "name": "Create a stakeholder",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -151,7 +172,130 @@
           "name": "Update a stakeholder",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Share",
+      "item": [
+        {
+          "name": "Get a Share",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/shares/{{shareId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "shares", "{{shareId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Shares",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/shares",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "shares"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Share",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/shares",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "shares"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Share",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/shares/{{shareId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "shares", "{{shareId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Share",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/shares/{{shareId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "shares", "{{shareId}}"]
+            }
           },
           "response": []
         }

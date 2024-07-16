@@ -2,49 +2,11 @@ import { logger } from "@/lib/logger";
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { StatusCode } from "hono/utils/http-status";
-import { z } from "zod";
+import type { ZodError } from "zod";
+
+import { z } from "@hono/zod-openapi";
 
 const log = logger.child({ module: "api-error" });
-
-const ErrorSchema = z.object({
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-  }),
-});
-
-const ErrorContent = {
-  "application/json": {
-    schema: ErrorSchema,
-  },
-};
-
-export const ErrorResponses = {
-  400: {
-    content: ErrorContent,
-    description: "Bad Request",
-  },
-
-  401: {
-    content: ErrorContent,
-    description: "Unauthorized",
-  },
-
-  404: {
-    content: ErrorContent,
-    description: "Not Found",
-  },
-
-  429: {
-    content: ErrorContent,
-    description: "Rate Limited",
-  },
-
-  500: {
-    content: ErrorContent,
-    description: "Internal Server Error",
-  },
-};
 
 const ErrorCode = z.enum([
   "BAD_REQUEST",
@@ -56,6 +18,71 @@ const ErrorCode = z.enum([
   "UNAUTHORIZED",
   "METHOD_NOT_ALLOWED",
 ]);
+
+function errorSchemaFactory(code: z.ZodEnum<[z.infer<typeof ErrorCode>]>) {
+  return z.object({
+    error: z.object({
+      code: code.openapi({
+        description: "A machine readable error code.",
+        example: code._def.values.at(0),
+      }),
+
+      message: z.string().openapi({
+        description: "A human readable explanation of what went wrong",
+      }),
+    }),
+  });
+}
+
+export const ErrorSchema = z.object({
+  error: z.object({
+    code: ErrorCode,
+
+    message: z.string(),
+  }),
+});
+
+interface generateErrorResponseOptions {
+  description: string;
+  status: StatusCode;
+}
+
+const generateErrorResponse = (options: generateErrorResponseOptions) => {
+  const { description, status } = options;
+  return {
+    [status]: {
+      content: {
+        "application/json": {
+          schema: errorSchemaFactory(z.enum([statusToCode(status)])),
+        },
+      },
+      description,
+    },
+  };
+};
+
+export const ErrorResponses: ReturnType<typeof generateErrorResponse> = {
+  ...generateErrorResponse({
+    status: 400,
+    description: "Bad Request",
+  }),
+  ...generateErrorResponse({
+    status: 401,
+    description: "Unauthorized",
+  }),
+  ...generateErrorResponse({
+    status: 404,
+    description: "Not found",
+  }),
+  ...generateErrorResponse({
+    status: 429,
+    description: "Rate Limited",
+  }),
+  ...generateErrorResponse({
+    status: 500,
+    description: "Internal Server Error",
+  }),
+};
 
 function codeToStatus(code: z.infer<typeof ErrorCode>): StatusCode {
   switch (code) {
@@ -101,6 +128,45 @@ function statusToCode(status: StatusCode): z.infer<typeof ErrorCode> {
   }
 }
 
+export function parseZodErrorMessage(err: z.ZodError): string {
+  try {
+    const arr = JSON.parse(err.message) as {
+      message: string;
+      path: Array<string>;
+    }[];
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const { path, message } = arr[0]!;
+    return `${path.join(".")}: ${message}`;
+  } catch {
+    return err.message;
+  }
+}
+
+export function handleZodError(
+  result:
+    | {
+        success: true;
+        data: unknown;
+      }
+    | {
+        success: false;
+        error: ZodError;
+      },
+  c: Context,
+) {
+  if (!result.success) {
+    return c.json<z.infer<typeof ErrorSchema>>(
+      {
+        error: {
+          code: "BAD_REQUEST",
+          message: parseZodErrorMessage(result.error),
+        },
+      },
+      { status: 400 },
+    );
+  }
+}
+
 export class ApiError extends HTTPException {
   public readonly code: z.infer<typeof ErrorCode>;
 
@@ -123,7 +189,6 @@ export function handleError(err: Error, c: Context): Response {
         name: err.name,
         code: err.code,
         status: err.status,
-        message: err.message,
       });
     }
     return c.json(

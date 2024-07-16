@@ -1,25 +1,19 @@
 import { Audit } from "@/server/audit";
+import { db } from "@/server/db";
 import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
-import type { PrismaClient } from "@prisma/client";
 
 type AddStakeholderOptions = {
-  db: PrismaClient;
-  payload: {
-    companyId: string;
-    requestIp: string;
-    userAgent: string;
-    user: {
-      id: string;
-      name: string;
-    };
-    data: TypeStakeholderArray;
+  companyId: string;
+  requestIp: string;
+  userAgent: string;
+  user: {
+    id: string;
+    name: string;
   };
+  data: TypeStakeholderArray;
 };
 
-export const addStakeholders = async ({
-  db,
-  payload,
-}: AddStakeholderOptions) => {
+export const addStakeholders = async (payload: AddStakeholderOptions) => {
   const { companyId, requestIp, userAgent, user, data } = payload;
 
   await db.$transaction(async (tx) => {

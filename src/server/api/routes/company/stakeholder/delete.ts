@@ -1,5 +1,5 @@
 import { withCompanyAuth } from "@/server/api/auth";
-import { ErrorResponses } from "@/server/api/error";
+import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import {
   StakeholderSchema,
@@ -59,10 +59,24 @@ const route = createRoute({
   },
 });
 
-const delete_ = (app: PublicAPI) => {
+const deleteOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
     const { stakeholderId } = c.req.param();
+
+    const foundStakeholder = await db.stakeholder.findUnique({
+      where: {
+        id: stakeholderId,
+        companyId: company.id,
+      },
+    });
+
+    if (!foundStakeholder) {
+      throw new ApiError({
+        code: "NOT_FOUND",
+        message: "No stakeholder with the provided Id",
+      });
+    }
 
     const payload = {
       companyId: company.id,
@@ -72,10 +86,7 @@ const delete_ = (app: PublicAPI) => {
       userAgent: getHonoUserAgent(c.req),
     };
 
-    const { deletedStakeholder } = await deleteStakeholder({
-      db,
-      payload,
-    });
+    const { deletedStakeholder } = await deleteStakeholder(payload);
 
     return c.json(
       {
@@ -87,4 +98,4 @@ const delete_ = (app: PublicAPI) => {
   });
 };
 
-export default delete_;
+export default deleteOne;

@@ -63,15 +63,6 @@ const create = (app: PublicAPI) => {
     const { company, user } = await withCompanyAuth(c);
 
     const body = await c.req.json();
-    const zodParsed = RequestBodySchema.safeParse(body);
-
-    if (!zodParsed.success) {
-      const errorMessage = zodParsed.error.errors.map((err) => err.message);
-      throw new ApiError({
-        code: "BAD_REQUEST",
-        message: String(errorMessage),
-      });
-    }
 
     const payload = {
       companyId: company.id,
@@ -81,13 +72,10 @@ const create = (app: PublicAPI) => {
         id: user.id,
         name: user.name as string,
       },
-      data: zodParsed.data as TypeStakeholderArray,
+      data: body as TypeStakeholderArray,
     };
     try {
-      await addStakeholders({
-        db,
-        payload,
-      });
+      await addStakeholders(payload);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {

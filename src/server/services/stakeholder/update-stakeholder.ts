@@ -1,41 +1,21 @@
-import { ApiError } from "@/server/api/error";
 import { Audit } from "@/server/audit";
+import { db } from "@/server/db";
 import type { UpdateStakeholderMutationType } from "@/trpc/routers/stakeholder-router/schema";
-import type { PrismaClient } from "@prisma/client";
 
 export type UpdateStakeholderOptions = {
-  db: PrismaClient;
-  payload: {
-    stakeholderId: string;
-    companyId: string;
-    requestIp: string;
-    userAgent: string;
-    user: {
-      id: string;
-      name: string;
-    };
-    data: Omit<UpdateStakeholderMutationType, "id">;
+  stakeholderId: string;
+  companyId: string;
+  requestIp: string;
+  userAgent: string;
+  user: {
+    id: string;
+    name: string;
   };
+  data: Omit<UpdateStakeholderMutationType, "id">;
 };
 
-export const updateStakeholder = async ({
-  db,
-  payload,
-}: UpdateStakeholderOptions) => {
+export const updateStakeholder = async (payload: UpdateStakeholderOptions) => {
   const { requestIp, userAgent, user, data } = payload;
-
-  const foundStakeholder = await db.stakeholder.findFirst({
-    where: {
-      id: payload.stakeholderId,
-    },
-  });
-
-  if (!foundStakeholder) {
-    throw new ApiError({
-      code: "NOT_FOUND",
-      message: "No stakeholder with provided id",
-    });
-  }
 
   const { updatedStakeholder } = await db.$transaction(async (tx) => {
     const updatedStakeholder = await db.stakeholder.update({

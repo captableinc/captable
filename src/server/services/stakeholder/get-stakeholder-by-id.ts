@@ -1,12 +1,10 @@
-import type { PrismaClient } from "@prisma/client";
+import { db } from "@/server/db";
 
 type GetStakeholderById = {
-  db: PrismaClient;
   stakeholderId: string;
 };
 
 export const getStakeholderById = async ({
-  db,
   stakeholderId,
 }: GetStakeholderById) => {
   return await db.stakeholder.findUniqueOrThrow({

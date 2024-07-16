@@ -1,41 +1,19 @@
-import { ApiError } from "@/server/api/error";
 import { Audit } from "@/server/audit";
-import type { PrismaClient } from "@prisma/client";
-import { commonRouter } from "./../../../trpc/routers/common/router";
+import { db } from "@/server/db";
 
 type DeleteStakeholderOption = {
-  db: PrismaClient;
-  payload: {
-    companyId: string;
-    stakeholderId: string;
-    requestIp: string;
-    userAgent: string;
-    user: {
-      id: string;
-      name: string;
-    };
+  companyId: string;
+  stakeholderId: string;
+  requestIp: string;
+  userAgent: string;
+  user: {
+    id: string;
+    name: string;
   };
 };
 
-export const deleteStakeholder = async ({
-  db,
-  payload,
-}: DeleteStakeholderOption) => {
+export const deleteStakeholder = async (payload: DeleteStakeholderOption) => {
   const { companyId, stakeholderId, requestIp, userAgent, user } = payload;
-
-  const foundStakeholder = await db.stakeholder.findUnique({
-    where: {
-      id: stakeholderId,
-      companyId,
-    },
-  });
-
-  if (!foundStakeholder) {
-    throw new ApiError({
-      code: "NOT_FOUND",
-      message: "No stakeholder with the provided Id",
-    });
-  }
 
   const { deletedStakeholder } = await db.$transaction(async (tx) => {
     const deletedStakeholder = await tx.stakeholder.delete({

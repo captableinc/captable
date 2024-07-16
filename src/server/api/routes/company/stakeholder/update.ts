@@ -64,6 +64,19 @@ const update = (app: PublicAPI) => {
     console.log({ body });
     const { id, ...rest } = body;
 
+    const foundStakeholder = await db.stakeholder.findFirst({
+      where: {
+        id: stakeholderId,
+      },
+    });
+
+    if (!foundStakeholder) {
+      throw new ApiError({
+        code: "NOT_FOUND",
+        message: "No stakeholder with provided id",
+      });
+    }
+
     const payload = {
       stakeholderId: stakeholderId,
       companyId: company.id,
@@ -76,10 +89,7 @@ const update = (app: PublicAPI) => {
       },
     };
 
-    const { updatedStakeholder } = await updateStakeholder({
-      db,
-      payload,
-    });
+    const { updatedStakeholder } = await updateStakeholder(payload);
 
     if (!updatedStakeholder) {
       throw new ApiError({

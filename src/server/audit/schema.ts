@@ -53,6 +53,11 @@ export const AuditSchema = z.object({
 
     "update.public-status",
     "update.private-status",
+    "update.created",
+    "update.updated",
+    "update.cloned",
+    "update.shared",
+    "update.unshared",
 
     "apiKey.created",
     "apiKey.deleted",

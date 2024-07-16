@@ -172,10 +172,6 @@
             "method": "GET",
             "header": [
               {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
                 "key": "Authorization",
                 "value": "Bearer {{bearerToken}}"
               }
@@ -315,10 +311,6 @@
       "request": {
         "method": "DELETE",
         "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
           {
             "key": "Authorization",
             "value": "Bearer {{bearerToken}}"

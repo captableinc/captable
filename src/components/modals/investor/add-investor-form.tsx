@@ -142,25 +142,6 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
               )}
             />
           </div>
-          <div className="sm:col-span-3">
-            <FormField
-              control={form.control}
-              name="currentRelationship"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Group</FormLabel>
-                  <div>
-                    <LinearCombobox
-                      defaultOption={{ value: field.value, label: field.value }}
-                      options={groupTypeOpts}
-                      onValueChange={(option) => field.onChange(option.value)}
-                    />
-                  </div>
-                  <FormMessage className="text-xs font-light" />
-                </FormItem>
-              )}
-            />
-          </div>
         </div>
         <div className="mt-8 flex justify-end">
           <Button disabled={isSubmitting} loading={isSubmitting} type="submit">

@@ -82,3 +82,27 @@ export function formatCurrency(value: number, currency: "USD") {
     currency: currency,
   }).format(value);
 }
+
+export function camelCase(value: string) {
+  const arr = value.split("_");
+  let result = "";
+
+  const n = arr.length;
+
+  for (let i = 0; i < n; i++) {
+    let modifiedWord = arr[i]?.toLowerCase() as string;
+
+    // Only capitalize the first letter on the first word
+    if (i === 0) {
+      const firstLetter = modifiedWord.charAt(0).toUpperCase();
+      const remaining = modifiedWord.slice(1);
+      modifiedWord = firstLetter + remaining;
+      result = modifiedWord;
+    } else {
+      result += "";
+      result += modifiedWord;
+    }
+  }
+
+  return result;
+}

@@ -1,6 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Card } from "@/components/ui/card";
+import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -25,7 +26,7 @@ const DocumentsPage = async () => {
   const canUpload = allow(true, ["documents", "read"]);
 
   if (!documents) {
-    return <div>Access denied</div>;
+    return <UnAuthorizedState />;
   }
 
   if (documents.length === 0) {

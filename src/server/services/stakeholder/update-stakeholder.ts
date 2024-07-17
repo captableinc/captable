@@ -1,6 +1,6 @@
+import type { TUpdateStakeholderSchema } from "@/server/api/schema/stakeholder";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
-import type { UpdateStakeholderMutationType } from "@/trpc/routers/stakeholder-router/schema";
 
 export type UpdateStakeholderOptions = {
   stakeholderId: string;
@@ -11,11 +11,12 @@ export type UpdateStakeholderOptions = {
     id: string;
     name: string;
   };
-  data: Omit<UpdateStakeholderMutationType, "id">;
+  data: TUpdateStakeholderSchema;
 };
 
 export const updateStakeholder = async (payload: UpdateStakeholderOptions) => {
-  const { requestIp, userAgent, user, data } = payload;
+  const { requestIp, userAgent, user } = payload;
+  const { id, ...rest } = payload.data;
 
   const { updatedStakeholder } = await db.$transaction(async (tx) => {
     const updatedStakeholder = await db.stakeholder.update({
@@ -23,7 +24,7 @@ export const updateStakeholder = async (payload: UpdateStakeholderOptions) => {
         id: payload.stakeholderId,
         companyId: payload.companyId,
       },
-      data,
+      data: rest,
     });
     await Audit.create(
       {

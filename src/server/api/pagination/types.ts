@@ -2,7 +2,7 @@
  * Pagination information
  */
 export type PaginationData = {
-  limit: number;
+  take: number;
   cursor?: string;
 };
 

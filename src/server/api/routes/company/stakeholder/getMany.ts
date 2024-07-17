@@ -9,11 +9,9 @@ import {
   StakeholderSchema,
   type TStakeholderSchema,
 } from "@/server/api/schema/stakeholder";
-import { db } from "@/server/db";
 import { getPaginatedStakeholders } from "@/server/services/stakeholder/get-stakeholders";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
-import { ApiError } from "next/dist/server/api-utils";
 
 export const RequestParamsSchema = z.object({
   id: z.string().openapi({
@@ -56,8 +54,9 @@ const getMany = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = await withCompanyAuth(c);
     const query = c.req.query();
+
     const { data, meta } = await getPaginatedStakeholders({
-      limit: Number(query.limit),
+      take: Number(query.limit) || 10,
       cursor: query?.cursor,
       companyId: company.id,
     });

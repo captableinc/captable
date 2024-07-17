@@ -21,6 +21,7 @@ export const PaginationQuerySchema = z.object({
 
   cursor: z
     .string()
+    .cuid()
     .optional()
     .openapi({
       description: "Cursor for the next page",

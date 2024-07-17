@@ -95,7 +95,12 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
 
   const apiKey = await db.apiKey.findUnique({
     where: { keyId, active: true },
-    select: { id: true, keyId: true, hashedToken: true, user: true },
+    select: {
+      id: true,
+      keyId: true,
+      hashedToken: true,
+      member: { select: { user: true } },
+    },
   });
 
   if (!apiKey) {
@@ -119,5 +124,5 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
     data: { lastUsed: new Date() },
   });
 
-  return apiKey.user as User;
+  return apiKey.member.user;
 };

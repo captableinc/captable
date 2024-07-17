@@ -5,12 +5,10 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-const safeRoutes = (api: PublicAPI) => {
+export const registerCompanyRoutes = (api: PublicAPI) => {
   update(api);
   create(api);
   getOne(api);
   getMany(api);
   deleteOne(api);
 };
-
-export default safeRoutes;

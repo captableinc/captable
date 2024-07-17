@@ -1,5 +1,5 @@
 import { withMemberAuth } from "@/server/api/auth";
-import { ApiErrorResponses } from "@/server/api/error";
+import { ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { ApiCompanySchema } from "@/server/api/schema/company";
 import { db } from "@/server/db";
@@ -22,7 +22,7 @@ const route = createRoute({
       description: "List of companies",
     },
 
-    ...ApiErrorResponses,
+    ...ErrorResponses,
   },
 });
 

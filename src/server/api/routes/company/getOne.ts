@@ -1,5 +1,5 @@
 import { withCompanyAuth } from "@/server/api/auth";
-import { ApiError, ApiErrorResponses } from "@/server/api/error";
+import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { ApiCompanySchema } from "@/server/api/schema/company";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -35,7 +35,7 @@ const route = createRoute({
       description: "Get a company by ID",
     },
 
-    ...ApiErrorResponses,
+    ...ErrorResponses,
   },
 } as const);
 

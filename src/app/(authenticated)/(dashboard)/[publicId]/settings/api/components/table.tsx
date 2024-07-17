@@ -2,13 +2,18 @@
 
 import { dayjsExt } from "@/common/dayjs";
 import Message from "@/components/common/message";
+import { Allow } from "@/components/rbac/allow";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
-import { api } from "@/trpc/react";
-import { RiMore2Fill } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-
-import { ConfirmDialog } from "@/components/common/confirmDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +30,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { api } from "@/trpc/react";
+import { RiMore2Fill } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+
+interface DeleteDialogProps {
+  keyId: string;
+  open: boolean;
+  setOpen: (val: boolean) => void;
+}
+
+function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
+  const router = useRouter();
+
+  const deleteMutation = api.apiKey.delete.useMutation({
+    onSuccess: ({ message }) => {
+      toast.success(message);
+      router.refresh();
+    },
+
+    onError: (error) => {
+      console.error(error);
+      toast.error("An error occurred while creating the API key.");
+    },
+  });
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete this key? This action cannot be
+            undone and you will loose the access if this API key is currently
+            being used.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => deleteMutation.mutateAsync({ keyId })}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 
 interface ApiKey {
   keyId: string;
@@ -33,27 +87,7 @@ interface ApiKey {
 }
 
 const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
-  const router = useRouter();
-
-  const deleteMutation = api.apiKey.delete.useMutation({
-    onSuccess: ({ message }) => {
-      toast.success(message);
-    },
-
-    onError: (error) => {
-      console.error(error);
-      toast.error("An error occurred while creating the API key.");
-    },
-
-    onSettled: () => {
-      router.refresh();
-    },
-  });
-
-  const dialogTitle = "Are you sure?";
-  const dialogBody =
-    "Are you sure you want to delete this key? This action cannot be undone and you will loose the access if this API key is currently being used.";
-  const dialogTrigger = <div className="text-rose-600">Delete key</div>;
+  const [open, setOpen] = useState(false);
 
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
@@ -103,17 +137,23 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
                         Rotate key
                       </DropdownMenuItem>
 
-                      <ConfirmDialog
-                        key={key.keyId}
-                        title={dialogTitle}
-                        body={dialogBody}
-                        trigger={dialogTrigger}
-                        onConfirm={() => {
-                          deleteMutation.mutate({ keyId: key.keyId });
-                        }}
-                      />
+                      <Allow action="delete" subject="api-keys">
+                        {(allow) => (
+                          <DropdownMenuItem
+                            disabled={!allow}
+                            onSelect={() => setOpen(true)}
+                          >
+                            Delete key
+                          </DropdownMenuItem>
+                        )}
+                      </Allow>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <DeleteKey
+                    open={open}
+                    setOpen={(val) => setOpen(val)}
+                    keyId={key.keyId}
+                  />
                 </div>
               </TableCell>
             </TableRow>

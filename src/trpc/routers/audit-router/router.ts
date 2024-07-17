@@ -1,10 +1,11 @@
 import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { allEsignAuditsProcedure } from "./procedures/all-esign-audits";
 import { ZodGetAuditsQuerySchema } from "./schema";
 
 export const auditRouter = createTRPCRouter({
-  getAudits: withAuth
+  getAudits: withAccessControl
+    .meta({ policies: { audits: { allow: ["read"] } } })
     .input(ZodGetAuditsQuerySchema)
     .query(async ({ ctx, input }) => {
       const { db, session } = ctx;

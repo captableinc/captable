@@ -18,9 +18,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { camelCase } from "@/lib/utils";
+import {
+  StakeholderRelationshipEnum,
+  StakeholderTypeEnum,
+} from "@/prisma/enums";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { Label } from "@radix-ui/react-select";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -97,26 +101,18 @@ export const SingleStakeholderForm = ({
     }
   };
 
-  const stakeHolderTypeOpts = [
-    { value: "INDIVIDUAL", label: "Individual" },
-    { value: "INSTITUTION", label: "Institution" },
-  ];
+  const StakeholderTypeArr = Object.values(StakeholderTypeEnum);
+  const StakeholerRelationshipArr = Object.values(StakeholderRelationshipEnum);
 
-  const groupTypeOpts = [
-    { value: "ADVISOR", label: "Advisor" },
-    { value: "BOARD_MEMBER", label: "Board member" },
-    { value: "CONSULTANT", label: "Consultant" },
-    { value: "EMPLOYEE", label: "Employee" },
-    { value: "EX_ADVISOR", label: "Ex advisor" },
-    { value: "EX_CONSULTANT", label: "Ex consultant" },
-    { value: "EX_EMPLOYEE", label: "Ex employee" },
-    { value: "EXECUTIVE", label: "Executive" },
-    { value: "FOUNDER", label: "Founder" },
-    { value: "INVESTOR", label: "Investor" },
-    { value: "NON_US_EMPLOYEE", label: "Non US employee" },
-    { value: "OFFICER", label: "Officer" },
-    { value: "OTHER", label: "Other" },
-  ];
+  const stakeHolderTypeOpts = StakeholderTypeArr.map((type) => ({
+    value: type,
+    label: camelCase(type),
+  }));
+
+  const groupTypeOpts = StakeholerRelationshipArr.map((type) => ({
+    value: type,
+    label: camelCase(type),
+  }));
 
   return (
     <Form {...form}>

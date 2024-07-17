@@ -2,21 +2,25 @@ import { MAXIMUM_PASSKEYS } from "@/constants/passkey";
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import { CredentialDeviceTypeEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
+import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import type { RegistrationResponseJSON } from "@simplewebauthn/types";
+import { Audit } from "../audit";
 
 type CreatePasskeyOptions = {
   userId: string;
   passkeyName: string;
   verificationResponse: RegistrationResponseJSON;
+  auditMetaData: PasskeyAudit;
 };
 
 export const createPasskey = async ({
   userId,
   passkeyName,
   verificationResponse,
+  auditMetaData,
 }: CreatePasskeyOptions) => {
-  const { _count } = await db.user.findFirstOrThrow({
+  const { _count, name } = await db.user.findFirstOrThrow({
     where: {
       id: userId,
     },
@@ -81,7 +85,7 @@ export const createPasskey = async ({
   } = verification.registrationInfo;
 
   await db.$transaction(async (tx) => {
-    await tx.passkey.create({
+    const passkey = await tx.passkey.create({
       data: {
         userId,
         name: passkeyName,
@@ -97,6 +101,21 @@ export const createPasskey = async ({
       },
     });
 
-    //@TODO ( Have audit for passkey.create event)
+    const { requestIp, userAgent, companyId } = auditMetaData;
+
+    await Audit.create(
+      {
+        action: "passkey.created",
+        companyId,
+        actor: { type: "user", id: userId },
+        context: {
+          userAgent,
+          requestIp,
+        },
+        target: [{ type: "passkey", id: passkey.id }],
+        summary: `${name} created the Passkey ${passkey.name}`,
+      },
+      tx,
+    );
   });
 };

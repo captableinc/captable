@@ -52,15 +52,30 @@ export const apiKeyRouter = createTRPCRouter({
     .input(z.object({ keyId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       try {
-        const { db } = ctx;
+        const { db, session, userAgent, requestIp } = ctx;
+        const { user } = session;
         const { keyId } = input;
 
         await db.$transaction(async (tx) => {
-          await tx.apiKey.delete({
+          const key = await tx.apiKey.delete({
             where: {
               keyId,
             },
           });
+          await Audit.create(
+            {
+              action: "apiKey.deleted",
+              companyId: user.companyId,
+              actor: { type: "user", id: session.user.id },
+              context: {
+                userAgent,
+                requestIp,
+              },
+              target: [{ type: "apiKey", id: key.id }],
+              summary: `${user.name} deleted the apiKey ${key.name}`,
+            },
+            tx,
+          );
         });
 
         return {

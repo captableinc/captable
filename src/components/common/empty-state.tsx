@@ -11,7 +11,7 @@
 
 import { cn } from "@/lib/utils";
 
-type EmptyStateProps = {
+export type EmptyStateProps = {
   title?: string;
   bordered?: boolean;
   subtitle: string | React.ReactNode;

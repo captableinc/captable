@@ -1,138 +1,6 @@
-import {
-  Document,
-  Font,
-  Link,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
-
-const style = StyleSheet.create({
-  body: {
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    fontSize: 10,
-    color: "#030712",
-    fontFamily: "Times-Roman",
-  },
-
-  textSm: {
-    fontSize: 8,
-  },
-
-  title: {
-    fontSize: 12,
-  },
-
-  upcase: {
-    textTransform: "uppercase",
-  },
-
-  center: {
-    textAlign: "center",
-  },
-
-  right: {
-    textAlign: "right",
-  },
-
-  italic: {
-    fontStyle: "italic",
-    fontFamily: "Times-Italic",
-  },
-
-  bold: {
-    fontWeight: "bold",
-    fontFamily: "Times-Bold",
-  },
-
-  underline: {
-    textDecoration: "underline",
-  },
-
-  hightlight: {
-    color: "blue",
-  },
-
-  pt5: {
-    paddingTop: 5,
-  },
-
-  pt10: {
-    paddingTop: 10,
-  },
-
-  pt20: {
-    paddingTop: 20,
-  },
-
-  pb20: {
-    paddingBottom: 20,
-  },
-});
-
-type Props = {
-  text?: string;
-  size?: "sm" | "md" | "lg";
-  children?: React.ReactNode;
-};
-
-const Indent = ({ children, size = "sm" }: Props) => {
-  switch (size) {
-    case "md":
-      return <Text style={{ textIndent: "45px" }}>{children}</Text>;
-    case "lg":
-      return <Text style={{ textIndent: "65px" }}>{children}</Text>;
-    default:
-      return <Text style={{ textIndent: "25px" }}>{children}</Text>;
-  }
-};
-
-const Strong = ({ children }: Props) => {
-  return <Text style={style.bold}>{children}</Text>;
-};
-
-const formatUsd = (amount: number) => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    currencyDisplay: "narrowSymbol",
-  }).format(amount);
-};
-
-const formatDate = (date: string) => {
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(new Date(date));
-};
-
-type SafeProps = {
-  investment: number;
-  valuation?: number;
-  date: string;
-  company: {
-    name: string;
-    state: string;
-    address?: string;
-  };
-
-  sender?: {
-    name: string;
-    email: string;
-    title: string;
-  };
-
-  investor: {
-    name: string;
-    email: string;
-    address?: string;
-  };
-};
+import { Indent, type SafeProps, style } from "@/components/safe/templates";
+import { formatDate, formatUsd } from "@/lib/format";
+import { Document, Link, Page, Text, View } from "@react-pdf/renderer";
 
 const SafeDocument = ({
   investor,
@@ -159,12 +27,11 @@ const SafeDocument = ({
         <Text style={style.textSm}>
           THIS INSTRUMENT AND ANY SECURITIES ISSUABLE PURSUANT HERETO HAVE NOT
           BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AS AMENDED (THE “
-          <Strong>SECURITIES ACT</Strong>
-          ”), OR UNDER THE SECURITIES LAWS OF CERTAIN STATES. THESE SECURITIES
-          MAY NOT BE OFFERED, SOLD OR OTHERWISE TRANSFERRED, PLEDGED OR
-          HYPOTHECATED EXCEPT AS PERMITTED IN THIS SAFE AND UNDER THE ACT AND
-          APPLICABLE STATE SECURITIES LAWS PURSUANT TO AN EFFECTIVE REGISTRATION
-          STATEMENT OR AN EXEMPTION THEREFROM.
+          SECURITIES ACT ”), OR UNDER THE SECURITIES LAWS OF CERTAIN STATES.
+          THESE SECURITIES MAY NOT BE OFFERED, SOLD OR OTHERWISE TRANSFERRED,
+          PLEDGED OR HYPOTHECATED EXCEPT AS PERMITTED IN THIS SAFE AND UNDER THE
+          ACT AND APPLICABLE STATE SECURITIES LAWS PURSUANT TO AN EFFECTIVE
+          REGISTRATION STATEMENT OR AN EXEMPTION THEREFROM.
         </Text>
 
         <Text
@@ -183,7 +50,7 @@ const SafeDocument = ({
         <Text style={[style.bold, style.center, style.pt20]}>SAFE</Text>
 
         <Text style={[style.bold, style.center]}>
-          <Strong>(Simple Agreement for Future Equity)</Strong>
+          (Simple Agreement for Future Equity)
         </Text>
 
         <Text style={[style.pt20]}>
@@ -216,7 +83,7 @@ const SafeDocument = ({
         {valuation && (
           <Text style={[style.pt20]}>
             <Indent>
-              The “<Strong>Post-Money Valuation Cap</Strong>” is{" "}
+              The “Post-Money Valuation Cap” is{" "}
               <Text style={{ color: "blue" }}>{formatUsd(valuation)}</Text>. See
               Section 2 for certain additional defined terms.
             </Indent>

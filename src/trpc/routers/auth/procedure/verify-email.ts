@@ -50,7 +50,7 @@ export const verifyEmailProcedure = withoutAuth
 
     await Audit.create(
       {
-        action: "user.password-reset",
+        action: "user.verified",
         companyId: company?.id || "",
         actor: { type: "user", id: user.id },
         context: {

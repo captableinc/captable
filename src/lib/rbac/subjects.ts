@@ -3,6 +3,7 @@ export const SUBJECTS = [
   "members",
   "stakeholder",
   "roles",
+  "audits",
   "documents",
   "company",
   "api-keys",

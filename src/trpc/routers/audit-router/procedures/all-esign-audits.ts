@@ -1,8 +1,9 @@
 import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { withAccessControl } from "@/trpc/api/trpc";
 import { ZodAllEsignAuditsQuerySchema } from "../schema";
 
-export const allEsignAuditsProcedure = withAuth
+export const allEsignAuditsProcedure = withAccessControl
+  .meta({ policies: { audits: { allow: ["read"] } } })
   .input(ZodAllEsignAuditsQuerySchema)
   .query(async ({ ctx, input }) => {
     const { db, session } = ctx;

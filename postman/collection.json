@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "209da849-6850-40d0-a4bf-1b7d004be7ce",
+    "_postman_id": "f6fabcbb-ea5c-48a9-b18a-c0e7cb0845e4",
     "name": "Captable API (v1)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "36586471"
@@ -90,7 +90,10 @@
           "name": "Get a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -98,7 +101,10 @@
           "name": "List team members",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -106,7 +112,10 @@
           "name": "Create a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -114,7 +123,10 @@
           "name": "Update a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         }
@@ -138,37 +150,62 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders/{{stakeholderId}}",
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
               "host": ["{{baseUrl}}"],
               "path": [
                 "companies",
-                "{{id}}",
+                "{{companyId}}",
                 "stakeholders",
                 "{{stakeholderId}}"
               ]
             }
           },
-          "response": {
-            "data": {
-              "id": "cly13ipa40000i7ng42mv4x7b",
+          "response": [
+            {
               "name": "John Doe",
-              "email": "email@example.com",
-              "institutionName": "ACME Corp",
-              "stakeholderType": "INDIVIDUAL",
-              "currentRelationship": "EMPLOYEE",
-              "streetAddress": "123 Main St",
-              "city": "San Francisco",
-              "state": "CA",
-              "zipcode": "94105",
-              "country": "USA",
-              "createdAt": "2022-01-01T00:00:00Z",
-              "updatedAt": "2022-01-01T00:00:00Z"
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
             }
-          }
+          ]
         },
         {
           "name": "List stakeholders",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [
               {
@@ -177,39 +214,89 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders",
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
               "host": ["{{baseUrl}}"],
-              "path": ["companies", "{{id}}"]
+              "path": ["companies", "{{companyId}}", "stakeholders"]
             }
           },
-          "response": {
-            "data": [
-              {
-                "id": "cly13ipa40000i7ng42mv4x7b",
-                "name": "John Doe",
-                "email": "email@example.com",
-                "institutionName": "ACME Corp",
-                "stakeholderType": "INDIVIDUAL",
-                "currentRelationship": "EMPLOYEE",
-                "streetAddress": "123 Main St",
-                "city": "San Francisco",
-                "state": "CA",
-                "zipcode": "94105",
-                "country": "USA",
-                "createdAt": "2022-01-01T00:00:00Z",
-                "updatedAt": "2022-01-01T00:00:00Z"
-              }
-            ],
-            "meta": {
-              "count": 50,
-              "total": 100,
-              "cursor": "cly13ipa40000i7ng42mv4x7b"
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["companies", "{{companyId}}", "stakeholders"]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["companies", "{{companyId}}", "stakeholders"]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
             }
-          }
+          ]
         },
         {
           "name": "Create a stakeholder",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [
               {
@@ -222,28 +309,48 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders",
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
               "host": ["{{baseUrl}}"],
-              "path": ["companies", "{{id}}"]
-            },
-            "body": [
-              {
-                "name": "John Doe",
-                "email": "email@example.com",
-                "institutionName": "ACME Corp",
-                "stakeholderType": "INDIVIDUAL",
-                "currentRelationship": "EMPLOYEE",
-                "streetAddress": "123 Main St",
-                "city": "San Francisco",
-                "state": "CA",
-                "zipcode": "94105",
-                "country": "USA"
-              }
-            ]
+              "path": ["companies", "{{companyId}}", "stakeholders"]
+            }
           },
-          "response": {
-            "message": "…"
-          }
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["companies", "{{companyId}}", "stakeholders"]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         },
         {
           "name": "Update a stakeholder",
@@ -259,87 +366,184 @@
                 "value": "Bearer {{bearerToken}}"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"New name\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders/{{stakeholderId}}",
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
               "host": ["{{baseUrl}}"],
               "path": [
                 "companies",
-                "{{id}}",
+                "{{companyId}}",
                 "stakeholders",
                 "{{stakeholderId}}"
               ]
-            },
-            "body": [
-              {
-                "name": "John Doe",
-                "email": "email@example.com",
-                "institutionName": "ACME Corp",
-                "stakeholderType": "INDIVIDUAL",
-                "currentRelationship": "EMPLOYEE",
-                "streetAddress": "123 Main St",
-                "city": "San Francisco",
-                "state": "CA",
-                "zipcode": "94105",
-                "country": "USA"
-              }
-            ]
-          },
-          "response": {
-            "message": "…",
-            "data": {
-              "id": "cly13ipa40000i7ng42mv4x7b",
-              "name": "John Doe",
-              "email": "email@example.com",
-              "institutionName": "ACME Corp",
-              "stakeholderType": "INDIVIDUAL",
-              "currentRelationship": "EMPLOYEE",
-              "streetAddress": "123 Main St",
-              "city": "San Francisco",
-              "state": "CA",
-              "zipcode": "94105",
-              "country": "USA",
-              "createdAt": "2022-01-01T00:00:00Z",
-              "updatedAt": "2022-01-01T00:00:00Z"
             }
-          }
+          },
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"New name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "John Doe",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"New name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete a stakeholder",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "companies",
+                "{{companyId}}",
+                "stakeholders",
+                "{{stakeholderId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "John Doe",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         }
       ]
-    },
-
-    {
-      "name": "Delete a stakeholder",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer {{bearerToken}}"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/companies/{{id}}/stakeholders/{{stakeholderId}}",
-          "host": ["{{baseUrl}}"],
-          "path": ["companies", "{{id}}", "stakeholders", "{{stakeholderId}}"]
-        }
-      },
-      "response": {
-        "message": "…",
-        "data": {
-          "id": "cly13ipa40000i7ng42mv4x7b",
-          "name": "John Doe",
-          "email": "email@example.com",
-          "institutionName": "ACME Corp",
-          "stakeholderType": "INDIVIDUAL",
-          "currentRelationship": "EMPLOYEE",
-          "streetAddress": "123 Main St",
-          "city": "San Francisco",
-          "state": "CA",
-          "zipcode": "94105",
-          "country": "USA",
-          "createdAt": "2022-01-01T00:00:00Z",
-          "updatedAt": "2022-01-01T00:00:00Z"
-        }
-      }
     }
   ]
 }

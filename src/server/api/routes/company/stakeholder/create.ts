@@ -6,7 +6,6 @@ import {
 } from "@/server/api/schema/stakeholder";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { addStakeholders } from "@/server/services/stakeholder/add-stakeholders";
-import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
 import { createRoute, z } from "@hono/zod-openapi";
 import { RequestParamsSchema } from "./getMany";
 
@@ -14,17 +13,26 @@ import type { PublicAPI } from "@/server/api/hono";
 import { Prisma } from "@prisma/client";
 import type { Context } from "hono";
 
-const RequestBodySchema = AddStakeholderSchema.refine(
-  (stakeholders) => {
-    const emails = stakeholders.map((stakeholder) => stakeholder.email);
-    const uniqueEmails = new Set(emails);
-    return uniqueEmails.size === emails.length;
-  },
-  {
+function blockIdField(stakeholders: TAddStakeholderSchema) {
+  const hasIdField = stakeholders.some((stakeholder) => "id" in stakeholder);
+  return !hasIdField;
+}
+
+function uniqueEmails(stakeholders: TAddStakeholderSchema) {
+  const emails = stakeholders.map((stakeholder) => stakeholder.email);
+  const uniqueEmails = new Set(emails);
+  return uniqueEmails.size === emails.length;
+}
+
+const RequestBodySchema = AddStakeholderSchema.refine(blockIdField, {
+  message: "Cannot provide 'id' while creating stakeholders.",
+  path: ["id"],
+})
+  .refine(uniqueEmails, {
     message: "Please provide unique email to each stakeholder.",
     path: ["email"],
-  },
-).openapi("Add many stakeholders in a company");
+  })
+  .openapi("Add many stakeholders in a company");
 
 const ResponseSchema = z.object({
   message: z.string(),
@@ -84,6 +92,11 @@ const create = (app: PublicAPI) => {
           });
         }
       }
+      throw new ApiError({
+        code: "BAD_REQUEST",
+        //@ts-ignore
+        message: error.message ?? "Something went out. Please try again later.",
+      });
     }
 
     return c.json({ message: "Stakeholders added successfully" }, 200);

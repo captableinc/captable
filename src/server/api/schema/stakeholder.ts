@@ -79,11 +79,7 @@ export const StakeholderSchema = z.object({
   }),
 });
 
-export const AddStakeholderSchema = z.array(
-  StakeholderSchema.omit({
-    id: true,
-  }),
-);
+export const AddStakeholderSchema = z.array(StakeholderSchema);
 
 export const UpdateStakeholderSchema = StakeholderSchema.partial();
 

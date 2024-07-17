@@ -66,9 +66,6 @@ export const AuditSchema = z.object({
 
     "bucket.created",
 
-    "stripe.session-created",
-    "stripe.billingPortalSession-created",
-
     "dataroom.created",
     "dataroom.updated",
     "dataroom.shared",

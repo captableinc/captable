@@ -3,6 +3,7 @@ export const SUBJECTS = [
   "members",
   "stakeholder",
   "roles",
+  "company",
   "api-keys",
 ] as const;
 export type TSubjects = (typeof SUBJECTS)[number];

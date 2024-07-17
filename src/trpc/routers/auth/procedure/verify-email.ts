@@ -42,16 +42,10 @@ export const verifyEmailProcedure = withoutAuth
       },
     });
 
-    const company = await ctx.db.member.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
-
     await Audit.create(
       {
         action: "user.verified",
-        companyId: company?.id || "",
+        companyId: "",
         actor: { type: "user", id: user.id },
         context: {
           userAgent,

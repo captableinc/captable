@@ -35,16 +35,10 @@ export const signupProcedure = withoutAuth
       },
     });
 
-    const company = await ctx.db.member.findFirst({
-      where: {
-        userId: user.id,
-      },
-    });
-
     await Audit.create(
       {
         action: "user.signed-up",
-        companyId: company?.id || "",
+        companyId: "",
         actor: { type: "user", id: user.id },
         context: {
           userAgent,

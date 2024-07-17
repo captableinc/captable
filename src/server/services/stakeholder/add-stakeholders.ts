@@ -1,6 +1,6 @@
+import type { TAddStakeholderSchema } from "@/server/api/schema/stakeholder";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
-import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
 
 type AddStakeholderOptions = {
   companyId: string;
@@ -10,7 +10,7 @@ type AddStakeholderOptions = {
     id: string;
     name: string;
   };
-  data: TypeStakeholderArray;
+  data: TAddStakeholderSchema;
 };
 
 export const addStakeholders = async (payload: AddStakeholderOptions) => {

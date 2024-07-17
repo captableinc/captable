@@ -5,12 +5,12 @@ import {
 import { z } from "zod";
 
 const StakeholderTypeArray = Object.values(StakeholderTypeEnum) as [
-  string,
-  ...string[],
+  StakeholderTypeEnum,
+  ...StakeholderTypeEnum[],
 ];
 const StakeholderRelationshipArray = Object.values(
   StakeholderRelationshipEnum,
-) as [string, ...string[]];
+) as [StakeholderRelationshipEnum, ...StakeholderRelationshipEnum[]];
 
 export const StakeholderSchema = z.object({
   id: z.string().cuid().optional().openapi({
@@ -79,4 +79,14 @@ export const StakeholderSchema = z.object({
   }),
 });
 
+export const AddStakeholderSchema = z.array(
+  StakeholderSchema.omit({
+    id: true,
+  }),
+);
+
+export const UpdateStakeholderSchema = StakeholderSchema.partial();
+
 export type TStakeholderSchema = z.infer<typeof StakeholderSchema>;
+export type TAddStakeholderSchema = z.infer<typeof AddStakeholderSchema>;
+export type TUpdateStakeholderSchema = z.infer<typeof UpdateStakeholderSchema>;

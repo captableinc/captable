@@ -4,16 +4,24 @@ import type { PublicAPI } from "@/server/api/hono";
 import {
   StakeholderSchema,
   type TStakeholderSchema,
+  type TUpdateStakeholderSchema,
+  UpdateStakeholderSchema,
 } from "@/server/api/schema/stakeholder";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { db } from "@/server/db";
 import { updateStakeholder } from "@/server/services/stakeholder/update-stakeholder";
-import type { UpdateStakeholderMutationType } from "@/trpc/routers/stakeholder-router/schema";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 import { RequestParamsSchema } from "./delete";
 
-const RequestBodySchema = StakeholderSchema.openapi({
+const RequestBodySchema = UpdateStakeholderSchema.refine(
+  (data) => {
+    return Object.values(data).some((value) => value !== undefined);
+  },
+  {
+    message: "At least one field must be provided to update.",
+  },
+).openapi({
   description: "Update a stakeholder by ID",
 });
 
@@ -62,8 +70,6 @@ const update = (app: PublicAPI) => {
 
     const body = await c.req.json();
 
-    const { id, ...rest } = body;
-
     const foundStakeholder = await db.stakeholder.findFirst({
       where: {
         id: stakeholderId,
@@ -82,7 +88,7 @@ const update = (app: PublicAPI) => {
       companyId: company.id,
       requestIp: getIp(c.req),
       userAgent: getHonoUserAgent(c.req),
-      data: rest as Omit<UpdateStakeholderMutationType, "id">,
+      data: body as TUpdateStakeholderSchema,
       user: {
         id: user.id,
         name: user.name as string,

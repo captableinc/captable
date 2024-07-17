@@ -1,8 +1,10 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
-import { StakeholderSchema } from "@/server/api/schema/stakeholder";
+import {
+  AddStakeholderSchema,
+  type TAddStakeholderSchema,
+} from "@/server/api/schema/stakeholder";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
-import { db } from "@/server/db";
 import { addStakeholders } from "@/server/services/stakeholder/add-stakeholders";
 import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -12,20 +14,17 @@ import type { PublicAPI } from "@/server/api/hono";
 import { Prisma } from "@prisma/client";
 import type { Context } from "hono";
 
-const RequestBodySchema = z
-  .array(StakeholderSchema)
-  .refine(
-    (stakeholders) => {
-      const emails = stakeholders.map((stakeholder) => stakeholder.email);
-      const uniqueEmails = new Set(emails);
-      return uniqueEmails.size === emails.length;
-    },
-    {
-      message: "Please provide unique email to each stakeholder.",
-      path: ["email"],
-    },
-  )
-  .openapi("Add many stakeholders in a company");
+const RequestBodySchema = AddStakeholderSchema.refine(
+  (stakeholders) => {
+    const emails = stakeholders.map((stakeholder) => stakeholder.email);
+    const uniqueEmails = new Set(emails);
+    return uniqueEmails.size === emails.length;
+  },
+  {
+    message: "Please provide unique email to each stakeholder.",
+    path: ["email"],
+  },
+).openapi("Add many stakeholders in a company");
 
 const ResponseSchema = z.object({
   message: z.string(),
@@ -72,7 +71,7 @@ const create = (app: PublicAPI) => {
         id: user.id,
         name: user.name as string,
       },
-      data: body as TypeStakeholderArray,
+      data: body as TAddStakeholderSchema,
     };
     try {
       await addStakeholders(payload);

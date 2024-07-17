@@ -6,7 +6,7 @@ export const AuditSchema = z.object({
     "user.signed-up",
     "user.onboarded",
     "user.verified",
-    "user.password-reset",
+    "user.password-updated",
 
     "company.created",
     "company.lastAcessed",

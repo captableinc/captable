@@ -67,7 +67,7 @@ export const companyRouter = createTRPCRouter({
         const { user } = session;
         await Audit.create(
           {
-            action: "company.lastAcessed",
+            action: "company.lastAccessed",
             companyId: user.companyId,
             actor: { type: "user", id: user.id },
             context: {

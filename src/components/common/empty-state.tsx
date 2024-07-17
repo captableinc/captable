@@ -27,7 +27,7 @@ const EmptyState = ({
   children,
 }: EmptyStateProps) => {
   return (
-    <section className="overflow-hidden">
+    <div role="alert" className="overflow-hidden">
       <div className="container mx-auto px-4">
         <div
           className={cn(
@@ -46,7 +46,7 @@ const EmptyState = ({
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

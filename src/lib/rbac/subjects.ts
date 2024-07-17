@@ -3,6 +3,7 @@ export const SUBJECTS = [
   "members",
   "stakeholder",
   "roles",
+  "documents",
   "company",
   "api-keys",
 ] as const;

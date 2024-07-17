@@ -124,7 +124,7 @@ export const addFieldProcedure = withAuth
 
         await Audit.create(
           {
-            action: "template.field-created",
+            action: "template.updated",
             companyId: user.companyId,
             actor: { type: "user", id: user.id },
             context: {

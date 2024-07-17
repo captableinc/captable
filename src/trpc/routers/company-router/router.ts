@@ -1,6 +1,6 @@
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAccessControl, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
 
@@ -68,46 +68,41 @@ export const companyRouter = createTRPCRouter({
 
       return { success: true };
     }),
-  updateCompany: withAuth
+  updateCompany: withAccessControl
+    .meta({ policies: { company: { allow: ["update"] } } })
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.db.$transaction(async (tx) => {
-          const { companyId } = await checkMembership({
-            tx,
-            session: ctx.session,
-          });
+        const { company } = input;
+        const { incorporationDate, ...rest } = company;
+        const { requestIp, userAgent, session, db } = ctx;
+        const { user } = session;
+        const { companyId } = ctx.membership;
 
-          const { company } = input;
-          const { incorporationDate, ...rest } = company;
-          const { requestIp, userAgent, session } = ctx;
-          const { user } = session;
-
-          await tx.company.update({
-            where: {
-              id: companyId,
-            },
-            data: {
-              incorporationDate: new Date(incorporationDate),
-              ...rest,
-            },
-          });
-
-          await Audit.create(
-            {
-              action: "company.updated",
-              companyId: user.companyId,
-              actor: { type: "user", id: user.id },
-              context: {
-                userAgent,
-                requestIp,
-              },
-              target: [{ type: "company", id: user.companyId }],
-              summary: `${user.name} updated the company ${company.name}`,
-            },
-            tx,
-          );
+        await db.company.update({
+          where: {
+            id: companyId,
+          },
+          data: {
+            incorporationDate: new Date(incorporationDate),
+            ...rest,
+          },
         });
+
+        await Audit.create(
+          {
+            action: "company.updated",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "company", id: user.companyId }],
+            summary: `${user.name} updated the company ${company.name}`,
+          },
+          db,
+        );
 
         return {
           success: true,

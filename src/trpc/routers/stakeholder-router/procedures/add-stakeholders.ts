@@ -19,12 +19,10 @@ export const addStakeholdersProcedure = withAccessControl
             companyId: membership.companyId,
           }));
 
-          const stakeholders = await tx.stakeholder.createMany({
+          await tx.stakeholder.createMany({
             data: inputDataWithCompanyId,
             skipDuplicates: true,
           });
-
-          stakeholders.count;
 
           inputDataWithCompanyId.map(async (inp) => {
             await Audit.create(

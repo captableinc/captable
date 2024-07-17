@@ -10,8 +10,8 @@ export const createHash = async (key: string) => {
     .toString();
 };
 
-export const createApiToken = async () => {
-  return await randomBytes(32).toString("base64url");
+export const createApiToken = () => {
+  return randomBytes(32).toString("base64url");
 };
 
 export const createSecureHash = (key: string) => {

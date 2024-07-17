@@ -52,8 +52,6 @@ export const AuditSchema = z.object({
 
     "password.updated",
 
-    "update.public-status",
-    "update.private-status",
     "update.created",
     "update.updated",
     "update.cloned",

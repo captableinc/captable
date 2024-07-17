@@ -11,7 +11,7 @@ interface createBucketHandlerOptions {
   db: TPrismaOrTransaction;
   userAgent: string;
   requestIp: string;
-  user: {
+  user?: {
     name: string;
     companyId: string;
     id: string;
@@ -30,14 +30,14 @@ export const createBucketHandler = async ({
   await Audit.create(
     {
       action: "bucket.created",
-      companyId: user.companyId,
-      actor: { type: "user", id: user.id },
+      companyId: user?.companyId || "",
+      actor: { type: "user", id: user?.id || "" },
       context: {
         userAgent,
         requestIp,
       },
       target: [{ type: "bucket", id: bucket.id }],
-      summary: `${user.name} created the bucket ${bucket.name}`,
+      summary: `${user?.name} created the bucket ${bucket.name}`,
     },
     db,
   );

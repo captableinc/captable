@@ -56,7 +56,7 @@ export const checkoutProcedure = withAuth
 
       await Audit.create(
         {
-          action: "stripe.session.created",
+          action: "stripe.session-created",
           companyId: user.companyId,
           actor: { type: "user", id: user.id },
           context: {

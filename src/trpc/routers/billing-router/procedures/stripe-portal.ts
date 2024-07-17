@@ -53,7 +53,7 @@ export const stripePortalProcedure = withAuth
 
         await Audit.create(
           {
-            action: "stripe.billingPortal.session.created",
+            action: "stripe.billingPortalSession-created",
             companyId: user.companyId,
             actor: { type: "user", id: user.id },
             context: {

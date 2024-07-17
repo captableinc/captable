@@ -43,7 +43,7 @@ export const signupProcedure = withoutAuth
 
     await Audit.create(
       {
-        action: "apiKey.created",
+        action: "user.signed-up",
         companyId: company?.id || "",
         actor: { type: "user", id: user.id },
         context: {

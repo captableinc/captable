@@ -36,7 +36,7 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
         if (success) {
           router.refresh();
           form.reset();
-          toast.success("🎉 Successfully created!");
+          toast.success("🎉 Investor successfully added!");
           popModal();
         } else {
           toast.error(`🔥 Error - ${message}`);
@@ -130,7 +130,10 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
                   <FormLabel>Type</FormLabel>
                   <div>
                     <LinearCombobox
-                      defaultOption={{ value: field.value, label: field.value }}
+                      defaultOption={{
+                        value: field.value,
+                        label: camelCase(field.value),
+                      }}
                       options={investorTypeOpts}
                       onValueChange={(option) => {
                         field.onChange(option.value);
@@ -145,7 +148,7 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
         </div>
         <div className="mt-8 flex justify-end">
           <Button disabled={isSubmitting} loading={isSubmitting} type="submit">
-            {isSubmitting ? "Adding stakeholder" : "Add a stakeholder"}
+            {isSubmitting ? "Adding an investor" : "Add an investor"}
           </Button>
         </div>
       </form>

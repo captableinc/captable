@@ -78,8 +78,7 @@ export const AuditSchema = z.object({
     "role.updated",
     "role.deleted",
 
-    "template.field.created",
-
+    "template.field-created",
     "template.created",
 
     "passkey.created",

@@ -25,6 +25,7 @@ export default async function TemplateDetailViewPage({
         templatePublicId: templatePublicId,
       }),
       ["audits", "read"],
+      undefined,
     ),
   ]);
 

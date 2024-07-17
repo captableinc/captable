@@ -81,6 +81,12 @@ export const AuditSchema = z.object({
     "template.field.created",
 
     "template.created",
+
+    "passkey.created",
+    "passkey.authOptions-created",
+    "passkey.registrationOptions-created",
+    "passkey.deleted",
+    "passkey.updated",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -106,6 +112,7 @@ export const AuditSchema = z.object({
         "dataroom",
         "role",
         "template",
+        "passkey",
       ]),
       id: z.string().optional().nullable(),
     }),

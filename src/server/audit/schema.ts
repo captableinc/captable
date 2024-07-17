@@ -79,8 +79,6 @@ export const AuditSchema = z.object({
     "template.created",
 
     "passkey.created",
-    "passkey.authOptions-created",
-    "passkey.registrationOptions-created",
     "passkey.deleted",
     "passkey.updated",
   ]),

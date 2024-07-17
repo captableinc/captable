@@ -48,7 +48,7 @@ export const createPasskeyRegistrationOptions = async ({
   passkeys.map(async (passKey) => {
     await Audit.create(
       {
-        action: "passkey.registrationOptions-created",
+        action: "passkey.updated",
         companyId,
         actor: { type: "user", id: userId },
         context: {

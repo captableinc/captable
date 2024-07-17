@@ -68,7 +68,7 @@ export const createPasskeyAuthenticationOptions = async ({
 
   await Audit.create(
     {
-      action: "passkey.authOptions-created",
+      action: "passkey.updated",
       companyId,
       actor: { type: "user", id: userId },
       context: {

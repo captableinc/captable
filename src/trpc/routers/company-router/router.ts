@@ -42,7 +42,7 @@ export const companyRouter = createTRPCRouter({
   switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
     .mutation(async ({ ctx, input }) => {
-      const { db, session, userAgent, requestIp } = ctx;
+      const { db } = ctx;
 
       await db.$transaction(async (tx) => {
         const member = await tx.member.findFirst({
@@ -64,21 +64,6 @@ export const companyRouter = createTRPCRouter({
             lastAccessed: new Date(),
           },
         });
-        const { user } = session;
-        await Audit.create(
-          {
-            action: "company.lastAccessed",
-            companyId: user.companyId,
-            actor: { type: "user", id: user.id },
-            context: {
-              userAgent,
-              requestIp,
-            },
-            target: [{ type: "company", id: user.companyId }],
-            summary: `${user.name} lastly accessed the company ${user.companyId}`,
-          },
-          tx,
-        );
       });
 
       return { success: true };

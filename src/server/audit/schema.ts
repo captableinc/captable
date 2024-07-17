@@ -9,7 +9,6 @@ export const AuditSchema = z.object({
     "user.password-updated",
 
     "company.created",
-    "company.lastAccessed",
     "company.updated",
 
     "member.invited",

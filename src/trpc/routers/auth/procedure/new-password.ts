@@ -36,7 +36,7 @@ export const newPasswordProcedure = withoutAuth
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    await ctx.db.user.update({
+    const user = await ctx.db.user.update({
       where: { id: existingUser.id },
       data: {
         password: hashedPassword,

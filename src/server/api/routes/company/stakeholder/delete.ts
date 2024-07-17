@@ -1,10 +1,6 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import {
-  StakeholderSchema,
-  type TStakeholderSchema,
-} from "@/server/api/schema/stakeholder";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { db } from "@/server/db";
 import { deleteStakeholder } from "@/server/services/stakeholder/delete-stakeholder";
@@ -35,7 +31,6 @@ export const RequestParamsSchema = z.object({
 const ResponseSchema = z
   .object({
     message: z.string(),
-    data: StakeholderSchema,
   })
   .openapi({
     description: "Delete a stakeholder by ID in a company.",
@@ -86,12 +81,11 @@ const deleteOne = (app: PublicAPI) => {
       userAgent: getHonoUserAgent(c.req),
     };
 
-    const { deletedStakeholder } = await deleteStakeholder(payload);
+    await deleteStakeholder(payload);
 
     return c.json(
       {
         message: "Stakeholder deleted successfully",
-        data: deletedStakeholder as unknown as TStakeholderSchema,
       },
       200,
     );

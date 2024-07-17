@@ -3,7 +3,7 @@ import { db } from "@/server/db";
 
 type GetPaginatedStakeholders = {
   companyId: string;
-  limit: number;
+  take: number;
   cursor?: string;
 };
 
@@ -19,10 +19,10 @@ export const getPaginatedStakeholders = async (
     },
   };
 
-  const { limit, cursor: _cursor } = payload;
+  const { take, cursor: _cursor } = payload;
 
   const paginationData = {
-    limit,
+    take,
     cursor: _cursor,
   };
 

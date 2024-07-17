@@ -29,36 +29,30 @@ export type FindManyPaginated<F extends ProxyFunctions> = {
 export function makeFindManyPaginated(model: ProxyFunctions) {
   return new Proxy(model.findMany, {
     apply: async (target, thisArg, [data, paginationInfo]) => {
-      const limit = paginationInfo?.limit;
+      const take = paginationInfo?.take;
       const cursor = paginationInfo?.cursor;
 
       const query = data || {};
-      query.take = limit;
+      query.take = take;
       if (cursor) {
         query.cursor = { id: cursor }; // Assuming `id` is the cursor field
         query.skip = 1; // Skip the cursor item itself
       }
 
-      let totalCount = 0;
-
-      if (!cursor) {
-        //@TODO (Cache totalCount)
-        totalCount = await model.count({
-          where: query.where,
-        });
-      }
+      const totalCount = await model.count({
+        where: query.where,
+      });
 
       //@ts-ignore
       const docs = await target.apply(thisArg, [query]);
 
-      const nextCursor =
-        docs.length === limit ? docs[docs.length - 1].id : null; // Assuming `id` is the cursor field
+      const nextCursor = docs.length === take ? docs[docs.length - 1].id : null; // Assuming `id` is the cursor field
 
       return {
         data: docs,
         count: docs.length,
         // Send totalCount only for first request, let client side manages it for subsequent requests.
-        total: cursor ? null : totalCount,
+        total: totalCount,
         cursor: nextCursor,
       };
     },

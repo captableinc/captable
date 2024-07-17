@@ -1,5 +1,5 @@
 import { checkMembership } from "@/server/auth";
-import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { createTRPCRouter, withAccessControl, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
 
@@ -67,28 +67,23 @@ export const companyRouter = createTRPCRouter({
 
       return { success: true };
     }),
-  updateCompany: withAuth
+  updateCompany: withAccessControl
+    .meta({ policies: { company: { allow: ["update"] } } })
     .input(ZodOnboardingMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        await ctx.db.$transaction(async (tx) => {
-          const { companyId } = await checkMembership({
-            tx,
-            session: ctx.session,
-          });
+        const { company } = input;
+        const { incorporationDate, ...rest } = company;
+        const { companyId } = ctx.membership;
 
-          const { company } = input;
-          const { incorporationDate, ...rest } = company;
-
-          await tx.company.update({
-            where: {
-              id: companyId,
-            },
-            data: {
-              incorporationDate: new Date(incorporationDate),
-              ...rest,
-            },
-          });
+        await ctx.db.company.update({
+          where: {
+            id: companyId,
+          },
+          data: {
+            incorporationDate: new Date(incorporationDate),
+            ...rest,
+          },
         });
 
         return {

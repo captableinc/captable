@@ -76,7 +76,7 @@ export const createPasskeyAuthenticationOptions = async ({
         requestIp,
       },
       target: [{ type: "passkey", id: preferredPasskeyId }],
-      summary: `${userName} created auth-options Passkey with id ${passKeyName}`,
+      summary: `${userName} created auth-options for Passkey with id ${passKeyName}`,
     },
     db,
   );

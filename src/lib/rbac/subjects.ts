@@ -4,6 +4,7 @@ export const SUBJECTS = [
   "stakeholder",
   "roles",
   "audits",
+  "documents",
   "company",
   "api-keys",
 ] as const;

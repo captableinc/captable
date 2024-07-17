@@ -5,6 +5,8 @@ export const AuditSchema = z.object({
   action: z.enum([
     "user.signed-up",
     "user.onboarded",
+    "user.verified",
+    "user.password-reset",
 
     "company.created",
     "company.lastAcessed",

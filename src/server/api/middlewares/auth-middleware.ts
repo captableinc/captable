@@ -5,8 +5,9 @@ import type { Middleware } from "../hono";
 
 export function authMiddleware(): Middleware {
   return async (c, next) => {
+    const Key = new ApiKey();
     const bearerToken =
-      c.req.header("Authorization")?.replace("Bearer ", "") ?? null;
+      c.req.header("Authorization")?.replace("Bearer ", "").trim() ?? null;
 
     if (!bearerToken) {
       // @todo: handle next-auth cookie
@@ -24,12 +25,13 @@ export function authMiddleware(): Middleware {
       });
     }
 
-    const hashToken = await ApiKey.generateHash(bearerToken);
+    const hashedKey = Key.generateHash(bearerToken);
+    const newKey = Key.generateHash(ApiKey.generateKey().key);
 
     const apiKey = await db.apiKey.findFirst({
-      where: { hashedToken: hashToken },
+      where: { hashedKey },
       select: {
-        hashedToken: true,
+        hashedKey: true,
         member: {
           select: {
             id: true,
@@ -41,10 +43,7 @@ export function authMiddleware(): Middleware {
       },
     });
 
-    const verified = await ApiKey.verifyHash(
-      apiKey?.hashedToken ?? ApiKey.generateKey(),
-      bearerToken,
-    );
+    const verified = Key.verifyHash(apiKey?.hashedKey ?? newKey, bearerToken);
 
     if (!verified || !apiKey) {
       throw new ApiError({

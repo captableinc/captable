@@ -1,9 +1,17 @@
 import { env } from "@/env";
+import type { Roles } from "@/prisma/enums";
 import { handleError, handleZodError } from "@/server/api/error";
 import type { TPrisma } from "@/server/db";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Context as GenericContext, MiddlewareHandler } from "hono";
+
+type TMembership = {
+  role: Roles | null;
+  customRoleId: string | null;
+  companyId: string;
+  memberId: string;
+};
 
 export type HonoEnv = {
   Bindings: {
@@ -12,6 +20,7 @@ export type HonoEnv = {
 
   Variables: {
     db: TPrisma;
+    membership: TMembership;
   };
 };
 

@@ -7,18 +7,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import Message from "@/components/common/message";
+import SlideOver from "@/components/common/slide-over";
 import { StakeholderSelector } from "@/components/stakeholder/stakeholder-selector";
 import { Button } from "@/components/ui/button";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
 import { SafeStatusEnum, SafeTypeEnum } from "@/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 import { PrePostSelector } from "./pre-post-selector";
+
+// Safe document preview
+import SafeDocument from "@/components/safe/document";
+import { PDFViewer } from "@react-pdf/renderer";
 
 type SafeFormProps = {
   type: "create" | "import";
@@ -64,31 +67,6 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-y-4"
       >
-        <Message
-          description={
-            "Based on the information provided, we will generate a standard Y-Combinator SAFE agreement for you and your investor to review and sign. You can also upload your custom SAFE agreement."
-          }
-        >
-          <Button
-            size={"xs"}
-            variant={"ghost"}
-            type="button"
-            className="rounded bg-teal-100 border-teal-200 border-1 px-2 py-1.5 text-xs font-medium text-teal-700 hover:bg-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2 focus:ring-offset-teal-50"
-            onClick={() => {
-              window.open("https://captable.inc/help", "_blank");
-            }}
-          >
-            Upload custom SAFE agreement
-          </Button>
-
-          {/* TODO: Write a helkp article on SAFE */}
-          <Button size="xs" variant={"outline"} className="ml-3">
-            <Link href="https://captable.inc/help" target="_blank">
-              Learn more
-            </Link>
-          </Button>
-        </Message>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
           <FormLabel>
             Investor <span className="text-xs">(Stakeholder)</span>
@@ -286,7 +264,34 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
           />
         </div>
 
-        <div className="mt-8 flex justify-end">
+        <div className="mt-8 flex justify-end gap-4">
+          <SlideOver
+            title="Preview SAFE"
+            subtitle="Review the SAFE agreement generated based on the information provided."
+            size="3xl"
+            trigger={
+              <Button variant="outline" type="button">
+                Preview
+              </Button>
+            }
+          >
+            <PDFViewer className="w-full h-screen border-none rounded-md">
+              <SafeDocument
+                investor={{
+                  name: "Puru Dahal",
+                  email: "",
+                }}
+                investment={100000}
+                valuation={1000000}
+                date={new Date().toISOString()}
+                company={{
+                  name: "Company Inc.",
+                  state: "CA",
+                }}
+              />
+            </PDFViewer>
+          </SlideOver>
+
           <Button disabled={isSubmitting} loading={isSubmitting} type="submit">
             {type === "create"
               ? isSubmitting

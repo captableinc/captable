@@ -1,3 +1,5 @@
+"use client";
+
 import { Indent, type SafeProps, style } from "@/components/safe/templates";
 import { formatDate, formatUsd } from "@/lib/format";
 import { Document, Link, Page, Text, View } from "@react-pdf/renderer";

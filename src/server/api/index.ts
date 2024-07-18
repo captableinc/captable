@@ -1,7 +1,7 @@
 import { PublicAPI } from "./hono";
 import { initMiddleware } from "./middlewares/init";
 import { registerCompanyRoutes } from "./routes/company";
-import { registerSafeRoutes } from "./routes/safe";
+import { registerSafeRoutes } from "./routes/company/safes";
 
 const api = PublicAPI();
 

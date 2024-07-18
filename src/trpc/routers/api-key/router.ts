@@ -1,5 +1,5 @@
 import { generatePublicId } from "@/common/id";
-import { createApiToken, createSecureHash } from "@/lib/crypto";
+import { ApiKey } from "@/lib/api-key";
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
@@ -26,7 +26,7 @@ export const apiKeyRouter = createTRPCRouter({
 
         select: {
           id: true,
-          keyId: true,
+          partialKey: true,
           createdAt: true,
           lastUsed: true,
         },
@@ -44,22 +44,23 @@ export const apiKeyRouter = createTRPCRouter({
         membership: { companyId, memberId },
       } = ctx;
 
-      const token = createApiToken();
-      const keyId = generatePublicId();
-      const hashedToken = createSecureHash(token);
+      const apiKey = new ApiKey();
+      const { key: generatedKey, partialKey } = ApiKey.generateKey();
+      const hashedKey = await apiKey.generateHash(generatedKey);
+      console.log({ hashedKey });
 
       const key = await db.apiKey.create({
         data: {
-          keyId,
           companyId,
           membershipId: memberId,
-          hashedToken,
+          hashedKey,
+          partialKey,
         },
       });
 
       return {
-        token,
-        keyId: key.keyId,
+        token: generatedKey,
+        partialKey,
         createdAt: key.createdAt,
       };
     }),
@@ -76,7 +77,7 @@ export const apiKeyRouter = createTRPCRouter({
       try {
         await db.apiKey.delete({
           where: {
-            keyId,
+            id: keyId,
             membershipId: memberId,
             companyId,
           },

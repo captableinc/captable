@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
+import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -86,7 +87,9 @@ interface ApiKey {
   lastUsed: Date | null;
 }
 
-const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
+type ApiKeys = RouterOutputs["apiKey"]["listAll"]["apiKeys"];
+
+const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -110,11 +113,9 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
         </TableHeader>
         <TableBody>
           {keys.map((key) => (
-            <TableRow key={key.keyId}>
+            <TableRow key={key.id}>
               <TableCell className="flex cursor-pointer items-center">
-                <code className="text-xs">
-                  {`${key.keyId.slice(0, 3)}...${key.keyId.slice(-3)}:****`}
-                </code>
+                <code className="text-xs">{key.partialKey}</code>
               </TableCell>
               <TableCell suppressHydrationWarning>
                 {dayjsExt().to(key.createdAt)}
@@ -152,7 +153,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
                   <DeleteKey
                     open={open}
                     setOpen={(val) => setOpen(val)}
-                    keyId={key.keyId}
+                    keyId={key.id}
                   />
                 </div>
               </TableCell>

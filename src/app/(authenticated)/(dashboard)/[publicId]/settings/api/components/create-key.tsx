@@ -19,10 +19,9 @@ const CreateApiKey = () => {
   const [_copied, copy] = useCopyToClipboard();
 
   const createMutation = api.apiKey.create.useMutation({
-    onSuccess: ({ keyId, token }) => {
-      const key = `${keyId}:${token}` as string;
-      setApiKey(key);
-      copy(key);
+    onSuccess: ({ token }) => {
+      setApiKey(token);
+      copy(token);
       toast.success("API key copied to clipboard!");
       setOpen(true);
     },

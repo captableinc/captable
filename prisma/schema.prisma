@@ -1091,14 +1091,14 @@ model BillingCustomer {
 }
 
 model ApiKey {
-  id          String    @id @default(cuid())
-  name        String?
-  active      Boolean   @default(true)
-  keyId       String    @unique
-  hashedToken String    @unique // scrypt hashed token
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  lastUsed    DateTime?
+  id         String    @id @default(cuid())
+  name       String?
+  active     Boolean   @default(true)
+  partialKey String
+  hashedKey  String    @unique // scrypt hashed token
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastUsed   DateTime?
 
   membershipId String
   member       Member @relation(fields: [membershipId], references: [id], onDelete: Cascade)
@@ -1107,7 +1107,5 @@ model ApiKey {
   companyId String
 
   @@index([membershipId])
-  @@index([keyId, active])
-  @@index([membershipId, active])
   @@index([companyId])
 }

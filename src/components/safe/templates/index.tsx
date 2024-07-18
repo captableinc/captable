@@ -11,7 +11,6 @@ import PreMoneyCap from "./pre-money/cap";
 import PreMoneyCapDiscount from "./pre-money/cap-and-discount";
 import PreMoneyDiscount from "./pre-money/discount";
 import PreMoneyMfn from "./pre-money/mfn";
-import SafePreview from "./preview";
 
 export const style = StyleSheet.create({
   body: {
@@ -120,7 +119,6 @@ export const Indent = ({
 };
 
 export {
-  SafePreview,
   // Post-money
   PostMoneyMfn,
   ProRataLetter,

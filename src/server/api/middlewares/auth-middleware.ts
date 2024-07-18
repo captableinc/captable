@@ -26,7 +26,7 @@ export function authMiddleware(): Middleware {
     }
 
     const hashedKey = Key.generateHash(bearerToken);
-    const newKey = Key.generateHash(ApiKey.generateKey().key);
+    const randomHash = Key.generateHash(ApiKey.generateKey().key);
 
     const apiKey = await db.apiKey.findFirst({
       where: { hashedKey },
@@ -43,7 +43,11 @@ export function authMiddleware(): Middleware {
       },
     });
 
-    const verified = Key.verifyHash(apiKey?.hashedKey ?? newKey, bearerToken);
+    // verify with a random hash when not present to prevent timing attacks
+    const verified = Key.verifyHash(
+      apiKey?.hashedKey ?? randomHash,
+      bearerToken,
+    );
 
     if (!verified || !apiKey) {
       throw new ApiError({
@@ -60,6 +64,7 @@ export function authMiddleware(): Middleware {
       memberId: membership.id,
       role: membership.role,
     });
+
     await next();
   };
 }

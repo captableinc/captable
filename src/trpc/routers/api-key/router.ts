@@ -46,8 +46,7 @@ export const apiKeyRouter = createTRPCRouter({
 
       const apiKey = new ApiKey();
       const { key: generatedKey, partialKey } = ApiKey.generateKey();
-      const hashedKey = await apiKey.generateHash(generatedKey);
-      console.log({ hashedKey });
+      const hashedKey = apiKey.generateHash(generatedKey);
 
       const key = await db.apiKey.create({
         data: {

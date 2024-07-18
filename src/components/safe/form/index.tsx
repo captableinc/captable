@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 
 import SlideOver from "@/components/common/slide-over";
-import { StakeholderSelector } from "@/components/stakeholder/stakeholder-selector";
+import { InvestorSelector } from "@/components/stakeholder/investor-selector";
 import { Button } from "@/components/ui/button";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
@@ -81,7 +81,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             render={() => {
               return (
                 <FormItem>
-                  <StakeholderSelector
+                  <InvestorSelector
                     onSelect={(value: string) => {
                       form.setValue("stakeholderId", value);
                     }}

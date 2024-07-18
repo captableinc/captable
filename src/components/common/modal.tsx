@@ -24,10 +24,12 @@ const sizes = {
   screen: "max-w-[96vw]",
 };
 
+export type ModalSizeType = keyof typeof sizes;
+
 export type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
-  size?: keyof typeof sizes;
+  size?: ModalSizeType;
   trigger?: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;

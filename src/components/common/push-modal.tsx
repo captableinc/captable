@@ -8,12 +8,13 @@ import {
 } from "@/components/ui/dialog";
 
 import { CaptableLogo } from "@/components/common/logo";
+import type { ModalSizeType } from "@/components/common/modal";
 import { cn } from "@/lib/utils";
 
 export type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
-  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+  size?: ModalSizeType;
   children: React.ReactNode;
   scrollable?: boolean;
 };

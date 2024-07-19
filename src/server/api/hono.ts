@@ -5,6 +5,7 @@ import type { TPrisma } from "@/server/db";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Context as GenericContext, MiddlewareHandler } from "hono";
+import { SECURITY_SCHEME_NAME } from "./const";
 
 type TMembership = {
   role: Roles | null;
@@ -40,10 +41,14 @@ export function PublicAPI() {
     servers: [{ url: `${env.NEXTAUTH_URL}/api` }],
   }));
 
-  api.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
-    type: "http",
-    scheme: "bearer",
-  });
+  api.openAPIRegistry.registerComponent(
+    "securitySchemes",
+    SECURITY_SCHEME_NAME,
+    {
+      type: "http",
+      scheme: "bearer",
+    },
+  );
 
   api.get("/v1/swagger", swaggerUI({ url: "/api/v1/schema" }));
   return api;

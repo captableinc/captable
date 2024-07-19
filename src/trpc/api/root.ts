@@ -54,11 +54,8 @@ export const appRouter = createTRPCRouter({
   billing: billingRouter,
   rbac: rbacRouter,
   apiKey: apiKeyRouter,
-<<<<<<< HEAD
   bankAccounts: bankAccountsRouter,
-=======
   twoFactorAuth: twoFactorAuthRouter,
->>>>>>> 9093b09 (feat: register 2fa router in root)
 });
 
 // export type definition of API

@@ -18,7 +18,7 @@ export const cancelTemplateProcedure = withAuth
       });
 
       if (!template) {
-        return { message: "Invalid Template ID", success: "false" };
+        return { message: "Invalid Template ID", success: false };
       }
 
       await tx.template.update({
@@ -32,7 +32,7 @@ export const cancelTemplateProcedure = withAuth
 
       return {
         message: "Successfully set the document status to CANCELLED",
-        success: "true",
+        success: true,
       };
     });
 

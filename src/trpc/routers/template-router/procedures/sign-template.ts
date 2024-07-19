@@ -3,6 +3,7 @@
 import { dayjsExt } from "@/common/dayjs";
 import { EsignNotificationEmailJob } from "@/jobs/esign-email";
 import { EsignPdfJob } from "@/jobs/esign-pdf";
+import type { TemplateStatus } from "@/prisma/enums";
 import { EsignAudit } from "@/server/audit";
 import {
   type CompleteEsignDocumentsOptionsType,
@@ -29,6 +30,8 @@ export const signTemplateProcedure = withoutAuth
       const companyId = template.companyId;
       const templateName = template.name;
       const sender = template.uploader.user;
+
+      let templateStatus: TemplateStatus = "WAITING";
 
       const totalGroups = new Set(
         template.fields.map((item) => item.recipientId),
@@ -149,6 +152,8 @@ export const signTemplateProcedure = withoutAuth
             sender,
             uploaderName: sender.name || "Captable",
           });
+
+          templateStatus = "COMPLETE";
         }
       } else {
         await EsignAudit.create(
@@ -187,7 +192,18 @@ export const signTemplateProcedure = withoutAuth
           company: template.company,
           uploaderName: sender.name || "Captable",
         });
+
+        templateStatus = "COMPLETE";
       }
+
+      await tx.template.update({
+        where: {
+          id: template.id,
+        },
+        data: {
+          status: templateStatus,
+        },
+      });
 
       if (template.orderedDelivery) {
         const nextDelivery = await tx.esignRecipient.findFirst({

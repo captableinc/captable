@@ -7,5 +7,6 @@ export const SUBJECTS = [
   "documents",
   "company",
   "api-keys",
+  "bank-accounts",
 ] as const;
 export type TSubjects = (typeof SUBJECTS)[number];

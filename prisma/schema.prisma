@@ -157,8 +157,40 @@ model Company {
   billingCustomers BillingCustomer[]
   customRoles      CustomRole[]
   apiKeys          ApiKey[]
+  BankAccount      BankAccount[]
 
   @@unique([publicId])
+}
+
+enum BankAccountTypeEnum {
+  CHECKING
+  SAVINGS
+}
+
+model BankAccount {
+  id                 String              @id @default(cuid())
+  beneficiaryName    String
+  beneficiaryAddress String
+  bankName           String
+  bankAddress        String
+  accountNumber      String // iban or account number
+  routingNumber      String // ABA or routing number
+  accountType        BankAccountTypeEnum @default(CHECKING)
+
+  // International bank information
+  swiftCode String? // BIC or SWIFT code
+
+  primary Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, accountNumber])
+  @@unique([companyId, primary], name: "unique_primary_account")
+  @@index([companyId])
 }
 
 enum MemberStatusEnum {
@@ -668,8 +700,11 @@ model Share {
   debtCancelled       Float? // Amount of debt cancelled
   otherContributions  Float? // Other contributions
 
+  cliffYears      Int                 @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
+  vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
   vestingSchedule VestingScheduleEnum
-  companyLegends  ShareLegendsEnum[]
+
+  companyLegends ShareLegendsEnum[]
 
   issueDate         DateTime
   rule144Date       DateTime?
@@ -718,6 +753,8 @@ model Option {
 
   type            OptionTypeEnum
   status          OptionStatusEnum    @default(DRAFT)
+  cliffYears      Int                 @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
+  vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
   vestingSchedule VestingScheduleEnum
 
   issueDate         DateTime

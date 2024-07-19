@@ -26,7 +26,7 @@ const EmptyState = ({
   bordered = true,
   subtitle,
   children,
-  error,
+  error = false,
 }: EmptyStateProps) => {
   return (
     <div role="alert" className="overflow-hidden">

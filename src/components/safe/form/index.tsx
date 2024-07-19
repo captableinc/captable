@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 
 import SlideOver from "@/components/common/slide-over";
-import { InvestorSelector } from "@/components/stakeholder/investor-selector";
+import { InvestorSelector } from "@/components/selector/investor-selector";
 import { Button } from "@/components/ui/button";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,8 @@ const SafeFormSchema = z.object({
   proRata: z.boolean().optional().default(false),
   issueDate: z.string().date(),
   stakeholderId: z.string(),
+  memberId: z.string(),
+  bankAccountId: z.string(),
 });
 
 type SafeFormType = z.infer<typeof SafeFormSchema>;

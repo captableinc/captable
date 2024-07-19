@@ -31,9 +31,7 @@ export const bankAccountsRouter = createTRPCRouter({
         },
       });
 
-      return {
-        bankAccounts,
-      };
+      return bankAccounts;
     }),
 
   create: withAccessControl

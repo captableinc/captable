@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const SafeActions = async () => {
+export const SafeActions = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

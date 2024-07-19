@@ -17,7 +17,7 @@
     "db:generate": "prisma generate",
     "db:seed": "NODE_ENV='test' tsx prisma/seeds/index.ts",
     "dev": "next dev",
-    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
+    "build": "next build",
     "start": "next start",
     "postinstall": "prisma generate",
     "prepare": "husky",

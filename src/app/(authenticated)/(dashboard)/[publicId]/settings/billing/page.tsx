@@ -13,7 +13,7 @@ const BillingPage = async () => {
   ]);
 
   return (
-    <PageLayout title="Billing" description="manage your billing">
+    <PageLayout title="Billing" description="Manage payments and billing">
       <PlanDetails products={products} subscription={subscription} />
     </PageLayout>
   );

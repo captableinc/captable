@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 
 type StakeholderSelectorType = {
-  onSelect: (stakeholder: string) => void;
+  onSelect: (bankAccountId: string) => void;
 };
 
 export function BankAccountSelector({ onSelect }: StakeholderSelectorType) {

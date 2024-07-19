@@ -34,11 +34,14 @@ async function authenticateWithBearerToken(bearerToken: string, c: Context) {
     });
   }
 
-  c.set("membership", {
-    companyId: apiKey.member.companyId,
-    customRoleId: apiKey.member.customRoleId,
-    memberId: apiKey.member.id,
-    role: apiKey.member.role,
+  c.set("session", {
+    membership: {
+      companyId: apiKey.member.companyId,
+      customRoleId: apiKey.member.customRoleId,
+      memberId: apiKey.member.id,
+      role: apiKey.member.role,
+      userId: apiKey.member.userId,
+    },
   });
 }
 
@@ -71,13 +74,16 @@ function determineCookieName(authUrl: string): string {
 
 async function validateSessionCookie(authUrl: string, c: Context) {
   const session = await fetchSessionFromAuthUrl(authUrl, c);
-  const { err, val } = await getPermissions({ db: c.get("db"), session });
+  const { err, val } = await getPermissions({
+    db: c.get("services").db,
+    session,
+  });
 
   if (err) {
     throw err;
   }
 
-  c.set("membership", val.membership);
+  c.set("session", { membership: val.membership });
 }
 
 async function fetchSessionFromAuthUrl(
@@ -106,10 +112,11 @@ async function fetchSessionFromAuthUrl(
 }
 
 function findApiKey(bearerToken: string, c: Context) {
+  const { db } = c.get("services");
   const key = new ApiKey();
   const hashedKey = key.generateHash(bearerToken);
 
-  return c.get("db").apiKey.findFirst({
+  return db.apiKey.findFirst({
     where: { hashedKey },
     select: {
       hashedKey: true,
@@ -119,6 +126,7 @@ function findApiKey(bearerToken: string, c: Context) {
           companyId: true,
           role: true,
           customRoleId: true,
+          userId: true,
         },
       },
     },

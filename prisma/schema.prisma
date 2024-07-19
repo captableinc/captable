@@ -57,7 +57,7 @@ model User {
 
   accounts          Account[]
   sessions          Session[]
-  companies         Member[]
+  memberships       Member[]
   passkeys          Passkey[]
   verificationToken VerificationToken[]
 

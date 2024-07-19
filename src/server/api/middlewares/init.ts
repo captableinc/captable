@@ -3,7 +3,7 @@ import type { Middleware } from "../hono";
 
 export function initMiddleware(): Middleware {
   return async (c, next) => {
-    c.set("db", db);
+    c.set("services", { db });
 
     await next();
   };

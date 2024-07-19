@@ -11,12 +11,12 @@ export const ApiCompanySchema = z.object({
     example: "Acme Inc.",
   }),
 
-  logo: z.string().optional().openapi({
+  logo: z.string().nullable().openapi({
     description: "Company logo",
     example: "https://example.com/logo.png",
   }),
 
-  website: z.string().optional().openapi({
+  website: z.string().nullable().openapi({
     description: "Company website",
     example: "https://example.com",
   }),

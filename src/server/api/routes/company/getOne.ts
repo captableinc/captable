@@ -1,9 +1,8 @@
-import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
-import type { PublicAPI } from "@/server/api/hono";
 import { ApiCompanySchema } from "@/server/api/schema/company";
-import { createRoute, z } from "@hono/zod-openapi";
-import type { Context } from "hono";
+import { z } from "@hono/zod-openapi";
+
+import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
 export const RequestSchema = z.object({
   id: z
@@ -20,37 +19,43 @@ export const RequestSchema = z.object({
     }),
 });
 
-const route = createRoute({
-  method: "get",
-  path: "/v1/companies/:id",
-  request: { params: RequestSchema },
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: ApiCompanySchema,
+export const getOne = withAuthApiV1
+  .createRoute({
+    method: "get",
+    path: "/v1/companies/:id",
+    request: { params: RequestSchema },
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: ApiCompanySchema,
+          },
         },
+        description: "Get a company by ID",
       },
-      description: "Get a company by ID",
     },
+  })
+  .handler(async (c) => {
+    const { db } = c.get("services");
+    const { membership } = c.get("session");
+    const companyId = c.req.param("id");
 
-    ...ErrorResponses,
-  },
-});
-const getOne = (app: PublicAPI) => {
-  app.openapi(route, async (c: Context) => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const { company } = (await withCompanyAuth(c)) as { company: any };
+    const member = await db.member.findFirst({
+      where: { companyId, id: membership.memberId },
+      select: { companyId: true },
+    });
 
-    if (!company) {
+    if (!member) {
       throw new ApiError({
-        code: "NOT_FOUND",
-        message: "Company not found",
+        code: "UNAUTHORIZED",
+        message: `user is not a member of the company id:${companyId}`,
       });
     }
 
+    const company = await db.company.findFirstOrThrow({
+      where: {
+        id: member.companyId,
+      },
+    });
     return c.json(company, 200);
   });
-};
-
-export default getOne;

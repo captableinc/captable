@@ -10,11 +10,11 @@ import {
 } from "@remixicon/react";
 import { useEffect, useState } from "react";
 
-type StakeholderSelectorType = {
+type BankAccountSelectorType = {
   onSelect: (bankAccountId: string) => void;
 };
 
-export function BankAccountSelector({ onSelect }: StakeholderSelectorType) {
+export function BankAccountSelector({ onSelect }: BankAccountSelectorType) {
   const [options, setOptions] = useState<{ value: string; label: string }[]>(
     [],
   );

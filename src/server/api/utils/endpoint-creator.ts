@@ -14,15 +14,17 @@ export const SECURITY_SCHEME_NAME = "Bearer";
 
 type Version = "v1" | "v2";
 
-const ZAuthHeader = z.object({
-  authorization: z
-    .string()
-    .regex(/^Bearer [a-zA-Z0-9_]+/)
-    .openapi({
-      description: "A key to authorize the request",
-      example: "Bearer cap_1234",
-    }),
-});
+const ZAuthHeader = z
+  .object({
+    authorization: z
+      .string()
+      .regex(/^Bearer [a-zA-Z0-9_]+/)
+      .openapi({
+        description: "A key to authorize the request",
+        example: "Bearer cap_1234",
+      }),
+  })
+  .partial();
 
 type AuthHeaders = {
   headers: typeof ZAuthHeader;

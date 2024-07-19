@@ -10,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { RouterOutputs } from "@/trpc/shared";
 import Link from "next/link";
+import { TemplateCancelButton } from "./temp-cancel-btx";
 
 type DocumentsType = RouterOutputs["template"]["all"]["documents"];
 
@@ -65,6 +66,11 @@ export const ESignTable = ({ documents, companyPublicId }: ESignTableProps) => {
                   Edit
                 </Link>
               )}
+
+              <TemplateCancelButton
+                templateId={item.id}
+                publicId={item.publicId}
+              />
             </TableCell>
           </TableRow>
         ))}

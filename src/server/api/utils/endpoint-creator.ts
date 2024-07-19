@@ -52,14 +52,14 @@ const createApi = <V extends Version, L extends boolean>(
     } as Request;
 
     const defaultMiddleware = authRequired ? [authMiddleware()] : [];
-    const routeMiddleware = routeConfig?.middleware;
 
-    const middleware =
-      routeMiddleware === undefined
-        ? undefined
-        : Array.isArray(routeMiddleware)
-          ? routeMiddleware.concat(defaultMiddleware)
-          : [routeMiddleware].concat(defaultMiddleware);
+    const routeMiddleware = routeConfig?.middleware || [];
+
+    const middleware = authRequired
+      ? defaultMiddleware.concat(
+          Array.isArray(routeMiddleware) ? routeMiddleware : [routeMiddleware],
+        )
+      : routeConfig?.middleware;
 
     const updatedRouteConfig: U = {
       ...routeConfig,

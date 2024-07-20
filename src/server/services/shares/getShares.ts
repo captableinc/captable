@@ -3,7 +3,7 @@ import { db } from "@/server/db";
 
 type GetPaginatedShares = {
   companyId: string;
-  limit: number;
+  take: number;
   cursor?: string;
   total?: number;
 };
@@ -19,7 +19,7 @@ export const getPaginatedShares = async (payload: GetPaginatedShares) => {
   };
 
   const paginationData = {
-    limit: payload.limit,
+    take: payload.take,
     cursor: payload.cursor,
     total: payload.total,
   };

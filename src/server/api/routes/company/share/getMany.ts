@@ -61,11 +61,11 @@ const getMany = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = await withCompanyAuth(c);
 
-    const { limit, cursor, total } = c.req.query();
+    const { take, cursor, total } = c.req.query();
 
     const { data, meta } = await getPaginatedShares({
       companyId: company.id,
-      limit: Number(limit),
+      take: Number(take),
       cursor,
       total: Number(total),
     });

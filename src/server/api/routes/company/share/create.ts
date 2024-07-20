@@ -79,14 +79,34 @@ const create = (app: PublicAPI) => {
       },
     });
 
-    if (!success) {
+    if (!success || !data) {
       throw new ApiError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Something went wrong, please try again later",
       });
     }
 
-    return c.json({ message, data }, 200);
+    // Ensure data matches ResponseSchema
+    const responseData = {
+      status: data.status as string, // Cast to string if necessary
+      certificateId: data.certificateId,
+      quantity: data.quantity,
+      pricePerShare: data.pricePerShare ?? 0,
+      capitalContribution: data.capitalContribution ?? 0,
+      ipContribution: data.ipContribution ?? 0,
+      debtCancelled: data.debtCancelled ?? 0,
+      otherContributions: data.otherContributions ?? 0,
+      vestingSchedule: data.vestingSchedule ?? "",
+      companyLegends: data.companyLegends ?? "", // Add missing fields
+      issueDate: data.issueDate ?? new Date().toISOString(), // Add missing fields
+      rule144Date: data.rule144Date ?? new Date().toISOString(), // Add missing fields
+      vestingStartDate: data.vestingStartDate ?? new Date().toISOString(), // Add missing fields
+      boardApprovalDate: data.boardApprovalDate ?? new Date().toISOString(), // Add boardApprovalDate
+      stakeholderId: data.stakeholderId ?? "", // Add stakeholderId
+      shareClassId: data.shareClassId,
+    };
+
+    return c.json({ message, data: responseData }, 200);
   });
 };
 

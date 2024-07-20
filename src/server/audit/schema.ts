@@ -51,6 +51,10 @@ export const AuditSchema = z.object({
 
     "update.public-status",
     "update.private-status",
+
+    "bankAccount.created",
+    "bankAccount.updated",
+    "bankAccount.deleted",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -69,6 +73,7 @@ export const AuditSchema = z.object({
         "share",
         "update",
         "stakeholder",
+        "bankAccount",
       ]),
       id: z.string().optional().nullable(),
     }),

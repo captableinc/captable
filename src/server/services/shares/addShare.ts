@@ -43,19 +43,21 @@ export const addShare = async (input: AddShareType) => {
 
       const share = await tx.share.create({ data });
 
-      const bulkDocuments = documents.map((doc) => ({
-        companyId: input.companyId,
-        uploaderId: input.memberId,
-        publicId: generatePublicId(),
-        name: doc.name,
-        bucketId: doc.bucketId,
-        shareId: share.id,
-      }));
+      if (documents && documents.length > 0) {
+        const bulkDocuments = documents.map((doc) => ({
+          companyId: input.companyId,
+          uploaderId: input.memberId,
+          publicId: generatePublicId(),
+          name: doc.name,
+          bucketId: doc.bucketId,
+          shareId: share.id,
+        }));
 
-      await tx.document.createMany({
-        data: bulkDocuments,
-        skipDuplicates: true,
-      });
+        await tx.document.createMany({
+          data: bulkDocuments,
+          skipDuplicates: true,
+        });
+      }
 
       await Audit.create(
         {

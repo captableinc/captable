@@ -49,6 +49,9 @@ const ResponseSchema = z
 const route = createRoute({
   method: "delete",
   path: "/v1/companies/{id}/shares/{shareId}",
+  summary: "Delete issued shares",
+  description: "Delete a Share by ID",
+  tags: ["Shares"],
   request: {
     params: ParamsSchema,
   },

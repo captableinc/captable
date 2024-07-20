@@ -214,17 +214,17 @@ export const AddShareSchema = z
       example: "clycjzdqo000cjvsqr9rn6479",
     }),
 
-    documents: z
-      .array(
-        z.object({
-          bucketId: z.string(),
-          name: z.string(),
-        }),
-      )
-      .openapi({
-        description: "Uploaded Documents",
-        example: [{ bucketId: "vbhjewhvjvj3", name: "Bucket Blue" }],
-      }),
+    // documents: z
+    //   .array(
+    //     z.object({
+    //       bucketId: z.string(),
+    //       name: z.string(),
+    //     }),
+    //   )
+    //   .openapi({
+    //     description: "Uploaded Documents",
+    //     example: [{ bucketId: "vbhjewhvjvj3", name: "Bucket Blue" }],
+    //   }),
   })
   .openapi({
     description: "Create a Share",

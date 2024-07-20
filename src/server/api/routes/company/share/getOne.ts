@@ -44,6 +44,9 @@ const ResponseSchema = z
 const route = createRoute({
   method: "get",
   path: "/v1/companies/{id}/shares/{shareId}",
+  summary: "Get an issued share by ID",
+  description: "Get a single issued share record by ID",
+  tags: ["Shares"],
   request: {
     params: ParamsSchema,
   },

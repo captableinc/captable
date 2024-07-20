@@ -48,6 +48,9 @@ const ResponseSchema = z
 const route = createRoute({
   method: "put",
   path: "/v1/companies/{id}/shares/{shareId}",
+  summary: "Update issued shares by ID",
+  description: "Update issued shares by share ID",
+  tags: ["Shares"],
   request: {
     params: ParamsSchema,
     body: {

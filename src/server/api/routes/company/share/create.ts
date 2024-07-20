@@ -28,6 +28,9 @@ const ResponseSchema = z.object({
 const route = createRoute({
   method: "post",
   path: "/v1/companies/{id}/shares",
+  summary: "Issue shares",
+  description: "Issue shares to a stakeholder in a company.",
+  tags: ["Shares"],
   request: {
     params: ParamsSchema,
     body: {
@@ -45,7 +48,7 @@ const route = createRoute({
           schema: ResponseSchema,
         },
       },
-      description: "Created the Share Successfully",
+      description: "Issue shares",
     },
     ...ErrorResponses,
   },
@@ -78,13 +81,13 @@ const create = (app: PublicAPI) => {
     if (!success) {
       throw new ApiError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Something went wrong, Please try again Later",
+        message: "Something went wrong, please try again later",
       });
     }
 
     return c.json(
       {
-        data: "Created the Share Successfully",
+        data: "Successfully added the share",
       },
       200,
     );

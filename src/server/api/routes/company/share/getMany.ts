@@ -37,6 +37,9 @@ const ResponseSchema = z
 const route = createRoute({
   method: "get",
   path: "/v1/companies/{id}/shares",
+  summary: "Get list of issued shares",
+  description: "Get list of issued shares for a company",
+  tags: ["Shares"],
   request: {
     params: ParamsSchema,
     query: PaginationQuerySchema,

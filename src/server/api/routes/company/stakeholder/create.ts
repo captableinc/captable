@@ -27,12 +27,10 @@ function uniqueEmails(stakeholders: TAddStakeholderSchema) {
 const RequestBodySchema = AddStakeholderSchema.refine(blockIdField, {
   message: "Cannot provide 'id' while creating stakeholders.",
   path: ["id"],
-})
-  .refine(uniqueEmails, {
-    message: "Please provide unique email to each stakeholder.",
-    path: ["email"],
-  })
-  .openapi("Add many stakeholders in a company");
+}).refine(uniqueEmails, {
+  message: "Please provide unique email to each stakeholder.",
+  path: ["email"],
+});
 
 const ResponseSchema = z.object({
   message: z.string(),
@@ -41,6 +39,9 @@ const ResponseSchema = z.object({
 const route = createRoute({
   method: "post",
   path: "/v1/companies/{id}/stakeholders",
+  summary: "Create stakeholders",
+  description: "Create one or stakeholders account in a company.",
+  tags: ["Stakeholder"],
   request: {
     params: RequestParamsSchema,
     body: {

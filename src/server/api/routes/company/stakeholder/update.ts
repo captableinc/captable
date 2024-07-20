@@ -35,6 +35,9 @@ const ResponseSchema = z
   });
 
 const route = createRoute({
+  summary: "Update stakeholder",
+  description: "Update a stakeholder by ID",
+  tags: ["Stakeholder"],
   method: "put",
   path: "/v1/companies/{id}/stakeholders/{stakeholderId}",
   request: {

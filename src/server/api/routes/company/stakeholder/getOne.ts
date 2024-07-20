@@ -19,6 +19,9 @@ const ResponseSchema = z
   });
 
 const route = createRoute({
+  summary: "Get stakeholder",
+  description: "Get a single stakeholder by ID",
+  tags: ["Stakeholder"],
   method: "get",
   path: "/v1/companies/{id}/stakeholders/{stakeholderId}",
   request: { params: RequestParamsSchema },

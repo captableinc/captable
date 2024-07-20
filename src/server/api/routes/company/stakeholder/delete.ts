@@ -37,6 +37,9 @@ const ResponseSchema = z
   });
 
 const route = createRoute({
+  summary: "Delete stakeholder",
+  description: "Delete a stakeholder by ID in a company.",
+  tags: ["Stakeholder"],
   method: "delete",
   path: "/v1/companies/{id}/stakeholders/{stakeholderId}",
   request: { params: RequestParamsSchema },

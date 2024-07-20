@@ -31,6 +31,9 @@ const ResponseSchema = z.object({
 });
 
 const route = createRoute({
+  summary: "Get stakeholders",
+  description: "Get paginated stakeholders from a company.",
+  tags: ["Stakeholder"],
   method: "get",
   path: "/v1/companies/{id}/stakeholders",
   request: {

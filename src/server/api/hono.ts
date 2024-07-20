@@ -23,10 +23,10 @@ export function PublicAPI() {
   api.onError(handleError);
 
   api.doc("/v1/schema", () => ({
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     info: {
       version: "v1",
-      title: "Captable, Inc. API",
+      title: "Captable, Inc. API (v1)",
     },
     servers: [{ url: `${env.NEXTAUTH_URL}` }],
   }));

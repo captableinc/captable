@@ -3,8 +3,8 @@ import type { PaginationData, ProxyFunctions } from "./types";
 interface Paginated<T> {
   data: T[];
   count: number;
-  total: number;
-  cursor?: string;
+  total: number | null;
+  cursor: string | null;
 }
 
 /**
@@ -29,32 +29,30 @@ export type FindManyPaginated<F extends ProxyFunctions> = {
 export function makeFindManyPaginated(model: ProxyFunctions) {
   return new Proxy(model.findMany, {
     apply: async (target, thisArg, [data, paginationInfo]) => {
-      const limit = paginationInfo?.limit;
+      const take = paginationInfo?.take;
       const cursor = paginationInfo?.cursor;
 
       const query = data || {};
-      query.take = limit;
+      query.take = take;
       if (cursor) {
         query.cursor = { id: cursor }; // Assuming `id` is the cursor field
         query.skip = 1; // Skip the cursor item itself
       }
 
-      const total =
-        paginationInfo?.total ||
-        (await model.count({
-          where: query.where,
-        }));
+      const totalCount = await model.count({
+        where: query.where,
+      });
 
       //@ts-ignore
       const docs = await target.apply(thisArg, [query]);
 
-      const nextCursor =
-        docs.length === limit ? docs[docs.length - 1].id : null; // Assuming `id` is the cursor field
+      const nextCursor = docs.length === take ? docs[docs.length - 1].id : null; // Assuming `id` is the cursor field
 
       return {
         data: docs,
         count: docs.length,
-        total,
+        // Send totalCount only for first request, let client side manages it for subsequent requests.
+        total: totalCount,
         cursor: nextCursor,
       };
     },

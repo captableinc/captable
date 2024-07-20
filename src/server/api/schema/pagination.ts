@@ -15,12 +15,13 @@ export const PaginationQuerySchema = z.object({
       },
       example: 10,
       default: 10,
-      minimum: 5,
+      minimum: 1,
       maximum: 50,
     }),
 
   cursor: z
     .string()
+    .cuid()
     .optional()
     .openapi({
       description: "Cursor for the next page",
@@ -29,20 +30,6 @@ export const PaginationQuerySchema = z.object({
         in: "query",
       },
       example: "cly151kxq0000i7ngb3erchgo", // CUID of the last item
-    }),
-
-  total: z
-    .preprocess(
-      (val) =>
-        val === undefined ? undefined : Number.parseInt(val as string, 10),
-      z.number().int().positive().optional(),
-    )
-    .openapi({
-      description: "Total Number of Records",
-      param: {
-        name: "total",
-        in: "query",
-      },
     }),
 });
 
@@ -54,12 +41,12 @@ export const PaginationResponseSchema = z.object({
     example: 50,
   }),
 
-  total: z.number().int().positive().openapi({
+  total: z.number().int().positive().nullable().openapi({
     description: "Total number of records",
     example: 100,
   }),
 
-  cursor: z.string().optional().openapi({
+  cursor: z.string().nullable().openapi({
     description: "Next page cursor",
     example: "cly151kxq0000i7ngb3erchgo",
   }),

@@ -13,23 +13,22 @@ import type { PublicAPI } from "@/server/api/hono";
 import { Prisma } from "@prisma/client";
 import type { Context } from "hono";
 
-function blockIdField(stakeholders: TAddStakeholderSchema) {
-  const hasIdField = stakeholders.some((stakeholder) => "id" in stakeholder);
-  return !hasIdField;
-}
-
 function uniqueEmails(stakeholders: TAddStakeholderSchema) {
   const emails = stakeholders.map((stakeholder) => stakeholder.email);
   const uniqueEmails = new Set(emails);
   return uniqueEmails.size === emails.length;
 }
 
-const RequestBodySchema = AddStakeholderSchema.refine(blockIdField, {
-  message: "Cannot provide 'id' while creating stakeholders.",
-  path: ["id"],
-}).refine(uniqueEmails, {
-  message: "Please provide unique email to each stakeholder.",
-  path: ["email"],
+const RequestBodyAttributes = AddStakeholderSchema.element
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .array();
+
+const RequestBodySchema = RequestBodyAttributes.refine(uniqueEmails, {
+  message: "Please provide unique email addresses.",
 });
 
 const ResponseSchema = z.object({

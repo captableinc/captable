@@ -16,7 +16,7 @@ export type UpdateStakeholderOptions = {
 
 export const updateStakeholder = async (payload: UpdateStakeholderOptions) => {
   const { requestIp, userAgent, user } = payload;
-  const { id, ...rest } = payload.data;
+  const data = payload.data;
 
   const { updatedStakeholder } = await db.$transaction(async (tx) => {
     const updatedStakeholder = await db.stakeholder.update({
@@ -24,7 +24,7 @@ export const updateStakeholder = async (payload: UpdateStakeholderOptions) => {
         id: payload.stakeholderId,
         companyId: payload.companyId,
       },
-      data: rest,
+      data,
     });
     await Audit.create(
       {

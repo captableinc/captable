@@ -15,9 +15,6 @@ export const getStakeholdersProcedure = withAccessControl
     const { db, membership } = ctx;
     const investor = input?.investor;
 
-    console.log("------------------------------------------------>");
-    console.log("isInvestor", investor);
-
     const data = await db.stakeholder.findMany({
       where: {
         companyId: membership.companyId,

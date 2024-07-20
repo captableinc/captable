@@ -21,3 +21,10 @@ export const ZUpdatePasskeyMutationSchema = z.object({
   passkeyId: z.string().trim().min(1),
   name: z.string().trim().min(1),
 });
+
+export interface PasskeyAudit {
+  requestIp: string;
+  userAgent: string;
+  companyId: string;
+  userName?: string;
+}

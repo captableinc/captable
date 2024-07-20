@@ -1,6 +1,7 @@
 "use client";
 
 import { createPushModal } from "pushmodal";
+import { BankAccountModal } from "./bank-account-modal";
 import { DocumentUploadModal } from "./document-upload-modal";
 import { EquityPlanModal } from "./equity-pan/equity-plan-modal";
 import { ExistingSafeModal } from "./existing-safe-modal";
@@ -35,9 +36,12 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     EquityPlanModal,
     IssueShareModal,
     IssueStockOptionModal,
+    AddEsignDocumentModal,
+    BankAccountModal,
+
+    // Safe modals
     NewSafeModal,
     ExistingSafeModal,
-    AddEsignDocumentModal,
     InvestorModal,
   },
 });

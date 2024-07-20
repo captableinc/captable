@@ -265,6 +265,8 @@ export async function completeEsignDocuments({
   const { id: bucketId, name } = await createBucketHandler({
     db,
     input: { ...bucketData, tags: [TAG.ESIGN] },
+    userAgent,
+    requestIp,
   });
 
   await createDocumentHandler({

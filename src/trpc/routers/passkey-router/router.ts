@@ -20,16 +20,23 @@ import {
 export const passkeyRouter = createTRPCRouter({
   create: withAuth
     .input(ZCreatePasskeyMutationSchema)
-    .mutation(async ({ ctx: { session }, input }) => {
+    .mutation(async ({ ctx: { session, requestIp, userAgent }, input }) => {
       try {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const verificationResponse =
           input.verificationResponse as RegistrationResponseJSON;
 
+        const auditMetaData = {
+          requestIp,
+          userAgent,
+          companyId: session.user.companyId,
+        };
+
         return await createPasskey({
           userId: session.user.id,
           verificationResponse,
           passkeyName: input.passkeyName,
+          auditMetaData,
         });
       } catch (err) {
         console.error(err);
@@ -42,9 +49,16 @@ export const passkeyRouter = createTRPCRouter({
     .input(ZCreatePasskeyAuthenticationOptionsMutationSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        const auditMetaData = {
+          requestIp: ctx.requestIp,
+          userAgent: ctx.userAgent,
+          companyId: ctx.session.user.companyId,
+          userName: ctx.session.user.name || "",
+        };
         return await createPasskeyAuthenticationOptions({
           userId: ctx.session.user.id,
           preferredPasskeyId: input?.preferredPasskeyId,
+          auditMetaData,
         });
       } catch (err) {
         console.error(err);
@@ -59,8 +73,15 @@ export const passkeyRouter = createTRPCRouter({
 
   createRegistrationOptions: withAuth.mutation(async ({ ctx }) => {
     try {
+      const { requestIp, userAgent } = ctx;
+      const auditMetaData = {
+        requestIp,
+        userAgent,
+        companyId: ctx.session.user.companyId,
+      };
       return await createPasskeyRegistrationOptions({
         userId: ctx.session.user.id,
+        auditMetaData,
       });
     } catch (err) {
       console.error(err);
@@ -100,13 +121,19 @@ export const passkeyRouter = createTRPCRouter({
 
   delete: withAuth
     .input(ZDeletePasskeyMutationSchema)
-    .mutation(async ({ ctx: { session }, input }) => {
+    .mutation(async ({ ctx: { session, requestIp, userAgent }, input }) => {
       try {
         const { passkeyId } = input;
-
+        const auditMetaData = {
+          requestIp,
+          userAgent,
+          userName: session.user.name || "",
+          companyId: session.user.companyId,
+        };
         await deletePasskey({
           userId: session.user.id,
           passkeyId,
+          auditMetaData,
         });
       } catch (err) {
         console.error(err);
@@ -136,13 +163,20 @@ export const passkeyRouter = createTRPCRouter({
 
   update: withAuth
     .input(ZUpdatePasskeyMutationSchema)
-    .mutation(async ({ ctx: { session }, input }) => {
+    .mutation(async ({ ctx: { session, userAgent, requestIp }, input }) => {
       try {
         const { passkeyId, name } = input;
+        const auditMetaData = {
+          requestIp,
+          userAgent,
+          companyId: session.user.companyId,
+          userName: session.user.name || "",
+        };
         await updatePasskey({
           userId: session.user.id,
           passkeyId,
           name,
+          auditMetaData,
         });
       } catch (err) {
         console.error(err);

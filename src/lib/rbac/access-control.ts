@@ -168,7 +168,11 @@ export const serverAccessControl = async () => {
 
   const roleMap = RBAC.normalizePermissionsMap(permissions);
 
-  const allow = <T>(p: T, permissions: [TSubjects, TActions]) => {
+  const allow = <T, U = undefined>(
+    p: T,
+    permissions: [TSubjects, TActions],
+    undefinedValue?: U,
+  ) => {
     const subject = permissions[0];
     const action = permissions[1];
 
@@ -179,7 +183,7 @@ export const serverAccessControl = async () => {
     if (allowed) {
       return p;
     }
-    return undefined;
+    return undefinedValue as U;
   };
 
   const isPermissionsAllowed = (policies: addPolicyOption) => {

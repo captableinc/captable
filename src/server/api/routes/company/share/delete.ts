@@ -65,7 +65,7 @@ const route = createRoute({
   },
 });
 
-const delete_ = (app: PublicAPI) => {
+const deleteOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
 
@@ -102,4 +102,4 @@ const delete_ = (app: PublicAPI) => {
   });
 };
 
-export default delete_;
+export default deleteOne;

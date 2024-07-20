@@ -1,16 +1,14 @@
 import type { PublicAPI } from "@/server/api/hono";
 import create from "./create";
-import delete_ from "./delete";
+import deleteOne from "./delete";
 import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-const shareRoutes = (api: PublicAPI) => {
+export const registerShareRoutes = (api: PublicAPI) => {
+  create(api);
   getOne(api);
   getMany(api);
-  create(api);
   update(api);
-  delete_(api);
+  deleteOne(api);
 };
-
-export default shareRoutes;

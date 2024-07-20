@@ -88,19 +88,24 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
   if (!keyId || !token) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid token provided",
+      message: "Bearer token is invalid",
     });
   }
 
   const apiKey = await db.apiKey.findUnique({
     where: { keyId, active: true },
-    select: { id: true, keyId: true, hashedToken: true, user: true },
+    select: {
+      id: true,
+      keyId: true,
+      hashedToken: true,
+      member: { select: { user: true } },
+    },
   });
 
   if (!apiKey) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid token provided",
+      message: "Bearer token is invalid",
     });
   }
 
@@ -109,7 +114,7 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
   if (!isValid) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid token provided",
+      message: "Bearer token is invalid",
     });
   }
 
@@ -118,5 +123,5 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
     data: { lastUsed: new Date() },
   });
 
-  return apiKey.user;
+  return apiKey.member.user;
 };

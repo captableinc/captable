@@ -1,12 +1,15 @@
-import { checkMembership } from "@/server/auth";
-import { withAuth } from "@/trpc/api/trpc";
+import { withAccessControl } from "@/trpc/api/trpc";
 
-export const getAllDocumentsProcedure = withAuth.query(
-  async ({ ctx: { session, db } }) => {
-    const data = await db.$transaction(async (tx) => {
-      const { companyId } = await checkMembership({ session, tx });
-
-      const data = await tx.document.findMany({
+export const getAllDocumentsProcedure = withAccessControl
+  .meta({ policies: { documents: { allow: ["read"] } } })
+  .query(
+    async ({
+      ctx: {
+        db,
+        membership: { companyId },
+      },
+    }) => {
+      const data = await db.document.findMany({
         where: {
           companyId,
         },
@@ -34,9 +37,7 @@ export const getAllDocumentsProcedure = withAuth.query(
           createdAt: "desc",
         },
       });
-      return data;
-    });
 
-    return data;
-  },
-);
+      return data;
+    },
+  );

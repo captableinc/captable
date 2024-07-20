@@ -6,6 +6,8 @@ import {
   RiAccountCircleLine,
   RiBankCardFill,
   RiBankCardLine,
+  RiBankFill,
+  RiBankLine,
   RiBuildingFill,
   RiBuildingLine,
   RiGroup2Fill,
@@ -41,6 +43,26 @@ const companyNav = [
     icon: RiShieldUserLine,
     activeIcon: RiShieldUserFill,
   },
+
+  {
+    name: "Billing",
+    href: "/settings/billing",
+    icon: RiBankCardLine,
+    activeIcon: RiBankCardFill,
+  },
+
+  {
+    name: "API Keys",
+    href: "/settings/api",
+    icon: RiTerminalBoxLine,
+    activeIcon: RiTerminalBoxFill,
+  },
+  {
+    name: "Bank Accounts",
+    href: "/settings/bank-accounts",
+    icon: RiBankLine,
+    activeIcon: RiBankFill,
+  },
 ];
 
 const accountNav = [
@@ -58,12 +80,6 @@ const accountNav = [
   },
 
   {
-    name: "API Keys",
-    href: "/settings/api",
-    icon: RiTerminalBoxLine,
-    activeIcon: RiTerminalBoxFill,
-  },
-  {
     name: "Notifications",
     href: "/settings/notifications",
     icon: RiNotificationLine,
@@ -80,24 +96,15 @@ export function SettingsSidebar({ isBillingEnabled }: SettingsSidebarProps) {
   const { data } = useSession();
   const companyPublicId = data?.user.companyPublicId;
 
-  const sideNavData = [
-    ...companyNav,
-    ...(isBillingEnabled
-      ? [
-          {
-            name: "Billing",
-            href: "/settings/billing",
-            icon: RiBankCardLine,
-            activeIcon: RiBankCardFill,
-          },
-        ]
-      : []),
-  ];
   return (
     <ul className="text-sm">
-      {sideNavData.map((item) => {
+      {companyNav.map((item) => {
         const href = `/${companyPublicId}${item.href}`;
         const isActive = currentPath === href;
+
+        if (item.name === "Billing" && !isBillingEnabled) {
+          return null;
+        }
 
         return (
           <li key={item.name} className="rounded py-1">

@@ -48,9 +48,7 @@ export const toggleUpdateVisibilityProcedure = withAuth
         });
         await Audit.create(
           {
-            action: updated.public
-              ? "update.public-status"
-              : "update.private-status",
+            action: "update.updated",
             companyId,
             actor: { type: "user", id: authorId },
             context: {

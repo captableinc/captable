@@ -33,6 +33,7 @@ const RequestBodySchema = RequestBodyAttributes.refine(uniqueEmails, {
 
 const ResponseSchema = z.object({
   message: z.string(),
+  data: AddStakeholderSchema,
 });
 
 const route = createRoute({
@@ -82,24 +83,42 @@ const create = (app: PublicAPI) => {
       data: body as TAddStakeholderSchema,
     };
     try {
-      await addStakeholders(payload);
+      const stakeholders = await addStakeholders(payload);
+
+      return c.json(
+        {
+          message: "Stakeholders successfully created.",
+          data: stakeholders.map((s) => ({
+            ...s,
+            institutionName: s.institutionName ?? undefined,
+            streetAddress: s.streetAddress ?? undefined,
+            city: s.city ?? undefined,
+            state: s.state ?? undefined,
+            zipcode: s.zipcode ?? undefined,
+            country: s.country ?? undefined,
+            createdAt: s.createdAt.toISOString(),
+            updatedAt: s.updatedAt.toISOString(),
+          })),
+        },
+        200,
+      );
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
           throw new ApiError({
             code: "BAD_REQUEST",
-            message: "Stakeholder email already exists in database.",
+            message: "Stakeholder with the provided email already exists.",
           });
         }
       }
       throw new ApiError({
         code: "BAD_REQUEST",
-        //@ts-ignore
-        message: error.message ?? "Something went out. Please try again later.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again later.",
       });
     }
-
-    return c.json({ message: "Stakeholders added successfully" }, 200);
   });
 };
 

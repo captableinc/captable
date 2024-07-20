@@ -16,7 +16,7 @@ type AddStakeholderOptions = {
 export const addStakeholders = async (payload: AddStakeholderOptions) => {
   const { companyId, requestIp, userAgent, user, data } = payload;
 
-  await db.$transaction(async (tx) => {
+  const stakeholders = await db.$transaction(async (tx) => {
     const inputDataWithCompanyId = data.map((stakeholder) => ({
       ...stakeholder,
       companyId,
@@ -24,10 +24,6 @@ export const addStakeholders = async (payload: AddStakeholderOptions) => {
 
     const addedStakeholders = await tx.stakeholder.createManyAndReturn({
       data: inputDataWithCompanyId,
-      select: {
-        id: true,
-        name: true,
-      },
     });
 
     const auditPromises = addedStakeholders.map((stakeholder) =>
@@ -48,6 +44,8 @@ export const addStakeholders = async (payload: AddStakeholderOptions) => {
     );
 
     await Promise.all(auditPromises);
+    return addedStakeholders;
   });
-  return {};
+
+  return stakeholders;
 };

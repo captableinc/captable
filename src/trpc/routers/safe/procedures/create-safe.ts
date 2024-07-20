@@ -148,7 +148,7 @@ export const createSafeProcedure = withAuth
       console.error("Error creating safe:", error);
       return {
         success: false as const,
-        message: "Oops ! something went out. Please try again later",
+        message: "Oops ! Something went wrong. Please try again later",
       };
     }
   });

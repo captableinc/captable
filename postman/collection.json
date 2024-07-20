@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "209da849-6850-40d0-a4bf-1b7d004be7ce",
+    "_postman_id": "f6fabcbb-ea5c-48a9-b18a-c0e7cb0845e4",
     "name": "Captable API (v1)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "36586471"
@@ -90,7 +90,10 @@
           "name": "Get a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -98,7 +101,10 @@
           "name": "List team members",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -106,7 +112,10 @@
           "name": "Create a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         },
@@ -114,7 +123,10 @@
           "name": "Update a team member",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": ""
+            }
           },
           "response": []
         }
@@ -127,33 +139,409 @@
           "name": "Get a stakeholder",
           "request": {
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "companies",
+                "{{companyId}}",
+                "stakeholders",
+                "{{stakeholderId}}"
+              ]
+            }
           },
-          "response": []
+          "response": [
+            {
+              "name": "John Doe",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         },
         {
           "name": "List stakeholders",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": []
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "stakeholders"]
+            }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["companies", "{{companyId}}", "stakeholders"]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["companies", "{{companyId}}", "stakeholders"]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         },
         {
           "name": "Create a stakeholder",
           "request": {
-            "method": "GET",
-            "header": []
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "stakeholders"]
+            }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{bearerToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["companies", "{{companyId}}", "stakeholders"]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         },
         {
           "name": "Update a stakeholder",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"New name\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "companies",
+                "{{companyId}}",
+                "stakeholders",
+                "{{stakeholderId}}"
+              ]
+            }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"New name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "John Doe",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"New name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete a stakeholder",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{bearerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "companies",
+                "{{companyId}}",
+                "stakeholders",
+                "{{stakeholderId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Untitled Response",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "John Doe",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{bearerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/companies/{{companyId}}/stakeholders/{{stakeholderId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "companies",
+                    "{{companyId}}",
+                    "stakeholders",
+                    "{{stakeholderId}}"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "Text",
+              "header": [],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         }
       ]
     }

@@ -21,8 +21,11 @@ export const RequestSchema = z.object({
 });
 
 const route = createRoute({
+  summary: "Get a companies",
+  description: "Get a company by ID",
+  tags: ["Company"],
   method: "get",
-  path: "/v1/companies/:id",
+  path: "/v1/companies/{id}",
   request: { params: RequestSchema },
   responses: {
     200: {

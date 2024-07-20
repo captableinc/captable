@@ -22,7 +22,8 @@ const ParamsSchema = z.object({
 });
 
 const ResponseSchema = z.object({
-  data: z.string(),
+  message: z.string(),
+  data: AddShareSchema,
 });
 
 const route = createRoute({
@@ -66,7 +67,7 @@ const create = (app: PublicAPI) => {
       "Unknown IP";
     const userAgent = c.req.header("User-Agent") || "";
 
-    const { success } = await addShare({
+    const { success, message, data } = await addShare({
       ...body,
       companyId: company.id,
       memberId: member.id,
@@ -85,12 +86,7 @@ const create = (app: PublicAPI) => {
       });
     }
 
-    return c.json(
-      {
-        data: "Successfully added the share",
-      },
-      200,
-    );
+    return c.json({ message, data }, 200);
   });
 };
 

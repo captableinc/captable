@@ -16,7 +16,7 @@ export interface AddShareType extends TypeZodAddShareMutationSchema {
 
 export const addShare = async (input: AddShareType) => {
   try {
-    await db.$transaction(async (tx) => {
+    const share = await db.$transaction(async (tx) => {
       const documents = input.documents;
 
       const data = {
@@ -38,8 +38,6 @@ export const addShare = async (input: AddShareType) => {
         vestingStartDate: new Date(input.vestingStartDate),
         boardApprovalDate: new Date(input.boardApprovalDate),
       };
-
-      console.log("The data inside addShare is :", input);
 
       const share = await tx.share.create({ data });
 
@@ -73,11 +71,14 @@ export const addShare = async (input: AddShareType) => {
         },
         tx,
       );
+
+      return share;
     });
 
     return {
       success: true,
       message: "🎉 Successfully added a share",
+      data: share,
     };
   } catch (error) {
     console.error("Error adding shares: ", error);

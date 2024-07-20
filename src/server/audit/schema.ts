@@ -5,8 +5,11 @@ export const AuditSchema = z.object({
   action: z.enum([
     "user.signed-up",
     "user.onboarded",
+    "user.verified",
+    "user.password-updated",
 
     "company.created",
+    "company.updated",
 
     "member.invited",
     "member.re-invited",
@@ -49,8 +52,32 @@ export const AuditSchema = z.object({
 
     "password.updated",
 
-    "update.public-status",
-    "update.private-status",
+    "update.created",
+    "update.updated",
+    "update.cloned",
+    "update.shared",
+    "update.unshared",
+
+    "apiKey.created",
+    "apiKey.deleted",
+
+    "bucket.created",
+
+    "dataroom.created",
+    "dataroom.updated",
+    "dataroom.shared",
+    "dataroom.deleted",
+
+    "role.created",
+    "role.updated",
+    "role.deleted",
+
+    "template.updated",
+    "template.created",
+
+    "passkey.created",
+    "passkey.deleted",
+    "passkey.updated",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -69,6 +96,14 @@ export const AuditSchema = z.object({
         "share",
         "update",
         "stakeholder",
+        "apiKey",
+        "bucket",
+        "stripeSession",
+        "stripeBillingPortalSession",
+        "dataroom",
+        "role",
+        "template",
+        "passkey",
       ]),
       id: z.string().optional().nullable(),
     }),

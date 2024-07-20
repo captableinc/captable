@@ -62,6 +62,13 @@ export const createSafeProcedure = withAuth
           const { name: bucketName, id: bucketId } = await createBucketHandler({
             db: tx,
             input: { ...rest, tags: [TAG.SAFE] },
+            userAgent,
+            requestIp,
+            user: {
+              companyId: user.companyId,
+              id: user.id,
+              name: user.name || "",
+            },
           });
 
           document = { name: bucketName, bucketId };
@@ -73,8 +80,13 @@ export const createSafeProcedure = withAuth
 
         invariant(document, "document not found");
 
+        const partialUser = {
+          name: user.name || "",
+          id: user.id,
+          companyId: user.companyId,
+        };
         const template = await createTemplateHandler({
-          ctx: { db: tx },
+          ctx: { db: tx, userAgent, requestIp, user: partialUser },
           input: {
             ...document,
             uploaderId: memberId,

@@ -7,7 +7,7 @@ import {
   PaginationResponseSchema,
 } from "@/server/api/schema/pagination";
 import { ShareSchema } from "@/server/api/schema/shares";
-import { getPaginatedShares } from "@/server/services/shares/getShares";
+import { getPaginatedShares } from "@/server/services/shares/get-shares";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 

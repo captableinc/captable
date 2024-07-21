@@ -2,7 +2,7 @@ import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { AddShareSchema } from "@/server/api/schema/shares";
-import { addShare } from "@/server/services/shares/addShare";
+import { addShare } from "@/server/services/shares/add-share";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 
@@ -82,7 +82,7 @@ const create = (app: PublicAPI) => {
     if (!success || !data) {
       throw new ApiError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Something went wrong, please try again later",
+        message: "Something went wrong, please try again or contact support.",
       });
     }
 

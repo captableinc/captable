@@ -2,7 +2,7 @@ import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { UpdateShareSchema } from "@/server/api/schema/shares";
-import { updateShare } from "@/server/services/shares/updateShare";
+import { updateShare } from "@/server/services/shares/update-share";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 

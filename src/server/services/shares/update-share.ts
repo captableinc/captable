@@ -1,6 +1,7 @@
+import { ApiError } from "@/server/api/error";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
-import type { AddShareType } from "./addShare";
+import type { AddShareType } from "./add-share";
 
 interface UpdateShareType extends AddShareType {
   shareId: string;
@@ -68,10 +69,10 @@ export const updateShare = async (input: UpdateShareType) => {
       message: "🎉 Successfully Updated the share",
     };
   } catch (error) {
-    console.error("Error adding shares: ", error);
-    return {
-      success: false,
-      message: "Can't Update the Share now. Please try again later",
-    };
+    console.error("updateShare", error);
+    throw new ApiError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Something went wrong, please try again or contact support",
+    });
   }
 };

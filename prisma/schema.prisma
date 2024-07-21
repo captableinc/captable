@@ -690,7 +690,7 @@ model Share {
   cliffYears   Int @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
   vestingYears Int @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
 
-  companyLegends ShareLegendsEnum[]
+  companyLegends ShareLegendsEnum[] @default([])
 
   issueDate         DateTime
   rule144Date       DateTime?

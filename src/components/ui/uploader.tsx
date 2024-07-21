@@ -106,7 +106,9 @@ export function Uploader({
       }
     } catch (error) {
       console.error("Error uploading file:", error);
-      toast.error("Uh oh! Something went wrong, please try again.");
+      toast.error(
+        "Uh oh! Something went wrong, please try again or contact support.",
+      );
     } finally {
       setUploading(false);
     }

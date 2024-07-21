@@ -14,17 +14,6 @@ import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 import { RequestParamsSchema } from "./delete";
 
-const RequestBodySchema = UpdateStakeholderSchema.refine(
-  (data) => {
-    return Object.values(data).some((value) => value !== undefined);
-  },
-  {
-    message: "At least one field must be provided to update.",
-  },
-).openapi({
-  description: "Update a stakeholder by ID",
-});
-
 const ResponseSchema = z
   .object({
     message: z.string(),
@@ -45,7 +34,7 @@ const route = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: RequestBodySchema,
+          schema: UpdateStakeholderSchema,
         },
       },
     },

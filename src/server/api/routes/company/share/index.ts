@@ -5,7 +5,7 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-export const registerStakeholderRoutes = (api: PublicAPI) => {
+export const registerShareRoutes = (api: PublicAPI) => {
   create(api);
   getOne(api);
   getMany(api);

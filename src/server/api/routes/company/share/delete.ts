@@ -1,7 +1,11 @@
 import { withCompanyAuth } from "@/server/api/auth";
-import { ApiError, ErrorResponses } from "@/server/api/error";
+import {
+  ApiError,
+  type ErrorCodeType,
+  ErrorResponses,
+} from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ShareSchema } from "@/server/api/schema/shares";
+import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { deleteShare } from "@/server/services/shares/delete-share";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
@@ -10,7 +14,6 @@ import { RequestParamsSchema } from "./update";
 const ResponseSchema = z
   .object({
     message: z.string(),
-    data: ShareSchema.optional(),
   })
   .openapi({
     description: "Delete a Share by ID",
@@ -41,34 +44,26 @@ const route = createRoute({
 const deleteOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
-
     const { shareId: id } = c.req.param();
 
-    const requestIP =
-      c.req.header("x-forwarded-for") ||
-      c.req.header("remoteAddr") ||
-      "Unknown IP";
-    const userAgent = c.req.header("User-Agent") || "";
-
-    const { success, message, share } = await deleteShare({
+    const { success, code, message } = await deleteShare({
       companyId: company.id,
-      requestIp: requestIP,
-      userAgent,
+      requestIp: getIp(c.req),
+      userAgent: getHonoUserAgent(c.req),
       shareId: id as string,
       user: { id: user.id, name: user.name || "" },
     });
 
-    if (!success && !share) {
+    if (!success) {
       throw new ApiError({
-        code: "BAD_REQUEST",
+        code: code as ErrorCodeType,
         message,
       });
     }
 
     return c.json(
       {
-        message: "Successfully Deleted the Share",
-        data: share,
+        message: message,
       },
       200,
     );

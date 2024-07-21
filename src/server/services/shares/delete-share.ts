@@ -29,7 +29,8 @@ export const deleteShare = async ({
     if (!existingShare) {
       return {
         success: false,
-        message: "Enter Valid Share ID",
+        code: "NOT_FOUND",
+        message: `Share with ID ${shareId} not found`,
       };
     }
 
@@ -69,7 +70,8 @@ export const deleteShare = async ({
     console.error("Error Deleting the share: ", error);
     return {
       success: false,
-      message: "Can't Delete the Share now. Please try again later",
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Error deleting the share, please try again or contact support.",
     };
   }
 };

@@ -1,7 +1,8 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { AddShareSchema } from "@/server/api/schema/shares";
+import { CreateShareSchema } from "@/server/api/schema/shares";
+import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { addShare } from "@/server/services/shares/add-share";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
@@ -23,7 +24,7 @@ const ParamsSchema = z.object({
 
 const ResponseSchema = z.object({
   message: z.string(),
-  data: AddShareSchema,
+  data: CreateShareSchema,
 });
 
 const route = createRoute({
@@ -37,7 +38,7 @@ const route = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: AddShareSchema,
+          schema: CreateShareSchema,
         },
       },
     },
@@ -58,21 +59,14 @@ const route = createRoute({
 const create = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, member, user } = await withCompanyAuth(c);
-
     const body = await c.req.json();
-
-    const requestIP =
-      c.req.header("x-forwarded-for") ||
-      c.req.header("remoteAddr") ||
-      "Unknown IP";
-    const userAgent = c.req.header("User-Agent") || "";
 
     const { success, message, data } = await addShare({
       ...body,
       companyId: company.id,
       memberId: member.id,
-      requestIP,
-      userAgent,
+      requestIP: getIp(c.req),
+      userAgent: getHonoUserAgent(c.req),
       user: {
         id: user.id,
         name: user.name,

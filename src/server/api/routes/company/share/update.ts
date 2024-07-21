@@ -2,11 +2,13 @@ import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import { UpdateShareSchema } from "@/server/api/schema/shares";
+import type { UpdateShareSchemaType } from "@/server/api/schema/shares";
+import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { updateShare } from "@/server/services/shares/update-share";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 
-const ParamsSchema = z
+export const RequestParamsSchema = z
   .object({
     id: z
       .string()
@@ -39,7 +41,8 @@ const ParamsSchema = z
 
 const ResponseSchema = z
   .object({
-    data: z.string(),
+    message: z.string(),
+    data: UpdateShareSchema,
   })
   .openapi({
     description: "Update a Share by ID",
@@ -52,7 +55,7 @@ const route = createRoute({
   description: "Update issued shares by share ID",
   tags: ["Shares"],
   request: {
-    params: ParamsSchema,
+    params: RequestParamsSchema,
     body: {
       content: {
         "application/json": {
@@ -76,38 +79,35 @@ const route = createRoute({
 
 const getOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
-    const { company, user, member } = await withCompanyAuth(c);
-
-    const { shareId: id } = c.req.param();
-
+    const { company, user } = await withCompanyAuth(c);
+    const { shareId } = c.req.param();
     const body = await c.req.json();
-    const requestIP =
-      c.req.header("x-forwarded-for") ||
-      c.req.header("remoteAddr") ||
-      "Unknown IP";
-    const userAgent = c.req.header("User-Agent") || "";
 
-    const { success, message } = await updateShare({
-      ...body,
+    const payload = {
+      shareId,
       companyId: company.id,
-      memberId: member.id,
-      requestIP,
-      userAgent,
-      userId: user.id,
-      userName: user.name,
-      shareId: id,
-    });
+      requestIp: getIp(c.req),
+      userAgent: getHonoUserAgent(c.req),
+      data: body as UpdateShareSchemaType,
+      user: {
+        id: user.id,
+        name: user.name as string,
+      },
+    };
+
+    const { success, message, data } = await updateShare(payload);
 
     if (!success) {
       throw new ApiError({
-        code: "BAD_REQUEST",
+        code: "NOT_FOUND",
         message,
       });
     }
 
     return c.json(
       {
-        data: "Successfully Updated the Share",
+        message,
+        data,
       },
       200,
     );

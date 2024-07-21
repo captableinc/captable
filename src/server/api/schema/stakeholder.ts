@@ -80,12 +80,23 @@ export const StakeholderSchema = z.object({
 });
 
 export const AddStakeholderSchema = z.array(StakeholderSchema);
-
 export const UpdateStakeholderSchema = StakeholderSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
-});
+})
+  .partial()
+  .refine(
+    (data) => {
+      return Object.values(data).some((value) => value !== undefined);
+    },
+    {
+      message: "At least one field must be provided to update.",
+    },
+  )
+  .openapi({
+    description: "Update a stakeholder by ID",
+  });
 
 export type TStakeholderSchema = z.infer<typeof StakeholderSchema>;
 export type TAddStakeholderSchema = z.infer<typeof AddStakeholderSchema>;

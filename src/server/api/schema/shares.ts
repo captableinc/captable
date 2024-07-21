@@ -20,7 +20,7 @@ const SecuritiesStatusArr = Object.values(SecuritiesStatusEnum) as [
 
 export const ShareSchema = z
   .object({
-    id: z.string().cuid().openapi({
+    id: z.string().cuid().optional().openapi({
       description: "Share ID",
       example: "cly13ipa40000i7ng42mv4x7b",
     }),
@@ -30,39 +30,39 @@ export const ShareSchema = z
       example: "DRAFT",
     }),
 
-    certificateId: z.string().cuid().openapi({
+    certificateId: z.string().optional().openapi({
       description: "Certificate ID",
-      example: "cly13ipa40000i7ng42mv4x7b",
+      example: "123",
     }),
 
     quantity: z.number().openapi({
       description: "Quantity of Shares",
-      example: 234,
+      example: 5000,
     }),
 
     pricePerShare: z.number().nullable().openapi({
       description: "Price Per Share",
-      example: 23.4,
+      example: 1.25,
     }),
 
     capitalContribution: z.number().nullable().openapi({
       description: "Total amount of money contributed",
-      example: 25.4,
+      example: 250000,
     }),
 
     ipContribution: z.number().nullable().openapi({
       description: "Value of the intellectual property contributed",
-      example: 43.4,
+      example: 0,
     }),
 
     debtCancelled: z.number().nullable().openapi({
       description: "Amount of debt cancelled",
-      example: 54.54,
+      example: 0,
     }),
 
     otherContributions: z.number().nullable().openapi({
       description: "Other contributions",
-      example: 45.54,
+      example: 0,
     }),
 
     vestingSchedule: z.enum(VestingScheduleArr).openapi({
@@ -126,8 +126,6 @@ export const ShareSchema = z
   .openapi({
     description: "Get a Single Share by the ID",
   });
-
-export type TShareSchema = z.infer<typeof ShareSchema>;
 
 export const AddShareSchema = z
   .object({
@@ -230,7 +228,24 @@ export const AddShareSchema = z
     description: "Create a Share",
   });
 
-export type TAddShareSchema = z.infer<typeof AddShareSchema>;
+export const UpdateShareSchema = ShareSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+  .partial()
+  .refine(
+    (data) => {
+      return Object.values(data).some((value) => value !== undefined);
+    },
+    {
+      message: "At least one field must be provided to update.",
+    },
+  )
+  .openapi({
+    description: "Update a share by ID",
+  });
 
-export const UpdateShareSchema = AddShareSchema.partial();
-export type TUpdateShareSchema = z.infer<typeof UpdateShareSchema>;
+export type ShareSchemaType = z.infer<typeof ShareSchema>;
+export type AddShareSchemaType = z.infer<typeof AddShareSchema>;
+export type UpdateShareSchemaType = z.infer<typeof UpdateShareSchema>;

@@ -1,72 +1,64 @@
 import { ApiError } from "@/server/api/error";
+import type { UpdateShareSchemaType } from "@/server/api/schema/shares";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
-import type { AddShareType } from "./add-share";
 
-interface UpdateShareType extends AddShareType {
+export type UpdateSharePayloadType = {
   shareId: string;
-}
+  companyId: string;
+  requestIp: string;
+  userAgent: string;
+  user: {
+    id: string;
+    name: string;
+  };
+  data: UpdateShareSchemaType;
+};
 
-export const updateShare = async (input: UpdateShareType) => {
+export const updateShare = async (payload: UpdateSharePayloadType) => {
+  const { shareId, companyId, requestIp, userAgent, user, data } = payload;
+
   try {
     const existingShare = await db.share.findUnique({
-      where: {
-        id: input.shareId,
-      },
+      where: { id: shareId },
     });
 
     if (!existingShare) {
       return {
         success: false,
-        message: "Enter Valid Share ID",
+        message: `Share with ID ${shareId} not be found`,
       };
     }
 
-    await db.$transaction(async (tx) => {
-      const data = {
-        companyId: input.companyId,
-        stakeholderId: input.stakeholderId,
-        shareClassId: input.shareClassId,
-        status: input.status,
-        certificateId: input.certificateId,
-        quantity: input.quantity,
-        pricePerShare: input.pricePerShare,
-        capitalContribution: input.capitalContribution,
-        ipContribution: input.ipContribution,
-        debtCancelled: input.debtCancelled,
-        otherContributions: input.otherContributions,
-        vestingSchedule: input.vestingSchedule,
-        companyLegends: input.companyLegends,
-        issueDate: new Date(input.issueDate),
-        rule144Date: new Date(input.rule144Date),
-        vestingStartDate: new Date(input.vestingStartDate),
-        boardApprovalDate: new Date(input.boardApprovalDate),
-      };
-
+    console.log({ data });
+    const share = await db.$transaction(async (tx) => {
       const share = await tx.share.update({
-        where: { id: input.shareId },
+        where: { id: shareId },
         data,
       });
 
       await Audit.create(
         {
           action: "share.updated",
-          companyId: input.companyId,
-          actor: { type: "user", id: input.user.id },
+          companyId: companyId,
+          actor: { type: "user", id: user.id },
           context: {
-            userAgent: input.userAgent,
-            requestIp: input.requestIP,
+            userAgent: userAgent,
+            requestIp: requestIp,
           },
           target: [{ type: "share", id: share.id }],
-          summary: `${input.user.name} updated share for stakeholder ${input.stakeholderId}`,
+          summary: `${user.name} updated share the share ID ${shareId}`,
         },
         tx,
       );
+
+      return share;
     });
 
     return {
       success: true,
-      message: "🎉 Successfully Updated the share",
+      message: "🎉 Successfully updated share.",
+      data: share,
     };
   } catch (error) {
     console.error("updateShare", error);

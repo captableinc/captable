@@ -5,37 +5,7 @@ import { ShareSchema } from "@/server/api/schema/shares";
 import { deleteShare } from "@/server/services/shares/delete-share";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
-
-const ParamsSchema = z
-  .object({
-    id: z
-      .string()
-      .cuid()
-      .openapi({
-        description: "Company ID",
-        param: {
-          name: "id",
-          in: "path",
-        },
-
-        example: "clxwbok580000i7nge8nm1ry0",
-      }),
-    shareId: z
-      .string()
-      .cuid()
-      .openapi({
-        description: "Share ID",
-        param: {
-          name: "shareId",
-          in: "path",
-        },
-
-        example: "clyd3i9sw000008ij619eabva",
-      }),
-  })
-  .openapi({
-    description: "Delete a Share by ID",
-  });
+import { RequestParamsSchema } from "./update";
 
 const ResponseSchema = z
   .object({
@@ -53,7 +23,7 @@ const route = createRoute({
   description: "Delete a Share by ID",
   tags: ["Shares"],
   request: {
-    params: ParamsSchema,
+    params: RequestParamsSchema,
   },
   responses: {
     200: {

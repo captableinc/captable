@@ -1,7 +1,7 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { ShareSchema, type TShareSchema } from "@/server/api/schema/shares";
+import { ShareSchema, type ShareSchemaType } from "@/server/api/schema/shares";
 import { db } from "@/server/db";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
@@ -75,7 +75,7 @@ const getOne = (app: PublicAPI) => {
         id,
         companyId: company.id,
       },
-    })) as unknown as TShareSchema;
+    })) as unknown as ShareSchemaType;
 
     if (!share) {
       throw new ApiError({

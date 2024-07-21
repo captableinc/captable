@@ -1,8 +1,10 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { UpdateShareSchema } from "@/server/api/schema/shares";
-import type { UpdateShareSchemaType } from "@/server/api/schema/shares";
+import {
+  UpdateShareSchema,
+  type UpdateShareSchemaType,
+} from "@/server/api/schema/shares";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { updateShare } from "@/server/services/shares/update-share";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -84,7 +86,7 @@ const getOne = (app: PublicAPI) => {
     const body = await c.req.json();
 
     const payload = {
-      shareId,
+      shareId: shareId as string,
       companyId: company.id,
       requestIp: getIp(c.req),
       userAgent: getHonoUserAgent(c.req),
@@ -106,8 +108,11 @@ const getOne = (app: PublicAPI) => {
 
     return c.json(
       {
-        message,
-        data,
+        message: message,
+        data: {
+          ...data,
+          issueDate: data?.issueDate.toISOString(), // Convert Date to string
+        } as UpdateShareSchemaType,
       },
       200,
     );

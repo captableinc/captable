@@ -22,7 +22,7 @@ export const ShareSchema = z
   .object({
     id: z.string().cuid().optional().openapi({
       description: "Share ID",
-      example: "cly13ipa40000i7ng42mv4x7b",
+      example: "clyvb2s8d0000f1ngd72y2cxw",
     }),
 
     status: z.enum(SecuritiesStatusArr).openapi({
@@ -80,22 +80,22 @@ export const ShareSchema = z
 
     issueDate: z.string().datetime().openapi({
       description: "Issued Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     rule144Date: z.string().datetime().nullable().openapi({
       description: "Rule 144 Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     vestingStartDate: z.string().datetime().nullable().openapi({
       description: "Vesting Start Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     boardApprovalDate: z.string().datetime().optional().openapi({
       description: "Board Approval Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     stakeholderId: z.string().cuid().openapi({
@@ -105,22 +105,22 @@ export const ShareSchema = z
 
     companyId: z.string().cuid().openapi({
       description: "Company ID",
-      example: "cly13ipa40000i7ng42mv4x7b",
+      example: "clyvb28ak0000f1ngcn2i0p2m",
     }),
 
     shareClassId: z.string().cuid().openapi({
       description: "ShareClass ID",
-      example: "cly13ipa40000i7ng42mv4x7b",
+      example: "clyvb2d8v0000f1ng1stpa38s",
     }),
 
     createdAt: z.string().datetime().optional().openapi({
       description: "Share Created at",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     updatedAt: z.string().datetime().optional().openapi({
       description: "Share Updated at",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
   })
   .openapi({
@@ -184,22 +184,22 @@ export const AddShareSchema = z
 
     issueDate: z.string().datetime().openapi({
       description: "Issued Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     rule144Date: z.string().datetime().openapi({
       description: "Rule 144 Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     vestingStartDate: z.string().datetime().openapi({
       description: "Vesting Start Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     boardApprovalDate: z.string().datetime().openapi({
       description: "Board Approval Date",
-      example: "1970-01-01T00:00:00.000Z",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     stakeholderId: z.string().cuid().openapi({

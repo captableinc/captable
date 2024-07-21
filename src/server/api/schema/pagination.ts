@@ -1,11 +1,19 @@
 import { z } from "zod";
 
+export const DEFAULT_PAGINATION_LIMIT = 50;
+
 export const PaginationQuerySchema = z.object({
   limit: z
     .preprocess(
       (val) =>
         val === undefined ? undefined : Number.parseInt(val as string, 10),
-      z.number().int().positive().min(1).max(50).default(10),
+      z
+        .number()
+        .int()
+        .positive()
+        .min(1)
+        .max(50)
+        .default(DEFAULT_PAGINATION_LIMIT),
     )
     .openapi({
       description: "Number of items to take",
@@ -13,10 +21,10 @@ export const PaginationQuerySchema = z.object({
         name: "limit",
         in: "query",
       },
-      example: 10,
-      default: 10,
+      example: 25,
+      default: DEFAULT_PAGINATION_LIMIT,
       minimum: 1,
-      maximum: 50,
+      maximum: 250,
     }),
 
   cursor: z

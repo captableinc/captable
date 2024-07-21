@@ -51,7 +51,6 @@ export function makeFindManyPaginated(model: ProxyFunctions) {
       return {
         data: docs,
         count: docs.length,
-        // Send totalCount only for first request, let client side manages it for subsequent requests.
         total: totalCount,
         cursor: nextCursor,
       };

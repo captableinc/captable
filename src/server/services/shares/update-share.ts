@@ -2,6 +2,7 @@ import { ApiError } from "@/server/api/error";
 import type { UpdateShareSchemaType } from "@/server/api/schema/shares";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
+import type { ShareLegendsEnum } from "@prisma/client";
 
 export type UpdateSharePayloadType = {
   shareId: string;
@@ -30,11 +31,16 @@ export const updateShare = async (payload: UpdateSharePayloadType) => {
       };
     }
 
-    console.log({ data });
+    const shareData = {
+      ...existingShare,
+      ...data,
+    };
+
     const share = await db.$transaction(async (tx) => {
       const share = await tx.share.update({
         where: { id: shareId },
-        data,
+        // @ts-ignore
+        data: shareData,
       });
 
       await Audit.create(

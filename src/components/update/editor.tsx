@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
 import { api } from "@/trpc/react";
-import type { Block } from "@blocknote/core";
+import type { Block, PartialBlock } from "@blocknote/core";
 import type { Update } from "@prisma/client";
 import { RiArrowDownSLine } from "@remixicon/react";
 import Link from "next/link";
@@ -166,14 +166,12 @@ const UpdatesEditor = ({
   ];
 
   const [title, setTitle] = useState<string>(update?.title ?? "");
-  const [content, setContent] = useState<Block[]>(
-    (update?.content as Block[]) ?? defaultContent,
-  );
+  const [content, setContent] = useState<any>(update?.content as Block[]) ?? defaultContent;
   const [html, setHtml] = useState<string>(update?.html ?? "");
   const [loading, setLoading] = useState<boolean>(false);
 
   const editor = useCreateBlockNote({
-    initialContent: content,
+    initialContent: content
   });
 
   const draftMutation = api.update.save.useMutation({

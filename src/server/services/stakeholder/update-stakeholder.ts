@@ -2,7 +2,7 @@ import type { TUpdateStakeholderSchema } from "@/server/api/schema/stakeholder";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
 
-export type UpdateStakeholderOptions = {
+export type UpdateStakeholderPayloadType = {
   stakeholderId: string;
   companyId: string;
   requestIp: string;
@@ -14,7 +14,9 @@ export type UpdateStakeholderOptions = {
   data: TUpdateStakeholderSchema;
 };
 
-export const updateStakeholder = async (payload: UpdateStakeholderOptions) => {
+export const updateStakeholder = async (
+  payload: UpdateStakeholderPayloadType,
+) => {
   const { requestIp, userAgent, user } = payload;
   const data = payload.data;
 

@@ -10,14 +10,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Input } from "@/components/ui/input";
 import {
   StepperModalFooter,
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
-import { VestingSchedule } from "@/lib/vesting";
-import { VestingScheduleEnum } from "@/prisma/enums";
 import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +32,8 @@ import { EmptySelect } from "../../shared/EmptySelect";
 
 const formSchema = z.object({
   equityPlanId: z.string(),
-  vestingSchedule: z.nativeEnum(VestingScheduleEnum),
+  cliffYears: z.coerce.number().min(0),
+  vestingYears: z.coerce.number().min(0),
   exercisePrice: z.coerce.number(),
   stakeholderId: z.string(),
 });
@@ -54,10 +59,10 @@ export const VestingDetails = (props: VestingDetailsProps) => {
 
   const disabled = !stakeholders?.length && !equityPlans?.length;
 
-  const vestingSchedileOpts = Object.keys(VestingSchedule).map((vKey) => ({
-    value: vKey,
-    label: VestingSchedule[vKey] || "",
-  }));
+  // const vestingSchedileOpts = Object.keys(VestingSchedule).map((vKey) => ({
+  //   value: vKey,
+  //   label: VestingSchedule[vKey] || "",
+  // }));
 
   const equityPlansOpts = equityPlans?.map(({ id, name }) => ({
     value: id,
@@ -76,22 +81,89 @@ export const VestingDetails = (props: VestingDetailsProps) => {
         className="flex flex-col gap-y-4"
       >
         <div className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="vestingSchedule"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Vesting schedule</FormLabel>
-                <div>
-                  <LinearCombobox
-                    options={vestingSchedileOpts}
-                    onValueChange={(option) => field.onChange(option.value)}
-                  />
-                </div>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="cliffYears"
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <FormLabel>Cliff Years</FormLabel>
+                            </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Vesting starts after</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <div>
+                        <FormControl>
+                          <NumericFormat
+                            thousandSeparator
+                            allowedDecimalSeparators={["%"]}
+                            decimalScale={0}
+                            {...rest}
+                            customInput={Input}
+                            onValueChange={(values) => {
+                              const { floatValue } = values;
+                              onChange(floatValue);
+                            }}
+                          />
+                        </FormControl>
+                      </div>
+
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  )
+                }}
+              />
+            </div>
+
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="vestingYears"
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                          <FormLabel>Vesting Years</FormLabel>
+                            </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Vesting starts after</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <div>
+                        <FormControl>
+                          <NumericFormat
+                            thousandSeparator
+                            allowedDecimalSeparators={["%"]}
+                            decimalScale={0}
+                            {...rest}
+                            customInput={Input}
+                            onValueChange={(values) => {
+                              const { floatValue } = values;
+                              onChange(floatValue);
+                            }}
+                          />
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  )
+                }}
+              />
+            </div>
+          </div>
 
           {equityPlans?.length ? (
             <FormField

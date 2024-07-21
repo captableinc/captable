@@ -669,16 +669,6 @@ enum SecuritiesStatusEnum {
   PENDING
 }
 
-enum VestingScheduleEnum {
-  VESTING_0_0_0 // Immediate vesting
-  VESTING_0_0_1 // 1 year cliff with no vesting
-  VESTING_4_1_0 // 4 years vesting every month with no cliff
-  VESTING_4_1_1 // 4 years vesting every month with 1 year cliff
-  VESTING_4_3_1 // 4 years vesting every 3 months with 1 year cliff
-  VESTING_4_6_1 // 4 years vesting every 6 months with 1 year cliff
-  VESTING_4_12_1 // 4 years vesting every year with 1 year cliff
-}
-
 enum ShareLegendsEnum {
   US_SECURITIES_ACT // US Securities Act of 1933
   SALE_AND_ROFR // Sale and Right of first refusal
@@ -697,9 +687,8 @@ model Share {
   debtCancelled       Float? // Amount of debt cancelled
   otherContributions  Float? // Other contributions
 
-  cliffYears      Int                 @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
-  vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
-  vestingSchedule VestingScheduleEnum
+  cliffYears   Int @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
+  vestingYears Int @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
 
   companyLegends ShareLegendsEnum[]
 
@@ -748,11 +737,10 @@ model Option {
   quantity      Int
   exercisePrice Float
 
-  type            OptionTypeEnum
-  status          OptionStatusEnum    @default(DRAFT)
-  cliffYears      Int                 @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
-  vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
-  vestingSchedule VestingScheduleEnum
+  type         OptionTypeEnum
+  status       OptionStatusEnum @default(DRAFT)
+  cliffYears   Int              @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
+  vestingYears Int              @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
 
   issueDate         DateTime
   expirationDate    DateTime

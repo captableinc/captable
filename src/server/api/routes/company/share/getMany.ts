@@ -2,6 +2,7 @@ import { withCompanyAuth } from "@/server/api/auth";
 import { ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
 import {
+  DEFAULT_PAGINATION_LIMIT,
   PaginationQuerySchema,
   PaginationResponseSchema,
 } from "@/server/api/schema/pagination";
@@ -65,7 +66,7 @@ const getMany = (app: PublicAPI) => {
 
     const { data, meta } = await getPaginatedShares({
       companyId: company.id,
-      take: Number(take),
+      take: Number(take || DEFAULT_PAGINATION_LIMIT),
       cursor,
       total: Number(total),
     });

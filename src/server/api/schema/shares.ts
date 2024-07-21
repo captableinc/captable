@@ -2,14 +2,9 @@ import { z } from "@hono/zod-openapi";
 import {
   SecuritiesStatusEnum,
   ShareLegendsEnum,
-  VestingScheduleEnum,
 } from "@prisma/client";
 import { Share } from "next/font/google";
 
-const VestingScheduleArr = Object.values(VestingScheduleEnum) as [
-  string,
-  ...string[],
-];
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
   string,
   ...string[],
@@ -66,9 +61,14 @@ export const ShareSchema = z
       example: 0,
     }),
 
-    vestingSchedule: z.enum(VestingScheduleArr).openapi({
-      description: "Vesting Schedule",
-      example: "VESTING_0_0_0",
+    cliffYears: z.number().nullish().openapi({
+      description: "Cliff Years",
+      example: 1,
+    }),
+
+    vestingYears: z.number().nullish().openapi({
+      description: "Vesting Years",
+      example: 4,
     }),
 
     companyLegends: z

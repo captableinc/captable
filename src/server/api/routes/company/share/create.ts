@@ -90,7 +90,8 @@ const create = (app: PublicAPI) => {
       ipContribution: data.ipContribution ?? 0,
       debtCancelled: data.debtCancelled ?? 0,
       otherContributions: data.otherContributions ?? 0,
-      vestingSchedule: data.vestingSchedule ?? "",
+      cliffYears: data.cliffYears ?? "",
+      vestingYears: data.vestingYears ?? "",
       companyLegends: data.companyLegends ?? "", // Add missing fields
       issueDate: data.issueDate ?? new Date().toISOString(), // Add missing fields
       rule144Date: data.rule144Date ?? new Date().toISOString(), // Add missing fields

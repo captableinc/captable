@@ -21,6 +21,10 @@ export type HonoEnv = {
     session: {
       membership: Awaited<ReturnType<typeof checkMembership>>;
     };
+    info: {
+      requestIpAddress: string;
+      userAgent: string;
+    };
   };
 };
 

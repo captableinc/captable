@@ -22,7 +22,7 @@ export type HonoEnv = {
       membership: Awaited<ReturnType<typeof checkMembership>>;
     };
     info: {
-      requestIpAddress: string;
+      requestIp: string;
       userAgent: string;
     };
   };

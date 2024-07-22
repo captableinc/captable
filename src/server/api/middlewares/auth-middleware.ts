@@ -26,8 +26,9 @@ function extractBearerToken(authHeader: string | undefined): string | null {
 
 async function authenticateWithBearerToken(bearerToken: string, c: Context) {
   const apiKey = await findApiKey(bearerToken, c);
+  const isKeyValid = isValidApiKey(bearerToken, apiKey?.hashedKey);
 
-  if (!apiKey || !isValidApiKey(bearerToken, apiKey.hashedKey)) {
+  if (!isKeyValid || !apiKey) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "Invalid API token",
@@ -35,13 +36,7 @@ async function authenticateWithBearerToken(bearerToken: string, c: Context) {
   }
 
   c.set("session", {
-    membership: {
-      companyId: apiKey.member.companyId,
-      customRoleId: apiKey.member.customRoleId,
-      memberId: apiKey.member.id,
-      role: apiKey.member.role,
-      userId: apiKey.member.userId,
-    },
+    membership: apiKey.membership,
   });
 }
 
@@ -111,12 +106,12 @@ async function fetchSessionFromAuthUrl(
   return data as Session;
 }
 
-function findApiKey(bearerToken: string, c: Context) {
+async function findApiKey(bearerToken: string, c: Context) {
   const { db } = c.get("services");
   const key = new ApiKey();
   const hashedKey = key.generateHash(bearerToken);
 
-  return db.apiKey.findFirst({
+  const data = await db.apiKey.findFirst({
     where: { hashedKey },
     select: {
       hashedKey: true,
@@ -127,10 +122,26 @@ function findApiKey(bearerToken: string, c: Context) {
           role: true,
           customRoleId: true,
           userId: true,
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
         },
       },
     },
   });
+
+  if (data) {
+    const {
+      hashedKey,
+      member: { id: memberId, ...rest },
+    } = data;
+    return { hashedKey, membership: { memberId, ...rest } };
+  }
+
+  return data;
 }
 
 function isValidApiKey(

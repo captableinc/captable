@@ -4,6 +4,7 @@ import type { TPrisma } from "@/server/db";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { Context as GenericContext, MiddlewareHandler } from "hono";
+import type { Audit } from "../audit";
 import type { checkMembership } from "../auth";
 import { SECURITY_SCHEME_NAME } from "./const";
 
@@ -15,6 +16,7 @@ export type HonoEnv = {
   Variables: {
     services: {
       db: TPrisma;
+      audit: typeof Audit;
     };
     session: {
       membership: Awaited<ReturnType<typeof checkMembership>>;

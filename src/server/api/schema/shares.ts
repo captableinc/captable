@@ -106,7 +106,7 @@ export const ShareSchema = z
       example: "cly13ipa40000i7ng42mv4x7b",
     }),
 
-    companyId: z.string().cuid().openapi({
+    companyId: z.string().cuid().optional().openapi({
       description: "Company ID",
       example: "clyvb28ak0000f1ngcn2i0p2m",
     }),
@@ -135,6 +135,7 @@ export const CreateShareSchema = ShareSchema.omit({
   createdAt: true,
   updatedAt: true,
   companyId: true,
+  status: true,
 }).openapi({
   description: "Issue shares to a stakeholder in a company.",
 });

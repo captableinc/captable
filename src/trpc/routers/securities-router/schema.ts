@@ -2,7 +2,6 @@ import {
   OptionStatusEnum,
   OptionTypeEnum,
   ShareLegendsEnum,
-  VestingScheduleEnum,
 } from "@/prisma/enums";
 import { SecuritiesStatusEnum } from "@prisma/client";
 import { z } from "zod";

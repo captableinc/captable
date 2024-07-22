@@ -22,10 +22,10 @@ importers:
         version: 0.12.4(@tiptap/pm@2.4.0)(@types/react@18.3.2)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
       '@hono/swagger-ui':
         specifier: ^0.3.0
-        version: 0.3.0(hono@4.4.8)
+        version: 0.3.0(hono@4.5.1)
       '@hono/zod-openapi':
         specifier: ^0.14.8
-        version: 0.14.8(hono@4.4.8)(zod@3.23.8)
+        version: 0.14.8(hono@4.5.1)(zod@3.23.8)
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.52.1(react@18.3.1))
@@ -165,8 +165,8 @@ importers:
         specifier: ^1.11.11
         version: 1.11.11
       hono:
-        specifier: ^4.4.8
-        version: 4.4.8
+        specifier: ^4.5.1
+        version: 4.5.1
       html-to-image:
         specifier: ^1.11.11
         version: 1.11.11
@@ -5596,8 +5596,8 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.4.8:
-    resolution: {integrity: sha512-eewnSgTzdWgFVn97kPV24h+9UVNUQ+9mj6IRxr7dBseTaTBSHtFo/T/vRNcqJkQFysVoXyecflr3Xe/fdvzEpQ==}
+  hono@4.5.1:
+    resolution: {integrity: sha512-6q8AugoWG5wlrjdGG8OFFiqEsPlPGjODjUik48sEJeko4Tae1UsLS2vUiYHLEJx1gJvOZa4BWkQC+urwDmkEvQ==}
     engines: {node: '>=16.0.0'}
 
   hookable@5.5.3:
@@ -10020,20 +10020,20 @@ snapshots:
 
   '@hexagon/base64@1.1.28': {}
 
-  '@hono/swagger-ui@0.3.0(hono@4.4.8)':
+  '@hono/swagger-ui@0.3.0(hono@4.5.1)':
     dependencies:
-      hono: 4.4.8
+      hono: 4.5.1
 
-  '@hono/zod-openapi@0.14.8(hono@4.4.8)(zod@3.23.8)':
+  '@hono/zod-openapi@0.14.8(hono@4.5.1)(zod@3.23.8)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 7.1.1(zod@3.23.8)
-      '@hono/zod-validator': 0.2.2(hono@4.4.8)(zod@3.23.8)
-      hono: 4.4.8
+      '@hono/zod-validator': 0.2.2(hono@4.5.1)(zod@3.23.8)
+      hono: 4.5.1
       zod: 3.23.8
 
-  '@hono/zod-validator@0.2.2(hono@4.4.8)(zod@3.23.8)':
+  '@hono/zod-validator@0.2.2(hono@4.5.1)(zod@3.23.8)':
     dependencies:
-      hono: 4.4.8
+      hono: 4.5.1
       zod: 3.23.8
 
   '@hookform/resolvers@3.9.0(react-hook-form@7.52.1(react@18.3.1))':
@@ -15500,7 +15500,7 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hono@4.4.8: {}
+  hono@4.5.1: {}
 
   hookable@5.5.3: {}
 

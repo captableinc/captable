@@ -6,6 +6,7 @@ import {
 import { encode } from "@/lib/jwt";
 import { UpdateStatusEnum } from "@/prisma/enums";
 import { ShareRecipientSchema } from "@/schema/contacts";
+import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { z } from "zod";
@@ -19,9 +20,9 @@ export const shareUpdateProcedure = withAuth
     }),
   )
   .mutation(async ({ ctx, input }) => {
-    const { session, db } = ctx;
+    const { session, db, userAgent, requestIp } = ctx;
     const { updateId, others, selectedContacts } = input;
-    const { name: senderName, email: senderEmail } = session.user;
+    const { name: senderName, email: senderEmail, id } = session.user;
 
     const { companyId } = await checkMembership({ session, tx: db });
 
@@ -116,6 +117,21 @@ export const shareUpdateProcedure = withAuth
       });
     }
 
+    await Audit.create(
+      {
+        action: "update.shared",
+        companyId: companyId,
+        actor: { type: "user", id },
+        context: {
+          userAgent,
+          requestIp,
+        },
+        target: [{ type: "update", id: update.id }],
+        summary: `${senderName} shared the Update ${update.title} for the company with id ${companyId}`,
+      },
+      db,
+    );
+
     return {
       success: true,
       message: "Update successfully shared!",
@@ -130,9 +146,10 @@ export const unshareUpdateProcedure = withAuth
     }),
   )
   .mutation(async ({ ctx, input }) => {
-    const { session, db } = ctx;
+    const { session, db, userAgent, requestIp } = ctx;
     const { updateId, recipientId } = input;
     const companyId = session.user.companyId;
+    const { user } = session;
 
     const update = await db.update.findUniqueOrThrow({
       where: {
@@ -151,6 +168,21 @@ export const unshareUpdateProcedure = withAuth
         updateId,
       },
     });
+
+    await Audit.create(
+      {
+        action: "update.unshared",
+        companyId: companyId,
+        actor: { type: "user", id: user.id },
+        context: {
+          userAgent,
+          requestIp,
+        },
+        target: [{ type: "update", id: update.id }],
+        summary: `${user.name} shared the Update ${update.title} for the company with id ${companyId}`,
+      },
+      db,
+    );
 
     return {
       success: true,

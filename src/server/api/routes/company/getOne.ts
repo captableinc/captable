@@ -1,4 +1,4 @@
-import { ApiError, ErrorResponses } from "@/server/api/error";
+import { ApiError } from "@/server/api/error";
 import { ApiCompanySchema } from "@/server/api/schema/company";
 import { z } from "@hono/zod-openapi";
 

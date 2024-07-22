@@ -4,6 +4,7 @@ import {
   type ExtendedEsignPayloadType,
 } from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
+import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
@@ -44,7 +45,7 @@ export const addFieldProcedure = withAuth
   .mutation(async ({ ctx, input }) => {
     try {
       const user = ctx.session.user;
-
+      const { userAgent, requestIp } = ctx;
       const mails: ExtendedEsignPayloadType[] = [];
 
       if (input.status === "COMPLETE" && (!user.email || !user.name)) {
@@ -120,6 +121,21 @@ export const addFieldProcedure = withAuth
         await tx.templateField.createMany({
           data: fieldsList,
         });
+
+        await Audit.create(
+          {
+            action: "template.updated",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "template", id: template.id }],
+            summary: `${user.name} added templateField for template ID ${template.id}`,
+          },
+          tx,
+        );
 
         await tx.template.update({
           where: {

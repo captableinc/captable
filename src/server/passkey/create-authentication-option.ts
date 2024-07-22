@@ -1,8 +1,10 @@
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import { db } from "@/server/db";
-import { type Passkey } from "@prisma/client";
+import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
+import type { Passkey } from "@prisma/client";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import type { AuthenticatorTransportFuture } from "@simplewebauthn/types";
+import { Audit } from "../audit";
 
 type CreatePasskeyAuthenticationOptions = {
   userId: string;
@@ -12,16 +14,20 @@ type CreatePasskeyAuthenticationOptions = {
    * If not set, we allow the browser client to handle choosing.
    */
   preferredPasskeyId?: string;
+  auditMetaData: PasskeyAudit;
 };
 
 export const createPasskeyAuthenticationOptions = async ({
   userId,
   preferredPasskeyId,
+  auditMetaData,
 }: CreatePasskeyAuthenticationOptions) => {
   const { rpId, timeout } = getAuthenticatorOptions();
 
-  let preferredPasskey: Pick<Passkey, "transports" | "credentialId"> | null =
-    null;
+  let preferredPasskey: Pick<
+    Passkey,
+    "transports" | "credentialId" | "name"
+  > | null = null;
 
   if (preferredPasskeyId) {
     preferredPasskey = await db.passkey.findFirst({
@@ -32,6 +38,7 @@ export const createPasskeyAuthenticationOptions = async ({
       select: {
         credentialId: true,
         transports: true,
+        name: true,
       },
     });
 
@@ -55,6 +62,24 @@ export const createPasskeyAuthenticationOptions = async ({
         ]
       : undefined,
   });
+
+  const { requestIp, userAgent, companyId, userName } = auditMetaData;
+  const passKeyName = preferredPasskey?.name;
+
+  await Audit.create(
+    {
+      action: "passkey.updated",
+      companyId,
+      actor: { type: "user", id: userId },
+      context: {
+        userAgent,
+        requestIp,
+      },
+      target: [{ type: "passkey", id: preferredPasskeyId }],
+      summary: `${userName} created auth-options for Passkey with id ${passKeyName}`,
+    },
+    db,
+  );
 
   const { secondaryId } = await db.verificationToken.create({
     data: {

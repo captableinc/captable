@@ -1,5 +1,6 @@
-import { generatePublicId } from "@/common/id";
 import { ApiKey } from "@/lib/api-key";
+import { Audit } from "@/server/audit";
+
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
@@ -42,11 +43,15 @@ export const apiKeyRouter = createTRPCRouter({
       const {
         db,
         membership: { companyId, memberId },
+        userAgent,
+        requestIp,
+        session,
       } = ctx;
 
       const apiKey = new ApiKey();
       const { key: generatedKey, partialKey } = ApiKey.generateKey();
       const hashedKey = apiKey.generateHash(generatedKey);
+      const user = session.user;
 
       const key = await db.apiKey.create({
         data: {
@@ -56,6 +61,21 @@ export const apiKeyRouter = createTRPCRouter({
           partialKey,
         },
       });
+
+      await Audit.create(
+        {
+          action: "apiKey.created",
+          companyId,
+          actor: { type: "user", id: user.id },
+          context: {
+            userAgent,
+            requestIp,
+          },
+          target: [{ type: "apiKey", id: key.id }],
+          summary: `${user.name} created the apiKey ${key.name}`,
+        },
+        db,
+      );
 
       return {
         token: generatedKey,
@@ -71,16 +91,34 @@ export const apiKeyRouter = createTRPCRouter({
       const {
         db,
         membership: { memberId, companyId },
+        session,
+        requestIp,
+        userAgent,
       } = ctx;
       const { keyId } = input;
+      const { user } = session;
       try {
-        await db.apiKey.delete({
+        const key = await db.apiKey.delete({
           where: {
             id: keyId,
             membershipId: memberId,
             companyId,
           },
         });
+        await Audit.create(
+          {
+            action: "apiKey.deleted",
+            companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "apiKey", id: key.id }],
+            summary: `${user.name} deleted the apiKey ${key.name}`,
+          },
+          db,
+        );
 
         return {
           success: true,

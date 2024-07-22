@@ -1,6 +1,7 @@
 import type { TActions } from "@/lib/rbac/actions";
 import type { TPermission } from "@/lib/rbac/schema";
 import type { TSubjects } from "@/lib/rbac/subjects";
+import { Audit } from "@/server/audit";
 import { withAccessControl } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateRoleMutationSchema,
@@ -14,19 +15,38 @@ export const createRolesProcedure = withAccessControl
       roles: { allow: ["create"] },
     },
   })
-  .mutation(async ({ input, ctx: { db, membership } }) => {
-    const permissions = extractPermission(input.permissions);
+  .mutation(
+    async ({
+      input,
+      ctx: { db, membership, requestIp, userAgent, session },
+    }) => {
+      const { user } = session;
+      const permissions = extractPermission(input.permissions);
+      const role = await db.customRole.create({
+        data: {
+          companyId: membership.companyId,
+          name: input.name,
+          permissions,
+        },
+      });
+      await Audit.create(
+        {
+          action: "role.created",
+          companyId: user.companyId,
+          actor: { type: "user", id: user.id },
+          context: {
+            userAgent,
+            requestIp,
+          },
+          target: [{ type: "role", id: role.id }],
+          summary: `${user.name} created a role ${role.name}`,
+        },
+        db,
+      );
 
-    await db.customRole.create({
-      data: {
-        companyId: membership.companyId,
-        name: input.name,
-        permissions,
-      },
-    });
-
-    return { message: "Role successfully created." };
-  });
+      return { message: "Role successfully created." };
+    },
+  );
 
 export function extractPermission(
   permissionInput: TypeZodCreateRoleMutationSchema["permissions"],

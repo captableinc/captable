@@ -338,6 +338,12 @@ export async function checkMembership({ session, tx }: checkMembershipOptions) {
       role: true,
       customRoleId: true,
       userId: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
     },
   });
 

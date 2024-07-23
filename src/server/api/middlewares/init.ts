@@ -1,7 +1,6 @@
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
 import type { Middleware } from "../hono";
-import { getHonoUserAgent, getIp } from "../utils";
 
 export function initMiddleware(): Middleware {
   return async (c, next) => {

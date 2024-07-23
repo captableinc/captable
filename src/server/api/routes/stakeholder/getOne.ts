@@ -9,7 +9,7 @@ import { withAuthApiV1 } from "../../utils/endpoint-creator";
 const paramsSchema = z.object({
   id: z.string().openapi({
     param: {
-      name: "stakeholderId",
+      name: "id",
       in: "path",
     },
     description: "Stakeholder ID",

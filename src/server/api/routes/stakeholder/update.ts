@@ -12,7 +12,7 @@ import { withAuthApiV1 } from "../../utils/endpoint-creator";
 const paramsSchema = z.object({
   id: z.string().openapi({
     param: {
-      name: "stakeholderId",
+      name: "id",
       in: "path",
     },
     description: "Stakeholder ID",
@@ -119,7 +119,7 @@ export const update = withAuthApiV1
 
     return c.json(
       {
-        message: "Stakeholder deleted successfully",
+        message: "Stakeholder updated successfully",
         data,
       },
       200,

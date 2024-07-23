@@ -46,7 +46,7 @@ export const _delete = withAuthApiV1
     const { db, audit } = c.get("services");
     const { membership } = c.get("session");
     const { requestIp, userAgent } = c.get("info");
-    const { id } = c.req.param();
+    const { id } = c.req.valid("param");
 
     await db.$transaction(async (tx) => {
       const stakeholder = await tx.stakeholder.findUnique({

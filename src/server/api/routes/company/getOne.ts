@@ -38,7 +38,7 @@ export const getOne = withAuthApiV1
   .handler(async (c) => {
     const { db } = c.get("services");
     const { membership } = c.get("session");
-    const companyId = c.req.param("id");
+    const { id: companyId } = c.req.valid("param");
 
     const member = await db.member.findFirst({
       where: { companyId, id: membership.memberId },

@@ -43,7 +43,7 @@ export const create = withAuthApiV1
     const { membership } = c.get("session");
     const { requestIp, userAgent } = c.get("info");
 
-    const body = await c.req.json<CreateShareSchemaType>();
+    const body = c.req.valid("json");
 
     const share = await db.$transaction(async (tx) => {
       const share = await tx.share.create({

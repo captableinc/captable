@@ -5,7 +5,6 @@ import {
   ShareSchema,
   type ShareSchemaType,
   UpdateShareSchema,
-  type UpdateShareSchemaType,
 } from "../../schema/shares";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
@@ -63,9 +62,9 @@ export const update = withAuthApiV1
     const { db, audit } = c.get("services");
     const { membership } = c.get("session");
     const { requestIp, userAgent } = c.get("info");
-    const { id } = c.req.param();
+    const { id } = c.req.valid("param");
 
-    const body = await c.req.json<UpdateShareSchemaType>();
+    const body = c.req.valid("json");
 
     const updatedShare = await db.$transaction(async (tx) => {
       const share = await db.share.findUnique({

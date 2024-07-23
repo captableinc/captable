@@ -62,7 +62,7 @@ export const update = withAuthApiV1
     const { db, audit } = c.get("services");
     const { membership } = c.get("session");
     const { requestIp, userAgent } = c.get("info");
-    const { id } = c.req.param();
+    const { id } = c.req.valid("param");
 
     const body = await c.req.json<TUpdateStakeholderSchema>();
 

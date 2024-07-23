@@ -50,7 +50,7 @@ export const getOne = withAuthApiV1
   .handler(async (c) => {
     const { db } = c.get("services");
     const { membership } = c.get("session");
-    const { id } = c.req.param();
+    const { id } = c.req.valid("param");
 
     const stakeholder = await db.stakeholder.findUnique({
       where: {

@@ -1,6 +1,5 @@
 import { z } from "@hono/zod-openapi";
 import {
-  type TCreateStakeholderSchema,
   createStakeholderSchema,
   stakeholderSchema,
 } from "../../schema/stakeholder";
@@ -43,7 +42,7 @@ export const create = withAuthApiV1
     const { membership } = c.get("session");
     const { requestIp, userAgent } = c.get("info");
 
-    const body = await c.req.json<TCreateStakeholderSchema>();
+    const body = c.req.valid("json");
 
     const stakeholders = await db.$transaction(async (tx) => {
       const inputDataWithCompanyId = body.map((stakeholder) => ({

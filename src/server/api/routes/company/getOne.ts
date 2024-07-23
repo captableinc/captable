@@ -23,6 +23,9 @@ export const getOne = withAuthApiV1
   .createRoute({
     method: "get",
     path: "/v1/companies/:id",
+    tags: ["Company"],
+    summary: "Get a company by ID",
+    description: "Get a single company record by ID",
     request: { params: RequestSchema },
     responses: {
       200: {

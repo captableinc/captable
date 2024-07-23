@@ -6,6 +6,9 @@ export const getMany = withAuthApiV1
   .createRoute({
     method: "get",
     path: "/v1/companies",
+    tags: ["Company"],
+    summary: "Get list of companies",
+    description: "Get list of membership companies",
     responses: {
       200: {
         content: {

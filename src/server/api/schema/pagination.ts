@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@hono/zod-openapi";
 
 export const DEFAULT_PAGINATION_LIMIT = 50;
 

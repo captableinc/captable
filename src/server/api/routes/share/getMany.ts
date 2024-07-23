@@ -1,9 +1,7 @@
-import { getPaginatedShares } from "@/server/services/shares/get-shares";
 import { z } from "@hono/zod-openapi";
 import {
-  DEFAULT_PAGINATION_LIMIT,
-  PaginationQuerySchema,
-  PaginationResponseSchema,
+  paginationQuerySchema,
+  paginationResponseSchema,
 } from "../../schema/pagination";
 import { ShareSchema, type ShareSchemaType } from "../../schema/shares";
 
@@ -12,7 +10,7 @@ import { withAuthApiV1 } from "../../utils/endpoint-creator";
 const responseSchema = z
   .object({
     data: z.array(ShareSchema),
-    meta: PaginationResponseSchema,
+    meta: paginationResponseSchema,
   })
   .openapi({
     description: "Get Shares by Company ID",
@@ -26,7 +24,7 @@ export const getMany = withAuthApiV1
     method: "get",
     path: "/v1/shares",
     request: {
-      query: PaginationQuerySchema,
+      query: paginationQuerySchema,
     },
     responses: {
       200: {
@@ -41,15 +39,15 @@ export const getMany = withAuthApiV1
   })
   .handler(async (c) => {
     const { membership } = c.get("session");
+    const { db } = c.get("services");
+    const query = c.req.valid("query");
 
-    const { take, cursor, total } = c.req.query();
-
-    const { data, meta } = await getPaginatedShares({
-      companyId: membership.companyId,
-      take: Number(take || DEFAULT_PAGINATION_LIMIT),
-      cursor,
-      total: Number(total),
-    });
+    const [data, meta] = await db.share
+      .paginate({ where: { companyId: membership.companyId } })
+      .withCursor({
+        limit: query.limit,
+        after: query.cursor,
+      });
 
     const datas = data as unknown as ShareSchemaType[];
 

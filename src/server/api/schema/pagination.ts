@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi";
 
 export const DEFAULT_PAGINATION_LIMIT = 50;
 
-export const PaginationQuerySchema = z.object({
+export const paginationQuerySchema = z.object({
   limit: z
     .preprocess(
       (val) =>
@@ -41,21 +41,30 @@ export const PaginationQuerySchema = z.object({
     }),
 });
 
-export type TPaginationQuerySchema = z.infer<typeof PaginationQuerySchema>;
+export type TPaginationQuerySchema = z.infer<typeof paginationQuerySchema>;
 
-export const PaginationResponseSchema = z.object({
-  count: z.number().int().positive().openapi({
-    description: "Number of records returned",
-    example: 50,
+export const paginationResponseSchema = z.object({
+  hasPreviousPage: z.boolean().openapi({
+    description:
+      "Indicates if there is a previous page available in the pagination. `true` if there are more pages before the current one, `false` otherwise.",
+    example: true,
   }),
 
-  total: z.number().int().positive().nullable().openapi({
-    description: "Total number of records",
-    example: 100,
+  hasNextPage: z.boolean().openapi({
+    description:
+      "Indicates if there is a next page available in the pagination. `true` if there are more pages after the current one, `false` otherwise.",
+    example: false,
   }),
 
-  cursor: z.string().nullable().openapi({
-    description: "Next page cursor",
+  startCursor: z.string().nullable().openapi({
+    description:
+      "A cursor representing the starting point of the current page. Useful for querying the first item of the current page or the last item of the previous page.",
+    example: "cly151kxq0000i7ngb3erchgo",
+  }),
+
+  endCursor: z.string().nullable().openapi({
+    description:
+      "A cursor representing the end point of the current page. Useful for querying the last item of the current page or the first item of the next page.",
     example: "cly151kxq0000i7ngb3erchgo",
   }),
 });

@@ -1,8 +1,7 @@
-import { getPaginatedStakeholders } from "@/server/services/stakeholder/get-stakeholders";
 import { z } from "@hono/zod-openapi";
 import {
-  PaginationQuerySchema,
-  PaginationResponseSchema,
+  paginationQuerySchema,
+  paginationResponseSchema,
 } from "../../schema/pagination";
 import {
   type TStakeholderSchema,
@@ -12,7 +11,7 @@ import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const responseSchema = z.object({
   data: z.array(stakeholderSchema),
-  meta: PaginationResponseSchema,
+  meta: paginationResponseSchema,
 });
 
 export const getMany = withAuthApiV1
@@ -23,7 +22,7 @@ export const getMany = withAuthApiV1
     method: "get",
     path: "/v1/stakeholders",
     request: {
-      query: PaginationQuerySchema,
+      query: paginationQuerySchema,
     },
     responses: {
       200: {
@@ -38,13 +37,15 @@ export const getMany = withAuthApiV1
   })
   .handler(async (c) => {
     const { membership } = c.get("session");
-    const query = c.req.query();
+    const { db } = c.get("services");
+    const query = c.req.valid("query");
 
-    const { data, meta } = await getPaginatedStakeholders({
-      take: Number(query.limit) || 10,
-      cursor: query?.cursor,
-      companyId: membership.companyId,
-    });
+    const [data, meta] = await db.stakeholder
+      .paginate({ where: { companyId: membership.companyId } })
+      .withCursor({
+        limit: query.limit,
+        after: query.cursor,
+      });
 
     return c.json(
       {

@@ -135,7 +135,6 @@ export const CreateShareSchema = ShareSchema.omit({
   createdAt: true,
   updatedAt: true,
   companyId: true,
-  status: true,
 }).openapi({
   description: "Issue shares to a stakeholder in a company.",
 });

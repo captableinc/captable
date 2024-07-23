@@ -25,7 +25,7 @@ export const db = globalForPrisma.prisma ?? getExtendedClient();
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
 
 export type PrismaTransactionalClient = Parameters<
-  Parameters<PrismaClient["$transaction"]>[0]
+  Parameters<TPrisma["$transaction"]>[0]
 >[0];
 
 export type TPrisma = typeof db;

@@ -55,12 +55,12 @@ function RecipientList({
   const OpenRecipientSelectorModal = () => {
     pushModal("ManageEsignRecipientsModal", {
       title: "Manage e-sign recipients",
-      subtitle: "Add or remove potential esign recipients",
+      subtitle: "Add or remove esign recipients",
       templateId,
-      defaultValues: {
+      serverPayload: {
         recipients: recipients.map((recp) => ({
           id: recp.id,
-          name: recp.name ?? "",
+          name: recp.name ?? "Unknown",
           email: recp.email,
         })),
         orderedDelivery,

@@ -144,6 +144,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
+  // @ts-expect-error
   adapter: PrismaAdapter(db),
   secret: env.NEXTAUTH_SECRET ?? "secret",
   session: {

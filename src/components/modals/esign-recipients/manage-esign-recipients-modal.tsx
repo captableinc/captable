@@ -9,14 +9,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   ManageEsignRecipientsForm,
-  type TExistingEsignState,
+  type TGetRecipients,
 } from "./manage-esign-recipients-form";
 
 type ManageEsignRecipientsModalProps = {
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
   templateId: string;
-  serverPayload: TExistingEsignState;
+  serverPayload: TGetRecipients;
 };
 
 export const ManageEsignRecipientsModal = ({
@@ -77,10 +77,9 @@ export const ManageEsignRecipientsModal = ({
     <Modal size="2xl" title={title} subtitle={subtitle}>
       <ManageEsignRecipientsForm
         type="update"
-        payload={(clientPayload || serverPayload) as TExistingEsignState}
+        payload={(clientPayload || serverPayload) as TGetRecipients}
         onSubmit={() => {}}
         onSave={async ({ name, email }) => {
-          console.log({ name, email }, "update onSave");
           setLoading(true);
           await addRecipientMutation({
             recipient: {
@@ -92,13 +91,11 @@ export const ManageEsignRecipientsModal = ({
           setLoading(false);
         }}
         onDelete={async ({ recipientId }) => {
-          console.log({ recipientId }, "update onDelete");
           setLoading(true);
           await deleteRecipientMutation({ recipientId });
           setLoading(false);
         }}
         onToggleOrderedDelivery={async (newStatusValue) => {
-          console.log({ newStatusValue }, "update toggle");
           setLoading(true);
           await toggleOrderedDelivery({
             orderedDelivery: newStatusValue,

@@ -37,7 +37,7 @@ export type OnSave = {
   email: string;
 };
 
-export type TExistingEsignState = RouterOutputs["template"]["getRecipients"];
+export type TGetRecipients = RouterOutputs["template"]["getRecipients"];
 
 type ManageEsignRecipientsFormProps =
   | {
@@ -50,7 +50,7 @@ type ManageEsignRecipientsFormProps =
     }
   | {
       type: "update";
-      payload: TExistingEsignState;
+      payload: TGetRecipients;
       onSubmit: () => void;
       onSave: (data: OnSave) => void;
       onDelete: (data: OnDelete) => void;

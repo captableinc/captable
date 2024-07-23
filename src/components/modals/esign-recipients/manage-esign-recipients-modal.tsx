@@ -1,32 +1,44 @@
 "use client";
 
+import Loading from "@/components/common/loading";
 import Modal from "@/components/common/push-modal";
-
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   ManageEsignRecipientsForm,
-  type TRecipientFormSchema,
+  type TExistingEsignState,
 } from "./manage-esign-recipients-form";
 
 type ManageEsignRecipientsModalProps = {
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
   templateId: string;
-  defaultValues: TRecipientFormSchema;
+  serverPayload: TExistingEsignState;
 };
 
 export const ManageEsignRecipientsModal = ({
   title,
   subtitle,
   templateId,
-  defaultValues,
+  serverPayload,
 }: ManageEsignRecipientsModalProps) => {
   const router = useRouter();
+  const hasRendered = useRef<boolean>(false);
 
-  const { data: recipients, refetch: refetchRecipients } =
-    api.template.getRecipients.useQuery({ templateId });
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { data: clientPayload, refetch: refetchRecipients } =
+    api.template.getRecipients.useQuery(
+      { templateId },
+      { enabled: hasRendered.current },
+    );
+
+  useEffect(() => {
+    hasRendered.current = true;
+  }, []);
 
   const { mutateAsync: toggleOrderedDelivery } =
     api.template.toggleOrderedDelivery.useMutation({
@@ -64,39 +76,38 @@ export const ManageEsignRecipientsModal = ({
   return (
     <Modal size="2xl" title={title} subtitle={subtitle}>
       <ManageEsignRecipientsForm
-        isUpdate={true}
-        recipientsPayload={recipients}
-        defaultValues={defaultValues}
+        type="update"
+        payload={(clientPayload || serverPayload) as TExistingEsignState}
         onSubmit={() => {}}
-        onSave={async ({ recipient, setLoading }) => {
+        onSave={async ({ name, email }) => {
+          console.log({ name, email }, "update onSave");
           setLoading(true);
           await addRecipientMutation({
-            recipient,
+            recipient: {
+              name,
+              email,
+            },
             templateId,
           });
           setLoading(false);
         }}
-        onDelete={async ({ recipientId, setLoading }) => {
+        onDelete={async ({ recipientId }) => {
+          console.log({ recipientId }, "update onDelete");
           setLoading(true);
           await deleteRecipientMutation({ recipientId });
           setLoading(false);
         }}
-        onToggleOrderedDelivery={async (
-          newStatusValue,
-          handleCheck,
-          setLoading,
-        ) => {
+        onToggleOrderedDelivery={async (newStatusValue) => {
+          console.log({ newStatusValue }, "update toggle");
           setLoading(true);
-          const { success } = await toggleOrderedDelivery({
+          await toggleOrderedDelivery({
             orderedDelivery: newStatusValue,
             templateId,
           });
-          if (success) {
-            handleCheck(newStatusValue);
-          }
           setLoading(false);
         }}
       />
+      {loading && <Loading />}
     </Modal>
   );
 };

@@ -1,5 +1,4 @@
 import { z } from "@hono/zod-openapi";
-import { ApiError } from "../../error";
 import {
   type TCreateStakeholderSchema,
   createStakeholderSchema,
@@ -46,54 +45,48 @@ export const create = withAuthApiV1
 
     const body = await c.req.json<TCreateStakeholderSchema>();
 
-    try {
-      const stakeholders = await db.$transaction(async (tx) => {
-        const inputDataWithCompanyId = body.map((stakeholder) => ({
-          ...stakeholder,
-          companyId: membership.companyId,
-        }));
+    const stakeholders = await db.$transaction(async (tx) => {
+      const inputDataWithCompanyId = body.map((stakeholder) => ({
+        ...stakeholder,
+        companyId: membership.companyId,
+      }));
 
-        const addedStakeholders = await tx.stakeholder.createManyAndReturn({
-          data: inputDataWithCompanyId,
-          select: {
-            id: true,
-            name: true,
-          },
-        });
-
-        const auditPromises = addedStakeholders.map((stakeholder) =>
-          audit.create(
-            {
-              action: "stakeholder.added",
-              companyId: membership.companyId,
-              actor: { type: "user", id: membership.userId },
-              context: {
-                requestIp,
-                userAgent,
-              },
-              target: [{ type: "stakeholder", id: stakeholder.id }],
-              summary: `${membership.user.name} added the stakholder in the company : ${stakeholder.name}`,
-            },
-            tx,
-          ),
-        );
-        await Promise.all(auditPromises);
-
-        return addedStakeholders;
-      });
-
-      const data: z.infer<typeof responseSchema>["data"] = stakeholders;
-      return c.json(
-        {
-          data,
-          message: "Stakeholders successfully created.",
+      const addedStakeholders = await tx.stakeholder.createManyAndReturn({
+        data: inputDataWithCompanyId,
+        select: {
+          id: true,
+          name: true,
         },
-        200,
-      );
-    } catch (_error) {
-      throw new ApiError({
-        code: "BAD_REQUEST",
-        message: "Something went wrong. Please try again later.",
       });
-    }
+
+      const auditPromises = addedStakeholders.map((stakeholder) =>
+        audit.create(
+          {
+            action: "stakeholder.added",
+            companyId: membership.companyId,
+            actor: { type: "user", id: membership.userId },
+            context: {
+              requestIp,
+              userAgent,
+            },
+            target: [{ type: "stakeholder", id: stakeholder.id }],
+            summary: `${membership.user.name} added the stakholder in the company : ${stakeholder.name}`,
+          },
+          tx,
+        ),
+      );
+      await Promise.all(auditPromises);
+
+      return addedStakeholders;
+    });
+
+    const data: z.infer<typeof responseSchema>["data"] = stakeholders;
+
+    return c.json(
+      {
+        data,
+        message: "Stakeholders successfully created.",
+      },
+      200,
+    );
   });

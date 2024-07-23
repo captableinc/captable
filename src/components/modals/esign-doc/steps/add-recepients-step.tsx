@@ -1,6 +1,10 @@
 import { uploadFile } from "@/common/uploads";
-import { popModal } from "@/components/modals";
 import Loading from "@/components/common/loading";
+import { popModal } from "@/components/modals";
+import {
+  ManageEsignRecipientsForm,
+  type TFormSchema,
+} from "@/components/modals/esign-recipients/manage-esign-recipients-form";
 import { Button } from "@/components/ui/button";
 import {
   StepperModalContent,
@@ -13,10 +17,6 @@ import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  ManageEsignRecipientsForm,
-  type TRecipientFormSchema,
-} from "../../../modals/esign-recipients/manage-esign-recipients-form";
 
 interface AddRecipientStepProps {
   companyPublicId: string;
@@ -30,7 +30,10 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
   const { mutateAsync: handleTemplateCreation } =
     api.template.create.useMutation();
 
-  const onSubmit = async (data: TRecipientFormSchema) => {
+  const onSubmit = async (data: TFormSchema) => {
+    console.log("OnSubmit create called here...");
+    console.log({ data });
+
     setLoading(true);
     const document = value?.document?.[0];
     if (!document) {
@@ -49,10 +52,16 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
       tags: [TAG.ESIGN],
     });
 
+    const recipients = data.recipients.map((x) => ({
+      name: x.name,
+      email: x.email,
+    }));
+
     const template = await handleTemplateCreation({
       bucketId,
       name: templateName,
-      ...data,
+      recipients,
+      orderedDelivery: data.orderedDelivery,
     });
 
     popModal("AddEsignDocumentModal");
@@ -61,17 +70,19 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
   };
 
   return (
-    <StepperStep className="flex flex-col gap-y-6" title="Add recipients">
-      <StepperModalContent>
-        <ManageEsignRecipientsForm onSubmit={onSubmit} isUpdate={false} />
-      </StepperModalContent>
-      <StepperModalFooter>
-        <StepperPrev>Back</StepperPrev>
-        <Button type="submit" form="recipient-form">
-          Save & Continue
-        </Button>
-      </StepperModalFooter>
+    <>
+      <StepperStep className="flex flex-col gap-y-6" title="Add recipients">
+        <StepperModalContent>
+          <ManageEsignRecipientsForm type="create" onSubmit={onSubmit} />
+        </StepperModalContent>
+        <StepperModalFooter>
+          <StepperPrev>Back</StepperPrev>
+          <Button type="submit" form="esign-recipients-form">
+            Save & Continue
+          </Button>
+        </StepperModalFooter>
+      </StepperStep>
       {loading && <Loading />}
-    </StepperStep>
+    </>
   );
 }

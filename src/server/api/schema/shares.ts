@@ -7,16 +7,16 @@ import {
 import { Share } from "next/font/google";
 
 const VestingScheduleArr = Object.values(VestingScheduleEnum) as [
-  string,
-  ...string[],
+  VestingScheduleEnum,
+  ...VestingScheduleEnum[],
 ];
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
-  string,
-  ...string[],
+  ShareLegendsEnum,
+  ...ShareLegendsEnum[],
 ];
 const SecuritiesStatusArr = Object.values(SecuritiesStatusEnum) as [
-  string,
-  ...string[],
+  SecuritiesStatusEnum,
+  ...SecuritiesStatusEnum[],
 ];
 
 export const ShareSchema = z
@@ -31,7 +31,7 @@ export const ShareSchema = z
       example: "DRAFT",
     }),
 
-    certificateId: z.string().nullish().openapi({
+    certificateId: z.string().openapi({
       description: "Certificate ID",
       example: "123",
     }),
@@ -74,14 +74,12 @@ export const ShareSchema = z
     companyLegends: z
       .enum(ShareLegendsArr)
       .array()
-      .default([])
-      .nullish()
       .openapi({
         description: "Company Legends",
         example: ["US_SECURITIES_ACT", "SALE_AND_ROFR"],
       }),
 
-    issueDate: z.string().datetime().nullish().openapi({
+    issueDate: z.string().datetime().openapi({
       description: "Issued Date",
       example: "2024-01-01T00:00:00.000Z",
     }),
@@ -96,7 +94,7 @@ export const ShareSchema = z
       example: "2024-01-01T00:00:00.000Z",
     }),
 
-    boardApprovalDate: z.string().datetime().nullish().openapi({
+    boardApprovalDate: z.string().datetime().openapi({
       description: "Board Approval Date",
       example: "2024-01-01T00:00:00.000Z",
     }),

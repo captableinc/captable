@@ -1,7 +1,7 @@
 import { ProxyPrismaModel } from "@/server/api/pagination/prisma-proxy";
 import { db } from "@/server/db";
 
-type GetPaginatedShares = {
+export type GetPaginatedShares = {
   companyId: string;
   take: number;
   cursor?: string;

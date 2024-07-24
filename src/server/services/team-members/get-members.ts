@@ -1,12 +1,8 @@
 import { ProxyPrismaModel } from "@/server/api/pagination/prisma-proxy";
 import { db } from "@/server/db";
+import type { GetPaginatedShares } from "../shares/get-shares";
 
-type GetPaginatedMembers = {
-  companyId: string;
-  take: number;
-  cursor?: string;
-  total?: number;
-};
+type GetPaginatedMembers = GetPaginatedShares;
 
 export const getPaginatedMembers = async (payload: GetPaginatedMembers) => {
   const queryCriteria = {

@@ -1,5 +1,6 @@
 "use client";
 
+import DatePicker from "@/components/common/date-picker";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   StepperModalFooter,
   StepperPrev,
@@ -21,10 +21,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  boardApprovalDate: z.string().date(),
-  rule144Date: z.string().date(),
-  issueDate: z.string().date(),
-  vestingStartDate: z.string().date(),
+  boardApprovalDate: z.date(),
+  rule144Date: z.date(),
+  issueDate: z.date(),
+  vestingStartDate: z.date(),
 });
 
 type TFormSchema = z.infer<typeof formSchema>;
@@ -54,7 +54,10 @@ export const RelevantDates = () => {
                   <FormItem>
                     <FormLabel>Issue date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
@@ -69,7 +72,10 @@ export const RelevantDates = () => {
                   <FormItem>
                     <FormLabel>Vesting start date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
@@ -87,7 +93,10 @@ export const RelevantDates = () => {
                   <FormItem>
                     <FormLabel>Board approval date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
@@ -102,7 +111,10 @@ export const RelevantDates = () => {
                   <FormItem>
                     <FormLabel>Rule 144 date</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <DatePicker
+                        selected={field.value}
+                        onSelect={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>

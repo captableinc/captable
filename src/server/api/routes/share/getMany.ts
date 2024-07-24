@@ -42,18 +42,26 @@ export const getMany = withAuthApiV1
     const { db } = c.get("services");
     const query = c.req.valid("query");
 
-    const [data, meta] = await db.share
+    const [data_, meta] = await db.share
       .paginate({ where: { companyId: membership.companyId } })
       .withCursor({
         limit: query.limit,
         after: query.cursor,
       });
 
-    const datas = data as unknown as ShareSchemaType[];
+    const data: ShareSchemaType[] = data_.map((share) => ({
+      ...share,
+      createdAt: share.createdAt.toISOString(),
+      updatedAt: share.updatedAt.toISOString(),
+      issueDate: share.issueDate.toISOString(),
+      rule144Date: share.rule144Date?.toISOString(),
+      vestingStartDate: share.vestingStartDate?.toISOString(),
+      boardApprovalDate: share.boardApprovalDate?.toISOString(),
+    }));
 
     return c.json(
       {
-        data: datas,
+        data,
         meta,
       },
       200,

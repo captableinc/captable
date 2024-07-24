@@ -1,4 +1,4 @@
-import { ApiKey } from "@/lib/api-key";
+import { generateApiKey, hashKey } from "@/lib/api-key";
 import { Audit } from "@/server/audit";
 
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
@@ -48,9 +48,8 @@ export const apiKeyRouter = createTRPCRouter({
         session,
       } = ctx;
 
-      const apiKey = new ApiKey();
-      const { key: generatedKey, partialKey } = ApiKey.generateKey();
-      const hashedKey = apiKey.generateHash(generatedKey);
+      const { key: generatedKey, partialKey } = generateApiKey();
+      const hashedKey = hashKey(generatedKey);
       const user = session.user;
 
       const key = await db.apiKey.create({

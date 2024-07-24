@@ -26,8 +26,8 @@ export const ZodCompanyMutationSchema = z.object({
     incorporationType: z.string().min(1, {
       message: "Incorporation type is required",
     }),
-    incorporationDate: z.string().min(1, {
-      message: "Incorporation date is required",
+    incorporationDate: z.date({
+      required_error: "Incorporation date is required",
     }),
     incorporationCountry: z.string().min(1, {
       message: "Incorporation country is required",

@@ -17,11 +17,11 @@ export const ZodAddOptionMutationSchema = z.object({
   type: z.nativeEnum(OptionTypeEnum),
   status: z.nativeEnum(OptionStatusEnum),
   vestingSchedule: z.nativeEnum(VestingScheduleEnum),
-  issueDate: z.string().date(),
-  expirationDate: z.string().date(),
-  vestingStartDate: z.string().date(),
-  boardApprovalDate: z.string().date(),
-  rule144Date: z.string().date(),
+  issueDate: z.date(),
+  expirationDate: z.date(),
+  vestingStartDate: z.date(),
+  boardApprovalDate: z.date(),
+  rule144Date: z.date(),
   documents: z.array(
     z.object({
       bucketId: z.string(),
@@ -59,10 +59,10 @@ export const ZodAddShareMutationSchema = z.object({
   status: z.nativeEnum(SecuritiesStatusEnum),
   vestingSchedule: z.nativeEnum(VestingScheduleEnum),
   companyLegends: z.nativeEnum(ShareLegendsEnum).array(),
-  issueDate: z.string().date(),
-  rule144Date: z.string().date(),
-  vestingStartDate: z.string().date(),
-  boardApprovalDate: z.string().date(),
+  issueDate: z.date(),
+  rule144Date: z.date(),
+  vestingStartDate: z.date(),
+  boardApprovalDate: z.date(),
   documents: z.array(
     z.object({
       bucketId: z.string(),

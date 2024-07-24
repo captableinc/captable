@@ -1,5 +1,6 @@
 "use client";
 
+import DatePicker from "@/components/common/date-picker";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -21,11 +22,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  boardApprovalDate: z.string().date(),
-  rule144Date: z.string().date(),
-  issueDate: z.string().date(),
-  expirationDate: z.string().date(),
-  vestingStartDate: z.string().date(),
+  boardApprovalDate: z.date(),
+  rule144Date: z.date(),
+  issueDate: z.date(),
+  expirationDate: z.date(),
+  vestingStartDate: z.date(),
 });
 
 type TFormSchema = z.infer<typeof formSchema>;
@@ -53,7 +54,10 @@ export const RelevantDates = () => {
               <FormItem>
                 <FormLabel>Issue date</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    selected={field.value}
+                    onSelect={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage className="text-xs font-light" />
               </FormItem>
@@ -67,7 +71,10 @@ export const RelevantDates = () => {
               <FormItem>
                 <FormLabel>Expiry date</FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    selected={field.value}
+                    onSelect={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage className="text-xs font-light" />
               </FormItem>

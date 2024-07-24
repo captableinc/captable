@@ -32,10 +32,12 @@ import countries from "@/lib/countries";
 import { cn, isFileExists, validateFile } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
+import { format, isValid, parse } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import DatePicker from "../common/date-picker";
 import Loading from "../common/loading";
 import { LinearCombobox } from "../ui/combobox";
 
@@ -73,9 +75,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
       company: {
         city: data?.company.city ?? "",
         incorporationCountry: data?.company.incorporationCountry ?? "",
-        incorporationDate: data?.company.incorporationDate
-          ? dayjsExt(data.company.incorporationDate).format("YYYY-MM-DD")
-          : "",
+        incorporationDate: data?.company.incorporationDate,
         incorporationState: data?.company.incorporationState ?? "",
         incorporationType: data?.company.incorporationType ?? "",
         name: data?.company.name ?? "",
@@ -443,9 +443,13 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Incorporation date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
+                    <div>
+                      <DatePicker
+                        dateFormat="YYYY-MM-DD"
+                        onSelect={field.onChange}
+                        selected={field.value}
+                      />
+                    </div>
                     <FormMessage className="text-xs font-light" />
                   </FormItem>
                 )}

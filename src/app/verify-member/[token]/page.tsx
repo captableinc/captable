@@ -1,7 +1,7 @@
 import { VerifyMemberForm } from "@/components/member/verify-member-form";
 import { authOptions } from "@/server/auth";
 import { checkVerificationToken } from "@/server/member";
-import { type Metadata } from "next";
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 

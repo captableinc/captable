@@ -6,7 +6,7 @@ import {
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const responseSchema = z.object({
+const ResponseSchema = z.object({
   message: z.string(),
   data: CreateShareSchema,
 });
@@ -31,7 +31,7 @@ export const create = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Issue shares",

@@ -2,14 +2,14 @@ import { z } from "@hono/zod-openapi";
 import { ApiError } from "../../error";
 
 import {
+  StakeholderSchema,
   type TStakeholderSchema,
   type TUpdateStakeholderSchema,
-  stakeholderSchema,
-  updateStakeholderSchema,
+  UpdateStakeholderSchema,
 } from "../../schema/stakeholder";
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const paramsSchema = z.object({
+const ParamsSchema = z.object({
   id: z.string().openapi({
     param: {
       name: "id",
@@ -21,14 +21,10 @@ const paramsSchema = z.object({
   }),
 });
 
-const responseSchema = z
-  .object({
-    message: z.string(),
-    data: stakeholderSchema,
-  })
-  .openapi({
-    description: "Update a stakeholder by ID",
-  });
+const ResponseSchema = z.object({
+  message: z.string(),
+  data: StakeholderSchema,
+});
 
 export const update = withAuthApiV1
   .createRoute({
@@ -38,11 +34,11 @@ export const update = withAuthApiV1
     method: "patch",
     path: "/v1/stakeholders/{id}",
     request: {
-      params: paramsSchema,
+      params: ParamsSchema,
       body: {
         content: {
           "application/json": {
-            schema: updateStakeholderSchema,
+            schema: UpdateStakeholderSchema,
           },
         },
       },
@@ -51,7 +47,7 @@ export const update = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Update a stakeholder by Id.",

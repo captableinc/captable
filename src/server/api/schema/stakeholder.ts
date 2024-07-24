@@ -12,7 +12,7 @@ const StakeholderRelationshipArray = Object.values(
   StakeholderRelationshipEnum,
 ) as [StakeholderRelationshipEnum, ...StakeholderRelationshipEnum[]];
 
-export const stakeholderSchema = z
+export const StakeholderSchema = z
   .object({
     id: z.string().cuid().openapi({
       description: "Stakeholder ID",
@@ -81,19 +81,18 @@ export const stakeholderSchema = z
   })
   .openapi("Stakeholder");
 
-export const createStakeholderSchema = z.array(
-  stakeholderSchema.omit({
+export const CreateStakeholderSchema = z.array(
+  StakeholderSchema.omit({
     id: true,
     createdAt: true,
     updatedAt: true,
   }),
 );
-export const updateStakeholderSchema = stakeholderSchema
-  .omit({
-    id: true,
-    createdAt: true,
-    updatedAt: true,
-  })
+export const UpdateStakeholderSchema = StakeholderSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
   .partial()
   .refine(
     (data) => {
@@ -107,6 +106,6 @@ export const updateStakeholderSchema = stakeholderSchema
     description: "Update a stakeholder by ID",
   });
 
-export type TStakeholderSchema = z.infer<typeof stakeholderSchema>;
-export type TCreateStakeholderSchema = z.infer<typeof createStakeholderSchema>;
-export type TUpdateStakeholderSchema = z.infer<typeof updateStakeholderSchema>;
+export type TStakeholderSchema = z.infer<typeof StakeholderSchema>;
+export type TCreateStakeholderSchema = z.infer<typeof CreateStakeholderSchema>;
+export type TUpdateStakeholderSchema = z.infer<typeof UpdateStakeholderSchema>;

@@ -1,13 +1,13 @@
 import { z } from "@hono/zod-openapi";
 import {
-  createStakeholderSchema,
-  stakeholderSchema,
+  CreateStakeholderSchema,
+  StakeholderSchema,
 } from "../../schema/stakeholder";
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const responseSchema = z.object({
+const ResponseSchema = z.object({
   message: z.string(),
-  data: z.array(stakeholderSchema.pick({ id: true, name: true })),
+  data: z.array(StakeholderSchema.pick({ id: true, name: true })),
 });
 
 export const create = withAuthApiV1
@@ -21,7 +21,7 @@ export const create = withAuthApiV1
       body: {
         content: {
           "application/json": {
-            schema: createStakeholderSchema,
+            schema: CreateStakeholderSchema,
           },
         },
       },
@@ -30,7 +30,7 @@ export const create = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "create a stakeholder for a company",
@@ -79,7 +79,7 @@ export const create = withAuthApiV1
       return addedStakeholders;
     });
 
-    const data: z.infer<typeof responseSchema>["data"] = stakeholders;
+    const data: z.infer<typeof ResponseSchema>["data"] = stakeholders;
 
     return c.json(
       {

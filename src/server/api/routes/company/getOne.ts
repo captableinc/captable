@@ -1,5 +1,5 @@
 import { ApiError } from "@/server/api/error";
-import { companySchema } from "@/server/api/schema/company";
+import { CompanySchema } from "@/server/api/schema/company";
 import { z } from "@hono/zod-openapi";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
@@ -19,6 +19,10 @@ export const RequestSchema = z.object({
     }),
 });
 
+const ResponseSchema = z.object({
+  data: CompanySchema,
+});
+
 export const getOne = withAuthApiV1
   .createRoute({
     method: "get",
@@ -31,7 +35,7 @@ export const getOne = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: companySchema,
+            schema: ResponseSchema,
           },
         },
         description: "Get a company by ID",
@@ -60,5 +64,5 @@ export const getOne = withAuthApiV1
         id: member.companyId,
       },
     });
-    return c.json(company, 200);
+    return c.json({ data: company }, 200);
   });

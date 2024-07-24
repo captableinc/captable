@@ -3,7 +3,7 @@ import { ApiError } from "../../error";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const paramsSchema = z.object({
+const ParamsSchema = z.object({
   id: z.string().openapi({
     param: {
       name: "id",
@@ -15,13 +15,9 @@ const paramsSchema = z.object({
   }),
 });
 
-const responseSchema = z
-  .object({
-    message: z.string(),
-  })
-  .openapi({
-    description: "Delete a stakeholder by ID in a company.",
-  });
+const ResponseSchema = z.object({
+  message: z.string(),
+});
 
 export const _delete = withAuthApiV1
   .createRoute({
@@ -30,12 +26,12 @@ export const _delete = withAuthApiV1
     tags: ["Stakeholder"],
     method: "delete",
     path: "/v1/stakeholders/{id}",
-    request: { params: paramsSchema },
+    request: { params: ParamsSchema },
     responses: {
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Delete a stakeholder by ID in a company.",

@@ -3,7 +3,7 @@ import { ApiError } from "../../error";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const paramsSchema = z.object({
+const ParamsSchema = z.object({
   id: z.string().openapi({
     param: {
       name: "id",
@@ -15,13 +15,12 @@ const paramsSchema = z.object({
   }),
 });
 
-const responseSchema = z
-  .object({
-    message: z.string(),
-  })
-  .openapi({
-    description: "Delete a Share by ID",
-  });
+const ResponseSchema = z.object({
+  message: z.string().openapi({
+    description:
+      "A text providing details about the API request result, including success, error, or warning messages.",
+  }),
+});
 
 export const _delete = withAuthApiV1
   .createRoute({
@@ -30,12 +29,12 @@ export const _delete = withAuthApiV1
     summary: "Delete issued shares",
     description: "Delete a Share by ID",
     tags: ["Shares"],
-    request: { params: paramsSchema },
+    request: { params: ParamsSchema },
     responses: {
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Delete a Share by ID",

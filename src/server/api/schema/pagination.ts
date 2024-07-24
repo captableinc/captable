@@ -43,28 +43,30 @@ export const paginationQuerySchema = z.object({
 
 export type TPaginationQuerySchema = z.infer<typeof paginationQuerySchema>;
 
-export const paginationResponseSchema = z.object({
-  hasPreviousPage: z.boolean().openapi({
-    description:
-      "Indicates if there is a previous page available in the pagination. `true` if there are more pages before the current one, `false` otherwise.",
-    example: true,
-  }),
+export const paginationResponseSchema = z
+  .object({
+    hasPreviousPage: z.boolean().openapi({
+      description:
+        "Indicates if there is a previous page available in the pagination. `true` if there are more pages before the current one, `false` otherwise.",
+      example: true,
+    }),
 
-  hasNextPage: z.boolean().openapi({
-    description:
-      "Indicates if there is a next page available in the pagination. `true` if there are more pages after the current one, `false` otherwise.",
-    example: false,
-  }),
+    hasNextPage: z.boolean().openapi({
+      description:
+        "Indicates if there is a next page available in the pagination. `true` if there are more pages after the current one, `false` otherwise.",
+      example: false,
+    }),
 
-  startCursor: z.string().nullable().openapi({
-    description:
-      "A cursor representing the starting point of the current page. Useful for querying the first item of the current page or the last item of the previous page.",
-    example: "cly151kxq0000i7ngb3erchgo",
-  }),
+    startCursor: z.string().nullable().openapi({
+      description:
+        "A cursor representing the starting point of the current page. Useful for querying the first item of the current page or the last item of the previous page.",
+      example: "cly151kxq0000i7ngb3erchgo",
+    }),
 
-  endCursor: z.string().nullable().openapi({
-    description:
-      "A cursor representing the end point of the current page. Useful for querying the last item of the current page or the first item of the next page.",
-    example: "cly151kxq0000i7ngb3erchgo",
-  }),
-});
+    endCursor: z.string().nullable().openapi({
+      description:
+        "A cursor representing the end point of the current page. Useful for querying the last item of the current page or the first item of the next page.",
+      example: "cly151kxq0000i7ngb3erchgo",
+    }),
+  })
+  .openapi("Pagination");

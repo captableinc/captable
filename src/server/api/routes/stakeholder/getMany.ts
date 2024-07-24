@@ -3,14 +3,11 @@ import {
   paginationQuerySchema,
   paginationResponseSchema,
 } from "../../schema/pagination";
-import {
-  type TStakeholderSchema,
-  stakeholderSchema,
-} from "../../schema/stakeholder";
+import { StakeholderSchema } from "../../schema/stakeholder";
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const responseSchema = z.object({
-  data: z.array(stakeholderSchema),
+const ResponseSchema = z.object({
+  data: z.array(StakeholderSchema),
   meta: paginationResponseSchema,
 });
 
@@ -28,7 +25,7 @@ export const getMany = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Get paginated stakeholders from a company.",
@@ -47,7 +44,7 @@ export const getMany = withAuthApiV1
         after: query.cursor,
       });
 
-    const response: z.infer<typeof responseSchema> = {
+    const response: z.infer<typeof ResponseSchema> = {
       data: data.map((stakeholder) => ({
         ...stakeholder,
         createdAt: stakeholder.createdAt.toISOString(),

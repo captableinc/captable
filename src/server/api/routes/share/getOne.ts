@@ -4,7 +4,7 @@ import { ShareSchema, type ShareSchemaType } from "../../schema/shares";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const paramsSchema = z.object({
+const ParamsSchema = z.object({
   id: z.string().openapi({
     param: {
       name: "id",
@@ -16,13 +16,9 @@ const paramsSchema = z.object({
   }),
 });
 
-const responseSchema = z
-  .object({
-    data: ShareSchema,
-  })
-  .openapi({
-    description: "Get a single Share by ID",
-  });
+const ResponseSchema = z.object({
+  data: ShareSchema,
+});
 
 export const getOne = withAuthApiV1
   .createRoute({
@@ -32,13 +28,13 @@ export const getOne = withAuthApiV1
     method: "get",
     path: "/v1/shares/{id}",
     request: {
-      params: paramsSchema,
+      params: ParamsSchema,
     },
     responses: {
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Retrieve the share for the company",

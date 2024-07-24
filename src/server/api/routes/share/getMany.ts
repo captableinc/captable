@@ -7,14 +7,10 @@ import { ShareSchema } from "../../schema/shares";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const responseSchema = z
-  .object({
-    data: z.array(ShareSchema),
-    meta: paginationResponseSchema,
-  })
-  .openapi({
-    description: "Get Shares by Company ID",
-  });
+const ResponseSchema = z.object({
+  data: z.array(ShareSchema),
+  meta: paginationResponseSchema,
+});
 
 export const getMany = withAuthApiV1
   .createRoute({
@@ -30,7 +26,7 @@ export const getMany = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: responseSchema,
+            schema: ResponseSchema,
           },
         },
         description: "Retrieve the shares for the company",
@@ -49,7 +45,7 @@ export const getMany = withAuthApiV1
         after: query.cursor,
       });
 
-    const response: z.infer<typeof responseSchema> = {
+    const response: z.infer<typeof ResponseSchema> = {
       meta,
       data: data.map((i) => ({
         ...i,

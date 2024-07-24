@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import {
-  paginationQuerySchema,
-  paginationResponseSchema,
+  PaginationQuerySchema,
+  PaginationResponseSchema,
 } from "../../schema/pagination";
 import { ShareSchema } from "../../schema/shares";
 
@@ -9,7 +9,7 @@ import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
   data: z.array(ShareSchema),
-  meta: paginationResponseSchema,
+  meta: PaginationResponseSchema,
 });
 
 export const getMany = withAuthApiV1
@@ -20,7 +20,7 @@ export const getMany = withAuthApiV1
     method: "get",
     path: "/v1/shares",
     request: {
-      query: paginationQuerySchema,
+      query: PaginationQuerySchema,
     },
     responses: {
       200: {

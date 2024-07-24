@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi";
 
 export const DEFAULT_PAGINATION_LIMIT = 50;
 
-export const paginationQuerySchema = z.object({
+export const PaginationQuerySchema = z.object({
   limit: z
     .preprocess(
       (val) =>
@@ -41,9 +41,9 @@ export const paginationQuerySchema = z.object({
     }),
 });
 
-export type TPaginationQuerySchema = z.infer<typeof paginationQuerySchema>;
+export type TPaginationQuerySchema = z.infer<typeof PaginationQuerySchema>;
 
-export const paginationResponseSchema = z
+export const PaginationResponseSchema = z
   .object({
     hasPreviousPage: z.boolean().openapi({
       description:

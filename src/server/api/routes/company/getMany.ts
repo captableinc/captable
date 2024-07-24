@@ -7,8 +7,8 @@ export const getMany = withAuthApiV1
     method: "get",
     path: "/v1/companies",
     tags: ["Company"],
-    summary: "Get list of companies",
-    description: "Get list of membership companies",
+    summary: "List Companies",
+    description: "Retrieve a list of membership companies.",
     responses: {
       200: {
         content: {
@@ -16,7 +16,7 @@ export const getMany = withAuthApiV1
             schema: z.array(CompanySchema),
           },
         },
-        description: "List companies",
+        description: "A list of companies with their details.",
       },
     },
   })

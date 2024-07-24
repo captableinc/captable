@@ -15,7 +15,7 @@ export const create = withAuthApiV1
   .createRoute({
     method: "post",
     path: "/v1/shares",
-    summary: "Issue shares",
+    summary: "Create Shares",
     description: "Issue shares to a stakeholder in a company.",
     tags: ["Shares"],
     request: {
@@ -34,7 +34,7 @@ export const create = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Issue shares",
+        description: "Confirmation of shares issued with relevant details.",
       },
     },
   })

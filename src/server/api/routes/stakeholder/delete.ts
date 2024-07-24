@@ -22,7 +22,7 @@ const ResponseSchema = z.object({
 export const _delete = withAuthApiV1
   .createRoute({
     summary: "Delete stakeholder",
-    description: "Delete a stakeholder by ID in a company.",
+    description: "Remove a stakeholder from a company by ID.",
     tags: ["Stakeholder"],
     method: "delete",
     path: "/v1/stakeholders/{id}",
@@ -34,7 +34,7 @@ export const _delete = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Delete a stakeholder by ID in a company.",
+        description: "Confirmation that the stakeholder has been removed.",
       },
     },
   })

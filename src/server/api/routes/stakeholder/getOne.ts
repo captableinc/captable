@@ -24,8 +24,8 @@ const ResponseSchema = z.object({
 
 export const getOne = withAuthApiV1
   .createRoute({
-    summary: "Get a stakeholder",
-    description: "Get a single stakeholder by ID",
+    summary: "Retrieve Stakeholder",
+    description: "Fetch details of a single stakeholder by their ID.",
     tags: ["Stakeholder"],
     method: "get",
     path: "/v1/stakeholders/{id}",
@@ -39,7 +39,7 @@ export const getOne = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Get a single stakeholder by ID",
+        description: "Details of the requested stakeholder.",
       },
     },
   })

@@ -15,7 +15,7 @@ export const create = withAuthApiV1
     method: "post",
     path: "/v1/stakeholders",
     summary: "Create stakeholders",
-    description: "Create one or stakeholders account in a company.",
+    description: "Add one or more stakeholder accounts to a company.",
     tags: ["Stakeholder"],
     request: {
       body: {
@@ -33,7 +33,8 @@ export const create = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "create a stakeholder for a company",
+        description:
+          "Confirmation of stakeholder created with relevant details.",
       },
     },
   })

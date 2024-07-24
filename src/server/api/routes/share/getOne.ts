@@ -22,8 +22,8 @@ const ResponseSchema = z.object({
 
 export const getOne = withAuthApiV1
   .createRoute({
-    summary: "Get an issued share by ID",
-    description: "Get a single issued share record by ID",
+    summary: "Get Issued Share",
+    description: "Fetch a single issued share record by its ID.",
     tags: ["Shares"],
     method: "get",
     path: "/v1/shares/{id}",
@@ -37,7 +37,7 @@ export const getOne = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Retrieve the share for the company",
+        description: "Details of the requested issued share.",
       },
     },
   })

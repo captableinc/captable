@@ -13,8 +13,9 @@ const ResponseSchema = z.object({
 
 export const getMany = withAuthApiV1
   .createRoute({
-    summary: "Get all stakeholders",
-    description: "Get all stakeholders with pagination",
+    summary: "List All Stakeholders",
+    description:
+      "Retrieve a paginated list of all stakeholders in the company.",
     tags: ["Stakeholder"],
     method: "get",
     path: "/v1/stakeholders",
@@ -28,7 +29,7 @@ export const getMany = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Get paginated stakeholders from a company.",
+        description: "A list of stakeholders in a company with their details.",
       },
     },
   })

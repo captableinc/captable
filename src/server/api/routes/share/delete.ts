@@ -26,8 +26,8 @@ export const _delete = withAuthApiV1
   .createRoute({
     method: "delete",
     path: "/v1/shares/{id}",
-    summary: "Delete issued shares",
-    description: "Delete a Share by ID",
+    summary: "Delete Issued Shares",
+    description: "Remove an issued share by its ID.",
     tags: ["Shares"],
     request: { params: ParamsSchema },
     responses: {
@@ -37,7 +37,7 @@ export const _delete = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Delete a Share by ID",
+        description: "Confirmation that the issued share has been removed.",
       },
     },
   })

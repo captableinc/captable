@@ -14,8 +14,8 @@ const ResponseSchema = z.object({
 
 export const getMany = withAuthApiV1
   .createRoute({
-    summary: "Get list of issued shares",
-    description: "Get list of issued shares for a company",
+    summary: "List Issued Shares",
+    description: "Retrieve a list of issued shares for the company.",
     tags: ["Shares"],
     method: "get",
     path: "/v1/shares",
@@ -29,7 +29,7 @@ export const getMany = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Retrieve the shares for the company",
+        description: "A list of issued shares with their details.",
       },
     },
   })

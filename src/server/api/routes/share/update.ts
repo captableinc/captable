@@ -28,8 +28,8 @@ const ResponseSchema = z.object({
 
 export const update = withAuthApiV1
   .createRoute({
-    summary: "Update issued shares by ID",
-    description: "Update issued shares by share ID",
+    summary: "Update Issued Shares",
+    description: "Update details of an issued share by its ID.",
     tags: ["Shares"],
     method: "patch",
     path: "/v1/stakeholders/{id}",
@@ -50,7 +50,7 @@ export const update = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Update the Share by ID",
+        description: "Confirmation of updated issued share details.",
       },
     },
   })

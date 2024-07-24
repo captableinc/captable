@@ -28,8 +28,8 @@ export const getOne = withAuthApiV1
     method: "get",
     path: "/v1/companies/:id",
     tags: ["Company"],
-    summary: "Get a company by ID",
-    description: "Get a single company record by ID",
+    summary: "Get Company",
+    description: "Fetch details of a single company by its ID.",
     request: { params: RequestSchema },
     responses: {
       200: {
@@ -38,7 +38,7 @@ export const getOne = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "Get a company by ID",
+        description: "Details of the requested company.",
       },
     },
   })

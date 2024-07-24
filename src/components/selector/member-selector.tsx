@@ -42,7 +42,7 @@ export function MemberSelector({ onSelect }: MemberSelectorType) {
 
   return (
     <LinearCombobox
-      placeholder="Select or add a bank account"
+      placeholder="Select a team member"
       options={options}
       onValueChange={(option) => {
         onSelect(option.value);

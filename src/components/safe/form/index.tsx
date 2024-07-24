@@ -8,7 +8,9 @@ import {
 } from "@/components/ui/form";
 
 import SlideOver from "@/components/common/slide-over";
+import { BankAccountSelector } from "@/components/selector/bank-account-selector";
 import { InvestorSelector } from "@/components/selector/investor-selector";
+import { MemberSelector } from "@/components/selector/member-selector";
 import { Button } from "@/components/ui/button";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
@@ -69,13 +71,31 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
         onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col gap-y-4"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-5">
-          <FormLabel>
-            Investor <span className="text-xs">(Stakeholder)</span>
-            <p className="text-sm font-normal">
-              Please select or create the investor account.
-            </p>
-          </FormLabel>
+        <PrePostSelector
+          defaultValue="POST_MONEY"
+          onChange={(value: string) => {
+            form.setValue("type", value as SafeTypeEnum);
+          }}
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5 mt-5">
+          <FormField
+            control={form.control}
+            name="stakeholderId"
+            render={() => {
+              return (
+                <FormItem>
+                  <FormLabel>Company representative</FormLabel>
+                  <MemberSelector
+                    onSelect={(value: string) => {
+                      form.setValue("memberId", value);
+                    }}
+                  />
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
+          />
 
           <FormField
             control={form.control}
@@ -83,6 +103,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             render={() => {
               return (
                 <FormItem>
+                  <FormLabel>Investor</FormLabel>
                   <InvestorSelector
                     onSelect={(value: string) => {
                       form.setValue("stakeholderId", value);
@@ -93,14 +114,25 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
               );
             }}
           />
-        </div>
 
-        <PrePostSelector
-          defaultValue="POST_MONEY"
-          onChange={(value: string) => {
-            form.setValue("type", value as SafeTypeEnum);
-          }}
-        />
+          <FormField
+            control={form.control}
+            name="stakeholderId"
+            render={() => {
+              return (
+                <FormItem>
+                  <FormLabel>Bank account</FormLabel>
+                  <BankAccountSelector
+                    onSelect={(value: string) => {
+                      form.setValue("bankAccountId", value);
+                    }}
+                  />
+                  <FormMessage className="text-xs font-light" />
+                </FormItem>
+              );
+            }}
+          />
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5 mt-5">
           <FormField

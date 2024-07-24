@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import HelpTooltip from "@/components/common/help-tooltip";
 import SlideOver from "@/components/common/slide-over";
 import { BankAccountSelector } from "@/components/selector/bank-account-selector";
 import { InvestorSelector } from "@/components/selector/investor-selector";
@@ -70,7 +71,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col gap-y-4"
+        className="flex flex-col gap-y-2"
       >
         <PrePostSelector
           defaultValue="POST_MONEY"
@@ -86,15 +87,19 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             render={() => {
               return (
                 <FormItem>
-                  <FormLabel>Team member</FormLabel>
+                  <FormLabel className="inline-flex">
+                    Team member{" "}
+                    <HelpTooltip
+                      className="ml-2"
+                      text="Team member responsible for signing the SAFE agreement"
+                    />
+                  </FormLabel>
                   <MemberSelector
                     onSelect={(value: string) => {
                       form.setValue("memberId", value);
                     }}
                   />
-                  <FormDescription className="text-xs">
-                    Responsible for signing the SAFE agreement
-                  </FormDescription>
+
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               );
@@ -125,15 +130,19 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             render={() => {
               return (
                 <FormItem>
-                  <FormLabel>Bank account</FormLabel>
+                  <FormLabel className="inline-flex">
+                    Bank account
+                    <HelpTooltip
+                      className="ml-2"
+                      text="Bank account with wiring details to receive the investment"
+                    />
+                  </FormLabel>
                   <BankAccountSelector
                     onSelect={(value: string) => {
                       form.setValue("bankAccountId", value);
                     }}
                   />
-                  <FormDescription className="text-xs">
-                    Bank account to receive the investment
-                  </FormDescription>
+
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               );

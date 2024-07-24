@@ -39,7 +39,7 @@ export const SafeModal: React.FC<SafeModalProps> = ({ type }) => {
               Upload custom SAFE agreement
             </Button>
 
-            {/* TODO: Write a helkp article on SAFE */}
+            {/* TODO: Write a help article on SAFE */}
             <Button size="xs" variant={"outline"} className="ml-3">
               <Link href="https://captable.inc/help" target="_blank">
                 Learn more

@@ -38,7 +38,7 @@ export const PrePostSelector = ({ defaultValue, onChange }: SelectorProps) => {
           setSelected(value);
           onChange(value);
         }}
-        className="mb-2 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4"
+        className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4"
       >
         {options.map((option) => (
           <Radio
@@ -69,19 +69,6 @@ export const PrePostSelector = ({ defaultValue, onChange }: SelectorProps) => {
           </Radio>
         ))}
       </RadioGroup>
-
-      <span className="text-gray-500 text-xs">
-        {/* TODO: Write an article about the difference between pre-money and post-money */}
-        <Link
-          className="hover:underline text-teal-600 hover:text-teal-500"
-          href="https://captable.inc/help"
-          target="_blank"
-        >
-          Click here
-        </Link>{" "}
-        to learn more about the difference between pre-money and post-money
-        investments.
-      </span>
     </fieldset>
   );
 };

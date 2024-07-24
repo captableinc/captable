@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
 
-export const ApiCompanySchema = z
+export const companySchema = z
   .object({
     id: z.string().cuid().openapi({
       description: "Company ID",
@@ -79,4 +79,4 @@ export const ApiCompanySchema = z
   })
   .openapi("Company");
 
-export type ApiCompanyType = z.infer<typeof ApiCompanySchema>;
+export type ApiCompanyType = z.infer<typeof companySchema>;

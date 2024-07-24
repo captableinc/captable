@@ -3,7 +3,7 @@ import {
   paginationQuerySchema,
   paginationResponseSchema,
 } from "../../schema/pagination";
-import { ShareSchema, type ShareSchemaType } from "../../schema/shares";
+import { ShareSchema } from "../../schema/shares";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
@@ -42,28 +42,25 @@ export const getMany = withAuthApiV1
     const { db } = c.get("services");
     const query = c.req.valid("query");
 
-    const [data_, meta] = await db.share
+    const [data, meta] = await db.share
       .paginate({ where: { companyId: membership.companyId } })
       .withCursor({
         limit: query.limit,
         after: query.cursor,
       });
 
-    const data: ShareSchemaType[] = data_.map((share) => ({
-      ...share,
-      createdAt: share.createdAt.toISOString(),
-      updatedAt: share.updatedAt.toISOString(),
-      issueDate: share.issueDate.toISOString(),
-      rule144Date: share.rule144Date?.toISOString(),
-      vestingStartDate: share.vestingStartDate?.toISOString(),
-      boardApprovalDate: share.boardApprovalDate?.toISOString(),
-    }));
+    const response: z.infer<typeof responseSchema> = {
+      meta,
+      data: data.map((i) => ({
+        ...i,
+        createdAt: i.createdAt.toISOString(),
+        updatedAt: i.updatedAt.toISOString(),
+        issueDate: i.issueDate.toISOString(),
+        rule144Date: i.rule144Date?.toISOString(),
+        vestingStartDate: i.vestingStartDate?.toISOString(),
+        boardApprovalDate: i.boardApprovalDate?.toISOString(),
+      })),
+    };
 
-    return c.json(
-      {
-        data,
-        meta,
-      },
-      200,
-    );
+    return c.json(response, 200);
   });

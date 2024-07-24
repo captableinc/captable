@@ -1,4 +1,4 @@
-import { ApiCompanySchema } from "@/server/api/schema/company";
+import { companySchema } from "@/server/api/schema/company";
 import { z } from "@hono/zod-openapi";
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
 
@@ -13,7 +13,7 @@ export const getMany = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: z.array(ApiCompanySchema).openapi({
+            schema: z.array(companySchema).openapi({
               description: "List of companies",
             }),
           },

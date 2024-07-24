@@ -1,5 +1,5 @@
 import { ApiError } from "@/server/api/error";
-import { ApiCompanySchema } from "@/server/api/schema/company";
+import { companySchema } from "@/server/api/schema/company";
 import { z } from "@hono/zod-openapi";
 
 import { withAuthApiV1 } from "../../utils/endpoint-creator";
@@ -31,7 +31,7 @@ export const getOne = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: ApiCompanySchema,
+            schema: companySchema,
           },
         },
         description: "Get a company by ID",

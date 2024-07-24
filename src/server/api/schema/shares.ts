@@ -1,10 +1,9 @@
-import { z } from "@hono/zod-openapi";
 import {
   SecuritiesStatusEnum,
   ShareLegendsEnum,
   VestingScheduleEnum,
-} from "@prisma/client";
-import { Share } from "next/font/google";
+} from "@/prisma/enums";
+import { z } from "@hono/zod-openapi";
 
 const VestingScheduleArr = Object.values(VestingScheduleEnum) as [
   VestingScheduleEnum,

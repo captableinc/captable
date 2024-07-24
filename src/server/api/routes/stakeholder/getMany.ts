@@ -40,24 +40,21 @@ export const getMany = withAuthApiV1
     const { db } = c.get("services");
     const query = c.req.valid("query");
 
-    const [data_, meta] = await db.stakeholder
+    const [data, meta] = await db.stakeholder
       .paginate({ where: { companyId: membership.companyId } })
       .withCursor({
         limit: query.limit,
         after: query.cursor,
       });
 
-    const data: TStakeholderSchema[] = data_.map((stakeholder) => ({
-      ...stakeholder,
-      createdAt: stakeholder.createdAt.toISOString(),
-      updatedAt: stakeholder.updatedAt.toISOString(),
-    }));
+    const response: z.infer<typeof responseSchema> = {
+      data: data.map((stakeholder) => ({
+        ...stakeholder,
+        createdAt: stakeholder.createdAt.toISOString(),
+        updatedAt: stakeholder.updatedAt.toISOString(),
+      })),
+      meta,
+    };
 
-    return c.json(
-      {
-        data,
-        meta,
-      },
-      200,
-    );
+    return c.json(response, 200);
   });

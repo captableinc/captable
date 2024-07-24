@@ -1,6 +1,7 @@
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -85,12 +86,15 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             render={() => {
               return (
                 <FormItem>
-                  <FormLabel>Company representative</FormLabel>
+                  <FormLabel>Team member</FormLabel>
                   <MemberSelector
                     onSelect={(value: string) => {
                       form.setValue("memberId", value);
                     }}
                   />
+                  <FormDescription className="text-xs">
+                    Responsible for signing the SAFE agreement
+                  </FormDescription>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               );
@@ -127,6 +131,9 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
                       form.setValue("bankAccountId", value);
                     }}
                   />
+                  <FormDescription className="text-xs">
+                    Bank account to receive the investment
+                  </FormDescription>
                   <FormMessage className="text-xs font-light" />
                 </FormItem>
               );
@@ -167,6 +174,20 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
 
           <FormField
             control={form.control}
+            name="issueDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Investment date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage className="text-xs font-light" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="valuationCap"
             render={({ field }) => {
               const { onChange, ...rest } = field;
@@ -194,20 +215,6 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
                 </FormItem>
               );
             }}
-          />
-
-          <FormField
-            control={form.control}
-            name="issueDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Investment date</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
           />
         </div>
 

@@ -7,7 +7,7 @@ import {
   PaginationResponseSchema,
 } from "@/server/api/schema/pagination";
 import { TeamMemberSchema } from "@/server/api/schema/team-member";
-import { getPaginatedMembers } from "@/server/services/teamMember/get-members";
+import { getPaginatedMembers } from "@/server/services/team-members/get-members";
 import { createRoute, z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 

@@ -1,3 +1,4 @@
+import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
 import { createTRPCRouter, withAccessControl, withAuth } from "@/trpc/api/trpc";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
@@ -74,9 +75,11 @@ export const companyRouter = createTRPCRouter({
       try {
         const { company } = input;
         const { incorporationDate, ...rest } = company;
+        const { requestIp, userAgent, session, db } = ctx;
+        const { user } = session;
         const { companyId } = ctx.membership;
 
-        await ctx.db.company.update({
+        await db.company.update({
           where: {
             id: companyId,
           },
@@ -85,6 +88,21 @@ export const companyRouter = createTRPCRouter({
             ...rest,
           },
         });
+
+        await Audit.create(
+          {
+            action: "company.updated",
+            companyId: user.companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "company", id: user.companyId }],
+            summary: `${user.name} updated the company ${company.name}`,
+          },
+          db,
+        );
 
         return {
           success: true,

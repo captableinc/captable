@@ -89,7 +89,7 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
   if (!keyId || !token) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid token provided",
+      message: "Bearer token is invalid",
     });
   }
 
@@ -106,7 +106,7 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
   if (!apiKey) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid token provided",
+      message: "Bearer token is invalid",
     });
   }
 
@@ -115,7 +115,7 @@ const verifyBearerToken = async (bearerToken: string | null | undefined) => {
   if (!isValid) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid token provided",
+      message: "Bearer token is invalid",
     });
   }
 

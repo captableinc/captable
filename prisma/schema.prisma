@@ -701,7 +701,7 @@ model Share {
   vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
   vestingSchedule VestingScheduleEnum
 
-  companyLegends ShareLegendsEnum[]
+  companyLegends ShareLegendsEnum[] @default([])
 
   issueDate         DateTime
   rule144Date       DateTime?

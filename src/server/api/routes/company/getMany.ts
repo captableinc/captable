@@ -8,6 +8,9 @@ import type { Company } from "@prisma/client";
 import type { Context } from "hono";
 
 const route = createRoute({
+  summary: "Get companies",
+  description: "Get list of companies",
+  tags: ["Company"],
   method: "get",
   path: "/v1/companies",
   responses: {

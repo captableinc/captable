@@ -2,7 +2,8 @@ import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
 import { getRoleById } from "@/lib/rbac/access-control";
 import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
-import { generateInviteToken, generateMemberIdentifier } from "@/server/member";
+import { checkUserMembershipForInvitation } from "@/server/services/team-members/check-user-membership";
+import { createTeamMember } from "@/server/services/team-members/create-team-member";
 import { withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { ZodInviteMemberMutationSchema } from "../schema";
@@ -23,8 +24,6 @@ export const inviteMemberProcedure = withAccessControl
       membership: { companyId },
     } = ctx;
 
-    const { expires, memberInviteTokenHash } = await generateInviteToken();
-
     const { token: passwordResetToken } =
       await generatePasswordResetToken(email);
 
@@ -40,33 +39,13 @@ export const inviteMemberProcedure = withAccessControl
           },
         });
 
-        // create or find user
-        const invitedUser = await tx.user.upsert({
-          where: {
-            email,
-          },
-          update: {},
-          create: {
-            name,
-            email,
-          },
-          select: {
-            id: true,
-          },
+        const newUserOnTeam = await checkUserMembershipForInvitation(tx, {
+          name,
+          email,
+          companyId: company.id,
         });
 
-        // check if user is already a member
-        const prevMember = await tx.member.findUnique({
-          where: {
-            companyId_userId: {
-              companyId,
-              userId: invitedUser.id,
-            },
-          },
-        });
-
-        // if already a member, throw error
-        if (prevMember && prevMember.status === "ACTIVE") {
+        if (!newUserOnTeam) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "user already a member",
@@ -75,51 +54,13 @@ export const inviteMemberProcedure = withAccessControl
 
         const role = await getRoleById({ id: roleId, tx });
 
-        //  create member
-        const member = await tx.member.upsert({
-          create: {
-            title,
-            isOnboarded: false,
-            lastAccessed: new Date(),
-            companyId,
-            userId: invitedUser.id,
-            status: "PENDING",
-            ...role,
-          },
-          update: {
-            title,
-            isOnboarded: false,
-            lastAccessed: new Date(),
-            status: "PENDING",
-            ...role,
-          },
-          where: {
-            companyId_userId: {
-              companyId,
-              userId: invitedUser.id,
-            },
-          },
-          select: {
-            id: true,
-            userId: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        });
-
-        // custom verification token for member invitation
-        const { token: verificationToken } = await tx.verificationToken.create({
-          data: {
-            identifier: generateMemberIdentifier({
-              email,
-              memberId: member.id,
-            }),
-            token: memberInviteTokenHash,
-            expires,
-          },
+        const { member, verificationToken } = await createTeamMember(tx, {
+          userId: newUserOnTeam.id,
+          companyId: company.id,
+          name,
+          email,
+          title,
+          role,
         });
 
         await Audit.create(

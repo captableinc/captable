@@ -69,3 +69,18 @@ export const TeamMemberSchema = z.object({
     example: "cly13ipa40000i7ng42mv4x7b",
   }),
 });
+
+export type TeamMember = z.infer<typeof TeamMemberSchema>;
+
+export const CreateMemberSchema = TeamMemberSchema.pick({
+  title: true,
+  role: true,
+  customRoleId: true,
+}).extend({
+  email: z.string().openapi({
+    description: "Work Email of the team member",
+    example: "ceo@westwood.com",
+  }),
+});
+
+export type TCreateMember = z.infer<typeof CreateMemberSchema>;

@@ -52,6 +52,16 @@ export async function createMember(
           name: true,
         },
       },
+      title: true,
+      status: true,
+      isOnboarded: true,
+      role: true,
+      workEmail: true,
+      lastAccessed: true,
+      createdAt: true,
+      updatedAt: true,
+      companyId: true,
+      customRoleId: true,
     },
   });
 

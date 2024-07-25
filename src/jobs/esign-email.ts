@@ -57,13 +57,24 @@ export class EsignNotificationEmailJob extends BaseJob<ExtendedEsignPayloadType>
   readonly type = "email.esign-notification";
 
   async work(job: Job<ExtendedEsignPayloadType>): Promise<void> {
-    await db.esignRecipient.update({
-      where: {
-        id: job.data.recipient.id,
-      },
-      data: {
-        status: "SENT",
-      },
+    await db.$transaction(async (tx) => {
+      const recipient = await tx.esignRecipient.update({
+        where: {
+          id: job.data.recipient.id,
+        },
+        data: {
+          status: "SENT",
+        },
+      });
+
+      await tx.template.update({
+        where: {
+          id: recipient.templateId,
+        },
+        data: {
+          status: "SENT",
+        },
+      });
     });
 
     await sendEsignEmail(job.data);

@@ -33,78 +33,86 @@ export const createTeamMember = async (payload: CreateTeamMember) => {
     companyName,
   } = payload;
 
-  const { verificationToken, member } = await db.$transaction(async (tx) => {
-    const newUserOnTeam = await checkUserMembershipForInvitation(tx, {
-      name,
-      email,
-      companyId,
-    });
-
-    if (!newUserOnTeam) {
-      return {
-        success: false,
-        message: "user already a member",
-        data: null,
-      };
-    }
-
-    let userRole: Awaited<ReturnType<typeof getRoleById>> = {
-      customRoleId: null,
-      role: null,
-    };
-
-    if (role === "ADMIN") {
-      userRole = await getRoleById({ id: ADMIN_ROLE_ID, tx });
-    } else if (role === "CUSTOM") {
-      if (!customRoleId) {
-        return {
-          success: false,
-          message: "Enter the CustomRole ID when role set to CUSTOM",
-          data: null,
-        };
-      }
-
-      try {
-        userRole = await getRoleById({ id: customRoleId, tx });
-      } catch (error) {
-        return {
-          success: false,
-          message: "Enter Valid CustomRole ID",
-          data: null,
-        };
-      }
-    }
-
-    const { member, verificationToken } = await createMember(tx, {
-      userId: newUserOnTeam.id,
-      companyId,
-      name,
-      email,
-      title: title || "",
-      role: userRole,
-    });
-
-    await Audit.create(
-      {
-        action: "member.invited",
+  const { verificationToken, member, success, message } = await db.$transaction(
+    async (tx) => {
+      const newUserOnTeam = await checkUserMembershipForInvitation(tx, {
+        name,
+        email,
         companyId,
-        actor: { type: "user", id: userId },
-        context: {
-          requestIp,
-          userAgent,
-        },
-        target: [{ type: "user", id: member.userId }],
-        summary: `${name} invited ${member.user?.name} to join ${companyName}`,
-      },
-      tx,
-    );
+      });
 
-    return { verificationToken, member };
-  });
+      if (!newUserOnTeam) {
+        return {
+          success: false,
+          message: "user already a member",
+        };
+      }
+
+      let userRole: Awaited<ReturnType<typeof getRoleById>> = {
+        customRoleId: null,
+        role: null,
+      };
+
+      if (role === "ADMIN") {
+        userRole = await getRoleById({ id: ADMIN_ROLE_ID, tx });
+      } else if (role === "CUSTOM") {
+        if (!customRoleId) {
+          return {
+            success: false,
+            message: "Enter the CustomRole ID when role set to CUSTOM",
+          };
+        }
+
+        try {
+          userRole = await getRoleById({ id: customRoleId, tx });
+        } catch (error) {
+          return {
+            success: false,
+            message: "Enter Valid CustomRole ID",
+          };
+        }
+      }
+
+      const { member, verificationToken } = await createMember(tx, {
+        userId: newUserOnTeam.id,
+        companyId,
+        name,
+        email,
+        title: title || "",
+        role: userRole,
+      });
+
+      await Audit.create(
+        {
+          action: "member.invited",
+          companyId,
+          actor: { type: "user", id: userId },
+          context: {
+            requestIp,
+            userAgent,
+          },
+          target: [{ type: "user", id: member.userId }],
+          summary: `${name} invited ${member.user?.name} to join ${companyName}`,
+        },
+        tx,
+      );
+
+      return {
+        verificationToken,
+        member,
+        success: true,
+        message: "Team member created Successfully 🎉 !",
+      };
+    },
+  );
+
+  if (!success) {
+    return { success, message };
+  }
 
   return {
     data: { verificationToken, member },
-    success: true,
-    message: "Team member created Successfully 🎉 !",
+    success,
+    message,
   };
 };

@@ -68,7 +68,7 @@ const create = (app: PublicAPI) => {
     const { company, user } = await withCompanyAuth(c);
     const body = await c.req.json();
 
-    const email: string = body.workEmail;
+    const email: string = body.email;
     const title: string | null = body.title;
     const role: Roles | null = body.role;
     const customRoleId: string | null = body.customRoleId;

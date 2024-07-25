@@ -166,12 +166,14 @@ const UpdatesEditor = ({
   ];
 
   const [title, setTitle] = useState<string>(update?.title ?? "");
-  const [content, setContent] = useState<any>(update?.content as Block[]) ?? defaultContent;
+  const [content, setContent] = useState<Block[]>(
+    (update?.content as Block[]) ?? defaultContent,
+  );
   const [html, setHtml] = useState<string>(update?.html ?? "");
   const [loading, setLoading] = useState<boolean>(false);
 
   const editor = useCreateBlockNote({
-    initialContent: content
+    initialContent: content,
   });
 
   const draftMutation = api.update.save.useMutation({

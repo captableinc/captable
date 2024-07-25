@@ -1,9 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import {
-  SecuritiesStatusEnum,
-  ShareLegendsEnum,
-} from "@prisma/client";
-import { Share } from "next/font/google";
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@prisma/client";
 
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
   string,

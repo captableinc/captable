@@ -12,12 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { Input } from "@/components/ui/input";
 import {
   MultiSelector,
@@ -33,14 +27,17 @@ import {
   useStepper,
 } from "@/components/ui/stepper";
 import {
-  SecuritiesStatusEnum,
-  ShareLegendsEnum,
-} from "@/prisma/enums";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiAddFill } from "@remixicon/react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { type UseFormReturn, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 
@@ -256,12 +253,12 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
               />
             </div>
           </div>
-              
+
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="cliffYears"
+                name="vestingYears"
                 render={({ field }) => {
                   const { onChange, ...rest } = field;
                   return (
@@ -269,19 +266,21 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <FormLabel>Cliff Years</FormLabel>
-                            </TooltipTrigger>
+                            <FormLabel>Vesting</FormLabel>
+                          </TooltipTrigger>
                           <TooltipContent>
-                            <p>Vesting starts after</p>
+                            <p>Vesting starts over</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+
                       <div>
                         <FormControl>
                           <NumericFormat
                             thousandSeparator
                             allowedDecimalSeparators={["%"]}
                             decimalScale={0}
+                            suffix={field.value > 1 ? " years" : " year"}
                             {...rest}
                             customInput={Input}
                             onValueChange={(values) => {
@@ -294,7 +293,7 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
 
                       <FormMessage className="text-xs font-light" />
                     </FormItem>
-                  )
+                  );
                 }}
               />
             </div>
@@ -302,7 +301,7 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="vestingYears"
+                name="cliffYears"
                 render={({ field }) => {
                   const { onChange, ...rest } = field;
                   return (
@@ -310,33 +309,33 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <FormLabel>Vesting Years</FormLabel>
+                            <FormLabel>Cliff</FormLabel>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Vesting starts after</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      
-                        <div>
-                          <FormControl>
-                            <NumericFormat
-                              thousandSeparator
-                              allowedDecimalSeparators={["%"]}
-                              decimalScale={0}
-                              {...rest}
-                              customInput={Input}
-                              onValueChange={(values) => {
-                                const { floatValue } = values;
-                                onChange(floatValue);
-                              }}
-                            />
-                          </FormControl>
-                        </div>
+                      <div>
+                        <FormControl>
+                          <NumericFormat
+                            thousandSeparator
+                            allowedDecimalSeparators={["%"]}
+                            decimalScale={0}
+                            suffix={field.value > 1 ? " years" : " year"}
+                            {...rest}
+                            customInput={Input}
+                            onValueChange={(values) => {
+                              const { floatValue } = values;
+                              onChange(floatValue);
+                            }}
+                          />
+                        </FormControl>
+                      </div>
 
                       <FormMessage className="text-xs font-light" />
                     </FormItem>
-                  )
+                  );
                 }}
               />
             </div>

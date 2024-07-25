@@ -36,7 +36,7 @@ jobs:
 
       - name: 🚀 Deploy Staging
         run:
-          flyctl deploy --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
+          flyctl deploy --vm-cpu-kind=performance --remote-only --build-arg COMMIT_SHA=${{ github.sha }}
           --app ${{ steps.app_name.outputs.value }}-staging
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

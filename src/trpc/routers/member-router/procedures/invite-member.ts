@@ -3,7 +3,7 @@ import { getRoleById } from "@/lib/rbac/access-control";
 import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
 import { checkUserMembershipForInvitation } from "@/server/services/team-members/check-user-membership";
-import { createTeamMember } from "@/server/services/team-members/create-team-member";
+import { createMember } from "@/server/services/team-members/create-member";
 import { withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { ZodInviteMemberMutationSchema } from "../schema";
@@ -54,7 +54,7 @@ export const inviteMemberProcedure = withAccessControl
 
         const role = await getRoleById({ id: roleId, tx });
 
-        const { member, verificationToken } = await createTeamMember(tx, {
+        const { member, verificationToken } = await createMember(tx, {
           userId: newUserOnTeam.id,
           companyId: company.id,
           name,

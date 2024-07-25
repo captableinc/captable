@@ -15,7 +15,7 @@ type MemberPayload = {
   role: Awaited<ReturnType<typeof getRoleById>>;
 };
 
-export async function createTeamMember(
+export async function createMember(
   tx: PrismaTransactionalClient,
   memberPayload: MemberPayload,
 ) {

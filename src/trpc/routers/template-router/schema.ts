@@ -35,3 +35,8 @@ export const SignTemplateMutationSchema = z.object({
 export const ZodGetSigningFieldsSchema = z.object({
   token: z.string(),
 });
+
+export const ZodCancelTemplateMutationSchema = z.object({
+  templateId: z.string(),
+  publicId: z.string(),
+});

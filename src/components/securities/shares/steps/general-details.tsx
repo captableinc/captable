@@ -26,17 +26,18 @@ import {
   StepperPrev,
   useStepper,
 } from "@/components/ui/stepper";
-import { VestingSchedule } from "@/lib/vesting";
 import {
-  SecuritiesStatusEnum,
-  ShareLegendsEnum,
-  VestingScheduleEnum,
-} from "@/prisma/enums";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiAddFill } from "@remixicon/react";
-import { useForm } from "react-hook-form";
+import { type UseFormReturn, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
 
@@ -58,7 +59,8 @@ const formSchema = z.object({
   certificateId: z.string(),
   status: z.nativeEnum(SecuritiesStatusEnum),
   quantity: z.coerce.number().min(0),
-  vestingSchedule: z.nativeEnum(VestingScheduleEnum),
+  cliffYears: z.coerce.number().min(0),
+  vestingYears: z.coerce.number().min(0),
   companyLegends: z.nativeEnum(ShareLegendsEnum).array(),
   pricePerShare: z.coerce.number().min(0),
 });
@@ -72,14 +74,13 @@ interface GeneralDetailsProps {
 }
 
 export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
-  const form = useForm<TFormSchema>({
+  const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
   });
   const { next } = useStepper();
   const { setValue } = useAddShareFormValues();
 
   const status = Object.values(SecuritiesStatusEnum);
-  const vestingSchedule = Object.values(VestingScheduleEnum);
   const companyLegends = Object.values(ShareLegendsEnum);
 
   const handleSubmit = (data: TFormSchema) => {
@@ -92,10 +93,10 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
     label: share.name,
   }));
 
-  const vestingScheduleOpts = vestingSchedule.map((vs) => ({
-    value: vs,
-    label: VestingSchedule[vs] || "",
-  }));
+  // const vestingScheduleOpts = vestingSchedule.map((vs) => ({
+  //   value: vs,
+  //   label: VestingSchedule[vs] || "",
+  // }));
 
   const statusOpts = status.map((s) => ({
     value: s,
@@ -253,22 +254,92 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
             </div>
           </div>
 
-          <FormField
-            control={form.control}
-            name="vestingSchedule"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Vesting schedule</FormLabel>
-                <div>
-                  <LinearCombobox
-                    options={vestingScheduleOpts}
-                    onValueChange={(option) => field.onChange(option.value)}
-                  />
-                </div>
-                <FormMessage className="text-xs font-light" />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="vestingYears"
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <FormLabel>Vesting</FormLabel>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Vesting starts over</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      <div>
+                        <FormControl>
+                          <NumericFormat
+                            thousandSeparator
+                            allowedDecimalSeparators={["%"]}
+                            decimalScale={0}
+                            suffix={field.value > 1 ? " years" : " year"}
+                            {...rest}
+                            customInput={Input}
+                            onValueChange={(values) => {
+                              const { floatValue } = values;
+                              onChange(floatValue);
+                            }}
+                          />
+                        </FormControl>
+                      </div>
+
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="cliffYears"
+                render={({ field }) => {
+                  const { onChange, ...rest } = field;
+                  return (
+                    <FormItem>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <FormLabel>Cliff</FormLabel>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Vesting starts after</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <div>
+                        <FormControl>
+                          <NumericFormat
+                            thousandSeparator
+                            allowedDecimalSeparators={["%"]}
+                            decimalScale={0}
+                            suffix={field.value > 1 ? " years" : " year"}
+                            {...rest}
+                            customInput={Input}
+                            onValueChange={(values) => {
+                              const { floatValue } = values;
+                              onChange(floatValue);
+                            }}
+                          />
+                        </FormControl>
+                      </div>
+
+                      <FormMessage className="text-xs font-light" />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+          </div>
 
           <FormField
             control={form.control}

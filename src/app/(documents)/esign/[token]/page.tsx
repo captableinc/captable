@@ -1,3 +1,4 @@
+import EmptyState from "@/components/common/empty-state";
 import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { SigningFields } from "@/components/template/signing-fields";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
@@ -18,13 +19,29 @@ interface SigningPageProps {
 export default async function SigningPage(props: SigningPageProps) {
   const { token } = props.params;
 
-  const { fields, url, recipientId, templateId, signableFields } =
-    await api.template.getSigningFields.query({
-      token,
-    });
+  const {
+    fields,
+    url,
+    recipientId,
+    templateId,
+    signableFields,
+    status: templateStatus,
+  } = await api.template.getSigningFields.query({
+    token,
+  });
 
   const session = await getServerComponentAuthSession();
   const companyPublicId = session?.user.companyPublicId;
+
+  if (templateStatus === "CANCELLED") {
+    return (
+      <EmptyState
+        title={"Cancelled"}
+        subtitle={"This document signing has been cancelled."}
+        error={true}
+      />
+    );
+  }
 
   return (
     <TemplateSigningFieldProvider fields={fields}>

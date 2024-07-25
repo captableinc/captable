@@ -1,7 +1,10 @@
 import { withCompanyAuth } from "@/server/api/auth";
 import { ApiError, ErrorResponses } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { CreateShareSchema } from "@/server/api/schema/shares";
+import {
+  CreateShareSchema,
+  type ShareSchemaType,
+} from "@/server/api/schema/shares";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { addShare } from "@/server/services/shares/add-share";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -61,7 +64,7 @@ const create = (app: PublicAPI) => {
     const { company, member, user } = await withCompanyAuth(c);
     const body = await c.req.json();
 
-    const { success, message, data } = await addShare({
+    const response = await addShare({
       ...body,
       companyId: company.id,
       memberId: member.id,
@@ -73,6 +76,10 @@ const create = (app: PublicAPI) => {
       },
     });
 
+    const data = response?.data;
+    const success = response?.success;
+    const message: string = response?.message.toString();
+
     if (!success || !data) {
       throw new ApiError({
         code: "INTERNAL_SERVER_ERROR",
@@ -81,8 +88,8 @@ const create = (app: PublicAPI) => {
     }
 
     // Ensure data matches ResponseSchema
-    const responseData = {
-      status: data.status as string, // Cast to string if necessary
+    const responseData: ShareSchemaType = {
+      status: data.status, // Cast to string if necessary
       certificateId: data.certificateId,
       quantity: data.quantity,
       pricePerShare: data.pricePerShare ?? 0,
@@ -90,12 +97,21 @@ const create = (app: PublicAPI) => {
       ipContribution: data.ipContribution ?? 0,
       debtCancelled: data.debtCancelled ?? 0,
       otherContributions: data.otherContributions ?? 0,
-      vestingSchedule: data.vestingSchedule ?? "",
+      cliffYears: data.cliffYears ?? 0,
+      vestingYears: data.vestingYears ?? 0,
       companyLegends: data.companyLegends ?? "", // Add missing fields
-      issueDate: data.issueDate ?? new Date().toISOString(), // Add missing fields
-      rule144Date: data.rule144Date ?? new Date().toISOString(), // Add missing fields
-      vestingStartDate: data.vestingStartDate ?? new Date().toISOString(), // Add missing fields
-      boardApprovalDate: data.boardApprovalDate ?? new Date().toISOString(), // Add boardApprovalDate
+      issueDate: data.issueDate
+        ? data.issueDate.toISOString()
+        : new Date().toISOString(), // Add missing fields
+      rule144Date: data.rule144Date
+        ? data.rule144Date.toISOString()
+        : new Date().toISOString(), // Convert rule144Date to string
+      vestingStartDate: data.vestingStartDate
+        ? data.vestingStartDate.toISOString()
+        : new Date().toISOString(), // Add missing fields
+      boardApprovalDate: data.boardApprovalDate
+        ? data.boardApprovalDate.toISOString()
+        : new Date().toISOString(), // Add boardApprovalDate
       stakeholderId: data.stakeholderId ?? "", // Add stakeholderId
       shareClassId: data.shareClassId,
     };

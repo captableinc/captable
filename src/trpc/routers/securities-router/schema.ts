@@ -2,7 +2,6 @@ import {
   OptionStatusEnum,
   OptionTypeEnum,
   ShareLegendsEnum,
-  VestingScheduleEnum,
 } from "@/prisma/enums";
 import { SecuritiesStatusEnum } from "@prisma/client";
 import { z } from "zod";
@@ -16,7 +15,8 @@ export const ZodAddOptionMutationSchema = z.object({
   exercisePrice: z.coerce.number().min(0),
   type: z.nativeEnum(OptionTypeEnum),
   status: z.nativeEnum(OptionStatusEnum),
-  vestingSchedule: z.nativeEnum(VestingScheduleEnum),
+  cliffYears: z.coerce.number().min(0),
+  vestingYears: z.coerce.number().min(0),
   issueDate: z.string().date(),
   expirationDate: z.string().date(),
   vestingStartDate: z.string().date(),
@@ -57,7 +57,8 @@ export const ZodAddShareMutationSchema = z.object({
   debtCancelled: z.coerce.number().min(0),
   otherContributions: z.coerce.number().min(0),
   status: z.nativeEnum(SecuritiesStatusEnum),
-  vestingSchedule: z.nativeEnum(VestingScheduleEnum),
+  cliffYears: z.coerce.number().min(0),
+  vestingYears: z.coerce.number().min(0),
   companyLegends: z.nativeEnum(ShareLegendsEnum).array(),
   issueDate: z.string().date(),
   rule144Date: z.string().date(),

@@ -38,6 +38,9 @@ const route = createRoute({
   method: "delete",
   path: "/v1/companies/:id/safes/:safeId",
   request: { params: RequestSchema },
+  summary: "Delete SAFE",
+  description: "Delete a SAFE agreement.",
+  tags: ["SAFEs"],
   responses: {
     200: {
       content: {

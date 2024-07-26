@@ -38,6 +38,9 @@ const route = createRoute({
   method: "put",
   path: "/v1/companies/:id/safes/:safeId",
   request: { params: RequestSchema },
+  summary: "Update SAFE",
+  description: "Update a SAFE agreement.",
+  tags: ["SAFEs"],
   responses: {
     200: {
       content: {

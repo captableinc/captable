@@ -25,6 +25,9 @@ const route = createRoute({
   method: "get",
   path: "/v1/companies/:id/safes",
   request: { params: RequestSchema },
+  summary: "List SAFEs",
+  description: "List a SAFE agreements.",
+  tags: ["SAFEs"],
   responses: {
     200: {
       content: {

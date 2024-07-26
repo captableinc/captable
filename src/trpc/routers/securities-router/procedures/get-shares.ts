@@ -19,7 +19,8 @@ export const getSharesProcedure = withAuth.query(
           ipContribution: true,
           debtCancelled: true,
           otherContributions: true,
-          vestingSchedule: true,
+          cliffYears: true,
+          vestingYears: true,
           companyLegends: true,
           status: true,
 

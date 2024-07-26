@@ -7,6 +7,13 @@ import { TemplateSigningFieldProvider } from "@/providers/template-signing-field
 import { api } from "@/trpc/server";
 import { RiCheckFill } from "@remixicon/react";
 
+type BadgeVariant =
+  | "warning"
+  | "info"
+  | "success"
+  | "secondary"
+  | "destructive";
+
 export default async function TemplateDetailViewPage({
   params: { templatePublicId },
 }: {
@@ -29,15 +36,29 @@ export default async function TemplateDetailViewPage({
     ),
   ]);
 
+  const badgeVariant = (): BadgeVariant => {
+    let result: BadgeVariant = "warning";
+
+    if (status === "DRAFT") {
+      result = "warning";
+    } else if (status === "SENT") {
+      result = "info";
+    } else if (status === "COMPLETE") {
+      result = "success";
+    } else if (status === "WAITING") {
+      result = "secondary";
+    } else if (status === "CANCELLED") {
+      result = "destructive";
+    }
+    return result;
+  };
+
   return (
     <TemplateSigningFieldProvider fields={fields}>
       <div className="flex min-h-screen bg-gray-50">
         <div className="flex h-full flex-grow flex-col">
           <div className="col-span-12 flex align-middle">
-            <Badge
-              variant={status === "DRAFT" ? "warning" : "success"}
-              className="h-7 align-middle"
-            >
+            <Badge variant={badgeVariant()} className="h-7 align-middle">
               {status}
             </Badge>
             <span className="ml-2 align-middle text-xl font-semibold">

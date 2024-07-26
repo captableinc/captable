@@ -5,10 +5,6 @@ import {
 } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
-const VestingScheduleArr = Object.values(VestingScheduleEnum) as [
-  VestingScheduleEnum,
-  ...VestingScheduleEnum[],
-];
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
   ShareLegendsEnum,
   ...ShareLegendsEnum[],
@@ -65,9 +61,14 @@ export const ShareSchema = z
       example: 0,
     }),
 
-    vestingSchedule: z.enum(VestingScheduleArr).openapi({
-      description: "Vesting Schedule",
-      example: "VESTING_0_0_0",
+    cliffYears: z.number().nullish().openapi({
+      description: "Cliff Years",
+      example: 1,
+    }),
+
+    vestingYears: z.number().nullish().openapi({
+      description: "Vesting Years",
+      example: 4,
     }),
 
     companyLegends: z
@@ -103,7 +104,7 @@ export const ShareSchema = z
       example: "cly13ipa40000i7ng42mv4x7b",
     }),
 
-    companyId: z.string().cuid().openapi({
+    companyId: z.string().cuid().optional().openapi({
       description: "Company ID",
       example: "clyvb28ak0000f1ngcn2i0p2m",
     }),

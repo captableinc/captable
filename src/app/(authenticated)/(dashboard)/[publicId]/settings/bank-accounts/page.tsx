@@ -49,8 +49,7 @@ const ApiSettingsPage = async () => {
             </div>
           </div>
 
-          {/* <BankAccountsTable accounts={data.bankAccounts} /> */}
-          <BankAccountsTable />
+          <BankAccountsTable bankAccounts={data.bankAccounts} />
         </div>
       )}
     </Fragment>

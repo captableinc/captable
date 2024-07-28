@@ -4,6 +4,8 @@ import { registerCompanyRoutes } from "./routes/company";
 import { registerShareRoutes } from "./routes/share";
 import { registerStakeholderRoutes } from "./routes/stakeholder";
 
+
+
 const api = PublicAPI();
 
 api.use("*", middlewareServices());
@@ -12,5 +14,6 @@ api.use("*", middlewareServices());
 registerCompanyRoutes(api);
 registerShareRoutes(api);
 registerStakeholderRoutes(api);
+// registerOptionRoutes(api);
 
 export default api;

@@ -5,7 +5,7 @@ import getMany from "./getMany";
 import getOne from "./getOne";
 import update from "./update";
 
-export const registerStockOptionRoutes = (api: PublicAPI) => {
+export const registerOptionRoutes = (api: PublicAPI) => {
   create(api);
   getOne(api);
   getMany(api);

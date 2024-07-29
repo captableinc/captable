@@ -48,8 +48,13 @@ export const apiKeyRouter = createTRPCRouter({
         session,
       } = ctx;
 
-      const { partialKey, identifier, keyWithPrefix, passkey } =
-        generateApiKey();
+      const {
+        partialToken: partialKey,
+        identifier,
+        tokenWithPrefix: keyWithPrefix,
+        tokenPasskey: passkey,
+      } = generateApiKey();
+
       const hashedKey = await hashApiKey({ identifier, passkey });
       const user = session.user;
 

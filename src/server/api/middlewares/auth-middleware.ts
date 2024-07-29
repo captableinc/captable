@@ -1,11 +1,7 @@
-import {
-  decodeKey,
-  generateApiKey,
-  hashKey,
-  verifyApiKey,
-} from "@/lib/api-key";
+import { generateApiKey, verifyApiKey } from "@/lib/api-key";
 import { invariant } from "@/lib/error";
 import { getPermissions } from "@/lib/rbac/access-control";
+import { decodeToken, hashToken } from "@/lib/tokens";
 import { getCookie } from "hono/cookie";
 import type { Session } from "next-auth";
 import { ApiError } from "../error";
@@ -36,7 +32,7 @@ async function authenticateWithBearerToken(bearerToken: string, c: Context) {
 
   const isKeyValid = await verifyApiKey(
     { identifier, passkey },
-    apiKey?.hashedKey ?? (await hashKey(generateApiKey().encodedKey)),
+    apiKey?.hashedKey ?? (await hashToken(generateApiKey().encodedToken)),
   );
 
   if (!isKeyValid || !apiKey) {
@@ -154,7 +150,7 @@ async function findApiKey(identifier: string, c: Context) {
 }
 
 function extractApiKey(bearerToken: string) {
-  const decodedKey = decodeKey(bearerToken.split("_")[1] ?? "");
+  const decodedKey = decodeToken(bearerToken.split("_")[1] ?? "");
 
   return decodedKey;
 }

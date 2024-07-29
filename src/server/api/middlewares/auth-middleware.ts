@@ -1,4 +1,9 @@
-import { generateApiKey, hashKey, verifyKey } from "@/lib/api-key";
+import {
+  decodeKey,
+  generateApiKey,
+  hashKey,
+  verifyApiKey,
+} from "@/lib/api-key";
 import { invariant } from "@/lib/error";
 import { getPermissions } from "@/lib/rbac/access-control";
 import { getCookie } from "hono/cookie";
@@ -25,9 +30,14 @@ function extractBearerToken(authHeader: string | undefined): string | null {
 }
 
 async function authenticateWithBearerToken(bearerToken: string, c: Context) {
-  const apiKey = await findApiKey(bearerToken, c);
+  const { identifier, passkey } = extractApiKey(bearerToken);
 
-  const isKeyValid = isValidApiKey(bearerToken, apiKey?.hashedKey);
+  const apiKey = await findApiKey(identifier, c);
+
+  const isKeyValid = await verifyApiKey(
+    { identifier, passkey },
+    apiKey?.hashedKey ?? (await hashKey(generateApiKey().encodedKey)),
+  );
 
   if (!isKeyValid || !apiKey) {
     throw new ApiError({
@@ -107,13 +117,11 @@ async function fetchSessionFromAuthUrl(
   return data as Session;
 }
 
-async function findApiKey(bearerToken: string, c: Context) {
+async function findApiKey(identifier: string, c: Context) {
   const { db } = c.get("services");
 
-  const hashedKey = hashKey(bearerToken);
-
   const data = await db.apiKey.findFirst({
-    where: { hashedKey },
+    where: { id: identifier },
     select: {
       hashedKey: true,
       member: {
@@ -145,9 +153,8 @@ async function findApiKey(bearerToken: string, c: Context) {
   return data;
 }
 
-function isValidApiKey(bearerToken: string, hashedKey?: string | null) {
-  const randomHash = hashKey(generateApiKey().key);
-  const verified = verifyKey(bearerToken, hashedKey ?? randomHash);
+function extractApiKey(bearerToken: string) {
+  const decodedKey = decodeKey(bearerToken.split("_")[1] ?? "");
 
-  return verified;
+  return decodedKey;
 }

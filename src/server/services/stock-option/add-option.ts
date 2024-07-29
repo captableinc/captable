@@ -1,30 +1,23 @@
 import { generatePublicId } from "@/common/id";
-import {
-  type TCreateOptionSchema,
-  TOptionSchema,
-} from "@/server/api/schema/option";
+import type { TCreateOptionSchema } from "@/server/api/schema/option";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import type { TUpdateOption } from "./update-option";
 
-interface TAddOption {
-  companyId: string;
-  requestIP: string;
-  userAgent: string;
+type AuditPromise = ReturnType<typeof Audit.create>;
+
+type TAddOption = Omit<TUpdateOption, "data" | "optionId"> & {
   data: TCreateOptionSchema;
   memberId: string;
-  user: {
-    id: string;
-    name: string;
-  };
-}
+};
 
 export const addOption = async (payload: TAddOption) => {
   try {
     const { data, user, memberId } = payload;
     const documents = data.documents;
 
-    const issuedOption = await db.$transaction(async (tx) => {
+    const newOption = await db.$transaction(async (tx) => {
       const _data = {
         grantId: data.grantId,
         quantity: data.quantity,
@@ -46,8 +39,7 @@ export const addOption = async (payload: TAddOption) => {
 
       const option = await tx.option.create({ data: _data });
 
-      // biome-ignore lint/suspicious/noExplicitAny: <explain>
-      let auditPromises: any = [];
+      let auditPromises: AuditPromise[] = [];
 
       if (documents && documents.length > 0) {
         const bulkDocuments = documents.map((doc) => ({
@@ -72,18 +64,17 @@ export const addOption = async (payload: TAddOption) => {
               actor: { type: "user", id: user.id },
               context: {
                 userAgent: payload.userAgent,
-                requestIp: payload.requestIP,
+                requestIp: payload.requestIp,
               },
               target: [{ type: "document", id: doc.id }],
-              summary: `${user.name} created a document : ${doc.name}`,
+              summary: `${user.name} created a document while issuing a stock option : ${doc.name}`,
             },
             tx,
           ),
         );
       }
 
-      await Promise.all([
-        ...auditPromises,
+      auditPromises.push(
         Audit.create(
           {
             action: "option.created",
@@ -91,14 +82,16 @@ export const addOption = async (payload: TAddOption) => {
             actor: { type: "user", id: user.id },
             context: {
               userAgent: payload.userAgent,
-              requestIp: payload.requestIP,
+              requestIp: payload.requestIp,
             },
             target: [{ type: "option", id: option.id }],
             summary: `${user.name} issued an option for stakeholder : ${option.stakeholderId}`,
           },
           tx,
         ),
-      ]);
+      );
+
+      await Promise.all(auditPromises);
 
       return option;
     });
@@ -106,19 +99,13 @@ export const addOption = async (payload: TAddOption) => {
     return {
       success: true,
       message: "🎉 Successfully issued an option.",
-      data: {
-        ...issuedOption,
-        issueDate: issuedOption.issueDate.toISOString(),
-        rule144Date: issuedOption.rule144Date.toISOString(),
-        vestingStartDate: issuedOption.vestingStartDate.toISOString(),
-        boardApprovalDate: issuedOption.boardApprovalDate.toISOString(),
-        expirationDate: issuedOption.expirationDate.toISOString(),
-      },
+      data: newOption,
     };
   } catch (error) {
     console.error(error);
     if (error instanceof PrismaClientKnownRequestError) {
       // Unique constraints error code in prisma
+      // Only grantId column can throw this error code
       if (error.code === "P2002") {
         return {
           success: false,

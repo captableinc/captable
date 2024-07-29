@@ -22,8 +22,8 @@ const ResponseSchema = z
 const route = createRoute({
   method: "delete",
   path: "/v1/companies/{id}/options/{optionId}",
-  summary: "Delete issued options",
-  description: "Delete a Option by ID",
+  summary: "Delete an option by ID",
+  description: "Delete an Option by ID",
   tags: ["Options"],
   request: {
     params: RequestParamsSchema,

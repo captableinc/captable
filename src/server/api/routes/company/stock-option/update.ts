@@ -8,7 +8,6 @@ import type { PublicAPI } from "@/server/api/hono";
 
 import {
   OptionSchema,
-  type TOptionSchema,
   type TUpdateOptionSchema,
   UpdateOptionSchema,
 } from "@/server/api/schema/option";
@@ -45,7 +44,7 @@ export const RequestParamsSchema = z
       }),
   })
   .openapi({
-    description: "Update a Option by ID",
+    description: "Update an option by ID",
   });
 
 const ResponseSchema = z
@@ -54,14 +53,14 @@ const ResponseSchema = z
     data: OptionSchema,
   })
   .openapi({
-    description: "Update a Option by ID",
+    description: "Update an option by ID",
   });
 
 const route = createRoute({
   method: "put",
   path: "/v1/companies/{id}/options/{optionId}",
-  summary: "Update issued options by ID",
-  description: "Update issued options by option ID",
+  summary: "Update an issued option by ID",
+  description: "Update issued option by option ID",
   tags: ["Options"],
   request: {
     params: RequestParamsSchema,
@@ -86,7 +85,7 @@ const route = createRoute({
   },
 });
 
-const getOne = (app: PublicAPI) => {
+const update = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company, user } = await withCompanyAuth(c);
     const { optionId } = c.req.param();
@@ -106,7 +105,7 @@ const getOne = (app: PublicAPI) => {
 
     const { success, message, code, data } = await updateOption(payload);
 
-    if (!success) {
+    if (!success || !data) {
       throw new ApiError({
         code: code as ErrorCodeType,
         message,
@@ -115,12 +114,12 @@ const getOne = (app: PublicAPI) => {
 
     return c.json(
       {
-        message: message,
-        data: data as unknown as TOptionSchema,
+        message,
+        data,
       },
       200,
     );
   });
 };
 
-export default getOne;
+export default update;

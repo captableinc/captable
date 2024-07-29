@@ -63,6 +63,8 @@ model User {
 
   lastSignedIn     DateTime @default(now())
   identityProvider String?
+
+  accessTokens AccessToken[]
 }
 
 enum CredentialDeviceTypeEnum {
@@ -1136,4 +1138,21 @@ model ApiKey {
 
   @@index([membershipId])
   @@index([companyId])
+}
+
+model AccessToken {
+  id           String    @id
+  name         String?
+  partialToken String
+  hashedToken  String
+  expiresAt    DateTime?
+  lastUsed     DateTime?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

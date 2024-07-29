@@ -1,16 +1,8 @@
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
+import type { TUpdateOption } from "./update-option";
 
-interface TDeleteOption {
-  optionId: string;
-  companyId: string;
-  userAgent: string;
-  requestIp: string;
-  user: {
-    id: string;
-    name: string;
-  };
-}
+type TDeleteOption = Omit<TUpdateOption, "data">;
 
 export const deleteOption = async ({
   optionId,
@@ -35,13 +27,13 @@ export const deleteOption = async ({
     }
 
     const option = await db.$transaction(async (tx) => {
-      const deletedOption = await tx.option.delete({
+      const deleted = await tx.option.delete({
         where: {
           id: optionId,
         },
       });
 
-      const { stakeholderId } = deletedOption;
+      const { stakeholderId } = deleted;
 
       await Audit.create(
         {
@@ -52,13 +44,13 @@ export const deleteOption = async ({
             userAgent,
             requestIp,
           },
-          target: [{ type: "option", id: deletedOption.id }],
+          target: [{ type: "option", id: deleted.id }],
           summary: `${user.name} deleted the option for stakeholder ${stakeholderId}`,
         },
         tx,
       );
 
-      return deletedOption;
+      return deleted;
     });
     return {
       success: true,
@@ -71,7 +63,9 @@ export const deleteOption = async ({
       success: false,
       code: "INTERNAL_SERVER_ERROR",
       message:
-        "Error deleting the option, please try again or contact support.",
+        error instanceof Error
+          ? error.message
+          : "Error deleting the option, please try again or contact support.",
     };
   }
 };

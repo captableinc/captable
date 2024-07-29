@@ -13,6 +13,15 @@ const ParamsSchema = z.object({
     type: "string",
     example: "clyabgufg004u5tbtnz0r4cax",
   }),
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
 });
 
 const ResponseSchema = z.object({
@@ -25,7 +34,7 @@ const ResponseSchema = z.object({
 export const _delete = withAuthApiV1
   .createRoute({
     method: "delete",
-    path: "/v1/shares/{id}",
+    path: "/v1/{companyId}/shares/{id}",
     summary: "Delete Issued Shares",
     description: "Remove an issued share by its ID.",
     tags: ["Shares"],

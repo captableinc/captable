@@ -19,6 +19,15 @@ const ParamsSchema = z.object({
     type: "string",
     example: "clyabgufg004u5tbtnz0r4cax",
   }),
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
 });
 
 const ResponseSchema = z.object({
@@ -32,7 +41,7 @@ export const update = withAuthApiV1
     description: "Update details of an issued share by its ID.",
     tags: ["Shares"],
     method: "patch",
-    path: "/v1/stakeholders/{id}",
+    path: "/v1/{companyId}/stakeholders/{id}",
     request: {
       params: ParamsSchema,
       body: {

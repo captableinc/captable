@@ -12,14 +12,27 @@ const ResponseSchema = z.object({
   meta: PaginationResponseSchema,
 });
 
+const ParamsSchema = z.object({
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
+});
+
 export const getMany = withAuthApiV1
   .createRoute({
     summary: "List Issued Shares",
     description: "Retrieve a list of issued shares for the company.",
     tags: ["Shares"],
     method: "get",
-    path: "/v1/shares",
+    path: "/v1/{companyId}/shares",
     request: {
+      params: ParamsSchema,
       query: PaginationQuerySchema,
     },
     responses: {

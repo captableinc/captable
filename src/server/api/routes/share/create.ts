@@ -11,14 +11,27 @@ const ResponseSchema = z.object({
   data: CreateShareSchema,
 });
 
+const ParamsSchema = z.object({
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
+});
+
 export const create = withAuthApiV1
   .createRoute({
     method: "post",
-    path: "/v1/shares",
+    path: "/v1/{companyId}/shares",
     summary: "Create Shares",
     description: "Issue shares to a stakeholder in a company.",
     tags: ["Shares"],
     request: {
+      params: ParamsSchema,
       body: {
         content: {
           "application/json": {

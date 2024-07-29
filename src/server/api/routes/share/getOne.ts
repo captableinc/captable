@@ -14,6 +14,15 @@ const ParamsSchema = z.object({
     type: "string",
     example: "clyabgufg004u5tbtnz0r4cax",
   }),
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
 });
 
 const ResponseSchema = z.object({
@@ -26,7 +35,7 @@ export const getOne = withAuthApiV1
     description: "Fetch a single issued share record by its ID.",
     tags: ["Shares"],
     method: "get",
-    path: "/v1/shares/{id}",
+    path: "/v1/{companyId}/shares/{id}",
     request: {
       params: ParamsSchema,
     },

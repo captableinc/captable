@@ -5,10 +5,11 @@ import {
   ErrorResponses,
 } from "@/server/api/error";
 import type { PublicAPI } from "@/server/api/hono";
-import { OptionSchema, type TCreateOptionSchema } from "../../../schema/option";
-import type { TOptionSchema } from "./../../../schema/option";
-
 import { CreateOptionSchema } from "@/server/api/schema/option";
+import {
+  OptionSchema,
+  type TCreateOptionSchema,
+} from "@/server/api/schema/option";
 import { getHonoUserAgent, getIp } from "@/server/api/utils";
 import { addOption } from "@/server/services/stock-option/add-option";
 import { createRoute, z } from "@hono/zod-openapi";
@@ -37,7 +38,7 @@ const ResponseSchema = z.object({
 const route = createRoute({
   method: "post",
   path: "/v1/companies/{id}/options",
-  summary: "Issue option",
+  summary: "Issue a new stock option",
   description: "Issue stock option to a stakeholder in a company.",
   tags: ["Options"],
   request: {
@@ -69,7 +70,7 @@ const create = (app: PublicAPI) => {
     const body = await c.req.json();
 
     const { success, message, data, code } = await addOption({
-      requestIP: getIp(c.req),
+      requestIp: getIp(c.req),
       userAgent: getHonoUserAgent(c.req),
       data: body as TCreateOptionSchema,
       companyId: company.id,
@@ -80,7 +81,7 @@ const create = (app: PublicAPI) => {
       },
     });
 
-    if (!success) {
+    if (!success || !data) {
       throw new ApiError({
         code: code as ErrorCodeType,
         message,
@@ -89,8 +90,8 @@ const create = (app: PublicAPI) => {
 
     return c.json(
       {
-        message: "Stock option added successfully.",
-        data: data as unknown as TOptionSchema,
+        message,
+        data,
       },
       200,
     );

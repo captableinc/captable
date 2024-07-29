@@ -67,20 +67,19 @@ const getOne = (app: PublicAPI) => {
   app.openapi(route, async (c: Context) => {
     const { company } = await withCompanyAuth(c);
 
-    // id destructured to companyId and optionId destructured to id
     const { optionId: id } = c.req.param();
 
-    const option = (await db.option.findUnique({
+    const option = await db.option.findUnique({
       where: {
         id,
         companyId: company.id,
       },
-    })) as unknown as TOptionSchema;
+    });
 
     if (!option) {
       throw new ApiError({
         code: "NOT_FOUND",
-        message: "Option not found",
+        message: "Required option not found",
       });
     }
 

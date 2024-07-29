@@ -1,8 +1,4 @@
-import {
-  TOptionSchema,
-  type TUpdateOptionSchema,
-} from "@/server/api/schema/option";
-import type { UpdateShareSchemaType } from "@/server/api/schema/shares";
+import type { TUpdateOptionSchema } from "@/server/api/schema/option";
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -39,7 +35,7 @@ export const updateOption = async (payload: TUpdateOption) => {
       ...payload.data,
     };
 
-    const updatedOption = await db.$transaction(async (tx) => {
+    const updated = await db.$transaction(async (tx) => {
       const updated = await tx.option.update({
         where: { id: optionId },
         //@ts-ignore
@@ -68,19 +64,11 @@ export const updateOption = async (payload: TUpdateOption) => {
     return {
       success: true,
       message: "🎉 Successfully updated the option.",
-      data: {
-        ...updatedOption,
-        issueDate: updatedOption.issueDate.toISOString(),
-        rule144Date: updatedOption.rule144Date.toISOString(),
-        vestingStartDate: updatedOption.vestingStartDate.toISOString(),
-        boardApprovalDate: updatedOption.boardApprovalDate.toISOString(),
-        expirationDate: updatedOption.expirationDate.toISOString(),
-      },
+      data: updated,
     };
   } catch (error) {
     console.error("updateOption", error);
     if (error instanceof PrismaClientKnownRequestError) {
-      // Unique constraints error code in prisma
       if (error.code === "P2002") {
         return {
           success: false,

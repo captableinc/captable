@@ -52,34 +52,34 @@ export const OptionSchema = z
       example: 4,
     }),
 
-    issueDate: z.string().datetime().openapi({
+    issueDate: z.string().date().openapi({
       description: "Issue Date",
       example: "2024-01-01",
     }),
 
-    expirationDate: z.string().datetime().openapi({
+    expirationDate: z.string().date().openapi({
       description: "Expiration Date",
       example: "2028-01-01",
     }),
 
-    vestingStartDate: z.string().datetime().openapi({
+    vestingStartDate: z.string().date().openapi({
       description: "Vesting Start Date",
       example: "2024-01-01",
     }),
 
-    boardApprovalDate: z.string().datetime().openapi({
+    boardApprovalDate: z.string().date().openapi({
       description: "Board Approval Date",
       example: "2024-01-01",
     }),
 
-    rule144Date: z.string().datetime().openapi({
+    rule144Date: z.string().date().openapi({
       description: "Rule 144 Date",
       example: "2024-01-01",
     }),
 
     stakeholderId: z.string().openapi({
       description: "Stakeholder ID",
-      example: "stakeholder123",
+      example: "clz5vr0bd0001tqroiuc7lw1b",
     }),
 
     companyId: z.string().cuid().openapi({
@@ -89,7 +89,7 @@ export const OptionSchema = z
 
     equityPlanId: z.string().openapi({
       description: "Equity Plan ID",
-      example: "equityPlan123",
+      example: "clz5vtipf0003tqrovvrpepp8",
     }),
 
     documents: z
@@ -118,7 +118,7 @@ export const OptionSchema = z
     }),
   })
   .openapi({
-    description: "Get a Single Option by the ID",
+    description: "Get a single option by ID",
   });
 
 export const CreateOptionSchema = OptionSchema.omit({
@@ -134,6 +134,8 @@ export const CreateOptionSchema = OptionSchema.omit({
 
 export const UpdateOptionSchema = OptionSchema.omit({
   id: true,
+  documents: true,
+  companyId: true,
   createdAt: true,
   updatedAt: true,
 })

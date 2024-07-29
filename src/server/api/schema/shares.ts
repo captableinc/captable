@@ -1,8 +1,4 @@
-import {
-  SecuritiesStatusEnum,
-  ShareLegendsEnum,
-  VestingScheduleEnum,
-} from "@/prisma/enums";
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
@@ -61,12 +57,11 @@ export const ShareSchema = z
       example: 0,
     }),
 
-    cliffYears: z.number().nullish().openapi({
+    cliffYears: z.number().openapi({
       description: "Cliff Years",
       example: 1,
     }),
-
-    vestingYears: z.number().nullish().openapi({
+    vestingYears: z.number().openapi({
       description: "Vesting Years",
       example: 4,
     }),

@@ -11,6 +11,18 @@ const ResponseSchema = z.object({
   meta: PaginationResponseSchema,
 });
 
+const ParamsSchema = z.object({
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
+});
+
 export const getMany = withAuthApiV1
   .createRoute({
     summary: "List All Stakeholders",
@@ -18,9 +30,10 @@ export const getMany = withAuthApiV1
       "Retrieve a paginated list of all stakeholders in the company.",
     tags: ["Stakeholder"],
     method: "get",
-    path: "/v1/stakeholders",
+    path: "/v1/{companyId}/stakeholders",
     request: {
       query: PaginationQuerySchema,
+      params: ParamsSchema,
     },
     responses: {
       200: {

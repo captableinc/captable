@@ -10,14 +10,28 @@ const ResponseSchema = z.object({
   data: z.array(StakeholderSchema.pick({ id: true, name: true })),
 });
 
+const ParamsSchema = z.object({
+  companyId: z.string().openapi({
+    param: {
+      name: "companyId",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
+});
+
 export const create = withAuthApiV1
   .createRoute({
     method: "post",
-    path: "/v1/stakeholders",
+    path: "/v1/{companyId}/stakeholders",
     summary: "Create stakeholders",
     description: "Add one or more stakeholder accounts to a company.",
     tags: ["Stakeholder"],
+
     request: {
+      params: ParamsSchema,
       body: {
         content: {
           "application/json": {

@@ -243,8 +243,8 @@ importers:
         specifier: ^0.33.3
         version: 0.33.4
       sonner:
-        specifier: ^1.4.41
-        version: 1.4.41(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
+        specifier: ^1.5.0
+        version: 1.5.0(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
       stripe:
         specifier: ^15.8.0
         version: 15.8.0
@@ -7751,8 +7751,8 @@ packages:
   sonic-boom@4.0.1:
     resolution: {integrity: sha512-hTSD/6JMLyT4r9zeof6UtuBDpjJ9sO08/nmS5djaA9eozT9oOlNdpXSnzcgj4FTqpk3nkLrs61l4gip9r1HCrQ==}
 
-  sonner@1.4.41:
-    resolution: {integrity: sha512-uG511ggnnsw6gcn/X+YKkWPo5ep9il9wYi3QJxHsYe7yTZ4+cOd1wuodOUmOpFuXL+/RE3R04LczdNCDygTDgQ==}
+  sonner@1.5.0:
+    resolution: {integrity: sha512-FBjhG/gnnbN6FY0jaNnqZOMmB73R+5IiyYAw8yBj7L54ER7HB3fOSE5OFiQiE2iXWxeXKvg6fIP4LtVppHEdJA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -18279,7 +18279,7 @@ snapshots:
     dependencies:
       atomic-sleep: 1.0.0
 
-  sonner@1.4.41(react-dom@18.2.0(react@18.3.1))(react@18.3.1):
+  sonner@1.5.0(react-dom@18.2.0(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.2.0(react@18.3.1)

@@ -8,7 +8,7 @@ import { z } from "@hono/zod-openapi";
 
 const log = logger.child({ module: "api-error" });
 
-const ErrorCode = z.enum([
+export const ErrorCode = z.enum([
   "BAD_REQUEST",
   "FORBIDDEN",
   "INTERNAL_SERVER_ERROR",

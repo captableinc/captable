@@ -1,14 +1,10 @@
 import { ProxyPrismaModel } from "@/server/api/pagination/prisma-proxy";
 import { db } from "@/server/db";
+import type { GetPaginatedShares } from "../shares/get-shares";
 
-export type GetPaginatedShares = {
-  companyId: string;
-  take: number;
-  cursor?: string;
-  total?: number;
-};
+type GetPaginatedMembers = GetPaginatedShares;
 
-export const getPaginatedShares = async (payload: GetPaginatedShares) => {
+export const getPaginatedMembers = async (payload: GetPaginatedMembers) => {
   const queryCriteria = {
     where: {
       companyId: payload.companyId,
@@ -18,13 +14,15 @@ export const getPaginatedShares = async (payload: GetPaginatedShares) => {
     },
   };
 
+  console.log("Payload take is : ", payload.take);
+
   const paginationData = {
     take: payload.take,
     cursor: payload.cursor,
     total: payload.total,
   };
 
-  const prismaModel = ProxyPrismaModel(db.share);
+  const prismaModel = ProxyPrismaModel(db.member);
 
   const { data, count, total, cursor } = await prismaModel.findManyPaginated(
     queryCriteria,

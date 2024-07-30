@@ -1,6 +1,6 @@
 import { customId } from "@/common/id";
-import bcrypt from "bcryptjs";
 import { base58 } from "./base-58";
+import { createSecureHash } from "./crypto";
 
 type TTokenPrefixes = "pat" | "api";
 
@@ -27,14 +27,12 @@ export const generateTokens = (prefix: TTokenPrefixes) => {
   };
 };
 
-export const hashToken = async (key: string) => {
-  const salt = await bcrypt.genSalt(10);
-
-  return bcrypt.hash(key, salt);
+export const hashToken = (key: string) => {
+  return createSecureHash({}).hash(key);
 };
 
 export const verifyToken = (password: string, hash: string) => {
-  return bcrypt.compare(password, hash);
+  return createSecureHash({}).verify(hash, password);
 };
 
 export const decodeToken = (key: string) => {

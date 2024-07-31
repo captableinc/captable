@@ -1,6 +1,4 @@
 import EmptyState from "@/components/common/empty-state";
-import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
-import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
 import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -9,16 +7,10 @@ import CreateApiKey from "./components/create-key";
 import ApiKeysTable from "./components/table";
 
 export const metadata: Metadata = {
-  title: "API Keys",
+  title: "Access Tokens",
 };
-const ApiSettingsPage = async () => {
-  const { allow } = await serverAccessControl();
-
-  const data = await allow(api.apiKey.listAll.query(), ["api-keys", "read"]);
-
-  if (!data) {
-    return <UnAuthorizedState />;
-  }
+const AccessTokenPage = async () => {
+  const data = await api.apiKey.listAll.query();
 
   return (
     <Fragment>
@@ -26,8 +18,8 @@ const ApiSettingsPage = async () => {
         <EmptyState
           bordered={false}
           icon={<RiTerminalBoxFill />}
-          title="API Keys"
-          subtitle="Create and manage API keys"
+          title="Access Tokens"
+          subtitle="Create and manage access tokens"
         >
           <CreateApiKey />
         </EmptyState>
@@ -35,9 +27,9 @@ const ApiSettingsPage = async () => {
         <div className="flex flex-col gap-y-3">
           <div className="flex items-center justify-between gap-y-3 ">
             <div className="gap-y-3">
-              <h3 className="font-medium">API Keys</h3>
+              <h3 className="font-medium">Access Tokens</h3>
               <p className="text-sm text-muted-foreground">
-                Create and manage API keys
+                Create and manage access tokens
               </p>
             </div>
 
@@ -53,4 +45,4 @@ const ApiSettingsPage = async () => {
   );
 };
 
-export default ApiSettingsPage;
+export default AccessTokenPage;

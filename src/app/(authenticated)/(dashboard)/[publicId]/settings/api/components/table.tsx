@@ -115,7 +115,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
           {keys.map((key) => (
             <TableRow key={key.id}>
               <TableCell className="flex cursor-pointer items-center">
-                <code className="text-xs">{key.partialKey}</code>
+                <code className="text-xs">{key.partialToken}</code>
               </TableCell>
               <TableCell suppressHydrationWarning>
                 {dayjsExt().to(key.createdAt)}

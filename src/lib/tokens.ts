@@ -7,6 +7,8 @@ type TTokenPrefixes = "pat" | "api";
 const SEPARATOR = "_";
 const SPLITTER = ":";
 
+const secureHash = createSecureHash({});
+
 export const generateTokens = (prefix: TTokenPrefixes) => {
   const identifier = customId(16);
   const tokenPasskey = customId(16);
@@ -28,11 +30,11 @@ export const generateTokens = (prefix: TTokenPrefixes) => {
 };
 
 export const hashToken = (key: string) => {
-  return createSecureHash({}).hash(key);
+  return secureHash.hash(key);
 };
 
-export const verifyToken = (password: string, hash: string) => {
-  return createSecureHash({}).verify(hash, password);
+export const verifyToken = (hash: string, password: string) => {
+  return secureHash.verify(hash, password);
 };
 
 export const decodeToken = (key: string) => {

@@ -6,7 +6,6 @@ import {
 } from "@hono/zod-openapi";
 import { ErrorResponses } from "../error";
 import type { HonoEnv } from "../hono";
-import { authMiddleware } from "../middlewares/auth-middleware";
 
 type RouteConfig = Parameters<typeof OpenApiCreateRouteType>[0];
 
@@ -53,16 +52,6 @@ const createApi = <V extends Version, L extends boolean>(
       }),
     } as Request;
 
-    const defaultMiddleware = authRequired ? [authMiddleware()] : [];
-
-    const routeMiddleware = routeConfig?.middleware || [];
-
-    const middleware = authRequired
-      ? defaultMiddleware.concat(
-          Array.isArray(routeMiddleware) ? routeMiddleware : [routeMiddleware],
-        )
-      : routeConfig?.middleware;
-
     const updatedRouteConfig: U = {
       ...routeConfig,
       ...(authRequired
@@ -75,7 +64,6 @@ const createApi = <V extends Version, L extends boolean>(
           }
         : {}),
       request,
-      middleware,
       responses: {
         ...(routeConfig?.responses && { ...routeConfig.responses }),
         ...ErrorResponses,

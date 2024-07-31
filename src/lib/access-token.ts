@@ -14,5 +14,5 @@ export const verifyAccessToken = (
   { identifier, passkey }: hashApiKeyOptions,
   hash: string,
 ) => {
-  return verifyToken(identifier + passkey, hash);
+  return verifyToken(hash, identifier + passkey);
 };

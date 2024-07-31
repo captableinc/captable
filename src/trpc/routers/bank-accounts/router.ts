@@ -116,6 +116,7 @@ export const bankAccountsRouter = createTRPCRouter({
       return {
         id: newBankAccount.id,
         token,
+        message: "Bank Account created!"
       };
     }),
 
@@ -156,6 +157,11 @@ export const bankAccountsRouter = createTRPCRouter({
           },
           db
         );
+
+        return {
+          success: true,
+          message: "Bank Account has been deleted"
+        }
       } catch (error) {
         console.error("Error deleting bank account :", error);
         if (error instanceof TRPCError) {

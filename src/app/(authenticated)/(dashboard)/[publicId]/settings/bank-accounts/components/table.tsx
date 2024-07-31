@@ -48,7 +48,7 @@ interface DeleteDialogProps {
   setOpen: (val: boolean) => void;
 }
 
-function DeleteKey({ id, open, setOpen }: DeleteDialogProps) {
+function DeleteBankAccount({ id, open, setOpen }: DeleteDialogProps) {
   const router = useRouter();
 
   const deleteMutation = api.bankAccounts.delete.useMutation({
@@ -59,7 +59,7 @@ function DeleteKey({ id, open, setOpen }: DeleteDialogProps) {
 
     onError: (error) => {
       console.error(error);
-      toast.error("An error occurred while creating the API key.");
+      toast.error("An error occurred while deleting bank account.");
     },
   });
   return (
@@ -68,8 +68,8 @@ function DeleteKey({ id, open, setOpen }: DeleteDialogProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this key? This action cannot be
-            undone and you will loose the access if this API key is currently
+            Are you sure you want to delete this bank account? This action cannot be
+            undone and you will loose the access if this bank account is currently
             being used.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -120,22 +120,22 @@ const BankAccountsTable = ({
                       <DropdownMenuSeparator />
 
                       <DropdownMenuItem onClick={() => {}}>
-                        Rotate key
+                        Edit Bank Account
                       </DropdownMenuItem>
 
-                      <Allow action="delete" subject="api-keys">
+                      <Allow action="delete" subject="bank-accounts">
                         {(allow) => (
                           <DropdownMenuItem
                             disabled={!allow}
                             onSelect={() => setOpen(true)}
                           >
-                            Delete key
+                            Delete Bank Account
                           </DropdownMenuItem>
                         )}
                       </Allow>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <DeleteKey
+                  <DeleteBankAccount
                     open={open}
                     setOpen={(val) => setOpen(val)}
                     id={bank.id}

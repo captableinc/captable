@@ -6,7 +6,8 @@ import {
 } from "@hono/zod-openapi";
 import { some } from "hono/combine";
 import { ErrorResponses } from "../error";
-import type { HonoEnv } from "../hono";
+
+import type { Env } from "hono";
 import { accessTokenAuthMiddleware } from "../middlewares/access-token-auth-middleware";
 import { sessionCookieAuthMiddleware } from "../middlewares/session-cookie-auth-middleware";
 
@@ -76,7 +77,7 @@ const createApi = <V extends Version, L extends boolean>(
     const route = OpenApiCreateRoute<P, U>(updatedRouteConfig);
 
     const handler = <R extends typeof route>(
-      callback: RouteHandler<R, HonoEnv>,
+      callback: RouteHandler<R, Env>,
     ) => ({
       handler: callback,
       route: route,

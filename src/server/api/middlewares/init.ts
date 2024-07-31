@@ -1,21 +1,19 @@
 import { Audit } from "@/server/audit";
 import { db } from "@/server/db";
-import type { Middleware } from "../hono";
+import { createMiddleware } from "hono/factory";
+import { getConnInfo } from "hono/vercel";
 
-export function initMiddleware(): Middleware {
-  return async (c, next) => {
+export const initMiddleware = () =>
+  createMiddleware(async (c, next) => {
     const req = c.req;
+    const info = getConnInfo(c);
 
     c.set("services", { db, audit: Audit });
 
     c.set("info", {
-      requestIp:
-        req.header("x-forwarded-for") ||
-        req.header("remoteAddr") ||
-        "Unknown IP",
+      requestIp: info.remote.address ?? "Unknown IP",
       userAgent: req.header("User-Agent") || "",
     });
 
     await next();
-  };
-}
+  });

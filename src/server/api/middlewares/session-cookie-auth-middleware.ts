@@ -1,16 +1,16 @@
 import { invariant } from "@/lib/error";
 import { getPermissions } from "@/lib/rbac/access-control";
+import type { Context } from "hono";
 import { getCookie } from "hono/cookie";
+import { createMiddleware } from "hono/factory";
 import type { Session } from "next-auth";
 import { ApiError } from "../error";
-import type { Context, Middleware } from "../hono";
 
-export function sessionCookieAuthMiddleware(): Middleware {
-  return async (c, next) => {
+export const sessionCookieAuthMiddleware = () =>
+  createMiddleware(async (c, next) => {
     await authenticateWithSessionCookie(c);
     await next();
-  };
-}
+  });
 
 export async function authenticateWithSessionCookie(c: Context) {
   try {

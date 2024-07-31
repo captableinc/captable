@@ -3,17 +3,12 @@ import { handleError, handleZodError } from "@/server/api/error";
 import type { TPrisma } from "@/server/db";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import type { Context as GenericContext, MiddlewareHandler } from "hono";
 import type { Audit } from "../audit";
 import type { checkMembership } from "../auth";
 import { SECURITY_SCHEME_NAME } from "./const";
 
-export type HonoEnv = {
-  Bindings: {
-    NODE_ENV: (typeof env)["NODE_ENV"];
-  };
-
-  Variables: {
+declare module "hono" {
+  interface ContextVariableMap {
     services: {
       db: TPrisma;
       audit: typeof Audit;
@@ -25,11 +20,11 @@ export type HonoEnv = {
       requestIp: string;
       userAgent: string;
     };
-  };
-};
+  }
+}
 
 export function PublicAPI() {
-  const api = new OpenAPIHono<HonoEnv>({
+  const api = new OpenAPIHono({
     defaultHook: handleZodError,
   }).basePath("/api");
 
@@ -58,5 +53,5 @@ export function PublicAPI() {
 }
 
 export type PublicAPI = ReturnType<typeof PublicAPI>;
-export type Context = GenericContext<HonoEnv>;
-export type Middleware = MiddlewareHandler<HonoEnv>;
+// export type Context = GenericContext<HonoEnv>;
+// export type Middleware = MiddlewareHandler<HonoEnv>;

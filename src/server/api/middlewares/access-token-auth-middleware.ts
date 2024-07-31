@@ -1,18 +1,18 @@
 import { generateAccessToken, verifyAccessToken } from "@/lib/access-token";
 import { decodeToken, hashToken } from "@/lib/tokens";
+import type { Context } from "hono";
+import { createMiddleware } from "hono/factory";
 import { ApiError } from "../error";
-import type { Context, Middleware } from "../hono";
 
-export function accessTokenAuthMiddleware(): Middleware {
-  return async (c, next) => {
+export const accessTokenAuthMiddleware = () =>
+  createMiddleware(async (c, next) => {
     const bearerToken = extractBearerToken(c.req.header("Authorization"));
 
     if (bearerToken) {
       await authenticateWithAccessToken(bearerToken, c);
     }
     await next();
-  };
-}
+  });
 
 function extractBearerToken(authHeader: string | undefined): string | null {
   return authHeader?.replace("Bearer ", "").trim() ?? null;

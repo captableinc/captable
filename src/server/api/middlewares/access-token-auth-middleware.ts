@@ -4,12 +4,24 @@ import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { ApiError } from "../error";
 
-export const accessTokenAuthMiddleware = () =>
+export type accessTokenAuthMiddlewareOptions =
+  | {
+      withoutMembershipCheck?: boolean;
+    }
+  | undefined;
+
+export const accessTokenAuthMiddleware = (
+  option?: accessTokenAuthMiddlewareOptions,
+) =>
   createMiddleware(async (c, next) => {
     const bearerToken = extractBearerToken(c.req.header("Authorization"));
 
     if (bearerToken) {
-      await authenticateWithAccessToken(bearerToken, c);
+      await authenticateWithAccessToken(
+        bearerToken,
+        c,
+        option?.withoutMembershipCheck,
+      );
     }
     await next();
   });
@@ -18,67 +30,95 @@ function extractBearerToken(authHeader: string | undefined): string | null {
   return authHeader?.replace("Bearer ", "").trim() ?? null;
 }
 
-async function authenticateWithAccessToken(bearerToken: string, c: Context) {
+async function authenticateWithAccessToken(
+  bearerToken: string,
+  c: Context,
+  withoutMembershipCheck: undefined | boolean,
+) {
   const { identifier, passkey } = extractApiKey(bearerToken);
 
-  const apiKey = await findAccessToken(identifier, c);
+  const accessToken = await findAccessToken(identifier, c);
 
   const isKeyValid = await verifyAccessToken(
     { identifier, passkey },
-    apiKey?.hashedToken ??
+    accessToken?.hashedToken ??
       (await hashToken(generateAccessToken().encodedToken)),
   );
 
-  if (!isKeyValid || !apiKey) {
+  if (!isKeyValid || !accessToken) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "Invalid API token",
     });
   }
 
-  c.set("session", {
-    membership: apiKey.membership,
+  if (withoutMembershipCheck) {
+    c.set("session", {
+      // @ts-expect-error
+      membership: {
+        userId: accessToken.userId,
+      },
+    });
+  }
+
+  if (!withoutMembershipCheck) {
+    const { id: memberId, ...rest } = await checkMembership(
+      accessToken.userId,
+      c,
+    );
+    c.set("session", {
+      membership: { memberId, ...rest },
+    });
+  }
+}
+
+async function checkMembership(userId: string, c: Context) {
+  const { db } = c.get("services");
+  const companyId = c.req.param("companyId");
+
+  if (!companyId || companyId === "") {
+    throw new ApiError({
+      code: "BAD_REQUEST",
+      message: "company id should be in the path",
+    });
+  }
+
+  const membership = await db.member.findFirst({
+    where: { companyId, userId },
+    select: {
+      id: true,
+      companyId: true,
+      role: true,
+      customRoleId: true,
+      userId: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
   });
+
+  if (!membership) {
+    throw new ApiError({
+      code: "UNAUTHORIZED",
+      message: "user isn't a member",
+    });
+  }
+
+  return membership;
 }
 
 function findAccessToken(identifier: string, c: Context) {
   const { db } = c.get("services");
-  const companyId = c.req.param("companyId");
 
-  return db.$transaction(async (tx) => {
-    const accessToken = await tx.accessToken.findFirst({
-      where: { id: identifier },
-      select: {
-        hashedToken: true,
-        userId: true,
-      },
-    });
-
-    const membership = await tx.member.findFirst({
-      where: { companyId, userId: accessToken?.userId ?? "" },
-      select: {
-        id: true,
-        companyId: true,
-        role: true,
-        customRoleId: true,
-        userId: true,
-        user: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    if (membership && accessToken) {
-      const { hashedToken } = accessToken;
-      const { id: memberId, ...rest } = membership;
-
-      return { hashedToken, membership: { memberId, ...rest } };
-    }
-
-    return null;
+  return db.accessToken.findFirst({
+    where: { id: identifier },
+    select: {
+      hashedToken: true,
+      userId: true,
+    },
   });
 }
 

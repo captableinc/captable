@@ -3,7 +3,7 @@ import {
   CreateStakeholderSchema,
   StakeholderSchema,
 } from "../../schema/stakeholder";
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
   message: z.string(),
@@ -29,7 +29,7 @@ export const create = withAuthApiV1
     summary: "Create stakeholders",
     description: "Add one or more stakeholder accounts to a company.",
     tags: ["Stakeholder"],
-
+    middleware: [authMiddleware()],
     request: {
       params: ParamsSchema,
       body: {

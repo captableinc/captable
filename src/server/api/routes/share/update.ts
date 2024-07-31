@@ -7,7 +7,7 @@ import {
   UpdateShareSchema,
 } from "../../schema/shares";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ParamsSchema = z.object({
   id: z.string().openapi({
@@ -42,6 +42,7 @@ export const update = withAuthApiV1
     tags: ["Shares"],
     method: "patch",
     path: "/v1/{companyId}/stakeholders/{id}",
+    middleware: [authMiddleware()],
     request: {
       params: ParamsSchema,
       body: {

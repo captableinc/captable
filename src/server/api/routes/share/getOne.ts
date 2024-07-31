@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi";
 import { ApiError } from "../../error";
 import { ShareSchema, type ShareSchemaType } from "../../schema/shares";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ParamsSchema = z.object({
   id: z.string().openapi({
@@ -36,6 +36,7 @@ export const getOne = withAuthApiV1
     tags: ["Shares"],
     method: "get",
     path: "/v1/{companyId}/shares/{id}",
+    middleware: [authMiddleware()],
     request: {
       params: ParamsSchema,
     },

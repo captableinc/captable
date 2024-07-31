@@ -4,7 +4,7 @@ import {
   type CreateShareSchemaType,
 } from "../../schema/shares";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
   message: z.string(),
@@ -30,6 +30,7 @@ export const create = withAuthApiV1
     summary: "Create Shares",
     description: "Issue shares to a stakeholder in a company.",
     tags: ["Shares"],
+    middleware: [authMiddleware()],
     request: {
       params: ParamsSchema,
       body: {

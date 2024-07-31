@@ -1,6 +1,6 @@
 import { CompanySchema } from "@/server/api/schema/company";
 import { z } from "@hono/zod-openapi";
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 export const getMany = withAuthApiV1
   .createRoute({
@@ -9,6 +9,7 @@ export const getMany = withAuthApiV1
     tags: ["Company"],
     summary: "List Companies",
     description: "Retrieve a list of membership companies.",
+    middleware: [authMiddleware()],
     responses: {
       200: {
         content: {

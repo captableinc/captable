@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import { ApiError } from "../../error";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ParamsSchema = z.object({
   id: z.string().openapi({
@@ -35,6 +35,7 @@ export const _delete = withAuthApiV1
     tags: ["Stakeholder"],
     method: "delete",
     path: "/v1/{companyId}/stakeholders/{id}",
+    middleware: [authMiddleware()],
     request: { params: ParamsSchema },
     responses: {
       200: {

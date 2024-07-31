@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
 import { ApiError } from "../../error";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ParamsSchema = z.object({
   id: z.string().openapi({
@@ -38,6 +38,7 @@ export const _delete = withAuthApiV1
     summary: "Delete Issued Shares",
     description: "Remove an issued share by its ID.",
     tags: ["Shares"],
+    middleware: [authMiddleware()],
     request: { params: ParamsSchema },
     responses: {
       200: {

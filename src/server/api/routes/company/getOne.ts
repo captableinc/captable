@@ -2,7 +2,7 @@ import { ApiError } from "@/server/api/error";
 import { CompanySchema } from "@/server/api/schema/company";
 import { z } from "@hono/zod-openapi";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 export const RequestSchema = z.object({
   id: z
@@ -30,6 +30,7 @@ export const getOne = withAuthApiV1
     tags: ["Company"],
     summary: "Get Company",
     description: "Fetch details of a single company by its ID.",
+    middleware: [authMiddleware()],
     request: { params: RequestSchema },
     responses: {
       200: {

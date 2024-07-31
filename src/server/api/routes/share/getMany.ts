@@ -5,7 +5,7 @@ import {
 } from "../../schema/pagination";
 import { ShareSchema } from "../../schema/shares";
 
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
   data: z.array(ShareSchema),
@@ -31,6 +31,7 @@ export const getMany = withAuthApiV1
     tags: ["Shares"],
     method: "get",
     path: "/v1/{companyId}/shares",
+    middleware: [authMiddleware()],
     request: {
       params: ParamsSchema,
       query: PaginationQuerySchema,

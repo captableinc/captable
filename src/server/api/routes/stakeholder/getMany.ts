@@ -4,7 +4,7 @@ import {
   PaginationResponseSchema,
 } from "../../schema/pagination";
 import { StakeholderSchema } from "../../schema/stakeholder";
-import { withAuthApiV1 } from "../../utils/endpoint-creator";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
   data: z.array(StakeholderSchema),
@@ -31,6 +31,7 @@ export const getMany = withAuthApiV1
     tags: ["Stakeholder"],
     method: "get",
     path: "/v1/{companyId}/stakeholders",
+    middleware: [authMiddleware()],
     request: {
       query: PaginationQuerySchema,
       params: ParamsSchema,

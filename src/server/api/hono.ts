@@ -53,5 +53,3 @@ export function PublicAPI() {
 }
 
 export type PublicAPI = ReturnType<typeof PublicAPI>;
-// export type Context = GenericContext<HonoEnv>;
-// export type Middleware = MiddlewareHandler<HonoEnv>;

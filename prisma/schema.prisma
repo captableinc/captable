@@ -158,8 +158,8 @@ model Company {
   eSignAudits      EsignAudit[]
   billingCustomers BillingCustomer[]
   customRoles      CustomRole[]
-  apiKeys          ApiKey[]
-  BankAccount      BankAccount[]
+
+  BankAccount BankAccount[]
 
   @@unique([publicId])
 }
@@ -232,7 +232,6 @@ model Member {
   updates          Update[]
   dataRooms        DataRoomRecipient[]
   UpdateRecipient  UpdateRecipient[]
-  ApiKey           ApiKey[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -1120,29 +1119,10 @@ model BillingCustomer {
   @@index([companyId])
 }
 
-model ApiKey {
-  id         String    @id @default(cuid())
-  name       String?
-  active     Boolean   @default(true)
-  partialKey String
-  hashedKey  String    @unique // scrypt hashed token
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  lastUsed   DateTime?
-
-  membershipId String
-  member       Member @relation(fields: [membershipId], references: [id], onDelete: Cascade)
-
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String
-
-  @@index([membershipId])
-  @@index([companyId])
-}
-
 model AccessToken {
   id           String    @id
   name         String?
+  active       Boolean   @default(true)
   partialToken String
   hashedToken  String
   expiresAt    DateTime?

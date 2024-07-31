@@ -166,7 +166,7 @@ const UpdatesEditor = ({
   ];
 
   const [title, setTitle] = useState<string>(update?.title ?? "");
-  const [content, setContent] = useState<Block[]>(
+  const [content, setContent] = useState<any>(
     (update?.content as Block[]) ?? defaultContent,
   );
   const [html, setHtml] = useState<string>(update?.html ?? "");

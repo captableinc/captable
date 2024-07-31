@@ -5,18 +5,15 @@ import { z } from "@hono/zod-openapi";
 import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 export const RequestSchema = z.object({
-  id: z
-    .string()
-    .cuid()
-    .openapi({
-      description: "Company ID",
-      param: {
-        name: "id",
-        in: "path",
-      },
-
-      example: "clxwbok580000i7nge8nm1ry0",
-    }),
+  id: z.string().openapi({
+    param: {
+      name: "id",
+      in: "path",
+    },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
 });
 
 const ResponseSchema = z.object({
@@ -26,11 +23,11 @@ const ResponseSchema = z.object({
 export const getOne = withAuthApiV1
   .createRoute({
     method: "get",
-    path: "/v1/companies/:id",
+    path: "/v1/companies/{id}",
     tags: ["Company"],
     summary: "Get Company",
     description: "Fetch details of a single company by its ID.",
-    middleware: [authMiddleware()],
+    middleware: [authMiddleware({ withoutMembershipCheck: true })],
     request: { params: RequestSchema },
     responses: {
       200: {
@@ -47,6 +44,8 @@ export const getOne = withAuthApiV1
     const { db } = c.get("services");
     const { membership } = c.get("session");
     const { id: companyId } = c.req.valid("param");
+
+    console.log({ param: c.req.param() });
 
     const member = await db.member.findFirst({
       where: { companyId, id: membership.memberId },

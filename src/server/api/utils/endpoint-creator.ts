@@ -8,7 +8,11 @@ import { some } from "hono/combine";
 import { ErrorResponses } from "../error";
 
 import type { Env } from "hono";
-import { accessTokenAuthMiddleware } from "../middlewares/access-token-auth-middleware";
+
+import {
+  accessTokenAuthMiddleware,
+  type accessTokenAuthMiddlewareOptions,
+} from "../middlewares/access-token-auth-middleware";
 import { sessionCookieAuthMiddleware } from "../middlewares/session-cookie-auth-middleware";
 
 type RouteConfig = Parameters<typeof OpenApiCreateRouteType>[0];
@@ -17,17 +21,15 @@ export const SECURITY_SCHEME_NAME = "Bearer";
 
 type Version = "v1" | "v2";
 
-const ZAuthHeader = z
-  .object({
-    authorization: z
-      .string()
-      .regex(/^Bearer [a-zA-Z0-9_]+/)
-      .openapi({
-        description: "A key to authorize the request",
-        example: "Bearer cap_1234",
-      }),
-  })
-  .partial();
+const ZAuthHeader = z.object({
+  authorization: z
+    .string()
+    .regex(/^Bearer [a-zA-Z0-9_]+/)
+    .openapi({
+      description: "A key to authorize the request",
+      example: "Bearer cap_1234",
+    }),
+});
 
 type AuthHeaders = {
   headers: typeof ZAuthHeader;
@@ -89,8 +91,8 @@ const createApi = <V extends Version, L extends boolean>(
   return { createRoute };
 };
 
-export const authMiddleware = () =>
-  some(accessTokenAuthMiddleware(), sessionCookieAuthMiddleware());
+export const authMiddleware = (option?: accessTokenAuthMiddlewareOptions) =>
+  some(accessTokenAuthMiddleware(option), sessionCookieAuthMiddleware());
 
 export const ApiV1 = createApi("v1");
 

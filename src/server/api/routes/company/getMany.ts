@@ -9,7 +9,7 @@ export const getMany = withAuthApiV1
     tags: ["Company"],
     summary: "List Companies",
     description: "Retrieve a list of membership companies.",
-    middleware: [authMiddleware()],
+    middleware: [authMiddleware({ withoutMembershipCheck: true })],
     responses: {
       200: {
         content: {

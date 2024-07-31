@@ -1,6 +1,5 @@
 "use client";
 
-import type { BankAccount } from "@prisma/client";
 import {
   Table,
   TableBody,
@@ -52,13 +51,13 @@ function DeleteBankAccount({ id, open, setOpen }: DeleteDialogProps) {
   const router = useRouter();
 
   const deleteMutation = api.bankAccounts.delete.useMutation({
-    onSuccess: (message) => {
-      toast.success(message?.message);
+    onSuccess: ({message}) => {
+      toast.success(message);
       router.refresh();
     },
 
     onError: (error) => {
-      console.error(error);
+      console.error("Error deleting Bank Account", error);
       toast.error("An error occurred while deleting bank account.");
     },
   });

@@ -46,7 +46,7 @@ interface DeleteDialogProps {
 function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
   const router = useRouter();
 
-  const deleteMutation = api.apiKey.delete.useMutation({
+  const deleteMutation = api.accessToken.delete.useMutation({
     onSuccess: ({ message }) => {
       toast.success(message);
       router.refresh();
@@ -87,7 +87,7 @@ interface ApiKey {
   lastUsed: Date | null;
 }
 
-type ApiKeys = RouterOutputs["apiKey"]["listAll"]["apiKeys"];
+type ApiKeys = RouterOutputs["accessToken"]["listAll"]["apiKeys"];
 
 const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
   const [open, setOpen] = useState(false);

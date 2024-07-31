@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Access Tokens",
 };
 const AccessTokenPage = async () => {
-  const data = await api.apiKey.listAll.query();
+  const data = await api.accessToken.listAll.query();
 
   return (
     <Fragment>

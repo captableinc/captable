@@ -18,7 +18,7 @@ const CreateApiKey = () => {
   const [apiKey, setApiKey] = useState<string>("");
   const [_copied, copy] = useCopyToClipboard();
 
-  const createMutation = api.apiKey.create.useMutation({
+  const createMutation = api.accessToken.create.useMutation({
     onSuccess: ({ token }) => {
       setApiKey(token);
       copy(token);

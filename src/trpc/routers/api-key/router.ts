@@ -65,15 +65,15 @@ export const apiKeyRouter = createTRPCRouter({
 
     await Audit.create(
       {
-        action: "apiKey.created",
+        action: "accessToken.created",
         companyId,
         actor: { type: "user", id: user.id },
         context: {
           userAgent,
           requestIp,
         },
-        target: [{ type: "apiKey", id: key.id }],
-        summary: `${user.name} created the apiKey ${key.name}`,
+        target: [{ type: "accessToken", id: key.id }],
+        summary: `${user.name} created the accessToken ${key.name}`,
       },
       db,
     );
@@ -107,15 +107,15 @@ export const apiKeyRouter = createTRPCRouter({
         });
         await Audit.create(
           {
-            action: "apiKey.deleted",
+            action: "accessToken.deleted",
             companyId,
             actor: { type: "user", id: user.id },
             context: {
               userAgent,
               requestIp,
             },
-            target: [{ type: "apiKey", id: key.id }],
-            summary: `${user.name} deleted the apiKey ${key.name}`,
+            target: [{ type: "accessToken", id: key.id }],
+            summary: `${user.name} deleted the accessToken ${key.name}`,
           },
           db,
         );

@@ -52,7 +52,7 @@ export const appRouter = createTRPCRouter({
   security: securityRouter,
   billing: billingRouter,
   rbac: rbacRouter,
-  apiKey: apiKeyRouter,
+  accessToken: apiKeyRouter,
   bankAccounts: bankAccountsRouter,
 });
 

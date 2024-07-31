@@ -4,8 +4,11 @@ import {
   type RouteHandler,
   z,
 } from "@hono/zod-openapi";
+import { some } from "hono/combine";
 import { ErrorResponses } from "../error";
 import type { HonoEnv } from "../hono";
+import { accessTokenAuthMiddleware } from "../middlewares/access-token-auth-middleware";
+import { sessionCookieAuthMiddleware } from "../middlewares/session-cookie-auth-middleware";
 
 type RouteConfig = Parameters<typeof OpenApiCreateRouteType>[0];
 
@@ -84,6 +87,9 @@ const createApi = <V extends Version, L extends boolean>(
 
   return { createRoute };
 };
+
+export const authMiddleware = () =>
+  some(accessTokenAuthMiddleware(), sessionCookieAuthMiddleware());
 
 export const ApiV1 = createApi("v1");
 

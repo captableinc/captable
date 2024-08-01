@@ -87,7 +87,6 @@ export const apiKeyRouter = createTRPCRouter({
 
   delete: withAccessControl
     .input(z.object({ keyId: z.string() }))
-    .meta({ policies: { "api-keys": { allow: ["delete"] } } })
     .mutation(async ({ ctx, input }) => {
       const {
         db,

@@ -11,7 +11,7 @@ import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 
-const CreateApiKey = () => {
+const CreateAccessToken = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -22,13 +22,13 @@ const CreateApiKey = () => {
     onSuccess: ({ token }) => {
       setApiKey(token);
       copy(token);
-      toast.success("API key copied to clipboard!");
+      toast.success("Access Token copied to clipboard!");
       setOpen(true);
     },
 
     onError: (error) => {
       console.error(error);
-      toast.error("An error occurred while creating the API key.");
+      toast.error("An error occurred while creating the Access Token.");
     },
 
     onSettled: () => {
@@ -48,7 +48,7 @@ const CreateApiKey = () => {
         loading={loading}
       >
         <RiAddLine className="inline-block h-5 w-5" />
-        Create an API Key
+        Create an Access Token
       </Button>
 
       <Modal
@@ -68,18 +68,18 @@ const CreateApiKey = () => {
         }}
       >
         <Fragment>
-          <span className="font-semibold">Your API Key</span>
+          <span className="font-semibold">Your Access Token</span>
           <Card
             className="cursor-copy break-words p-3 mt-2"
             onClick={() => {
               copy(apiKey as string);
-              toast.success("API key copied to clipboard!");
+              toast.success("Access Token copied to clipboard!");
             }}
           >
             <code className="text-sm font-mono text-rose-600">{apiKey}</code>
           </Card>
           <span className="text-xs text-gray-700">
-            Click the API key above to copy
+            Click the Access Token above to copy
           </span>
         </Fragment>
       </Modal>
@@ -87,4 +87,4 @@ const CreateApiKey = () => {
   );
 };
 
-export default CreateApiKey;
+export default CreateAccessToken;

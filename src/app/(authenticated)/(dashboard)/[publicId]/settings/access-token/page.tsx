@@ -3,8 +3,8 @@ import { api } from "@/trpc/server";
 import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import { Fragment } from "react";
-import CreateApiKey from "./components/create-key";
-import ApiKeysTable from "./components/table";
+import CreateAccessToken from "./components/create-access-token";
+import AccessTokenTable from "./components/table";
 
 export const metadata: Metadata = {
   title: "Access Tokens",
@@ -21,7 +21,7 @@ const AccessTokenPage = async () => {
           title="Access Tokens"
           subtitle="Create and manage access tokens"
         >
-          <CreateApiKey />
+          <CreateAccessToken />
         </EmptyState>
       ) : (
         <div className="flex flex-col gap-y-3">
@@ -34,11 +34,11 @@ const AccessTokenPage = async () => {
             </div>
 
             <div>
-              <CreateApiKey />
+              <CreateAccessToken />
             </div>
           </div>
 
-          <ApiKeysTable keys={data.apiKeys} />
+          <AccessTokenTable keys={data.apiKeys} />
         </div>
       )}
     </Fragment>

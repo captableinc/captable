@@ -24,9 +24,12 @@ import { Switch } from "@/components/ui/switch";
 import { BankAccountTypeEnum } from "@/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UseFormReturn, useForm } from "react-hook-form";
-import { NumericFormat } from "react-number-format";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { api } from "@/trpc/react";
+import { DialogClose } from "@/components/ui/dialog";
+import { toast } from "sonner";
+
 
 type AddBankAccountType = {
   title: string | React.ReactNode;
@@ -67,6 +70,8 @@ const formSchema = z
 type TFormSchema = z.infer<typeof formSchema>;
 
 export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
+  const router = useRouter();
+  const utils = api.useUtils();
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,14 +87,21 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
     },
   });
 
-  const { mutateAsync: handleBankAccount } =
+  const { mutateAsync: handleBankAccount, isLoading, isSuccess } =
     api.bankAccounts.create.useMutation({
-      onSuccess: () => {
-        console.log("Bank Account created successfully");
+      onSuccess: ({message}) => {
+        if (message.includes("Looks like you have created both primary and non-primary accounts")) {
+          toast.error(message)
+        } else {
+          toast.success(message)
+          router.refresh()
+        }
+        
       },
 
       onError: (error) => {
         console.log("Error creating Bank Account", error);
+        toast.error("An error occurred while deleting bank account.");
       },
     });
 
@@ -299,8 +311,9 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
               />
             </div>
           </div>
-
-          <Button type="submit">Submit</Button>
+          
+            <Button type="submit" disabled={isLoading}>Submit</Button>
+          
         </form>
       </Form>
     </Modal>

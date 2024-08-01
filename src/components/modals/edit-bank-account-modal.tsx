@@ -34,10 +34,12 @@ import { toast } from "sonner";
 type AddBankAccountType = {
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
+  data: any
 };
 
 const formSchema = z
   .object({
+    id: z.string().min(1),
     beneficiaryName: z.string().min(1, {
       message: "Beneficiary Name is required",
     }),
@@ -69,44 +71,43 @@ const formSchema = z
 
 type TFormSchema = z.infer<typeof formSchema>;
 
-export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
+export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountType) => {
+
   const router = useRouter();
   const utils = api.useUtils();
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      beneficiaryName: "",
-      beneficiaryAddress: "",
-      bankName: "",
-      bankAddress: "",
-      accountNumber: "",
-      routingNumber: "",
+      id: data?.id,
+      beneficiaryName: data?.beneficiaryAddress,
+      beneficiaryAddress: data?.beneficiaryAddress,
+      bankName: data?.bankName,
+      bankAddress: data?.bankAddress,
+      accountNumber: data?.accountNumber,
+      routingNumber: data?.routingNumber,
       confirmRoutingNumber: "",
-      accountType: BankAccountTypeEnum.CHECKING,
-      isPrimary: false,
+      accountType: data?.accountType,
+      isPrimary: data?.primary,
     },
   });
 
-  const { mutateAsync: handleBankAccount, isLoading, isSuccess } =
-    api.bankAccounts.create.useMutation({
+  const { mutateAsync: handleUpdateBankAccount, isLoading, isSuccess } =
+    api.bankAccounts.updateBankAccount.useMutation({
       onSuccess: ({message}) => {
-        if (message.includes("Looks like you have created both primary and non-primary accounts")) {
-          toast.error(message)
-        } else {
-          toast.success(message)
-        }
+        toast.success(message)
         router.refresh()
       },
 
       onError: (error) => {
-        console.log("Error creating Bank Account", error);
-        toast.error("An error occurred while deleting bank account.");
+        console.log("Error updating Bank Account", error);
+        toast.error("An error occurred while updating bank account.");
       },
     });
 
-  const handleSubmit = async (data: TFormSchema) => {
+  const handleFormSubmit = async (data: any) => {
     try {
-      await handleBankAccount(data);
+      console.log('data', data)
+      await handleUpdateBankAccount(data);
     } catch (error) {
       console.log("Error creating Bank Account", error);
     }
@@ -116,7 +117,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
     <Modal size="xl" title={title} subtitle={subtitle}>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleSubmit)}
+          onSubmit={form.handleSubmit(handleFormSubmit)}
           className="flex flex-col gap-y-4"
         >
           <div className="flex items-center gap-4">
@@ -128,7 +129,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                   <FormItem>
                     <FormLabel>Beneficiary Name</FormLabel>
                     <FormControl>
-                      <Input {...field} required />
+                      <Input {...field} required  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,7 +145,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                   <FormItem>
                     <FormLabel>Beneficiary Address</FormLabel>
                     <FormControl>
-                      <Input {...field} required />
+                      <Input {...field} required  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,7 +163,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                   <FormItem>
                     <FormLabel>Bank Name</FormLabel>
                     <FormControl>
-                      <Input {...field} required />
+                      <Input {...field} required  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -200,6 +201,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                       required
                       type="number"
                       className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      
                     />
                   </FormControl>
 
@@ -301,7 +303,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                         id="is-primary"
                         className="mt-0"
                         onCheckedChange={(e) => form.setValue("isPrimary", e)}
-                        defaultChecked={false}
+                        defaultChecked={data?.primary}
                       />
                     </FormControl>
                     <FormMessage />
@@ -311,7 +313,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
             </div>
           </div>
           
-            <Button type="submit" disabled={isLoading}>Submit</Button>
+            <Button type="submit">Update</Button>
           
         </form>
       </Form>

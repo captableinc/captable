@@ -63,6 +63,7 @@ export const AuditSchema = z.object({
 
     "bankAccount.created",
     "bankAccount.deleted",
+    "bankAccount.updated",
 
     "bucket.created",
 

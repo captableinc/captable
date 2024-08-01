@@ -29,6 +29,10 @@ export const bankAccountsRouter = createTRPCRouter({
           id: true,
           bankName: true,
           accountNumber: true,
+          beneficiaryAddress: true,
+          beneficiaryName: true,
+          bankAddress: true,
+          routingNumber: true,
           primary: true,
           createdAt: true,
         },
@@ -201,4 +205,104 @@ export const bankAccountsRouter = createTRPCRouter({
         };
       }
     }),
+
+  updateBankAccount: withAccessControl
+  .input(
+    z
+      .object({
+        id: z.string().min(1),
+        beneficiaryName: z.string().min(1, {
+          message: "Beneficiary Name is required",
+        }),
+        beneficiaryAddress: z.string().min(1, {
+          message: "Beneficiary Address is required",
+        }),
+        bankName: z.string().min(1, {
+          message: "Bank Name is required",
+        }),
+        bankAddress: z.string().min(1, {
+          message: "Bank Address is required",
+        }),
+        accountNumber: z.string().min(1, {
+          message: "Account Number is required",
+        }),
+        routingNumber: z.string().min(1, {
+          message: "Routing Number is required",
+        }),
+        confirmRoutingNumber: z.string().min(1, {
+          message: "Confirm Routing Number is required",
+        }),
+        accountType: z.nativeEnum(BankAccountTypeEnum).default("CHECKING"),
+        isPrimary: z.boolean().default(false),
+      })
+      .refine((data) => data.routingNumber === data.confirmRoutingNumber, {
+        path: ["confirmRoutingNumber"],
+        message: "Routing Number does not match",
+      })
+    )
+    .meta({ policies: { "bank-accounts": { allow: ["update"] } } })
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const {
+          db,
+          membership: { companyId, memberId },
+          userAgent,
+          requestIp,
+          session,
+        } = ctx;
+
+        const user = session.user;
+
+        const bankData = {
+          beneficiaryName: input.beneficiaryName,
+          beneficiaryAddress: input.beneficiaryAddress,
+          bankName: input.bankName,
+          bankAddress: input.bankAddress,
+          routingNumber: input.routingNumber,
+          accountNumber: input.accountNumber,
+          accountType: input.accountType,
+          primary: input.isPrimary,
+          id: input.id,
+        }
+      
+        const updateBankAccount = await ctx.db.bankAccount.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            ...bankData
+          }
+        })
+
+        await Audit.create(
+          {
+            action: "bankAccount.updated",
+            companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "bankAccount", id: updateBankAccount.id }],
+            summary: `${user.name} updated the bank account ${updateBankAccount.id}`,
+          },
+          ctx.db
+        );
+
+        return { success: true, message: "Bank Account updated successfully."}
+      } catch (error) {
+        console.error("Error updating bank account :", error);
+        
+        if (error instanceof TRPCError) {
+          return {
+            success: false,
+            message: error.message,
+          };
+        }
+        return {
+          success: false,
+          message: "Oops, something went wrong. Please try again later.",
+        };
+      }
+    })
 });

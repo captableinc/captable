@@ -28,8 +28,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-
 import { Allow } from "@/components/rbac/allow";
+import { pushModal } from "@/components/modals";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/trpc/react";
@@ -83,6 +83,7 @@ function DeleteBankAccount({ id, open, setOpen }: DeleteDialogProps) {
   );
 }
 
+
 const BankAccountsTable = ({
   bankAccounts,
 }: {
@@ -118,7 +119,13 @@ const BankAccountsTable = ({
                       <DropdownMenuLabel>Options</DropdownMenuLabel>
                       <DropdownMenuSeparator />
 
-                      <DropdownMenuItem onClick={() => {}}>
+                      <DropdownMenuItem onClick={() => {
+                        pushModal("EditBankAccountModal", {
+                          title: "Edit a bank account",
+                          subtitle: "Edit a bank account to receive funds",
+                          data: bank
+                        });
+                      }}>
                         Edit Bank Account
                       </DropdownMenuItem>
 

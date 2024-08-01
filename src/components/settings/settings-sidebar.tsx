@@ -74,16 +74,17 @@ const accountNav = [
   },
 
   {
+    name: "Developer",
+    href: "/settings/developer",
+    icon: RiTerminalBoxLine,
+    activeIcon: RiTerminalBoxFill,
+  },
+
+  {
     name: "Notifications",
     href: "/settings/notifications",
     icon: RiNotificationLine,
     activeIcon: RiNotificationFill,
-  },
-  {
-    name: "Access Tokens",
-    href: "/settings/access-token",
-    icon: RiTerminalBoxLine,
-    activeIcon: RiTerminalBoxFill,
   },
 ];
 

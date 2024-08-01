@@ -15,20 +15,20 @@ const CreateAccessToken = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [apiKey, setApiKey] = useState<string>("");
+  const [accessToken, setAccessToken] = useState<string>("");
   const [_copied, copy] = useCopyToClipboard();
 
   const createMutation = api.accessToken.create.useMutation({
     onSuccess: ({ token }) => {
-      setApiKey(token);
+      setAccessToken(token);
       copy(token);
-      toast.success("Access Token copied to clipboard!");
+      toast.success("Access token copied to clipboard.");
       setOpen(true);
     },
 
     onError: (error) => {
       console.error(error);
-      toast.error("An error occurred while creating the Access Token.");
+      toast.error("An error occurred while creating the access token.");
     },
 
     onSettled: () => {
@@ -48,15 +48,15 @@ const CreateAccessToken = () => {
         loading={loading}
       >
         <RiAddLine className="inline-block h-5 w-5" />
-        Create an Access Token
+        Create an access token
       </Button>
 
       <Modal
-        title="API key created"
+        title="Access token created"
         subtitle={
           <Tldr
             message="
-            You will not see this key again, so please make sure to copy and store it in a safe place.
+            You will not see this complete access token again, so please make sure to copy and store it in a safe place.
           "
           />
         }
@@ -68,18 +68,20 @@ const CreateAccessToken = () => {
         }}
       >
         <Fragment>
-          <span className="font-semibold">Your Access Token</span>
+          <span className="font-semibold">Your access token</span>
           <Card
             className="cursor-copy break-words p-3 mt-2"
             onClick={() => {
-              copy(apiKey as string);
-              toast.success("Access Token copied to clipboard!");
+              copy(accessToken as string);
+              toast.success("Access token copied to clipboard.");
             }}
           >
-            <code className="text-sm font-mono text-rose-600">{apiKey}</code>
+            <code className="text-sm font-mono text-rose-600">
+              {accessToken}
+            </code>
           </Card>
           <span className="text-xs text-gray-700">
-            Click the Access Token above to copy
+            Click the access token above to copy
           </span>
         </Fragment>
       </Modal>

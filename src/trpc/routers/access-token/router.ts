@@ -6,14 +6,14 @@ import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 
-export const apiKeyRouter = createTRPCRouter({
+export const accessTokenRouter = createTRPCRouter({
   listAll: withAccessControl.query(async ({ ctx }) => {
     const {
       db,
       membership: { userId },
     } = ctx;
 
-    const apiKeys = await db.accessToken.findMany({
+    const accessTokens = await db.accessToken.findMany({
       where: {
         active: true,
         userId,
@@ -32,7 +32,7 @@ export const apiKeyRouter = createTRPCRouter({
     });
 
     return {
-      apiKeys,
+      accessTokens,
     };
   }),
   create: withAccessControl.mutation(async ({ ctx }) => {
@@ -73,7 +73,7 @@ export const apiKeyRouter = createTRPCRouter({
           requestIp,
         },
         target: [{ type: "accessToken", id: key.id }],
-        summary: `${user.name} created the accessToken ${key.name}`,
+        summary: `${user.name} created an access token - ${partialToken}`,
       },
       db,
     );
@@ -86,7 +86,7 @@ export const apiKeyRouter = createTRPCRouter({
   }),
 
   delete: withAccessControl
-    .input(z.object({ keyId: z.string() }))
+    .input(z.object({ tokenId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const {
         db,
@@ -95,12 +95,12 @@ export const apiKeyRouter = createTRPCRouter({
         requestIp,
         userAgent,
       } = ctx;
-      const { keyId } = input;
+      const { tokenId } = input;
       const { user } = session;
       try {
         const key = await db.accessToken.delete({
           where: {
-            id: keyId,
+            id: tokenId,
             userId,
           },
         });
@@ -114,7 +114,7 @@ export const apiKeyRouter = createTRPCRouter({
               requestIp,
             },
             target: [{ type: "accessToken", id: key.id }],
-            summary: `${user.name} deleted the accessToken ${key.name}`,
+            summary: `${user.name} deleted an access token - ${key.partialToken}`,
           },
           db,
         );
@@ -124,7 +124,7 @@ export const apiKeyRouter = createTRPCRouter({
           message: "Key deleted Successfully.",
         };
       } catch (error) {
-        console.error("Error deleting the api key :", error);
+        console.error("Error deleting the access token :", error);
         if (error instanceof TRPCError) {
           return {
             success: false,

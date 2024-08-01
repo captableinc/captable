@@ -2,7 +2,11 @@ import { customId } from "@/common/id";
 import { base58 } from "./base-58";
 import { createSecureHash } from "./crypto";
 
-type TTokenPrefixes = "pat" | "api";
+// tkn = Access token
+// sin = eSign token
+// upd = Investor update
+// wbk = webhook token
+type TTokenPrefixes = "tkn" | "sin" | "upd" | "wbk";
 
 const SEPARATOR = "_";
 const SPLITTER = ":";

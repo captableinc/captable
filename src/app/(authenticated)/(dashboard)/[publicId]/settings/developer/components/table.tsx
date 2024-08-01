@@ -38,12 +38,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 interface DeleteDialogProps {
-  keyId: string;
+  tokenId: string;
   open: boolean;
   setOpen: (val: boolean) => void;
 }
 
-function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
+function DeleteKey({ tokenId, open, setOpen }: DeleteDialogProps) {
   const router = useRouter();
 
   const deleteMutation = api.accessToken.delete.useMutation({
@@ -54,7 +54,7 @@ function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
 
     onError: (error) => {
       console.error(error);
-      toast.error("An error occurred while creating the API key.");
+      toast.error("An error occurred while creating the access token.");
     },
   });
   return (
@@ -63,15 +63,15 @@ function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this key? This action cannot be
-            undone and you will loose the access if this API key is currently
-            being used.
+            Are you sure you want to delete this access token? This action
+            cannot be undone and you will loose the access if this access token
+            is currently being used.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => deleteMutation.mutateAsync({ keyId })}
+            onClick={() => deleteMutation.mutateAsync({ tokenId })}
           >
             Continue
           </AlertDialogAction>
@@ -81,15 +81,9 @@ function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
   );
 }
 
-interface ApiKey {
-  keyId: string;
-  createdAt: Date;
-  lastUsed: Date | null;
-}
+type AccessTokens = RouterOutputs["accessToken"]["listAll"]["accessTokens"];
 
-type ApiKeys = RouterOutputs["accessToken"]["listAll"]["apiKeys"];
-
-const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
+const AccessTokenTable = ({ tokens }: { tokens: AccessTokens }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -97,7 +91,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
       <div className="mx-3">
         <Tldr
           message="
-          For security reasons, we have no ways to retrieve your complete API keys. If you lose your API key, you will need to create or rotate and replace with a new one.
+          For security reasons, we have no ways to retrieve your complete access token. If you lose your access key, you will need to create or rotate and replace with a new one.
         "
         />
       </div>
@@ -105,23 +99,23 @@ const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Key</TableHead>
+            <TableHead>Access token</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Last used</TableHead>
             <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>
-          {keys.map((key) => (
-            <TableRow key={key.id}>
+          {tokens.map((token: AccessTokens[number]) => (
+            <TableRow key={token.id}>
               <TableCell className="flex cursor-pointer items-center">
-                <code className="text-xs">{key.partialToken}</code>
+                <code className="text-xs">{token.partialToken}</code>
               </TableCell>
               <TableCell suppressHydrationWarning>
-                {dayjsExt().to(key.createdAt)}
+                {dayjsExt().to(token.createdAt)}
               </TableCell>
               <TableCell suppressHydrationWarning>
-                {key.lastUsed ? dayjsExt().to(key.lastUsed) : "Never"}
+                {token.lastUsed ? dayjsExt().to(token.lastUsed) : "Never"}
               </TableCell>
 
               <TableCell>
@@ -138,7 +132,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
                         Rotate key
                       </DropdownMenuItem>
 
-                      <Allow action="delete" subject="api-keys">
+                      <Allow action="delete" subject="developer">
                         {(allow) => (
                           <DropdownMenuItem
                             disabled={!allow}
@@ -153,7 +147,7 @@ const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
                   <DeleteKey
                     open={open}
                     setOpen={(val) => setOpen(val)}
-                    keyId={key.id}
+                    tokenId={token.id}
                   />
                 </div>
               </TableCell>
@@ -165,4 +159,4 @@ const ApiKeysTable = ({ keys }: { keys: ApiKeys }) => {
   );
 };
 
-export default ApiKeysTable;
+export default AccessTokenTable;

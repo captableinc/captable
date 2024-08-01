@@ -1,6 +1,6 @@
 import { generateTokens, hashToken, verifyToken } from "./tokens";
 
-export const generateAccessToken = () => generateTokens("pat");
+export const generateAccessToken = () => generateTokens("tkn");
 
 interface hashApiKeyOptions {
   identifier: string;

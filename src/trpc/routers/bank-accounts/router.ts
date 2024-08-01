@@ -5,6 +5,7 @@ import { TRPCError } from "@trpc/server";
 import { BankAccountTypeEnum } from "@/prisma/enums";
 
 import z from "zod";
+import { Prisma } from "@prisma/client";
 
 export const bankAccountsRouter = createTRPCRouter({
   getAll: withAccessControl
@@ -84,41 +85,64 @@ export const bankAccountsRouter = createTRPCRouter({
       const token = createApiToken();
       const user = session.user;
 
-      const newBankAccount = await db.bankAccount.create({
-        data: {
-          beneficiaryName: input.beneficiaryName,
-          beneficiaryAddress: input.beneficiaryAddress,
-          bankName: input.bankName,
-          bankAddress: input.bankAddress,
-          routingNumber: input.routingNumber,
-          accountNumber: input.accountNumber,
-          accountType: input.accountType,
-          primary: input.isPrimary,
-          companyId: companyId,
-        },
-      });
-
-      await Audit.create(
-        {
-          action: "bankAccount.created",
-          companyId,
-          actor: { type: "user", id: user.id },
-          context: {
-            userAgent,
-            requestIp,
+      try {
+        const newBankAccount = await db.bankAccount.create({
+          data: {
+            beneficiaryName: input.beneficiaryName,
+            beneficiaryAddress: input.beneficiaryAddress,
+            bankName: input.bankName,
+            bankAddress: input.bankAddress,
+            routingNumber: input.routingNumber,
+            accountNumber: input.accountNumber,
+            accountType: input.accountType,
+            primary: input.isPrimary,
+            companyId: companyId,
           },
-          target: [{ type: "bankAccount", id: newBankAccount.id }],
-          summary: `${user.name} connected a new Bank Account ${newBankAccount.id}`,
-        },
-        db
-      );
+        });
+  
+        await Audit.create(
+          {
+            action: "bankAccount.created",
+            companyId,
+            actor: { type: "user", id: user.id },
+            context: {
+              userAgent,
+              requestIp,
+            },
+            target: [{ type: "bankAccount", id: newBankAccount.id }],
+            summary: `${user.name} connected a new Bank Account ${newBankAccount.id}`,
+          },
+          db
+        );
+  
+        return {
+          id: newBankAccount.id,
+          token,
+          message: "Bank Account created!"
+        };
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError ) {
+          if ( error.code === 'P2002' ) {
+            return {
+              success: false,
+              message: "Looks like you have created both primary and non-primary accounts"
+            }
+            
+          }
+        }
 
-      return {
-        id: newBankAccount.id,
-        token,
-        message: "Bank Account created!"
-      };
-    }),
+        if (error instanceof TRPCError) {
+          return {
+            success: false,
+            message: error.message,
+          };
+        }
+        return {
+          success: false,
+          message: "Oops, looks like something went wrong!"
+      }
+    }}
+  ),
 
   delete: withAccessControl
     .input(z.object({ id: z.string() }))
@@ -164,6 +188,7 @@ export const bankAccountsRouter = createTRPCRouter({
         }
       } catch (error) {
         console.error("Error deleting bank account :", error);
+        
         if (error instanceof TRPCError) {
           return {
             success: false,

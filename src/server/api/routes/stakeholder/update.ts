@@ -64,10 +64,13 @@ export const update = withAuthApiV1
     },
   })
   .handler(async (c) => {
-    const { db, audit } = c.get("services");
-    const { membership } = c.get("session");
-    const { requestIp, userAgent } = c.get("info");
     const { id } = c.req.valid("param");
+    const { db, audit, client } = c.get("services");
+    const { membership } = c.get("session");
+    const { requestIp, userAgent } = client as {
+      requestIp: string;
+      userAgent: string;
+    };
 
     const body = await c.req.json<TUpdateStakeholderSchema>();
 

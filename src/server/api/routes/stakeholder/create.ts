@@ -53,9 +53,12 @@ export const create = withAuthApiV1
     },
   })
   .handler(async (c) => {
-    const { db, audit } = c.get("services");
+    const { db, audit, client } = c.get("services");
     const { membership } = c.get("session");
-    const { requestIp, userAgent } = c.get("info");
+    const { requestIp, userAgent } = client as {
+      requestIp: string;
+      userAgent: string;
+    };
 
     const body = c.req.valid("json");
 

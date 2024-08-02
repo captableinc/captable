@@ -3,17 +3,16 @@ import { db } from "@/server/db";
 import { createMiddleware } from "hono/factory";
 import { getConnInfo } from "hono/vercel";
 
-export const initMiddleware = () =>
+export const middlewareServices = () =>
   createMiddleware(async (c, next) => {
     const req = c.req;
     const info = getConnInfo(c);
-
-    c.set("services", { db, audit: Audit });
-
-    c.set("info", {
+    const client = {
       requestIp: info.remote.address ?? "Unknown IP",
       userAgent: req.header("User-Agent") || "",
-    });
+    };
+
+    c.set("services", { db, audit: Audit, client });
 
     await next();
   });

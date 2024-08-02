@@ -65,9 +65,9 @@ export const update = withAuthApiV1
     },
   })
   .handler(async (c) => {
-    const { db, audit } = c.get("services");
+    const { db, audit, client } = c.get("services");
     const { membership } = c.get("session");
-    const { requestIp, userAgent } = c.get("info");
+    const { requestIp, userAgent } = client;
     const { id } = c.req.valid("param");
 
     const body = c.req.valid("json");

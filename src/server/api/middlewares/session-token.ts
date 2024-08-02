@@ -42,9 +42,10 @@ function determineCookieName(authUrl: string): string {
 async function validateSessionCookie(authUrl: string, c: Context) {
   const session = await fetchSessionFromAuthUrl(authUrl, c);
   const companyIdParam = c.req.param("companyId");
+  const { db } = c.get("services");
 
   const { err, val } = await getPermissions({
-    db: c.get("services").db,
+    db,
     session: {
       ...session,
       user: {

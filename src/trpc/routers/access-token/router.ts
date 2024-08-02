@@ -35,6 +35,7 @@ export const accessTokenRouter = createTRPCRouter({
       accessTokens,
     };
   }),
+
   create: withAccessControl.mutation(async ({ ctx }) => {
     const {
       db,

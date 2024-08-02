@@ -12,13 +12,13 @@ declare module "hono" {
     services: {
       db: TPrisma;
       audit: typeof Audit;
+      client: {
+        requestIp: string;
+        userAgent: string;
+      };
     };
     session: {
       membership: Awaited<ReturnType<typeof checkMembership>>;
-    };
-    info: {
-      requestIp: string;
-      userAgent: string;
     };
   }
 }

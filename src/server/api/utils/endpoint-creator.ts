@@ -12,8 +12,8 @@ import type { Env } from "hono";
 import {
   accessTokenAuthMiddleware,
   type accessTokenAuthMiddlewareOptions,
-} from "../middlewares/access-token-auth-middleware";
-import { sessionCookieAuthMiddleware } from "../middlewares/session-cookie-auth-middleware";
+} from "../middlewares/bearer-token";
+import { sessionCookieAuthMiddleware } from "../middlewares/session-token";
 
 type RouteConfig = Parameters<typeof OpenApiCreateRouteType>[0];
 
@@ -21,18 +21,18 @@ export const SECURITY_SCHEME_NAME = "Bearer";
 
 type Version = "v1" | "v2";
 
-const ZAuthHeader = z.object({
+const AuthHeaderSchema = z.object({
   authorization: z
     .string()
     .regex(/^Bearer [a-zA-Z0-9_]+/)
     .openapi({
       description: "A key to authorize the request",
-      example: "Bearer cap_1234",
+      example: "Bearer tkn_x0X0x0X0x0X0x0X0x0X0x0X",
     }),
 });
 
 type AuthHeaders = {
-  headers: typeof ZAuthHeader;
+  headers: typeof AuthHeaderSchema;
 };
 
 const createApi = <V extends Version, L extends boolean>(
@@ -53,8 +53,8 @@ const createApi = <V extends Version, L extends boolean>(
       ...(authRequired && {
         headers: routeConfig.request?.headers
           ? // @ts-expect-error
-            ZAuthHeader.merge(routeConfig.request.headers)
-          : ZAuthHeader,
+            AuthHeaderSchema.merge(routeConfig.request.headers)
+          : AuthHeaderSchema,
       }),
     } as Request;
 

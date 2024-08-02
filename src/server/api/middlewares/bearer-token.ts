@@ -48,7 +48,7 @@ async function authenticateWithAccessToken(
   if (!isKeyValid || !accessToken) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "Invalid API token",
+      message: "Bearer token is invalid",
     });
   }
 
@@ -79,7 +79,7 @@ async function checkMembership(userId: string, c: Context) {
   if (!companyId || companyId === "") {
     throw new ApiError({
       code: "BAD_REQUEST",
-      message: "company id should be in the path",
+      message: "Company id should be in the path",
     });
   }
 
@@ -103,7 +103,7 @@ async function checkMembership(userId: string, c: Context) {
   if (!membership) {
     throw new ApiError({
       code: "UNAUTHORIZED",
-      message: "user isn't a member",
+      message: "You are not authorized to access this resource",
     });
   }
 

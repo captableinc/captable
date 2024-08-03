@@ -29,6 +29,8 @@ import { z } from "zod";
 import { api } from "@/trpc/react";
 import { DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { ConfirmDialog } from "../common/confirmDialog";
+import { useState } from "react";
 
 
 type AddBankAccountType = {
@@ -75,6 +77,7 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
 
   const router = useRouter();
   const utils = api.useUtils();
+  const [switchEnabled, setSwitchEnabled] = useState(false)
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -103,6 +106,10 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
         toast.error("An error occurred while updating bank account.");
       },
     });
+
+  const handleEnableSwitch = () => {
+    setSwitchEnabled(true)
+  }
 
   const handleFormSubmit = async (data: any) => {
     try {
@@ -299,13 +306,34 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
                   <FormItem className="flex justify-center items-center">
                     <FormLabel className="pr-2">Primary Account</FormLabel>
                     <FormControl>
-                      <Switch
-                        id="is-primary"
-                        className="mt-0"
-                        onCheckedChange={(e) => form.setValue("isPrimary", e)}
-                        defaultChecked={data?.primary}
-                      />
+                      <>
+                        <ConfirmDialog title="Edit Primary/ Secondary" 
+                          body={`Please note that other primary/secondary account will be set as secondary/primary, are you sure you want to proceed?`} 
+                          trigger={ 
+                            !switchEnabled && <Switch
+                            id="is-primary"
+                            className="mt-0"
+                            onCheckedChange={(e) => form.setValue("isPrimary", e)}
+                            defaultChecked={data?.primary}
+                          />
+                          } 
+                          onConfirm={handleEnableSwitch} 
+                        />
+
+                        { 
+                        switchEnabled 
+                          && 
+                          <Switch
+                            id="is-primary"
+                            className="mt-0"
+                            disabled={!switchEnabled}
+                            onCheckedChange={(e) => form.setValue("isPrimary", e)}
+                            defaultChecked={data?.primary}
+                          />
+                        }
+                      </>
                     </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -317,6 +345,8 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
           
         </form>
       </Form>
+
+      
     </Modal>
   );
 };

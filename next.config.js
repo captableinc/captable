@@ -41,7 +41,12 @@ const nextConfig = {
   },
   experimental: {
     instrumentationHook: true,
-    serverComponentsExternalPackages: ["pino", "pino-pretty"],
+    serverComponentsExternalPackages: [
+      "pino",
+      "pino-pretty",
+      "pdf-lib",
+      "@react-pdf/renderer",
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,

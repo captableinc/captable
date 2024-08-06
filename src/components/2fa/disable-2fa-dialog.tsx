@@ -12,7 +12,6 @@ import { SecurityList } from "../security/SecurityList";
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -20,7 +19,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { OtpStyledInput } from "@/components/ui/extension/otp-input";
 import {
   Form,
   FormControl,
@@ -31,8 +29,15 @@ import {
 import { RiRotateLockFill } from "@remixicon/react";
 import { CaptableLogo } from "../common/logo";
 
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Input } from "../ui/input";
+
 export const Disable2FAForm = z.object({
-  code: z.string().min(6).max(9),
+  code: z.string().min(6),
 });
 
 export type TDisable2FAForm = z.infer<typeof Disable2FAForm>;
@@ -102,11 +107,7 @@ export const DisableTwoFactorDialog = () => {
         />
       </DialogTrigger>
 
-      <DialogContent
-        className={`${
-          twoFAMethod === "recovery" ? "max-w-2xl w-xl" : "max-w-lg w-lg"
-        }`}
-      >
+      <DialogContent>
         <header className="border-b border-gray-200 py-5 px-5">
           <DialogHeader>
             <div className="flex justify-center">
@@ -131,29 +132,38 @@ export const DisableTwoFactorDialog = () => {
                 name="code"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
+                  <FormControl>
+                    <FormItem className="flex justify-center items-center w-full">
                       <>
-                        <FormItem>
-                          {twoFAMethod === "totp" ? (
-                            <OtpStyledInput
-                              numInputs={6}
-                              inputType="text"
+                        {twoFAMethod === "totp" ? (
+                          <InputOTP maxLength={6} {...field}>
+                            <InputOTPGroup>
+                              <InputOTPSlot index={0} />
+                              <InputOTPSlot index={1} />
+                              <InputOTPSlot index={2} />
+                              <InputOTPSlot index={3} />
+                              <InputOTPSlot index={4} />
+                              <InputOTPSlot index={5} />
+                            </InputOTPGroup>
+                          </InputOTP>
+                        ) : (
+                          <>
+                            <Input
+                              placeholder="xxx-xxx"
+                              type="text"
+                              autoFocus
+                              required
+                              disabled={form.formState.isSubmitting}
                               {...field}
                             />
-                          ) : (
-                            <OtpStyledInput
-                              numInputs={9}
-                              inputType="text"
-                              {...field}
-                            />
-                          )}
-                        </FormItem>
+                            <FormMessage className="text-xs font-light" />
+                          </>
+                        )}
                         <FormMessage />
                       </>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                      <FormMessage />
+                    </FormItem>
+                  </FormControl>
                 )}
               />
 

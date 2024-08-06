@@ -46,6 +46,7 @@ const nextConfig = {
       "pino-pretty",
       "pdf-lib",
       "@react-pdf/renderer",
+      "@aws-sdk/s3-request-presigner",
     ],
   },
   eslint: {

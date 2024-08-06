@@ -26,12 +26,12 @@ export const TwoFADisabledEmail = ({
 }: TwoFADisabledEmailProps) => (
   <Html>
     <Head />
-    <Preview>Two factor authentication disabled for {companyName}</Preview>
+    <Preview>Two factor authentication disabled.</Preview>
     <Tailwind>
       <Body className="mx-auto my-auto bg-white font-sans">
         <Container className="mx-auto my-[40px] w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">
           <Heading className="mx-0 my-[30px] p-0  text-[24px] font-normal text-black">
-            Two factor authentication disabled for {companyName}
+            Two factor authentication disabled.
           </Heading>
           <Section>
             <Section className="mb-[5px] mt-[10px] ">
@@ -41,7 +41,7 @@ export const TwoFADisabledEmail = ({
                 This email is to inform you that two-factor authentication (2FA)
                 has been successfully disabled for your account. While this
                 change makes it easier to access your account, it also reduces
-                the level of security protecting your personal information.
+                the level of security protecting the information.
               </Text>
             </Section>
           </Section>

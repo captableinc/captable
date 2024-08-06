@@ -58,8 +58,8 @@ export const twoFactorAuthRouter = createTRPCRouter({
 
         await Send2FAEnabledEmail({
           email: user.email as string,
-          userName: user.name as string,
-          companyName: user.companyId,
+          userName: user.name || "",
+          companyName: "",
         });
         return {
           success: true,
@@ -86,7 +86,7 @@ export const twoFactorAuthRouter = createTRPCRouter({
 
   disable: withAuth
     .input(z.object({ code: z.string() }))
-    .mutation(async ({ ctx: { session, db }, input }) => {
+    .mutation(async ({ ctx: { session }, input }) => {
       try {
         const { user } = session;
         await disableTwoFactorAuthentication({
@@ -96,8 +96,8 @@ export const twoFactorAuthRouter = createTRPCRouter({
 
         await Send2FADisabledEmail({
           email: user.email as string,
-          userName: user.name as string,
-          companyName: user.companyId,
+          userName: user.name || "",
+          companyName: "",
         });
         return {
           success: true,

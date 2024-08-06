@@ -28,10 +28,10 @@ export const setupTwoFactorAuthentication = async ({
 
   const secret = crypto.randomBytes(10);
 
-  const backupCodes = Array.from({ length: 4 })
+  const backupCodes = Array.from({ length: 6 })
     .fill(null)
     .map(() => crypto.randomBytes(5).toString("hex"))
-    .map((code) => `${code.slice(0, 4)}-${code.slice(4, 8)}`.toUpperCase());
+    .map((code) => `${code.slice(0, 5)}-${code.slice(5)}`.toUpperCase());
 
   const accountName = user.email as string;
 

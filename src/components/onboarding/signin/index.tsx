@@ -1,6 +1,20 @@
 "use client";
 
+import { api } from "@/trpc/react";
+import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+import { CaptableLogo } from "@/components/common/logo";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -11,10 +25,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { api } from "@/trpc/react";
-import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDoorLockLine, RiGoogleFill } from "@remixicon/react";
+import {
+  RiDoorLockLine,
+  RiGoogleFill,
+  RiRotateLockFill,
+} from "@remixicon/react";
 import {
   browserSupportsWebAuthn,
   startAuthentication,
@@ -25,20 +40,35 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
 import { AuthFormHeader } from "../auth-form-header";
+
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: ZCurrentPasswordSchema,
+  totpCode: z.string().optional(),
+  recoveryCode: z.string().optional(),
 });
 
 interface LoginFormProps {
   isGoogleAuthEnabled: boolean;
 }
 
+//@TODO (Also facilitate type="password" for otp input entry)
+// Currently only type="text" is possible.
 const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const router = useRouter();
+
+  const [is2faModalOpen, setIs2faModalOpen] = useState<boolean>(false);
+  const [twoFactorAuthMethod, setTwoFactorMethod] = useState<
+    "totp" | "recovery"
+  >("totp");
+
   const [isPasskeyLoading, setIsPasskeyLoading] = useState<boolean>(false);
 
   const { mutateAsync: createPasskeySigninOptions } =
@@ -51,19 +81,55 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       password: process.env.NODE_ENV === "development" ? "P@ssw0rd!" : "",
     },
   });
+
   const isSubmitting = form.formState.isSubmitting;
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
-    const email = values.email;
-    const password = values.password;
-    const result = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/onboarding",
-    });
+  async function onFormSubmit(values: z.infer<typeof loginSchema>) {
+    try {
+      const { email, password, totpCode, recoveryCode } = values;
+      const credentials: Record<string, string> = {
+        email,
+        password,
+      };
 
-    if (result?.error) {
-      toast.error("Incorrect email or password");
+      if (totpCode) {
+        credentials.totpCode = totpCode;
+      }
+
+      if (recoveryCode) {
+        credentials.recoveryCode = recoveryCode;
+      }
+
+      if (
+        is2faModalOpen &&
+        !credentials.totpCode &&
+        !credentials.recoveryCode
+      ) {
+        toast.error("OTP or recovery code required.");
+        return;
+      }
+
+      const result = await signIn("credentials", {
+        ...credentials,
+        callbackUrl: "/onboarding",
+        redirect: false,
+      });
+
+      if (result?.error === "Two factor missing credentials") {
+        setIs2faModalOpen(true);
+        return;
+      }
+
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
+      if (result?.ok) {
+        router.push("/onboarding");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An unknown error occured");
     }
   }
 
@@ -72,7 +138,6 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       toast.error("Passkeys are not supported on this browser");
       return;
     }
-
     try {
       setIsPasskeyLoading(true);
 
@@ -107,6 +172,20 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   async function signInWithGoogle() {
     await signIn("google", { callbackUrl: "/onboarding" });
   }
+
+  const onToggle2FAMethod = () => {
+    const newMethod = twoFactorAuthMethod === "recovery" ? "totp" : "recovery";
+    newMethod === "recovery"
+      ? form.setValue("totpCode", "")
+      : form.setValue("recoveryCode", "");
+    setTwoFactorMethod(newMethod);
+  };
+
+  const onCloseTwoFactorAuthDialog = () => {
+    form.setValue("recoveryCode", "");
+    form.setValue("totpCode", "");
+    setIs2faModalOpen(false);
+  };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-cyan-100">
@@ -146,7 +225,11 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              id="login-form"
+              onSubmit={form.handleSubmit(onFormSubmit)}
+              className="space-y-8"
+            >
               <div className="grid gap-4">
                 <FormField
                   control={form.control}
@@ -212,11 +295,120 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                 <Button
                   loading={isSubmitting}
                   loadingText="Signing in..."
+                  form="login-form"
                   type="submit"
                 >
                   Login with Email
                 </Button>
               </div>
+            </form>
+
+            <form
+              id="otp-submit-form"
+              onSubmit={form.handleSubmit(onFormSubmit)}
+            >
+              <Dialog
+                open={is2faModalOpen}
+                onOpenChange={onCloseTwoFactorAuthDialog}
+              >
+                <DialogContent>
+                  <header className="border-b border-gray-200 py-5 px-5">
+                    <DialogHeader>
+                      <div className="flex justify-center">
+                        <CaptableLogo className="mb-3 h-8 w-8 rounded" />
+                      </div>
+                      <DialogTitle className="mb-4 text-center">
+                        {twoFactorAuthMethod === "totp"
+                          ? "OTP code"
+                          : "Recovery code"}
+                      </DialogTitle>
+                      <DialogDescription className="w-full text-center">
+                        {twoFactorAuthMethod === "totp"
+                          ? "Please provide a token from the authenticator app."
+                          : "Please provide your backup code provided after enabling 2FA."}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </header>
+
+                  <form onSubmit={form.handleSubmit(onFormSubmit)}>
+                    <fieldset disabled={isSubmitting}>
+                      {twoFactorAuthMethod === "totp" && (
+                        <FormField
+                          control={form.control}
+                          name="totpCode"
+                          render={({ field }) => (
+                            <FormControl>
+                              <>
+                                <FormItem className="flex justify-center items-center space-y-0 gap-x-2">
+                                  <InputOTP maxLength={6} {...field}>
+                                    <InputOTPGroup>
+                                      <InputOTPSlot index={0} />
+                                      <InputOTPSlot index={1} />
+                                      <InputOTPSlot index={2} />
+                                      <InputOTPSlot index={3} />
+                                      <InputOTPSlot index={4} />
+                                      <InputOTPSlot index={5} />
+                                    </InputOTPGroup>
+                                  </InputOTP>
+                                </FormItem>
+                                <FormMessage />
+                              </>
+                            </FormControl>
+                          )}
+                        />
+                      )}
+
+                      {twoFactorAuthMethod === "recovery" && (
+                        <FormField
+                          control={form.control}
+                          name="recoveryCode"
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="grid gap-1">
+                                <FormLabel className="sr-only">
+                                  Please provide your recovery code
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="xxxxx-xxxxx"
+                                    type="text"
+                                    autoFocus
+                                    required
+                                    disabled={isSubmitting}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs font-light" />
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                      )}
+
+                      <DialogFooter className="mt-4">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={onToggle2FAMethod}
+                        >
+                          <RiRotateLockFill />
+                          {twoFactorAuthMethod === "totp"
+                            ? "Use Backup Code"
+                            : "Use Authenticator"}
+                        </Button>
+
+                        <Button
+                          form="otp-submit-form"
+                          type="submit"
+                          loading={isSubmitting}
+                        >
+                          {isSubmitting ? "Signing in..." : "Sign In"}
+                        </Button>
+                      </DialogFooter>
+                    </fieldset>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </form>
           </Form>
 

@@ -55,14 +55,30 @@ model User {
   emailVerified DateTime?
   image         String?
 
+  twoFactorSecret      String?
+  twoFactorEnabled     Boolean @default(false)
+  twoFactorBackupCodes String?
+  failedAuthAttempts   Int     @default(0)
+
   accounts          Account[]
   sessions          Session[]
   companies         Member[]
   passkeys          Passkey[]
   verificationToken VerificationToken[]
+  blocked           BlockedUser?
 
   lastSignedIn     DateTime @default(now())
   identityProvider String?
+}
+
+model BlockedUser {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  cause     String?
+  blockedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 enum CredentialDeviceTypeEnum {

@@ -78,6 +78,11 @@ export const AuditSchema = z.object({
     "passkey.created",
     "passkey.deleted",
     "passkey.updated",
+
+    "2fa.enabled",
+    "2fa.disabled",
+    
+    "userAccount.blocked",
   ]),
   occurredAt: z.date().optional(),
   actor: z.object({
@@ -104,6 +109,7 @@ export const AuditSchema = z.object({
         "role",
         "template",
         "passkey",
+        "2fa",
       ]),
       id: z.string().optional().nullable(),
     }),

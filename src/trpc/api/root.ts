@@ -1,4 +1,5 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
+import { twoFactorAuthRouter } from "../routers/2fa-router/router";
 import { apiKeyRouter } from "../routers/api-key/router";
 import { auditRouter } from "../routers/audit-router/router";
 import { authRouter } from "../routers/auth/router";
@@ -54,6 +55,7 @@ export const appRouter = createTRPCRouter({
   rbac: rbacRouter,
   apiKey: apiKeyRouter,
   bankAccounts: bankAccountsRouter,
+  twoFactorAuth: twoFactorAuthRouter,
 });
 
 // export type definition of API

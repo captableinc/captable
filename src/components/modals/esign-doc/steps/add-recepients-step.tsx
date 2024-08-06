@@ -31,9 +31,6 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
     api.template.create.useMutation();
 
   const onSubmit = async (data: TFormSchema) => {
-    console.log("OnSubmit create called here...");
-    console.log({ data });
-
     setLoading(true);
     const document = value?.document?.[0];
     if (!document) {

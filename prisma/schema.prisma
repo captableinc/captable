@@ -65,7 +65,6 @@ model User {
   companies         Member[]
   passkeys          Passkey[]
   verificationToken VerificationToken[]
-  apiKeys           ApiKey[]
   blocked           BlockedUser?
 
   lastSignedIn     DateTime @default(now())
@@ -1150,8 +1149,6 @@ model ApiKey {
 
   company   Company @relation(fields: [companyId], references: [id])
   companyId String
-  User      User?   @relation(fields: [userId], references: [id])
-  userId    String?
 
   @@index([membershipId])
   @@index([keyId, active])

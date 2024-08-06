@@ -19,13 +19,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { downloadFile } from "@/lib/download-file";
 import { api } from "@/trpc/react";
 import { RiDownload2Line, RiMailLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { CaptableLogo } from "../common/logo";
 import { SecurityList } from "../security/SecurityList";
-import { OtpStyledInput } from "../ui/extension/otp-input";
 import {
   Form,
   FormControl,
@@ -177,20 +182,18 @@ export const EnableTwoFactorAppDialog = ({
             {recoveryCodes ? (
               <>
                 <header className="border-b border-gray-200 py-2 px-5">
-                  <div className="">
-                    <DialogHeader>
-                      <div className="flex justify-center">
-                        <CaptableLogo className="mb-3 h-8 w-8 rounded" />
-                      </div>
-                      <DialogTitle className="mb-4 text-center">
-                        Recovery codes
-                      </DialogTitle>
-                      <DialogDescription className="text-center">
-                        Your recovery codes are listed below. Please store them
-                        in a safe place.
-                      </DialogDescription>
-                    </DialogHeader>
-                  </div>
+                  <DialogHeader>
+                    <div className="flex justify-center">
+                      <CaptableLogo className="mb-3 h-8 w-8 rounded" />
+                    </div>
+                    <DialogTitle className="mb-4 text-center">
+                      Recovery codes
+                    </DialogTitle>
+                    <DialogDescription className="text-center">
+                      Your recovery codes are listed below. Please store them in
+                      a safe place.
+                    </DialogDescription>
+                  </DialogHeader>
                 </header>
                 <div className="mt-4">
                   <RecoveryCodeList recoveryCodes={recoveryCodes} />
@@ -223,16 +226,14 @@ export const EnableTwoFactorAppDialog = ({
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onFormSubmit)}>
                   <header className="border-b border-gray-200 py-2 px-5">
-                    <div className="">
-                      <DialogHeader>
-                        <div className="flex justify-center">
-                          <CaptableLogo className="mb-3 h-8 w-8 rounded" />
-                        </div>
-                        <DialogTitle className="mb-1 text-center">
-                          Enable Authenticator App
-                        </DialogTitle>
-                      </DialogHeader>
-                    </div>
+                    <DialogHeader>
+                      <div className="flex justify-center">
+                        <CaptableLogo className="mb-3 h-8 w-8 rounded" />
+                      </div>
+                      <DialogTitle className="mb-1 text-center">
+                        Enable Authenticator App
+                      </DialogTitle>
+                    </DialogHeader>
                   </header>
 
                   <fieldset
@@ -275,7 +276,16 @@ export const EnableTwoFactorAppDialog = ({
                           <FormControl>
                             <>
                               <FormItem>
-                                <OtpStyledInput numInputs={6} {...field} />
+                                <InputOTP maxLength={6} {...field}>
+                                  <InputOTPGroup>
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                    <InputOTPSlot index={3} />
+                                    <InputOTPSlot index={4} />
+                                    <InputOTPSlot index={5} />
+                                  </InputOTPGroup>
+                                </InputOTP>
                               </FormItem>
                               <FormMessage />
                             </>

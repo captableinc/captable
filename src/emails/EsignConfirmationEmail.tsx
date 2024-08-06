@@ -8,7 +8,7 @@ import {
   Preview,
   Tailwind,
   Text,
-} from "jsx-email";
+} from "@react-email/components";
 
 import type { ConfirmationEmailPayloadType } from "../jobs/esign-confirmation-email";
 

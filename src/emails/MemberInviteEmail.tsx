@@ -11,7 +11,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
+} from "@react-email/components";
 import { constants } from "../lib/constants";
 
 interface MemberInviteEmailProps {

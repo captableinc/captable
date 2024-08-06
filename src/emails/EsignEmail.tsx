@@ -14,7 +14,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
+} from "@react-email/components";
 import {
   ArrowRight,
   SignatureIcon,

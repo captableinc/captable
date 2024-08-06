@@ -15,7 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { OtpStyledInput } from "@/components/ui/extension/otp-input";
 import {
   Form,
   FormControl,
@@ -28,8 +27,6 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import {
   RiDoorLockLine,
-  RiEyeFill,
-  RiEyeOffLine,
   RiGoogleFill,
   RiRotateLockFill,
 } from "@remixicon/react";
@@ -42,10 +39,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
 import { AuthFormHeader } from "../auth-form-header";
 
-const INPUT_NUM = 6;
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -58,18 +59,11 @@ interface LoginFormProps {
   isGoogleAuthEnabled: boolean;
 }
 
-enum OtpInputType {
-  password = "password",
-  text = "text",
-}
-
+//@TODO (Also facilitate type="password" for otp input entry)
+// Currently only type="text" is possible.
 const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const router = useRouter();
 
-  const [isPassword, setIsPassword] = useState<OtpInputType>(
-    OtpInputType.password,
-  );
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [is2faModalOpen, setIs2faModalOpen] = useState<boolean>(false);
   const [twoFactorAuthMethod, setTwoFactorMethod] = useState<
     "totp" | "recovery"
@@ -128,8 +122,8 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
 
       if (result?.error) {
         toast.error(result.error);
+        return;
       }
-
       if (result?.ok) {
         router.push("/onboarding");
       }
@@ -317,13 +311,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                 open={is2faModalOpen}
                 onOpenChange={onCloseTwoFactorAuthDialog}
               >
-                <DialogContent
-                  className={`${
-                    twoFactorAuthMethod === "recovery"
-                      ? "max-w-2xl w-xl"
-                      : "max-w-lg w-lg"
-                  }`}
-                >
+                <DialogContent>
                   <header className="border-b border-gray-200 py-5 px-5">
                     <DialogHeader>
                       <div className="flex justify-center">
@@ -332,12 +320,12 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                       <DialogTitle className="mb-4 text-center">
                         {twoFactorAuthMethod === "totp"
                           ? "OTP code"
-                          : "Backup code"}
+                          : "Recovery code"}
                       </DialogTitle>
-                      <DialogDescription className="mx-auto text-center">
+                      <DialogDescription className="w-full text-center">
                         {twoFactorAuthMethod === "totp"
-                          ? "Please provide a token from the authenticator app,"
-                          : "Please provide your backup code."}
+                          ? "Please provide a token from the authenticator app."
+                          : "Please provide your backup code provided after enabling 2FA."}
                       </DialogDescription>
                     </DialogHeader>
                   </header>
@@ -351,34 +339,17 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                           render={({ field }) => (
                             <FormControl>
                               <>
-                                <FormItem className="flex space-y-0 gap-x-2">
-                                  <OtpStyledInput
-                                    numInputs={INPUT_NUM}
-                                    inputType={isPassword}
-                                    {...field}
-                                  />
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="size-9"
-                                    type="button"
-                                    onClick={() => {
-                                      setIsPassword(
-                                        isPassword === OtpInputType.password
-                                          ? OtpInputType.text
-                                          : OtpInputType.password,
-                                      );
-                                    }}
-                                  >
-                                    {isPassword === OtpInputType.password ? (
-                                      <RiEyeFill />
-                                    ) : (
-                                      <RiEyeOffLine />
-                                    )}
-                                    <span className="sr-only">
-                                      {isPassword}
-                                    </span>
-                                  </Button>
+                                <FormItem className="flex justify-center items-center space-y-0 gap-x-2">
+                                  <InputOTP maxLength={6} {...field}>
+                                    <InputOTPGroup>
+                                      <InputOTPSlot index={0} />
+                                      <InputOTPSlot index={1} />
+                                      <InputOTPSlot index={2} />
+                                      <InputOTPSlot index={3} />
+                                      <InputOTPSlot index={4} />
+                                      <InputOTPSlot index={5} />
+                                    </InputOTPGroup>
+                                  </InputOTP>
                                 </FormItem>
                                 <FormMessage />
                               </>
@@ -392,11 +363,24 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
                           control={form.control}
                           name="recoveryCode"
                           render={({ field }) => (
-                            <OtpStyledInput
-                              numInputs={9}
-                              inputType="text"
-                              {...field}
-                            />
+                            <FormItem>
+                              <div className="grid gap-1">
+                                <FormLabel className="sr-only">
+                                  Please provide your recovery code
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="xxxxx-xxxxx"
+                                    type="text"
+                                    autoFocus
+                                    required
+                                    disabled={isSubmitting}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage className="text-xs font-light" />
+                              </div>
+                            </FormItem>
                           )}
                         />
                       )}

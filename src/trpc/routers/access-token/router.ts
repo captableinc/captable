@@ -1,7 +1,6 @@
 import { createSecureHash, initializeAccessToken } from "@/lib/crypto";
 import { AccessTokenType } from "@/prisma/enums";
 import { Audit } from "@/server/audit";
-
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
@@ -90,6 +89,82 @@ export const accessTokenRouter = createTRPCRouter({
         partialKey: clientId,
         createdAt: key.createdAt,
       };
+    }),
+
+  rotate: withAccessControl
+    .input(z.object({ keyId: z.string() }))
+    .meta({ policies: { "api-keys": { allow: ["update"] } } })
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const {
+          db,
+          membership: { memberId, companyId },
+          session,
+          requestIp,
+          userAgent,
+        } = ctx;
+        const { keyId } = input;
+        const { user } = session;
+
+        const rotatedKey = await db.$transaction(async (tx) => {
+          const existingKey = await tx.apiKey.findUnique({
+            where: {
+              keyId,
+              active: true,
+            },
+          });
+
+          if (!existingKey) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Api key not found",
+            });
+          }
+
+          await tx.apiKey.delete({
+            where: { keyId: existingKey.keyId },
+          });
+
+          const key = await createApiKeyHandler({ tx, companyId, memberId });
+
+          await Audit.create(
+            {
+              action: "apikey.rotated",
+              companyId,
+              actor: { type: "user", id: user.id },
+              context: {
+                userAgent,
+                requestIp,
+              },
+              target: [{ type: "apiKey", id: key.id }],
+              summary: `${user.name} rotated the apiKey ${key.name}`,
+            },
+            tx,
+          );
+          return key;
+        });
+
+        return {
+          token: rotatedKey.hashedToken,
+          keyId: rotatedKey.keyId,
+          createdAt: rotatedKey.createdAt,
+        };
+      } catch (error) {
+        console.error("Error rotating the api key :", error);
+        if (error instanceof TRPCError) {
+          return {
+            success: false,
+            message: error.message,
+          };
+        }
+        return {
+          success: false,
+          message:
+            error instanceof Error
+              ? error.message
+              : "Oops, something went wrong. Please try again later.",
+        };
+      }
     }),
 
   delete: withAccessControl

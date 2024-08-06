@@ -1,4 +1,3 @@
-import { CAPTABLE_ENCRYPTION_KEY } from "@/constants/crypto";
 import { env } from "@/env";
 import { Decrypted } from "@/lib/crypto";
 import type { User } from "@prisma/client";

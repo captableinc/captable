@@ -9,7 +9,6 @@ import {
   getServerSession,
 } from "next-auth";
 
-import { CAPTABLE_ENCRYPTION_KEY } from "@/constants/crypto";
 import { env } from "@/env";
 import { getAuthenticatorOptions } from "@/lib/authenticator";
 import {
@@ -220,12 +219,8 @@ export const authOptions: NextAuthOptions = {
           );
         }
 
-        if (!passwordsMatch) {
-          throw new Error("Invalid credentials");
-        }
-
         const is2FAEnabled =
-          user.twoFactorEnabled && typeof CAPTABLE_ENCRYPTION_KEY === "string";
+          user.twoFactorEnabled && typeof env.ENCRYPTION_KEY === "string";
 
         if (is2FAEnabled) {
           if (user.blocked) {
@@ -244,6 +239,7 @@ export const authOptions: NextAuthOptions = {
             totpCode,
           });
 
+          //@TODO (Refactor this redundant code)
           if (!isValid) {
             if (user.failedAuthAttempts >= env.MAX_AUTH_ATTEMPTS) {
               throw new Error(

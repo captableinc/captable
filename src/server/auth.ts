@@ -144,6 +144,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
+  // @ts-expect-error
   adapter: PrismaAdapter(db),
   secret: env.NEXTAUTH_SECRET ?? "secret",
   session: {
@@ -337,6 +338,13 @@ export async function checkMembership({ session, tx }: checkMembershipOptions) {
       companyId: true,
       role: true,
       customRoleId: true,
+      userId: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
     },
   });
 

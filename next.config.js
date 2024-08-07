@@ -42,7 +42,12 @@ const nextConfig = {
   },
   experimental: {
     instrumentationHook: true,
-    serverComponentsExternalPackages: ["pino", "pino-pretty"],
+    serverComponentsExternalPackages: [
+      "pino",
+      "pino-pretty",
+      "pdf-lib",
+      "@aws-sdk/s3-request-presigner",
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,

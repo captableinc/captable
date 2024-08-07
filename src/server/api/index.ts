@@ -1,13 +1,13 @@
 import { PublicAPI } from "./hono";
-import { initMiddleware } from "./middlewares/init";
+import { middlewareServices } from "./middlewares/services";
 import { registerCompanyRoutes } from "./routes/company";
 import { registerSafeRoutes } from "./routes/company/safes";
-import { registerShareRoutes } from "./routes/company/share";
-import { registerStakeholderRoutes } from "./routes/company/stakeholder";
+import { registerShareRoutes } from "./routes/share";
+import { registerStakeholderRoutes } from "./routes/stakeholder";
 
 const api = PublicAPI();
 
-api.use("*", initMiddleware());
+api.use("*", middlewareServices());
 
 // Register RESTful routes
 registerSafeRoutes(api);

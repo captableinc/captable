@@ -1,22 +1,13 @@
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
-import {
-  SecuritiesStatusEnum,
-  ShareLegendsEnum,
-  VestingScheduleEnum,
-} from "@prisma/client";
-import { Share } from "next/font/google";
 
-const VestingScheduleArr = Object.values(VestingScheduleEnum) as [
-  string,
-  ...string[],
-];
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
-  string,
-  ...string[],
+  ShareLegendsEnum,
+  ...ShareLegendsEnum[],
 ];
 const SecuritiesStatusArr = Object.values(SecuritiesStatusEnum) as [
-  string,
-  ...string[],
+  SecuritiesStatusEnum,
+  ...SecuritiesStatusEnum[],
 ];
 
 export const ShareSchema = z
@@ -31,7 +22,7 @@ export const ShareSchema = z
       example: "DRAFT",
     }),
 
-    certificateId: z.string().nullish().openapi({
+    certificateId: z.string().openapi({
       description: "Certificate ID",
       example: "123",
     }),
@@ -66,22 +57,24 @@ export const ShareSchema = z
       example: 0,
     }),
 
-    vestingSchedule: z.enum(VestingScheduleArr).openapi({
-      description: "Vesting Schedule",
-      example: "VESTING_0_0_0",
+    cliffYears: z.number().openapi({
+      description: "Cliff Years",
+      example: 1,
+    }),
+    vestingYears: z.number().openapi({
+      description: "Vesting Years",
+      example: 4,
     }),
 
     companyLegends: z
       .enum(ShareLegendsArr)
       .array()
-      .default([])
-      .nullish()
       .openapi({
         description: "Company Legends",
         example: ["US_SECURITIES_ACT", "SALE_AND_ROFR"],
       }),
 
-    issueDate: z.string().datetime().nullish().openapi({
+    issueDate: z.string().datetime().openapi({
       description: "Issued Date",
       example: "2024-01-01T00:00:00.000Z",
     }),
@@ -96,7 +89,7 @@ export const ShareSchema = z
       example: "2024-01-01T00:00:00.000Z",
     }),
 
-    boardApprovalDate: z.string().datetime().nullish().openapi({
+    boardApprovalDate: z.string().datetime().openapi({
       description: "Board Approval Date",
       example: "2024-01-01T00:00:00.000Z",
     }),
@@ -106,7 +99,7 @@ export const ShareSchema = z
       example: "cly13ipa40000i7ng42mv4x7b",
     }),
 
-    companyId: z.string().cuid().openapi({
+    companyId: z.string().cuid().optional().openapi({
       description: "Company ID",
       example: "clyvb28ak0000f1ngcn2i0p2m",
     }),
@@ -126,9 +119,7 @@ export const ShareSchema = z
       example: "2024-01-01T00:00:00.000Z",
     }),
   })
-  .openapi({
-    description: "Get a Single Share by the ID",
-  });
+  .openapi("Shares");
 
 export const CreateShareSchema = ShareSchema.omit({
   id: true,

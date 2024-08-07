@@ -57,12 +57,14 @@ model User {
 
   accounts          Account[]
   sessions          Session[]
-  companies         Member[]
+  memberships       Member[]
   passkeys          Passkey[]
   verificationToken VerificationToken[]
 
   lastSignedIn     DateTime @default(now())
   identityProvider String?
+
+  accessTokens AccessToken[]
 }
 
 enum CredentialDeviceTypeEnum {
@@ -156,8 +158,8 @@ model Company {
   eSignAudits      EsignAudit[]
   billingCustomers BillingCustomer[]
   customRoles      CustomRole[]
-  apiKeys          ApiKey[]
-  BankAccount      BankAccount[]
+
+  BankAccount BankAccount[]
 
   @@unique([publicId])
 }
@@ -230,7 +232,6 @@ model Member {
   updates          Update[]
   dataRooms        DataRoomRecipient[]
   UpdateRecipient  UpdateRecipient[]
-  ApiKey           ApiKey[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -601,6 +602,9 @@ model TemplateField {
 enum TemplateStatus {
   DRAFT
   COMPLETE
+  SENT
+  WAITING
+  CANCELLED
 }
 
 model Template {
@@ -669,16 +673,6 @@ enum SecuritiesStatusEnum {
   PENDING
 }
 
-enum VestingScheduleEnum {
-  VESTING_0_0_0 // Immediate vesting
-  VESTING_0_0_1 // 1 year cliff with no vesting
-  VESTING_4_1_0 // 4 years vesting every month with no cliff
-  VESTING_4_1_1 // 4 years vesting every month with 1 year cliff
-  VESTING_4_3_1 // 4 years vesting every 3 months with 1 year cliff
-  VESTING_4_6_1 // 4 years vesting every 6 months with 1 year cliff
-  VESTING_4_12_1 // 4 years vesting every year with 1 year cliff
-}
-
 enum ShareLegendsEnum {
   US_SECURITIES_ACT // US Securities Act of 1933
   SALE_AND_ROFR // Sale and Right of first refusal
@@ -697,9 +691,8 @@ model Share {
   debtCancelled       Float? // Amount of debt cancelled
   otherContributions  Float? // Other contributions
 
-  cliffYears      Int                 @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
-  vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
-  vestingSchedule VestingScheduleEnum
+  cliffYears   Int @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
+  vestingYears Int @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
 
   companyLegends ShareLegendsEnum[] @default([])
 
@@ -748,11 +741,10 @@ model Option {
   quantity      Int
   exercisePrice Float
 
-  type            OptionTypeEnum
-  status          OptionStatusEnum    @default(DRAFT)
-  cliffYears      Int                 @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
-  vestingYears    Int                 @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
-  vestingSchedule VestingScheduleEnum
+  type         OptionTypeEnum
+  status       OptionStatusEnum @default(DRAFT)
+  cliffYears   Int              @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
+  vestingYears Int              @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
 
   issueDate         DateTime
   expirationDate    DateTime
@@ -1131,24 +1123,28 @@ model BillingCustomer {
   @@index([companyId])
 }
 
-model ApiKey {
-  id          String    @id @default(cuid())
-  name        String?
-  active      Boolean   @default(true)
-  keyId       String    @unique
-  hashedToken String    @unique // scrypt hashed token
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  lastUsed    DateTime?
+enum AccessTokenType {
+  sig @map("Signature token")
+  doc @map("Data room token")
+  api @map("API access token")
+  upd @map("Investor update token")
+}
 
-  membershipId String
-  member       Member @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+model AccessToken {
+  id           String          @id @default(cuid())
+  active       Boolean         @default(true)
+  clientId     String
+  clientSecret String // Hashed with scrypt
+  typeEnum     AccessTokenType @default(api)
 
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
-  @@index([membershipId])
-  @@index([keyId, active])
-  @@index([membershipId, active])
-  @@index([companyId])
+  expiresAt DateTime?
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([typeEnum, clientId])
 }

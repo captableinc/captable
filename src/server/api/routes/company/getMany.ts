@@ -1,55 +1,40 @@
-import { withMemberAuth } from "@/server/api/auth";
-import { ErrorResponses } from "@/server/api/error";
-import type { PublicAPI } from "@/server/api/hono";
-import { ApiCompanySchema } from "@/server/api/schema/company";
-import { db } from "@/server/db";
-import { createRoute, z } from "@hono/zod-openapi";
-import type { Company } from "@prisma/client";
-import type { Context } from "hono";
+import { CompanySchema } from "@/server/api/schema/company";
+import { z } from "@hono/zod-openapi";
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
-const route = createRoute({
-  summary: "Get companies",
-  description: "Get list of companies",
-  tags: ["Company"],
-  method: "get",
-  path: "/v1/companies",
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: z.array(ApiCompanySchema).openapi({
-            description: "List of companies",
-          }),
+export const getMany = withAuthApiV1
+  .createRoute({
+    method: "get",
+    path: "/v1/companies",
+    tags: ["Company"],
+    summary: "List companies",
+    description: "Retrieve a list of membership companies.",
+    middleware: [authMiddleware({ withoutMembershipCheck: true })],
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: z.array(CompanySchema),
+          },
         },
+        description: "A list of companies with their details.",
       },
-      description: "List of companies",
     },
+  })
+  .handler(async (c) => {
+    const { db } = c.get("services");
+    const { membership } = c.get("session");
 
-    ...ErrorResponses,
-  },
-});
+    const userMemberships = await db.member.findMany({
+      where: { userId: membership.userId },
+      select: { companyId: true },
+    });
 
-const getMany = (app: PublicAPI) => {
-  app.openapi(route, async (c: Context) => {
-    const { membership } = await withMemberAuth(c);
-    const companyIds = membership.map((m) => m.companyId);
-
-    const companies = (await db.company.findMany({
+    const companies = await db.company.findMany({
       where: {
-        id: {
-          in: companyIds,
-        },
+        id: { in: userMemberships.map((item) => item.companyId) },
       },
-    })) as Company[];
+    });
 
-    const response = companies.map((company) => ({
-      ...company,
-      logo: company.logo ?? undefined,
-      website: company.website ?? undefined,
-    }));
-
-    return c.json(response, 200);
+    return c.json(companies, 200);
   });
-};
-
-export default getMany;

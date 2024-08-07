@@ -1,80 +1,82 @@
 import { z } from "@hono/zod-openapi";
 
-export const ApiCompanySchema = z.object({
-  id: z.string().cuid().openapi({
-    description: "Company ID",
-    example: "clxwbok580000i7nge8nm1ry0",
-  }),
+export const CompanySchema = z
+  .object({
+    id: z.string().cuid().openapi({
+      description: "Company ID",
+      example: "clxwbok580000i7nge8nm1ry0",
+    }),
 
-  name: z.string().openapi({
-    description: "Company name",
-    example: "Acme Inc.",
-  }),
+    name: z.string().openapi({
+      description: "Company name",
+      example: "Acme Inc.",
+    }),
 
-  logo: z.string().optional().openapi({
-    description: "Company logo",
-    example: "https://example.com/logo.png",
-  }),
+    logo: z.string().nullable().openapi({
+      description: "Company logo",
+      example: "https://example.com/logo.png",
+    }),
 
-  website: z.string().optional().openapi({
-    description: "Company website",
-    example: "https://example.com",
-  }),
+    website: z.string().nullable().openapi({
+      description: "Company website",
+      example: "https://example.com",
+    }),
 
-  incorporationType: z.string().optional().openapi({
-    description: "Company incorporation type",
-    example: "LLC",
-  }),
+    incorporationType: z.string().optional().openapi({
+      description: "Company incorporation type",
+      example: "LLC",
+    }),
 
-  incorporationDate: z.string().optional().openapi({
-    description: "Company incorporation date",
-    example: "2024-01-01",
-  }),
+    incorporationDate: z.string().optional().openapi({
+      description: "Company incorporation date",
+      example: "2024-01-01",
+    }),
 
-  incorporationState: z.string().optional().openapi({
-    description: "Company incorporation state",
-    example: "CA",
-  }),
+    incorporationState: z.string().optional().openapi({
+      description: "Company incorporation state",
+      example: "CA",
+    }),
 
-  incorporationCountry: z.string().optional().openapi({
-    description: "Company incorporation country",
-    example: "USA",
-  }),
+    incorporationCountry: z.string().optional().openapi({
+      description: "Company incorporation country",
+      example: "USA",
+    }),
 
-  streetAddress: z.string().optional().openapi({
-    description: "Company street address",
-    example: "123 Main St.",
-  }),
+    streetAddress: z.string().optional().openapi({
+      description: "Company street address",
+      example: "123 Main St.",
+    }),
 
-  city: z.string().optional().openapi({
-    description: "Company city",
-    example: "San Francisco",
-  }),
+    city: z.string().optional().openapi({
+      description: "Company city",
+      example: "San Francisco",
+    }),
 
-  state: z.string().optional().openapi({
-    description: "Company state",
-    example: "CA",
-  }),
+    state: z.string().optional().openapi({
+      description: "Company state",
+      example: "CA",
+    }),
 
-  country: z.string().optional().openapi({
-    description: "Company country",
-    example: "USA",
-  }),
+    country: z.string().optional().openapi({
+      description: "Company country",
+      example: "USA",
+    }),
 
-  zipcode: z.string().optional().openapi({
-    description: "Company zipcode",
-    example: "94105",
-  }),
+    zipcode: z.string().optional().openapi({
+      description: "Company zipcode",
+      example: "94105",
+    }),
 
-  createdAt: z.string().openapi({
-    description: "Company creation date",
-    example: "2024-01-01T00:00:00Z",
-  }),
+    createdAt: z.string().openapi({
+      description: "Company creation date",
+      example: "2024-01-01T00:00:00Z",
+    }),
 
-  updatedAt: z.string().openapi({
-    description: "Company last updated date",
-    example: "2024-01-01T00:00:00Z",
-  }),
-});
+    updatedAt: z.string().openapi({
+      description: "Company last updated date",
+      example: "2024-01-01T00:00:00Z",
+    }),
+  })
+  .openapi("Company");
 
-export type ApiCompanyType = z.infer<typeof ApiCompanySchema>;
+export type TCompanySchema = z.infer<typeof CompanySchema>;

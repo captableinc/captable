@@ -10,7 +10,7 @@ export const getSigningFieldsProcedure = withoutAuth
       input.token,
     );
 
-    const { bucket, fields } = await ctx.db.$transaction(async (tx) => {
+    const { bucket, fields, status } = await ctx.db.$transaction(async (tx) => {
       const recipient = await tx.esignRecipient.findFirstOrThrow({
         where: {
           id: recipientId,
@@ -22,7 +22,7 @@ export const getSigningFieldsProcedure = withoutAuth
         },
       });
 
-      const { bucket } = await tx.template.findFirstOrThrow({
+      const { bucket, status } = await tx.template.findFirstOrThrow({
         where: {
           id: recipient.templateId,
         },
@@ -32,6 +32,7 @@ export const getSigningFieldsProcedure = withoutAuth
               key: true,
             },
           },
+          status: true,
         },
       });
 
@@ -62,7 +63,7 @@ export const getSigningFieldsProcedure = withoutAuth
         },
       });
 
-      return { bucket, fields };
+      return { bucket, fields, status };
     });
 
     const { key, url } = await getPresignedGetUrl(bucket.key);
@@ -73,6 +74,7 @@ export const getSigningFieldsProcedure = withoutAuth
       url,
       recipientId,
       templateId,
+      status,
       signableFields: fields.filter((item) => item.recipientId === recipientId),
     };
   });

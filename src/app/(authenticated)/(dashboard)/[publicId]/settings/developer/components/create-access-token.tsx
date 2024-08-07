@@ -21,9 +21,14 @@ const CreateAccessToken = () => {
   const createMutation = api.accessToken.create.useMutation({
     onSuccess: ({ token }) => {
       setAccessToken(token);
-      copy(token);
-      toast.success("Access token copied to clipboard.");
+
+      toast.promise(copy(token), {
+        loading: "copying token...",
+        success: "Access token copied to clipboard.",
+        error: "error copying token",
+      });
       setOpen(true);
+      setLoading(false);
     },
 
     onError: (error) => {
@@ -33,17 +38,15 @@ const CreateAccessToken = () => {
 
     onSettled: () => {
       setLoading(false);
-      router.refresh();
     },
   });
 
   return (
     <Fragment>
       <Button
-        onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          e.preventDefault();
+        onClick={async () => {
           setLoading(true);
-          createMutation.mutate({
+          await createMutation.mutateAsync({
             typeEnum: "api",
           });
         }}
@@ -67,6 +70,9 @@ const CreateAccessToken = () => {
           open,
           onOpenChange: (val) => {
             setOpen(val);
+            if (!val) {
+              router.refresh();
+            }
           },
         }}
       >
@@ -75,8 +81,11 @@ const CreateAccessToken = () => {
           <Card
             className="cursor-copy break-words p-3 mt-2"
             onClick={() => {
-              copy(accessToken as string);
-              toast.success("Access token copied to clipboard.");
+              toast.promise(copy(accessToken), {
+                loading: "copying token...",
+                success: "Access token copied to clipboard.",
+                error: "error copying token",
+              });
             }}
           >
             <code className="text-sm font-mono text-rose-600">

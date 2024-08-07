@@ -54,6 +54,3 @@ const ApiSettingsPage = async () => {
 };
 
 export default ApiSettingsPage;
-
-// Great work with that push modal inside
-// You can call it from anywhere ?? "":""

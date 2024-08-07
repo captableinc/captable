@@ -1,6 +1,5 @@
-import { scrypt, subtle } from "node:crypto";
-import { constantTimeEqual } from "./buffer";
-import { decodeHex, encodeHex } from "./hex";
+import { randomBytes, scryptSync, subtle } from "node:crypto";
+import { customId } from "@/common/id";
 
 export const createHash = async (key: string) => {
   const data = new TextEncoder().encode(key);
@@ -12,57 +11,32 @@ export const createHash = async (key: string) => {
     .toString();
 };
 
-interface createSecureHashOptions {
-  N?: number;
-  r?: number;
-  p?: number;
-  dkLen?: number;
-}
-/// credits https://github.com/pilcrowOnPaper/oslo/blob/main/src/password/scrypt.ts
-export function createSecureHash({
-  N = 16384,
-  dkLen = 64,
-  p = 1,
-  r = 16,
-}: Partial<createSecureHashOptions>) {
-  async function hash(password: string) {
-    const salt = encodeHex(crypto.getRandomValues(new Uint8Array(16)));
-    const key = await generateKey(password, salt);
-    return `${salt}:${encodeHex(key)}`;
-  }
-
-  async function verify(hash: string, password: string) {
-    const [salt, key] = hash.split(":");
-    const targetKey = await generateKey(password, salt ?? "");
-    return constantTimeEqual(targetKey, decodeHex(key ?? ""));
-  }
-
-  async function generateKey(
-    password: string,
-    salt: string,
-  ): Promise<ArrayBuffer> {
-    return await new Promise<ArrayBuffer>((resolve, reject) => {
-      scrypt(
-        password.normalize("NFKC"),
-        salt,
-        dkLen,
-        {
-          N: N,
-          p: p,
-          r: r,
-          // errors when 128 * N * r > `maxmem` (approximately)
-          maxmem: 128 * N * r * 2,
-        },
-        (err, buff) => {
-          if (err) return reject(err);
-          return resolve(buff);
-        },
-      );
-    });
-  }
+export const initializeAccessToken = ({
+  prefix = "api",
+}: { prefix?: string }) => {
+  const clientId = `${prefix}_${customId(8)}`;
+  const clientSecret = randomBytes(24)
+    .toString("base64url")
+    .replace(/[+/=_-]/g, customId(1));
 
   return {
-    hash,
-    verify,
+    clientId,
+    clientSecret,
   };
-}
+};
+
+export const createSecureHash = (secret: string) => {
+  const data = new TextEncoder().encode(secret);
+  const salt = randomBytes(32).toString("hex");
+  const derivedKey = scryptSync(data, salt, 64);
+
+  return `${salt}:${derivedKey.toString("hex")}`;
+};
+
+export const verifySecureHash = (secret: string, hash: string) => {
+  const data = new TextEncoder().encode(secret);
+  const [salt, storedHash] = hash.split(":");
+  const derivedKey = scryptSync(data, String(salt), 64);
+
+  return storedHash === derivedKey.toString("hex");
+};

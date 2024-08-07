@@ -1119,20 +1119,28 @@ model BillingCustomer {
   @@index([companyId])
 }
 
+enum AccessTokenType {
+  sig @map("Signature token")
+  doc @map("Data room token")
+  api @map("API access token")
+  upd @map("Investor update token")
+}
+
 model AccessToken {
-  id           String    @id
-  name         String?
-  active       Boolean   @default(true)
-  partialToken String
-  hashedToken  String
-  expiresAt    DateTime?
-  lastUsed     DateTime?
+  id           String          @id @default(cuid())
+  active       Boolean         @default(true)
+  clientId     String
+  clientSecret String // Hashed with scrypt
+  typeEnum     AccessTokenType @default(api)
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  expiresAt DateTime?
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([userId])
+  @@index([typeEnum, clientId])
 }

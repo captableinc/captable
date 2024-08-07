@@ -109,7 +109,7 @@ const AccessTokenTable = ({ tokens }: { tokens: AccessTokens }) => {
           {tokens.map((token: AccessTokens[number]) => (
             <TableRow key={token.id}>
               <TableCell className="flex cursor-pointer items-center">
-                <code className="text-xs">{token.partialToken}</code>
+                <code className="text-xs">{`${token.clientId}:***`}</code>
               </TableCell>
               <TableCell suppressHydrationWarning>
                 {dayjsExt().to(token.createdAt)}

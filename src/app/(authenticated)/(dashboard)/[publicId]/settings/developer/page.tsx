@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   title: "Developer settings",
 };
 const AccessTokenPage = async () => {
-  const data = await api.accessToken.listAll.query();
+  const data = await api.accessToken.listAll.query({
+    typeEnum: "api",
+  });
 
   return (
     <Fragment>

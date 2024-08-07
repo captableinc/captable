@@ -1,5 +1,5 @@
-import { generateAccessToken, hashAccessToken } from "@/lib/access-token";
-
+import { createSecureHash, initializeAccessToken } from "@/lib/crypto";
+import { AccessTokenType } from "@/prisma/enums";
 import { Audit } from "@/server/audit";
 
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
@@ -7,84 +7,90 @@ import { TRPCError } from "@trpc/server";
 import z from "zod";
 
 export const accessTokenRouter = createTRPCRouter({
-  listAll: withAccessControl.query(async ({ ctx }) => {
-    const {
-      db,
-      membership: { userId },
-    } = ctx;
+  listAll: withAccessControl
+    .input(z.object({ typeEnum: z.nativeEnum(AccessTokenType) }))
+    .query(async ({ ctx, input }) => {
+      const {
+        db,
+        membership: { userId },
+      } = ctx;
 
-    const accessTokens = await db.accessToken.findMany({
-      where: {
-        active: true,
-        userId,
-      },
+      const { typeEnum } = input;
 
-      orderBy: {
-        createdAt: "desc",
-      },
-
-      select: {
-        id: true,
-        partialToken: true,
-        createdAt: true,
-        lastUsed: true,
-      },
-    });
-
-    return {
-      accessTokens,
-    };
-  }),
-
-  create: withAccessControl.mutation(async ({ ctx }) => {
-    const {
-      db,
-      membership: { userId, companyId },
-      userAgent,
-      requestIp,
-      session,
-    } = ctx;
-
-    const {
-      partialToken,
-      identifier,
-      tokenWithPrefix: keyWithPrefix,
-      tokenPasskey: passkey,
-    } = generateAccessToken();
-
-    const hashedToken = await hashAccessToken({ identifier, passkey });
-    const user = session.user;
-
-    const key = await db.accessToken.create({
-      data: {
-        userId,
-        partialToken,
-        hashedToken,
-        id: identifier,
-      },
-    });
-
-    await Audit.create(
-      {
-        action: "accessToken.created",
-        companyId,
-        actor: { type: "user", id: user.id },
-        context: {
-          userAgent,
-          requestIp,
+      const accessTokens = await db.accessToken.findMany({
+        where: {
+          active: true,
+          userId,
+          typeEnum,
         },
-        target: [{ type: "accessToken", id: key.id }],
-        summary: `${user.name} created an access token - ${partialToken}`,
-      },
-      db,
-    );
 
-    return {
-      token: keyWithPrefix,
-      partialKey: partialToken,
-      createdAt: key.createdAt,
-    };
-  }),
+        orderBy: {
+          createdAt: "desc",
+        },
+
+        select: {
+          id: true,
+          clientId: true,
+          createdAt: true,
+          lastUsed: true,
+        },
+      });
+
+      return {
+        accessTokens,
+      };
+    }),
+
+  create: withAccessControl
+    .input(z.object({ typeEnum: z.nativeEnum(AccessTokenType) }))
+    .mutation(async ({ ctx, input }) => {
+      const {
+        db,
+        membership: { userId, companyId },
+        userAgent,
+        requestIp,
+        session,
+      } = ctx;
+
+      const { typeEnum } = input;
+
+      const { clientId, clientSecret } = initializeAccessToken({
+        prefix: typeEnum,
+      });
+
+      const user = session.user;
+      const hashedClientSecret = await createSecureHash(clientSecret);
+
+      const key = await db.accessToken.create({
+        data: {
+          userId,
+          typeEnum,
+          clientId,
+          clientSecret: hashedClientSecret,
+        },
+      });
+
+      await Audit.create(
+        {
+          action: "accessToken.created",
+          companyId,
+          actor: { type: "user", id: user.id },
+          context: {
+            userAgent,
+            requestIp,
+          },
+          target: [{ type: "accessToken", id: key.id }],
+          summary: `${user.name} created an access token - ${clientId}`,
+        },
+        db,
+      );
+
+      return {
+        token: `${clientId}:${clientSecret}`,
+        partialKey: clientId,
+        createdAt: key.createdAt,
+      };
+    }),
 
   delete: withAccessControl
     .input(z.object({ tokenId: z.string() }))

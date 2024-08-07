@@ -1,5 +1,4 @@
-import { generateAccessToken, verifyAccessToken } from "@/lib/access-token";
-import { decodeToken, hashToken } from "@/lib/tokens";
+import { verifySecureHash } from "@/lib/crypto";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { ApiError } from "../error";
@@ -14,38 +13,54 @@ export const accessTokenAuthMiddleware = (
   option?: accessTokenAuthMiddlewareOptions,
 ) =>
   createMiddleware(async (c, next) => {
-    const bearerToken = extractBearerToken(c.req.header("Authorization"));
+    const authHeader = c.req.header("Authorization");
+    const bearerToken = authHeader?.replace("Bearer ", "").trim() ?? null;
 
-    if (bearerToken) {
-      await authenticateWithAccessToken(
-        bearerToken,
-        c,
-        option?.withoutMembershipCheck,
-      );
+    if (!bearerToken) {
+      throw new ApiError({
+        code: "UNAUTHORIZED",
+        message: "Bearer token is invalid",
+      });
     }
+
+    await authenticateWithAccessToken(
+      bearerToken,
+      c,
+      option?.withoutMembershipCheck,
+    );
+
     await next();
   });
-
-function extractBearerToken(authHeader: string | undefined): string | null {
-  return authHeader?.replace("Bearer ", "").trim() ?? null;
-}
 
 async function authenticateWithAccessToken(
   bearerToken: string,
   c: Context,
   withoutMembershipCheck: undefined | boolean,
 ) {
-  const { identifier, passkey } = extractApiKey(bearerToken);
+  const [clientId, clientSecret] = bearerToken.split(":") as [string, string];
 
-  const accessToken = await findAccessToken(identifier, c);
+  if (!clientId || !clientSecret) {
+    throw new ApiError({
+      code: "UNAUTHORIZED",
+      message: "Bearer token is invalid",
+    });
+  }
 
-  const isKeyValid = await verifyAccessToken(
-    { identifier, passkey },
-    accessToken?.hashedToken ??
-      (await hashToken(generateAccessToken().encodedToken)),
+  const accessToken = await findAccessToken(clientId, c);
+
+  if (!accessToken) {
+    throw new ApiError({
+      code: "UNAUTHORIZED",
+      message: "Bearer token is invalid",
+    });
+  }
+
+  const isAccessTokenValid = await verifySecureHash(
+    clientSecret,
+    accessToken.clientSecret,
   );
 
-  if (!isKeyValid || !accessToken) {
+  if (!isAccessTokenValid) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "Bearer token is invalid",
@@ -110,20 +125,19 @@ async function checkMembership(userId: string, c: Context) {
   return membership;
 }
 
-function findAccessToken(identifier: string, c: Context) {
+function findAccessToken(clientId: string, c: Context) {
   const { db } = c.get("services");
 
   return db.accessToken.findFirst({
-    where: { id: identifier },
+    where: {
+      clientId,
+      typeEnum: "api",
+      active: true,
+    },
     select: {
-      hashedToken: true,
+      clientId: true,
+      clientSecret: true,
       userId: true,
     },
   });
-}
-
-function extractApiKey(bearerToken: string) {
-  const decodedKey = decodeToken(bearerToken.split("_")[1] ?? "");
-
-  return decodedKey;
 }

@@ -43,7 +43,9 @@ const CreateAccessToken = () => {
         onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           e.preventDefault();
           setLoading(true);
-          createMutation.mutate();
+          createMutation.mutate({
+            typeEnum: "api",
+          });
         }}
         loading={loading}
       >
@@ -52,6 +54,7 @@ const CreateAccessToken = () => {
       </Button>
 
       <Modal
+        size="lg"
         title="Access token created"
         subtitle={
           <Tldr

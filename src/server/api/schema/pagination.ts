@@ -1,6 +1,5 @@
 import { z } from "@hono/zod-openapi";
-
-export const DEFAULT_PAGINATION_LIMIT = 50;
+import { DEFAULT_PAGINATION_LIMIT } from "../const";
 
 export const PaginationQuerySchema = z.object({
   limit: z

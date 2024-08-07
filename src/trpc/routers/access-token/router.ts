@@ -111,6 +111,7 @@ export const accessTokenRouter = createTRPCRouter({
             userId,
           },
         });
+
         await Audit.create(
           {
             action: "accessToken.deleted",
@@ -121,7 +122,7 @@ export const accessTokenRouter = createTRPCRouter({
               requestIp,
             },
             target: [{ type: "accessToken", id: key.id }],
-            summary: `${user.name} deleted an access token - ${key.partialToken}`,
+            summary: `${user.name} deleted an access token - ${key.clientId}`,
           },
           db,
         );

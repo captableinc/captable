@@ -92,7 +92,7 @@ const createApi = <V extends Version, L extends boolean>(
 };
 
 export const authMiddleware = (option?: accessTokenAuthMiddlewareOptions) =>
-  some(accessTokenAuthMiddleware(option), sessionCookieAuthMiddleware());
+  some(sessionCookieAuthMiddleware(), accessTokenAuthMiddleware(option));
 
 export const ApiV1 = createApi("v1");
 

@@ -21,7 +21,7 @@ export async function authenticateWithSessionCookie(c: Context) {
     const nextAuthCookie = getCookie(c, nextAuthcookieName);
 
     if (!nextAuthCookie) {
-      throw new Error("auth cooke not found");
+      throw new Error("Session cookie not found");
     }
 
     await validateSessionCookie(authUrl, c);

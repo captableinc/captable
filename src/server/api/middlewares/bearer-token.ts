@@ -47,11 +47,13 @@ async function authenticateWithAccessToken(
     });
   }
 
+  const randomId = nanoid();
+
   const accessToken = await findAccessToken(clientId, c);
 
   const isAccessTokenValid = await verifySecureHash(
     clientSecret,
-    accessToken?.clientSecret ?? nanoid(),
+    accessToken?.clientSecret ?? randomId,
   );
 
   if (!isAccessTokenValid || !accessToken) {

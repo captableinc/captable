@@ -114,13 +114,12 @@ export const apiKeyRouter = createTRPCRouter({
           requestIp,
           userAgent,
         } = ctx;
-        const { keyId } = input;
         const { user } = session;
 
-        const rotatedKey = await db.$transaction(async (tx) => {
+        const key = await db.$transaction(async (tx) => {
           const existingKey = await tx.apiKey.findUnique({
             where: {
-              keyId,
+              keyId: input.keyId,
               active: true,
             },
           });
@@ -132,11 +131,21 @@ export const apiKeyRouter = createTRPCRouter({
             });
           }
 
-          await tx.apiKey.delete({
-            where: { keyId: existingKey.keyId },
-          });
+          const token = createApiToken();
+          const keyId = generatePublicId();
+          const hashedToken = createSecureHash(token);
 
-          const key = await createApiKeyHandler({ tx, companyId, memberId });
+          const newKey = await tx.apiKey.update({
+            where: {
+              id: existingKey.id,
+              membershipId: memberId,
+            },
+            data: {
+              keyId,
+              hashedToken,
+              active: true,
+            },
+          });
 
           await Audit.create(
             {
@@ -147,18 +156,18 @@ export const apiKeyRouter = createTRPCRouter({
                 userAgent,
                 requestIp,
               },
-              target: [{ type: "apiKey", id: key.id }],
-              summary: `${user.name} rotated the apiKey ${key.name}`,
+              target: [{ type: "apiKey", id: newKey.id }],
+              summary: `${user.name} rotated the apiKey ${newKey.name}`,
             },
             tx,
           );
-          return key;
+          return newKey;
         });
 
         return {
-          token: rotatedKey.hashedToken,
-          keyId: rotatedKey.keyId,
-          createdAt: rotatedKey.createdAt,
+          token: key.hashedToken,
+          keyId: key.keyId,
+          createdAt: key.createdAt,
         };
       } catch (error) {
         console.error("Error rotating the api key :", error);

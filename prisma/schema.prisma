@@ -57,12 +57,14 @@ model User {
 
   accounts          Account[]
   sessions          Session[]
-  companies         Member[]
+  memberships       Member[]
   passkeys          Passkey[]
   verificationToken VerificationToken[]
 
   lastSignedIn     DateTime @default(now())
   identityProvider String?
+
+  accessTokens AccessToken[]
 }
 
 enum CredentialDeviceTypeEnum {
@@ -156,8 +158,8 @@ model Company {
   eSignAudits      EsignAudit[]
   billingCustomers BillingCustomer[]
   customRoles      CustomRole[]
-  apiKeys          ApiKey[]
-  BankAccount      BankAccount[]
+
+  BankAccount BankAccount[]
 
   @@unique([publicId])
 }
@@ -230,7 +232,6 @@ model Member {
   updates          Update[]
   dataRooms        DataRoomRecipient[]
   UpdateRecipient  UpdateRecipient[]
-  ApiKey           ApiKey[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -1118,24 +1119,28 @@ model BillingCustomer {
   @@index([companyId])
 }
 
-model ApiKey {
-  id          String    @id @default(cuid())
-  name        String?
-  active      Boolean   @default(true)
-  keyId       String    @unique
-  hashedToken String    @unique // scrypt hashed token
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  lastUsed    DateTime?
+enum AccessTokenType {
+  sig @map("Signature token")
+  doc @map("Data room token")
+  api @map("API access token")
+  upd @map("Investor update token")
+}
 
-  membershipId String
-  member       Member @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+model AccessToken {
+  id           String          @id @default(cuid())
+  active       Boolean         @default(true)
+  clientId     String
+  clientSecret String // Hashed with scrypt
+  typeEnum     AccessTokenType @default(api)
 
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
-  @@index([membershipId])
-  @@index([keyId, active])
-  @@index([membershipId, active])
-  @@index([companyId])
+  expiresAt DateTime?
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([typeEnum, clientId])
 }

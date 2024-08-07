@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "@/trpc/api/trpc";
-import { apiKeyRouter } from "../routers/api-key/router";
+import { accessTokenRouter } from "../routers/access-token/router";
 import { auditRouter } from "../routers/audit-router/router";
 import { authRouter } from "../routers/auth/router";
 import { bankAccountsRouter } from "../routers/bank-accounts/router";
@@ -52,7 +52,7 @@ export const appRouter = createTRPCRouter({
   security: securityRouter,
   billing: billingRouter,
   rbac: rbacRouter,
-  apiKey: apiKeyRouter,
+  accessToken: accessTokenRouter,
   bankAccounts: bankAccountsRouter,
 });
 

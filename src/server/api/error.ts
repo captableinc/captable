@@ -49,13 +49,26 @@ interface generateErrorResponseOptions {
   status: StatusCode;
 }
 
+const errorRegistryMap: Record<z.infer<typeof ErrorCode>, string> = {
+  BAD_REQUEST: "BadRequest",
+  FORBIDDEN: "Forbidden",
+  INTERNAL_SERVER_ERROR: "InternalServerError",
+  RATE_LIMITED: "RateLimited",
+  METHOD_NOT_ALLOWED: "MethodNotAllowed",
+  NOT_FOUND: "NotFound",
+  NOT_UNIQUE: "NotUnique",
+  UNAUTHORIZED: "Unauthorized",
+};
+
 const generateErrorResponse = (options: generateErrorResponseOptions) => {
   const { description, status } = options;
   return {
     [status]: {
       content: {
         "application/json": {
-          schema: errorSchemaFactory(z.enum([statusToCode(status)])),
+          schema: errorSchemaFactory(z.enum([statusToCode(status)])).openapi(
+            errorRegistryMap[statusToCode(status)],
+          ),
         },
       },
       description,

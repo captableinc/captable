@@ -68,7 +68,7 @@
     "@stripe/stripe-js": "^4.1.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^4.36.1",
-    "@tanstack/react-table": "^8.19.2",
+    "@tanstack/react-table": "^8.20.1",
     "@tremor/react": "^3.17.4",
     "@trpc/client": "^10.43.6",
     "@trpc/next": "^10.45.2",

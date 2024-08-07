@@ -1,6 +1,7 @@
 import { verifySecureHash } from "@/lib/crypto";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
+import { nanoid } from "nanoid";
 import { ApiError } from "../error";
 
 export type accessTokenAuthMiddlewareOptions =
@@ -48,19 +49,12 @@ async function authenticateWithAccessToken(
 
   const accessToken = await findAccessToken(clientId, c);
 
-  if (!accessToken) {
-    throw new ApiError({
-      code: "UNAUTHORIZED",
-      message: "Bearer token is invalid",
-    });
-  }
-
   const isAccessTokenValid = await verifySecureHash(
     clientSecret,
-    accessToken.clientSecret,
+    accessToken?.clientSecret ?? nanoid(),
   );
 
-  if (!isAccessTokenValid) {
+  if (!isAccessTokenValid || !accessToken) {
     throw new ApiError({
       code: "UNAUTHORIZED",
       message: "Bearer token is invalid",

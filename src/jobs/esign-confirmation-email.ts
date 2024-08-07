@@ -1,7 +1,7 @@
 import ESignConfirmationEmail from "@/emails/EsignConfirmationEmail";
 import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
-import { render } from "jsx-email";
+import { renderAsync } from "@react-email/components";
 import type { Job } from "pg-boss";
 
 export type ConfirmationEmailPayloadType = {
@@ -19,7 +19,7 @@ export type ConfirmationEmailPayloadType = {
 export const sendEsignConfirmationEmail = async (
   payload: ConfirmationEmailPayloadType,
 ) => {
-  const html = await render(
+  const html = await renderAsync(
     ESignConfirmationEmail({
       documentName: payload.documentName,
       recipient: payload.recipient,

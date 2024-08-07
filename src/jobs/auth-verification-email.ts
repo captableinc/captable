@@ -2,7 +2,7 @@ import AccountVerificationEmail from "@/emails/AccountVerificationEmail";
 import { env } from "@/env";
 import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
-import { render } from "jsx-email";
+import { renderAsync } from "@react-email/components";
 import type { Job } from "pg-boss";
 
 export type AuthVerificationPayloadType = {
@@ -17,7 +17,7 @@ export const sendAuthVerificationEmail = async (
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
   const confirmLink = `${baseUrl}/verify-email/${token}`;
 
-  const html = await render(
+  const html = await renderAsync(
     AccountVerificationEmail({
       verifyLink: confirmLink,
     }),

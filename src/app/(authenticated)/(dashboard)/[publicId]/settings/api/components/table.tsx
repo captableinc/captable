@@ -35,7 +35,7 @@ import {
 import { api } from "@/trpc/react";
 import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 
@@ -59,7 +59,7 @@ interface ApiKey {
   lastUsed: Date | null;
 }
 
-function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
+function DeleteKeyAlert({ keyId, open, setOpen }: DeleteDialogProps) {
   const router = useRouter();
 
   const deleteMutation = api.apiKey.delete.useMutation({
@@ -97,7 +97,7 @@ function DeleteKey({ keyId, open, setOpen }: DeleteDialogProps) {
   );
 }
 
-function RotateKey({
+function RotateKeyAlert({
   keyId,
   open,
   setOpen,
@@ -121,6 +121,10 @@ function RotateKey({
     onError: (error) => {
       console.error(error);
       toast.error("An error occurred while creating the API key.");
+    },
+
+    onSettled: () => {
+      setLoading(false);
     },
   });
   return (
@@ -149,12 +153,11 @@ function RotateKey({
   );
 }
 
-function KeyModal({ apiKey, open, setOpen }: KeyModalProps) {
+function CopyKeyModal({ apiKey, open, setOpen }: KeyModalProps) {
   const [_copied, copy] = useCopyToClipboard();
-
   return (
     <Modal
-      title="API key created"
+      title="API key rotated"
       subtitle={
         <Tldr
           message="
@@ -191,20 +194,22 @@ function KeyModal({ apiKey, open, setOpen }: KeyModalProps) {
 
 const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [openDeleteAlert, setOpenDeleteAlert] = useState<boolean>(false);
-  const [openRotateAlert, setOpenRotateAlert] = useState<boolean>(false);
-  const [copyApiKeyModal, setCopyApiKeyModal] = useState<boolean>(false);
+  const [openDeleteAlertDialog, setOpenDeleteAlertDialog] =
+    useState<boolean>(false);
+  const [openRotateAlertDialog, setOpenRotateAlertDialog] =
+    useState<boolean>(false);
+  const [copyApiKeyModal, showCopyApiKeyModal] = useState<boolean>(false);
 
   const [apiKey, setApiKey] = useState<string>("");
   const [selectedKey, setSelected] = useState<string>("");
 
   const handleDeleteKey = (key: string) => {
     setSelected(key);
-    setOpenDeleteAlert(true);
+    setOpenDeleteAlertDialog(true);
   };
   const handleRotateKey = (key: string) => {
     setSelected(key);
-    setOpenRotateAlert(true);
+    setOpenRotateAlertDialog(true);
   };
 
   return (
@@ -281,23 +286,23 @@ const ApiKeysTable = ({ keys }: { keys: ApiKey[] }) => {
             ))}
           </TableBody>
         </Table>
-        <DeleteKey
-          open={openDeleteAlert}
-          setOpen={(val) => setOpenDeleteAlert(val)}
+        <DeleteKeyAlert
+          open={openDeleteAlertDialog}
+          setOpen={(val) => setOpenDeleteAlertDialog(val)}
           keyId={selectedKey}
         />
-        <RotateKey
-          open={openRotateAlert}
-          setOpen={(val: boolean) => setOpenRotateAlert(val)}
-          setShowModal={setCopyApiKeyModal}
+        <RotateKeyAlert
+          open={openRotateAlertDialog}
+          setOpen={(val: boolean) => setOpenRotateAlertDialog(val)}
+          setShowModal={showCopyApiKeyModal}
           setApiKey={setApiKey}
           keyId={selectedKey}
           setLoading={setLoading}
         />
-        <KeyModal
+        <CopyKeyModal
           apiKey={apiKey}
           open={copyApiKeyModal}
-          setOpen={setCopyApiKeyModal}
+          setOpen={showCopyApiKeyModal}
         />
       </Card>
       {loading && <Loading />}

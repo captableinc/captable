@@ -1,13 +1,13 @@
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
-import { SecuritiesStatusEnum, ShareLegendsEnum } from "@prisma/client";
 
 const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
-  string,
-  ...string[],
+  ShareLegendsEnum,
+  ...ShareLegendsEnum[],
 ];
 const SecuritiesStatusArr = Object.values(SecuritiesStatusEnum) as [
-  string,
-  ...string[],
+  SecuritiesStatusEnum,
+  ...SecuritiesStatusEnum[],
 ];
 
 export const ShareSchema = z
@@ -22,7 +22,7 @@ export const ShareSchema = z
       example: "DRAFT",
     }),
 
-    certificateId: z.string().nullish().openapi({
+    certificateId: z.string().openapi({
       description: "Certificate ID",
       example: "123",
     }),
@@ -57,12 +57,11 @@ export const ShareSchema = z
       example: 0,
     }),
 
-    cliffYears: z.number().nullish().openapi({
+    cliffYears: z.number().openapi({
       description: "Cliff Years",
       example: 1,
     }),
-
-    vestingYears: z.number().nullish().openapi({
+    vestingYears: z.number().openapi({
       description: "Vesting Years",
       example: 4,
     }),
@@ -70,14 +69,12 @@ export const ShareSchema = z
     companyLegends: z
       .enum(ShareLegendsArr)
       .array()
-      .default([])
-      .nullish()
       .openapi({
         description: "Company Legends",
         example: ["US_SECURITIES_ACT", "SALE_AND_ROFR"],
       }),
 
-    issueDate: z.string().datetime().nullish().openapi({
+    issueDate: z.string().datetime().openapi({
       description: "Issued Date",
       example: "2024-01-01T00:00:00.000Z",
     }),
@@ -92,7 +89,7 @@ export const ShareSchema = z
       example: "2024-01-01T00:00:00.000Z",
     }),
 
-    boardApprovalDate: z.string().datetime().nullish().openapi({
+    boardApprovalDate: z.string().datetime().openapi({
       description: "Board Approval Date",
       example: "2024-01-01T00:00:00.000Z",
     }),
@@ -122,9 +119,7 @@ export const ShareSchema = z
       example: "2024-01-01T00:00:00.000Z",
     }),
   })
-  .openapi({
-    description: "Get a Single Share by the ID",
-  });
+  .openapi("Shares");
 
 export const CreateShareSchema = ShareSchema.omit({
   id: true,

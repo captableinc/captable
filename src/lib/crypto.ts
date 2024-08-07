@@ -1,4 +1,5 @@
 import { randomBytes, scryptSync, subtle } from "node:crypto";
+import { customId } from "@/common/id";
 
 export const createHash = async (key: string) => {
   const data = new TextEncoder().encode(key);
@@ -10,20 +11,30 @@ export const createHash = async (key: string) => {
     .toString();
 };
 
-export const createApiToken = () => {
-  return randomBytes(32).toString("base64url");
+export const initializeAccessToken = ({
+  prefix = "api",
+}: { prefix?: string }) => {
+  const clientId = `${prefix}_${customId(8)}`;
+  const clientSecret = randomBytes(24)
+    .toString("base64url")
+    .replace(/[+/=_-]/g, customId(1));
+
+  return {
+    clientId,
+    clientSecret,
+  };
 };
 
-export const createSecureHash = (key: string) => {
-  const data = new TextEncoder().encode(key);
-  const salt = randomBytes(16).toString("hex");
+export const createSecureHash = (secret: string) => {
+  const data = new TextEncoder().encode(secret);
+  const salt = randomBytes(32).toString("hex");
   const derivedKey = scryptSync(data, salt, 64);
 
   return `${salt}:${derivedKey.toString("hex")}`;
 };
 
-export const verifySecureHash = (key: string, hash: string) => {
-  const data = new TextEncoder().encode(key);
+export const verifySecureHash = (secret: string, hash: string) => {
+  const data = new TextEncoder().encode(secret);
   const [salt, storedHash] = hash.split(":");
   const derivedKey = scryptSync(data, String(salt), 64);
 

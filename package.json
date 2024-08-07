@@ -98,7 +98,7 @@
     "pdf-lib": "^1.17.1",
     "pg-boss": "^9.0.3",
     "pino": "^9.3.1",
-    "pino-pretty": "^11.2.1",
+    "pino-pretty": "^11.2.2",
     "prisma-extension-pagination": "^0.7.4",
     "prisma-json-types-generator": "^3.0.4",
     "pushmodal": "^1.0.4",

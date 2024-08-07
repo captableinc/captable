@@ -26,7 +26,7 @@ const ParamsSchema = z.object({
 
 export const getMany = withAuthApiV1
   .createRoute({
-    summary: "List Issued Shares",
+    summary: "List shares",
     description: "Retrieve a list of issued shares for the company.",
     tags: ["Shares"],
     method: "get",

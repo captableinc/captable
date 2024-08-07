@@ -26,8 +26,8 @@ const AuthHeaderSchema = z.object({
     .string()
     .regex(/^Bearer [a-zA-Z0-9_]+/)
     .openapi({
-      description: "A key to authorize the request",
-      example: "Bearer tkn_x0X0x0X0x0X0x0X0x0X0x0X",
+      description: "Bearer token to authorize the request",
+      example: "Bearer api_x0X0x0X0x0X0x0X0x0X0x0X",
     }),
 });
 

@@ -35,7 +35,7 @@ export const _delete = withAuthApiV1
   .createRoute({
     method: "delete",
     path: "/v1/{companyId}/shares/{id}",
-    summary: "Delete Issued Shares",
+    summary: "Delete a share",
     description: "Remove an issued share by its ID.",
     tags: ["Shares"],
     middleware: [authMiddleware()],

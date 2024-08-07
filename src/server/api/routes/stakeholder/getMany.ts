@@ -25,7 +25,7 @@ const ParamsSchema = z.object({
 
 export const getMany = withAuthApiV1
   .createRoute({
-    summary: "List All Stakeholders",
+    summary: "List stakeholders",
     description:
       "Retrieve a paginated list of all stakeholders in the company.",
     tags: ["Stakeholder"],

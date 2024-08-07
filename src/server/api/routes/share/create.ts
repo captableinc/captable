@@ -27,7 +27,7 @@ export const create = withAuthApiV1
   .createRoute({
     method: "post",
     path: "/v1/{companyId}/shares",
-    summary: "Create Shares",
+    summary: "Create shares",
     description: "Issue shares to a stakeholder in a company.",
     tags: ["Shares"],
     middleware: [authMiddleware()],

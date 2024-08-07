@@ -31,7 +31,7 @@ const ResponseSchema = z.object({
 
 export const getOne = withAuthApiV1
   .createRoute({
-    summary: "Get Issued Share",
+    summary: "Get a share",
     description: "Fetch a single issued share record by its ID.",
     tags: ["Shares"],
     method: "get",

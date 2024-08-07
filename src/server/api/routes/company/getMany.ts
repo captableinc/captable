@@ -7,7 +7,7 @@ export const getMany = withAuthApiV1
     method: "get",
     path: "/v1/companies",
     tags: ["Company"],
-    summary: "List Companies",
+    summary: "List companies",
     description: "Retrieve a list of membership companies.",
     middleware: [authMiddleware({ withoutMembershipCheck: true })],
     responses: {

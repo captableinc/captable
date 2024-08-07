@@ -36,7 +36,7 @@ const ResponseSchema = z.object({
 
 export const update = withAuthApiV1
   .createRoute({
-    summary: "Update stakeholder",
+    summary: "Update a stakeholder",
     description: "Modify the details of a stakeholder by their ID.",
     tags: ["Stakeholder"],
     method: "patch",

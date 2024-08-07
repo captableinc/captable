@@ -25,7 +25,7 @@ export const getOne = withAuthApiV1
     method: "get",
     path: "/v1/companies/{id}",
     tags: ["Company"],
-    summary: "Get Company",
+    summary: "Get a company",
     description: "Fetch details of a single company by its ID.",
     middleware: [authMiddleware({ withoutMembershipCheck: true })],
     request: { params: RequestSchema },
@@ -44,8 +44,6 @@ export const getOne = withAuthApiV1
     const { db } = c.get("services");
     const { membership } = c.get("session");
     const { id: companyId } = c.req.valid("param");
-
-    console.log({ param: c.req.param() });
 
     const member = await db.member.findFirst({
       where: { companyId, id: membership.memberId },

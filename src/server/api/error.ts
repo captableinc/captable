@@ -50,14 +50,14 @@ interface generateErrorResponseOptions {
 }
 
 const errorRegistryMap: Record<z.infer<typeof ErrorCode>, string> = {
-  BAD_REQUEST: "ErrBadRequest",
-  FORBIDDEN: "ErrForbidden",
-  INTERNAL_SERVER_ERROR: "ErrInternalServerError",
-  RATE_LIMITED: "ErrRateLimited",
-  METHOD_NOT_ALLOWED: "ErrMethodNotAllowed",
-  NOT_FOUND: "ErrNotFound",
-  NOT_UNIQUE: "ErrNotUnique",
-  UNAUTHORIZED: "ErrUnauthorized",
+  BAD_REQUEST: "BadRequest",
+  FORBIDDEN: "Forbidden",
+  INTERNAL_SERVER_ERROR: "InternalServerError",
+  RATE_LIMITED: "RateLimited",
+  METHOD_NOT_ALLOWED: "MethodNotAllowed",
+  NOT_FOUND: "NotFound",
+  NOT_UNIQUE: "NotUnique",
+  UNAUTHORIZED: "Unauthorized",
 };
 
 const generateErrorResponse = (options: generateErrorResponseOptions) => {

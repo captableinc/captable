@@ -124,7 +124,7 @@
     "@biomejs/biome": "1.7.3",
     "@blocknote/core": "^0.13.2",
     "@faker-js/faker": "^8.4.0",
-    "@flydotio/dockerfile": "^0.5.4",
+    "@flydotio/dockerfile": "^0.5.8",
     "@next/bundle-analyzer": "^14.2.3",
     "@simplewebauthn/types": "^10.0.0",
     "@tailwindcss/typography": "^0.5.12",

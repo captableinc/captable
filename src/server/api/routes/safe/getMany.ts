@@ -1,18 +1,10 @@
-import {
-  PaginationQuerySchema,
-  PaginationResponseSchema,
-} from "@/server/api/schema/pagination";
-import { StakeholderSchema } from "@/server/api/schema/stakeholder";
+import { ApiError } from "@/server/api/error";
+import { ApiSafeSchema, type ApiSafeType } from "@/server/api/schema/safe";
 import {
   authMiddleware,
   withAuthApiV1,
 } from "@/server/api/utils/endpoint-creator";
 import { z } from "@hono/zod-openapi";
-
-const ResponseSchema = z.object({
-  data: z.array(StakeholderSchema),
-  meta: PaginationResponseSchema,
-});
 
 const ParamsSchema = z.object({
   companyId: z.string().openapi({
@@ -26,17 +18,19 @@ const ParamsSchema = z.object({
   }),
 });
 
+const ResponseSchema = z.object({
+  data: ApiSafeSchema.array(),
+});
+
 export const getMany = withAuthApiV1
   .createRoute({
-    summary: "List stakeholders",
-    description:
-      "Retrieve a paginated list of all stakeholders in the company.",
-    tags: ["Stakeholder"],
+    summary: "List safes",
+    description: "List all safes in the company",
+    tags: ["Safe"],
     method: "get",
-    path: "/v1/{companyId}/stakeholders",
+    path: "/v1/{companyId}/safes",
     middleware: [authMiddleware()],
     request: {
-      query: PaginationQuerySchema,
       params: ParamsSchema,
     },
     responses: {
@@ -46,30 +40,26 @@ export const getMany = withAuthApiV1
             schema: ResponseSchema,
           },
         },
-        description: "A list of stakeholders in a company with their details.",
+        description: "Safe details",
       },
     },
   })
   .handler(async (c) => {
-    const { membership } = c.get("session");
     const { db } = c.get("services");
-    const query = c.req.valid("query");
+    const { companyId } = c.req.valid("param");
 
-    const [data, meta] = await db.stakeholder
-      .paginate({ where: { companyId: membership.companyId } })
-      .withCursor({
-        limit: query.limit,
-        after: query.cursor,
+    const safes = (await db.safe.findMany({
+      where: {
+        companyId,
+      },
+    })) as ApiSafeType[];
+
+    if (!safes) {
+      throw new ApiError({
+        code: "NOT_FOUND",
+        message: "No safe with the provided Id",
       });
+    }
 
-    const response: z.infer<typeof ResponseSchema> = {
-      data: data.map((stakeholder) => ({
-        ...stakeholder,
-        createdAt: stakeholder.createdAt.toISOString(),
-        updatedAt: stakeholder.updatedAt.toISOString(),
-      })),
-      meta,
-    };
-
-    return c.json(response, 200);
+    return c.json({ data: safes }, 200);
   });

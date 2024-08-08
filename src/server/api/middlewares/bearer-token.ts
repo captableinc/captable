@@ -35,7 +35,7 @@ export const accessTokenAuthMiddleware = (
 async function authenticateWithAccessToken(
   bearerToken: string,
   c: Context,
-  withoutMembershipCheck: undefined | boolean,
+  withoutMembershipCheck: undefined | boolean = false,
 ) {
   const [clientId, clientSecret] = bearerToken.split(":") as [string, string];
 

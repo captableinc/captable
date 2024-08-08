@@ -23,7 +23,7 @@ const CreateAccessToken = () => {
       setAccessToken(token);
 
       toast.promise(copy(token), {
-        loading: "copying token...",
+        loading: "Copying token...",
         success: "Access token copied to clipboard.",
         error: "error copying token",
       });

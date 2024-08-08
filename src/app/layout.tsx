@@ -42,7 +42,7 @@ export default async function RootLayout({
           <NextAuthProvider session={session}>
             <TRPCReactProvider cookies={cookies().toString()}>
               <main>{children}</main>
-              <Toaster richColors />
+              <Toaster closeButton richColors />
               {nodeEnv === "development" && <ScreenSize />}
             </TRPCReactProvider>
           </NextAuthProvider>

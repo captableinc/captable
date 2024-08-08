@@ -82,7 +82,7 @@ const CreateAccessToken = () => {
             className="cursor-copy break-words p-3 mt-2"
             onClick={() => {
               toast.promise(copy(accessToken), {
-                loading: "copying token...",
+                loading: "Copying token...",
                 success: "Access token copied to clipboard.",
                 error: "error copying token",
               });

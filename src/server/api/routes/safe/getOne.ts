@@ -33,9 +33,9 @@ const ResponseSchema = z.object({
 
 export const getOne = withAuthApiV1
   .createRoute({
-    summary: "Get a safe",
-    description: "Get a safe by ID",
-    tags: ["Safe"],
+    summary: "Get a SAFE",
+    description: "Get a SAFE by ID",
+    tags: ["SAFEs"],
     method: "get",
     path: "/v1/{companyId}/safes/{id}",
     middleware: [authMiddleware()],
@@ -68,7 +68,7 @@ export const getOne = withAuthApiV1
     if (!safe) {
       throw new ApiError({
         code: "NOT_FOUND",
-        message: "No safe with the provided Id",
+        message: `SAFE with id ${id} could not be found`,
       });
     }
 

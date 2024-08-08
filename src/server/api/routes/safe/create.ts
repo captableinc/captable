@@ -28,10 +28,10 @@ const ParamsSchema = z.object({
 export const create = withAuthApiV1
   .createRoute({
     method: "post",
-    path: "/v1/{companyId}/stakeholders",
-    summary: "Create stakeholders",
-    description: "Add one or more stakeholder accounts to a company.",
-    tags: ["Stakeholder"],
+    path: "/v1/{companyId}/safes",
+    summary: "Create SAFEs",
+    description: "Add one or more SAFEs to a company.",
+    tags: ["SAFEs"],
     middleware: [authMiddleware()],
     request: {
       params: ParamsSchema,

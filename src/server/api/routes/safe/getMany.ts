@@ -24,9 +24,9 @@ const ResponseSchema = z.object({
 
 export const getMany = withAuthApiV1
   .createRoute({
-    summary: "List safes",
-    description: "List all safes in the company",
-    tags: ["Safe"],
+    summary: "List SAFEs",
+    description: "List all SAFEs in the company",
+    tags: ["SAFEs"],
     method: "get",
     path: "/v1/{companyId}/safes",
     middleware: [authMiddleware()],

@@ -22,6 +22,7 @@ const sizes = {
   "3xl": "max-w-3xl",
   "4xl": "max-w-4xl",
   screen: "max-w-[96vw]",
+  "5xl": "max-w-5xl",
 };
 
 export type ModalSizeType = keyof typeof sizes;

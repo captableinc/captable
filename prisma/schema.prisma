@@ -189,6 +189,7 @@ model BankAccount {
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  safes     Safe[]
 
   @@unique([companyId, accountNumber])
   @@unique([companyId, primary], name: "unique_primary_account")
@@ -829,7 +830,7 @@ enum SafeTemplateEnum {
 
 model Safe {
   id           String            @id @default(cuid())
-  publicId     String // eg. SAFE-01
+  publicId     String? // eg. SAFE-01
   type         SafeTypeEnum      @default(POST_MONEY)
   status       SafeStatusEnum    @default(DRAFT)
   capital      Float // Amount of money invested
@@ -850,6 +851,9 @@ model Safe {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  bankAccountId String
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+
   issueDate         DateTime
   boardApprovalDate DateTime?
   createdAt         DateTime  @default(now())
@@ -858,6 +862,7 @@ model Safe {
   @@unique([publicId, companyId])
   @@index([companyId])
   @@index([stakeholderId])
+  @@index([bankAccountId])
 }
 
 enum ConvertibleStatusEnum {

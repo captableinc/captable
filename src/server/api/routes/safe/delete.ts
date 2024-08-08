@@ -33,9 +33,9 @@ const ResponseSchema = z.object({
 
 export const _delete = withAuthApiV1
   .createRoute({
-    summary: "Delete a safe",
-    description: "Remove a safe from a company by ID.",
-    tags: ["Safe"],
+    summary: "Delete a SAFE",
+    description: "Remove a SAFE from a company by ID.",
+    tags: ["SAFEs"],
     method: "delete",
     path: "/v1/{companyId}/safes/{id}",
     middleware: [authMiddleware()],

@@ -41,7 +41,7 @@ export const update = withAuthApiV1
   .createRoute({
     summary: "Update a stakeholder",
     description: "Modify the details of a stakeholder by their ID.",
-    tags: ["Stakeholder"],
+    tags: ["SAFEs"],
     method: "patch",
     path: "/v1/{companyId}/stakeholders/{id}",
     middleware: [authMiddleware()],

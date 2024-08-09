@@ -4,7 +4,6 @@ import { Audit } from "@/server/audit";
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
-import { TagType } from "./../../../lib/tags";
 
 export const accessTokenRouter = createTRPCRouter({
   listAll: withAccessControl

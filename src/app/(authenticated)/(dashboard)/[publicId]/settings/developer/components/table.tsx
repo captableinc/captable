@@ -44,16 +44,18 @@ interface DeleteDialogProps {
   accessToken: string;
   openAlert: boolean;
   setOpenAlert: (val: boolean) => void;
+  setLoading: (val: boolean) => void;
 }
 
 function DeleteKeyAlert({
   accessToken,
   openAlert,
   setOpenAlert,
+  setLoading,
 }: DeleteDialogProps) {
   const router = useRouter();
 
-  const deleteMutation = api.accessToken.delete.useMutation({
+  const { mutateAsync: deleteApiKey } = api.accessToken.delete.useMutation({
     onSuccess: ({ success, message }) => {
       if (success) {
         toast.success(message);
@@ -64,6 +66,10 @@ function DeleteKeyAlert({
     onError: (error) => {
       console.error(error);
       toast.error("An error occurred while creating the access token.");
+    },
+
+    onSettled: () => {
+      setLoading(false);
     },
   });
   return (
@@ -80,7 +86,10 @@ function DeleteKeyAlert({
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => deleteMutation.mutateAsync({ tokenId: accessToken })}
+            onClick={async () => {
+              setLoading(true);
+              await deleteApiKey({ tokenId: accessToken });
+            }}
           >
             Continue
           </AlertDialogAction>
@@ -92,7 +101,7 @@ function DeleteKeyAlert({
 
 type TokenViewerModalProps = Omit<
   DeleteDialogProps,
-  "openAlert" | "setOpenAlert"
+  "openAlert" | "setOpenAlert" | "setLoading"
 > & {
   openViewer: boolean;
   setOpenViewer: (val: boolean) => void;
@@ -107,7 +116,7 @@ function TokenViewerModal({
 
   return (
     <Modal
-      title="Access token created"
+      title="Access token rotated"
       subtitle={
         <Tldr
           message="
@@ -145,7 +154,6 @@ function TokenViewerModal({
 interface RotateKeyProps extends DeleteDialogProps {
   setOpenViewer: (val: boolean) => void;
   setAccessToken: (key: string) => void;
-  setLoading: (val: boolean) => void;
 }
 
 function RotateKeyAlert({
@@ -304,6 +312,7 @@ const AccessTokenTable = ({ tokens }: { tokens: AccessTokens }) => {
           openAlert={openDeleteAlert}
           setOpenAlert={(val) => setOpenDeleteAlert(val)}
           accessToken={selectedToken}
+          setLoading={setLoading}
         />
         <RotateKeyAlert
           openAlert={openRotateAlert}

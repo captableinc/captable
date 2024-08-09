@@ -11,7 +11,6 @@ import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { Icon } from "@/components/ui/icon";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,

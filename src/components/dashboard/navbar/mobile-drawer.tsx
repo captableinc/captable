@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { RiMenuLine } from "@remixicon/react";
 import { SideBar } from "../sidebar";
 
 import type { TGetCompanyList } from "@/server/company";

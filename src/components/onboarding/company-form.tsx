@@ -23,7 +23,6 @@ import {
   ZodOnboardingMutationSchema,
 } from "@/trpc/routers/onboarding-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiArrowRightLine } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 
 import { dayjsExt } from "@/common/dayjs";

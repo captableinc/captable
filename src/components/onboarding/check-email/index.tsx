@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
-import { RiMailLine } from "@remixicon/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 

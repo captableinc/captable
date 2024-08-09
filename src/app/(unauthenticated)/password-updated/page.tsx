@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { RiCheckboxCircleLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import Link from "next/link";
 

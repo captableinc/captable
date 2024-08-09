@@ -3,7 +3,6 @@ import Modal from "@/components/common/modal";
 import TeamMemberUploader from "@/components/member/member-uploader";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { RiGroup2Fill } from "@remixicon/react";
 import { useState } from "react";
 
 export default function MemberBulkImportModal() {

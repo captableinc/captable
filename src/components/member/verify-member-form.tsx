@@ -4,7 +4,6 @@ import {
   type TypeZodAcceptMemberMutationSchema,
   ZodAcceptMemberMutationSchema,
 } from "@/trpc/routers/member-router/schema";
-import { RiArrowRightLine } from "@remixicon/react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 

@@ -1,27 +1,5 @@
 "use client";
 
-import { NavLink } from "@/components/dashboard/sidebar/nav-link";
-import { Icon } from "@/components/ui/icon";
-import {
-  RiAccountCircleFill,
-  RiAccountCircleLine,
-  RiBankCardFill,
-  RiBankCardLine,
-  RiBankFill,
-  RiBankLine,
-  RiBuildingFill,
-  RiBuildingLine,
-  RiGroup2Fill,
-  RiGroup2Line,
-  RiLock2Fill,
-  RiLock2Line,
-  RiNotificationFill,
-  RiNotificationLine,
-  RiShieldUserFill,
-  RiShieldUserLine,
-  RiTerminalBoxFill,
-  RiTerminalBoxLine,
-} from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 

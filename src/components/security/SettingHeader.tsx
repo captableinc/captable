@@ -1,7 +1,6 @@
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { withServerComponentSession } from "@/server/auth";
-import { RiArrowLeftLine } from "@remixicon/react";
 import Link from "next/link";
 import type React from "react";
 

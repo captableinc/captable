@@ -38,7 +38,6 @@ import { DataTablePagination } from "@/components/ui/data-table/data-table-pagin
 import { Icon } from "@/components/ui/icon";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { OptionTableToolbar } from "./option-table-toolbar";

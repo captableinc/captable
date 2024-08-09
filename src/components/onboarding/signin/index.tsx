@@ -15,7 +15,6 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { api } from "@/trpc/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDoorLockLine, RiGoogleFill } from "@remixicon/react";
 import {
   browserSupportsWebAuthn,
   startAuthentication,

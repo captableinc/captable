@@ -5,7 +5,6 @@ import { ADMIN_PERMISSION } from "@/lib/rbac/constants";
 import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,

@@ -27,7 +27,6 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
-import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../../ui/button";

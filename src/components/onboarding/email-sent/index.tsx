@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { RiMailLine } from "@remixicon/react";
 import Link from "next/link";
 
 const EmailSent = () => {

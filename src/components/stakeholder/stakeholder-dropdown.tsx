@@ -9,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
-import { RiAccountCircleFill, RiAddFill, RiGroup2Fill } from "@remixicon/react";
 
 export default function StakeholderDropdown() {
   return (

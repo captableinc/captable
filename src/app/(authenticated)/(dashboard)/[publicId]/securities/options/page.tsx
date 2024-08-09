@@ -2,6 +2,7 @@ import EmptyState from "@/components/common/empty-state";
 import Tldr from "@/components/common/tldr";
 import OptionTable from "@/components/securities/options/option-table";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
 import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";

@@ -4,6 +4,7 @@ import { pushModal } from "@/components/modals";
 import type { TStakeholders } from "@/components/modals/issue-share-modal";
 import type { TEquityPlans } from "@/components/modals/issue-stock-option-modal";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { RiAddFill } from "@remixicon/react";
 import type React from "react";
 
@@ -37,7 +38,7 @@ export const IssueStockOptionButton = ({
         });
       }}
     >
-      {showButtonIcon && <RiAddFill className="mr-2 h-5 w-5" />}
+      {showButtonIcon && <Icon name="add-fill" className="mr-2 h-5 w-5" />}
       {buttonDisplayName}
     </Button>
   );

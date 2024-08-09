@@ -3,6 +3,7 @@ import { ShareModal } from "@/components/securities/shares/share-modal";
 import ShareTable from "@/components/securities/shares/share-table";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiPieChartFill } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -20,7 +21,7 @@ const SharesPage = async () => {
   if (shares?.data?.length === 0) {
     return (
       <EmptyState
-        icon={<RiPieChartFill />}
+        icon={<Icon name="pie-chart-fill" />}
         title="You have not issued any shares"
         subtitle="Please click the button below to start issuing shares."
       >

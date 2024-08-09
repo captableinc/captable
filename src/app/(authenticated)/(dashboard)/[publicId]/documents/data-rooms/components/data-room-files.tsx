@@ -10,15 +10,10 @@ import { api } from "@/trpc/react";
 
 import { Icon } from "@/components/ui/icon";
 import type { Bucket, DataRoom } from "@prisma/client";
-import { RiShareLine } from "@remixicon/react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { pushModal } from "@/components/modals";
-import {
-  RiFolder3Fill as FolderIcon,
-  RiAddFill,
-  RiUploadCloudLine,
-} from "@remixicon/react";
+
 import Link from "next/link";
 import DataRoomUploader from "./data-room-uploader";
 
@@ -51,7 +46,8 @@ const DataRoomFiles = ({
           <form>
             <div className="gap-y-3">
               <div className="flex w-full font-medium">
-                <FolderIcon
+                <Icon
+                  name="folder-3-fill"
                   className="mr-3 h-6 w-6 text-primary/60"
                   aria-hidden="true"
                 />

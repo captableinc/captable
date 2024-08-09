@@ -11,7 +11,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { api } from "@/trpc/react";
-import { RiArrowRightLine as ArrowRightIcon } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

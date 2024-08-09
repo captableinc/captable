@@ -6,7 +6,6 @@ import { Icon } from "@/components/ui/icon";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
 import { api } from "@/trpc/server";
-import { RiCheckFill } from "@remixicon/react";
 
 type BadgeVariant =
   | "warning"

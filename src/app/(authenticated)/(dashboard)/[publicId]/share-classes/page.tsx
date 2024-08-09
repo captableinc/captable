@@ -4,7 +4,6 @@ import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiPieChart2Line } from "@remixicon/react";
 import type { Metadata } from "next";
 import { CreateShareButton } from "./create-share-class-button";
 import ShareClassTable from "./table";

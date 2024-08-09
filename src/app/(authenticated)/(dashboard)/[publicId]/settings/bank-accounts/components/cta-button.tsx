@@ -3,7 +3,6 @@
 import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { RiAddLine } from "@remixicon/react";
 
 const CtaButton = () => {
   return (

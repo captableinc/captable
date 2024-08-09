@@ -4,7 +4,6 @@ import Tldr from "@/components/common/tldr";
 import { pushModal } from "@/components/modals";
 import { Icon } from "@/components/ui/icon";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiEqualizer2Line } from "@remixicon/react";
 
 type EditShareClassButtonProps = {
   shareClasses?: ShareClassMutationType[];

@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import DocumentUploadModal from "../components/modal";
 import DocumentsTable from "../components/table";

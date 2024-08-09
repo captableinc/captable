@@ -5,7 +5,6 @@ import { SafeTable } from "@/components/safe/safe-table";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
-import { RiSafeFill } from "@remixicon/react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

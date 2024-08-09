@@ -7,7 +7,6 @@ import type {
 } from "@/components/modals/issue-share-modal";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { RiAddFill } from "@remixicon/react";
 import type React from "react";
 
 type IssueShareButtonProps = {

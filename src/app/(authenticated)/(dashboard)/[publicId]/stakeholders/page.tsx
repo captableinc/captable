@@ -6,7 +6,6 @@ import { Icon } from "@/components/ui/icon";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
-import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiAddFill } from "@remixicon/react";
 import type React from "react";
 
 type CreateEquityPlanButtonProps = {

@@ -12,7 +12,6 @@ import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiEqualizer2Line } from "@remixicon/react";
 import EquityPlanModal from "./modal";
 const formatter = new Intl.NumberFormat("en-US");
 

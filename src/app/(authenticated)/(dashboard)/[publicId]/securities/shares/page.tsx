@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
-import { RiAddFill, RiPieChartFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import { IssueShareButton } from "./issue-share-button";
 

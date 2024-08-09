@@ -1,14 +1,3 @@
-import { PageLayout } from "@/components/dashboard/page-layout";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
-import { cn } from "@/lib/utils";
-import type { DataRoom } from "@prisma/client";
-import {
-  RiFolder3Fill as FolderIcon,
-  RiMore2Fill as MoreIcon,
-  RiAddFill,
-} from "@remixicon/react";
 import Link from "next/link";
 import DataRoomPopover from "./data-room-popover";
 

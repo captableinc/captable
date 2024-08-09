@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { RiUploadCloudLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import { AddEsignDocumentButton } from "./components/add-esign-doc-button";
 import { ESignTable } from "./components/table";

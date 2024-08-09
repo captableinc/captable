@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import UpdateTable from "@/components/update/update-table";
 import { api } from "@/trpc/server";
-import { RiAddFill, RiMailSendLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import Link from "next/link";
 

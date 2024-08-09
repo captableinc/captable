@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiAccountCircleFill, RiAddLine } from "@remixicon/react";
 
 type Roles = RouterOutputs["rbac"]["listRoles"]["rolesList"];
 

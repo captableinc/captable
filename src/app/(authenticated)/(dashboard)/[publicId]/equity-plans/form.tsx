@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiAddFill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";

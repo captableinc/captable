@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

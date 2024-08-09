@@ -1,7 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
 import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
-import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Fragment } from "react";

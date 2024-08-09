@@ -149,7 +149,7 @@ export const accessTokenRouter = createTRPCRouter({
                 requestIp,
               },
               target: [{ type: "accessToken", id: rotated.id }],
-              summary: `${user.name} rotated the developer accessToken.`,
+              summary: `${user.name} rotated the access-token of rowID : ${rotated.id}`,
             },
             tx,
           );

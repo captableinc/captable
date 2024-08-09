@@ -79,7 +79,7 @@ const DataRoomPopover = ({ trigger }: DataRoomPopoverType) => {
           <div className="flex justify-end">
             <Button size="sm" variant={"secondary"} type="submit">
               Continue
-              <ArrowRightIcon className="ml-2 h-4 w-4" />
+              <Icon name="arrow-right-line" className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </form>

@@ -44,7 +44,7 @@ const EquityPlanPage = async () => {
   if (equityPlans.length === 0) {
     return (
       <EmptyState
-        icon={<RiPieChart2Line />}
+        icon={<Icon name="pie-chart-2-line" />}
         title="You do not have any equity plans!"
         subtitle="Please click the button below to create a new equity plan."
       >

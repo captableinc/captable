@@ -32,7 +32,11 @@ const StakeholdersPage = async () => {
   if (stakeholders.length === 0) {
     return (
       <EmptyState
-        icon={<RiGroup2Fill />}
+        icon={
+          <div>
+            <Icon name="group-2-fill" />
+          </div>
+        }
         title="You do not have any stakeholders!"
         subtitle="Please click the button below to add or import stakeholders."
       >

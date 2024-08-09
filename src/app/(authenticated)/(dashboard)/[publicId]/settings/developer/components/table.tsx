@@ -122,7 +122,10 @@ const AccessTokenTable = ({ tokens }: { tokens: AccessTokens }) => {
                 <div className="flex items-center gap-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      <RiMore2Fill className="cursor-pointer text-muted-foreground hover:text-primary/80" />
+                      <Icon
+                        name="more-2-fill"
+                        className="cursor-pointer text-muted-foreground hover:text-primary/80"
+                      />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuLabel>Options</DropdownMenuLabel>

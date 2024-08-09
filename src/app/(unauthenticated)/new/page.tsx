@@ -25,21 +25,33 @@ export default async function CapPage() {
         </h3>
         <ul>
           <li className="mb-1">
-            <CheckIcon className="inline-block w-5 h-5 mb-1 text-green-500" />
+            <Icon
+              name="check-fill"
+              className="inline-block w-5 h-5 mb-1 text-green-500"
+            />
             <span className="ml-2">Manage your Cap table, issue options</span>
           </li>
           <li className="mb-1">
-            <CheckIcon className="inline-block w-5 h-5 mb-1 text-green-500" />
+            <Icon
+              name="check-fill"
+              className="inline-block w-5 h-5 mb-1 text-green-500"
+            />
             <span className="ml-2">
               Collaborate with investors with Data rooms
             </span>
           </li>
           <li className="mb-1">
-            <CheckIcon className="inline-block w-5 h-5 mb-1 text-green-500" />
+            <Icon
+              name="check-fill"
+              className="inline-block w-5 h-5 mb-1 text-green-500"
+            />
             <span className="ml-2">eSign NDAs, SAFEs and other documents</span>
           </li>
           <li className="mb-1">
-            <CheckIcon className="inline-block w-5 h-5 mb-1 text-green-500" />
+            <Icon
+              name="check-fill"
+              className="inline-block w-5 h-5 mb-1 text-green-500"
+            />
             <span className="ml-2">
               Delight your investors by sending updates
             </span>

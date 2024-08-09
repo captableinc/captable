@@ -19,7 +19,7 @@ const OptionsPage = async () => {
   if (options?.data?.length === 0) {
     return (
       <EmptyState
-        icon={<RiGroup2Fill />}
+        icon={<Icon name="group-2-fill" />}
         title="You have not issued any stock options yet."
         subtitle="Please click the button below to start issueing options."
       >

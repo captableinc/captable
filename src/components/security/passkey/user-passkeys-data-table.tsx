@@ -181,7 +181,7 @@ export const columns: ColumnDef<Passkey[number]>[] = [
                 asChild
               >
                 <Button variant="ghost" className="h-8 w-8 p-0">
-                  <RiMore2Fill aria-hidden className="h-4 w-4" />
+                  <Icon name="more-2-fill" aria-hidden className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
             </div>

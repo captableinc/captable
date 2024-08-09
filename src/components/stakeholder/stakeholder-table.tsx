@@ -190,7 +190,7 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <RiMore2Fill className="h-4 w-4" />
+              <Icon name="more-2-fill" className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

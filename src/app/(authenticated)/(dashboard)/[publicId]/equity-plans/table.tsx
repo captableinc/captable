@@ -92,7 +92,12 @@ const EquityPlanTable = ({
                     />
                   }
                   trigger={
-                    <RiEqualizer2Line className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700" />
+                    <button type="button">
+                      <Icon
+                        name="equalizer-2-line"
+                        className="h-5 w-5 cursor-pointer text-gray-500 hover:text-gray-700"
+                      />
+                    </button>
                   }
                 />
               </TableCell>

@@ -40,7 +40,7 @@ const UnknownPreview = ({ url, name, mimeType }: FilePreviewProps) => {
     <EmptyState
       title="Preview not available"
       subtitle={`This file type - ${mimeType} is not yet supported by the previewer. You can download the file by clicking the button below.`}
-      icon={<UnknownFileIcon />}
+      icon={<Icon name="file-unknow-fill" />}
     >
       <a href={url} target="_blank" rel="noopener noreferrer">
         <Button>Download {name}</Button>

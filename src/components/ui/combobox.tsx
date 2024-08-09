@@ -130,7 +130,10 @@ export const LinearCombobox = ({
 
                   <div>
                     {selectedOption?.value === option.value && (
-                      <CheckIcon className="mr-3 size-4 fill-muted-foreground group-hover:fill-primary" />
+                      <Icon
+                        name="check-fill"
+                        className="mr-3 size-4 fill-muted-foreground group-hover:fill-primary"
+                      />
                     )}
                   </div>
                 </CommandItem>

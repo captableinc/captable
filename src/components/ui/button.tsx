@@ -68,7 +68,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isDisabled}
         {...props}
       >
-        {isLoading && <RiLoader5Fill className={cn(" animate-spin")} />}
+        {isLoading && (
+          <Icon name="loader-5-fill" className={cn(" animate-spin")} />
+        )}
         {isLoading && loadingText ? loadingText : children}
       </button>
     );

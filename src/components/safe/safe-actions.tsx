@@ -50,7 +50,7 @@ export function SafeActions() {
                 });
               }}
             >
-              <RiSafe2Fill className="mr-2 h-4 w-4" />
+              <Icon name="safe-2-fill" className="mr-2 h-4 w-4" />
               Import existing SAFE
             </Button>
           </li>

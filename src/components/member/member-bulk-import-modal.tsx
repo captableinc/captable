@@ -22,7 +22,7 @@ export default function MemberBulkImportModal() {
         <li>
           <Button variant="ghost" size="sm" type="submit">
             <>
-              <RiGroup2Fill className="mr-2 h-4 w-4" />
+              <Icon name="group-2-fill" className="mr-2 h-4 w-4" />
               Invite multiple team members
             </>
           </Button>

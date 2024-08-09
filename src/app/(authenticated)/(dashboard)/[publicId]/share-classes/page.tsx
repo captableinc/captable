@@ -32,7 +32,7 @@ const SharesPage = async () => {
   if (shareClasses.length === 0) {
     return (
       <EmptyState
-        icon={<RiPieChart2Line />}
+        icon={<Icon name="pie-chart-2-line" />}
         title="You do not have any share classes!"
         subtitle="Please click the button below to create a new share class."
       >

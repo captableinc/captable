@@ -78,7 +78,7 @@ const PublicUpdatePage = async ({
     return (
       <div className="h-screen w-full flex justify-center items-center">
         <div className="flex items-center space-x-5">
-          <RiLock2Line className="h-10 w-10" />
+          <Icon name="lock-2-line" className="h-10 w-10" />
           <p className="text-lg font-semibold text-gray-600">
             Public access denied
           </p>

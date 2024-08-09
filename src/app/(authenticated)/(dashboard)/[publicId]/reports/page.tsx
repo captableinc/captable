@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const ReportsPage = () => {
   return (
     <EmptyState
-      icon={<RiFilePdf2Fill />}
+      icon={<Icon name="file-pdf-2-fill" />}
       title="No reports available."
       subtitle="Please click the button below to generate a report"
     >

@@ -8,6 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Icon } from "@/components/ui/icon";
 import { RiAccountCircleFill, RiAddFill, RiGroup2Fill } from "@remixicon/react";
 
 export default function StakeholderDropdown() {
@@ -15,7 +16,7 @@ export default function StakeholderDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button>
-          <RiAddFill className="mr-2 h-5 w-5" />
+          <Icon name="add-fill" className="mr-2 h-5 w-5" />
           Add stakeholders
         </Button>
       </DropdownMenuTrigger>
@@ -43,7 +44,7 @@ export default function StakeholderDropdown() {
               }}
             >
               <>
-                <RiAccountCircleFill className="mr-2 h-4 w-4" />
+                <Icon name="account-circle-fill" className="mr-2 h-4 w-4" />
                 Add one stakeholder
               </>
             </Button>

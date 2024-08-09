@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { parseStrakeholdersCSV } from "@/lib/stakeholders-csv-parser";
 import { api } from "@/trpc/react";
 import type { TypeStakeholderArray } from "@/trpc/routers/stakeholder-router/schema";
@@ -70,7 +71,7 @@ const StakeholderUploader = () => {
         className="flex h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-gray-300"
         onClick={() => fileInputRef.current?.click()}
       >
-        <RiUploadLine className="h-7 w-7 text-neutral-500" />
+        <Icon name="upload-line" className="h-7 w-7 text-neutral-500" />
         <span className="text-sm text-neutral-500">
           {csvFile.length !== 0 ? csvFile[0]?.name : "Click here to import"}
         </span>

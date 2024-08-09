@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import {
   MultiSelector,
@@ -161,7 +162,11 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                         >
                           <div className="flex justify-between items-center">
                             <span>
-                              <RiAddFill className="h-4 w-4" aria-hidden />
+                              <Icon
+                                name="add-fill"
+                                className="h-4 w-4"
+                                aria-hidden
+                              />
                             </span>
 
                             <div>Create new share class</div>

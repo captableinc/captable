@@ -1,6 +1,7 @@
 "use client";
 
 import { NavLink } from "@/components/dashboard/sidebar/nav-link";
+import { Icon } from "@/components/ui/icon";
 import {
   RiAccountCircleFill,
   RiAccountCircleLine,

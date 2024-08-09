@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { type VariantProps, cva } from "class-variance-authority";
 
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { RiLoader5Fill } from "@remixicon/react";
 

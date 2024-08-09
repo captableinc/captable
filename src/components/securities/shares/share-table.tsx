@@ -34,6 +34,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Icon } from "@/components/ui/icon";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { api } from "@/trpc/react";
@@ -273,7 +274,8 @@ export const columns: ColumnDef<Share[number]>[] = [
                   await openFileOnTab(doc.bucket.key);
                 }}
               >
-                <RiFileDownloadLine
+                <Icon
+                  name="file-download-line"
                   type={doc.bucket.mimeType}
                   className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
                 />

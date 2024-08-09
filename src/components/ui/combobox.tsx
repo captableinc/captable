@@ -8,6 +8,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { Icon } from "@/components/ui/icon";
 import Kbd from "@/components/ui/kbd";
 import {
   Popover,

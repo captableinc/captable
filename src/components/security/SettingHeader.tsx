@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { withServerComponentSession } from "@/server/auth";
 import { RiArrowLeftLine } from "@remixicon/react";
@@ -31,7 +32,10 @@ export const SettingsHeader = async ({
           <div className="flex flex-row items-center justify-start space-x-1">
             {showBackArrow && (
               <Link href={href}>
-                <RiArrowLeftLine className="space-x-3 text-slate-800" />
+                <Icon
+                  name="arrow-left-line"
+                  className="space-x-3 text-slate-800"
+                />
               </Link>
             )}
             <h3 className="text-lg font-medium">{title}</h3>

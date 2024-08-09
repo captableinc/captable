@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,8 +21,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { type RouterOutputs } from "@/trpc/shared";
+import type { TemplateFieldForm } from "@/providers/template-field-provider";
+import type { RouterOutputs } from "@/trpc/shared";
 import { useFormContext, useWatch } from "react-hook-form";
 import { CustomFieldRenderer } from "./custom-field-renderer";
 import { TemplateFieldContainer } from "./template-field-container";
@@ -85,7 +86,10 @@ export function TemplateField({
             handleDelete();
           }}
         >
-          <RiCloseCircleLine className="h-5 w-5 text-red-500/90 group-hover:text-red-500" />
+          <Icon
+            name="close-circle-line"
+            className="h-5 w-5 text-red-500/90 group-hover:text-red-500"
+          />
         </Button>
 
         <FormField

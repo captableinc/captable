@@ -2,7 +2,6 @@
 
 import { Icon } from "@/components/ui/icon";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { RiArrowDownSLine } from "@remixicon/react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";

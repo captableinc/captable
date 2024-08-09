@@ -8,7 +8,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import { RiCheckLine, RiCloseLine } from "@remixicon/react";
 import { Icon } from "@/components/ui/icon";
 import { Command as CommandPrimitive } from "cmdk";
 // import { X as RemoveIcon, Ri } from "lucide-react";

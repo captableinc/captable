@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { Icon } from "@/components/ui/icon";
-import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./button";

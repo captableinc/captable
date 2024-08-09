@@ -16,7 +16,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { RiCheckFill as CheckIcon } from "@remixicon/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 

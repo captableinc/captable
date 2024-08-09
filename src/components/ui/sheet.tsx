@@ -6,7 +6,6 @@ import * as React from "react";
 
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
-import { RiCloseLine } from "@remixicon/react";
 
 const Sheet = SheetPrimitive.Root;
 

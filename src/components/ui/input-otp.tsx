@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon } from "@/components/ui/icon";
-import { RiCrossLine } from "@remixicon/react";
 import { OTPInput, type SlotProps } from "input-otp";
 import * as React from "react";
 

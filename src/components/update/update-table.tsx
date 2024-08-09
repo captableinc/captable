@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiAddCircleLine } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,

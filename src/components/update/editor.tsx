@@ -10,7 +10,6 @@ import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
 import type { Block, PartialBlock } from "@blocknote/core";
 import type { Update } from "@prisma/client";
-import { RiArrowDownSLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";

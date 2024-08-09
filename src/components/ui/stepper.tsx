@@ -9,7 +9,6 @@ import {
   useDescendants,
   useDescendantsInit,
 } from "@/providers/descendants";
-import { RiCheckLine } from "@remixicon/react";
 import {
   type ComponentProps,
   type ReactNode,

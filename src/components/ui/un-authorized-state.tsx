@@ -1,5 +1,4 @@
 import { Icon } from "@/components/ui/icon";
-import { RiDoorLockFill } from "@remixicon/react";
 import EmptyState, { type EmptyStateProps } from "../common/empty-state";
 
 export function UnAuthorizedState(props: Partial<EmptyStateProps>) {

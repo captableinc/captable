@@ -2,7 +2,6 @@
 
 import { Icon } from "@/components/ui/icon";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { RiCheckFill } from "@remixicon/react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";

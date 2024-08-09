@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { COLORS } from "@/constants/esign";
-import { RiCloseCircleLine } from "@remixicon/react";
 
 import { FieldTypeData } from "../field-type-data";
 

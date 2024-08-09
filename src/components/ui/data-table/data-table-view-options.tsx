@@ -9,7 +9,6 @@ import {
 } from "../dropdown-menu";
 
 import { Icon } from "@/components/ui/icon";
-import { RiArrowDownSLine } from "@remixicon/react";
 import { useDataTable } from "./data-table";
 
 export function DataTableViewOptions() {

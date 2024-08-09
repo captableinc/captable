@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Icon } from "@/components/ui/icon";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiAddCircleLine } from "@remixicon/react";
 import {
@@ -70,7 +71,7 @@ const UpdateActions = (row: { original: Update[number] }) => {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button variant="outline" size="sm">
-          <RiAddCircleLine className="h-4 w-4" />
+          <Icon name="add-circle-line" className="h-4 w-4" />
           Actions
         </Button>
       </DropdownMenuTrigger>

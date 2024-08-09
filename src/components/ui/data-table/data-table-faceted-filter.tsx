@@ -1,7 +1,8 @@
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { RiAddCircleLine, RiCheckLine } from "@remixicon/react";
-import { type Column } from "@tanstack/react-table";
-import * as React from "react";
+import type { Column } from "@tanstack/react-table";
+import type * as React from "react";
 import { Badge } from "../badge";
 import { Button } from "../button";
 import {
@@ -38,7 +39,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <RiAddCircleLine className="mr-2 h-4 w-4" />
+          <Icon name="add-circle-line" className="mr-2 h-4 w-4" />
           {title}
           {selectedValues?.size > 0 && (
             <>
@@ -106,7 +107,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                           : "opacity-50 [&_svg]:invisible",
                       )}
                     >
-                      <RiCheckLine className={cn("h-4 w-4")} />
+                      <Icon name="check-line" className={cn("h-4 w-4")} />
                     </div>
                     {option.icon && (
                       <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />

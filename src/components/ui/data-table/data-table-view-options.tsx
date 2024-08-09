@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "../dropdown-menu";
 
+import { Icon } from "@/components/ui/icon";
 import { RiArrowDownSLine } from "@remixicon/react";
 import { useDataTable } from "./data-table";
 
@@ -22,7 +23,7 @@ export function DataTableViewOptions() {
           className="ml-auto hidden h-8 lg:flex"
         >
           Select columns{" "}
-          <RiArrowDownSLine aria-hidden className="ml-2 h-4 w-4" />
+          <Icon name="arrow-down-s-line" aria-hidden className="ml-2 h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">

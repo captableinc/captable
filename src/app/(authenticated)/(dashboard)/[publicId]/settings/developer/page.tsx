@@ -1,4 +1,5 @@
 import EmptyState from "@/components/common/empty-state";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
 import { RiTerminalBoxFill } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -20,7 +21,7 @@ const AccessTokenPage = async () => {
       {data.accessTokens.length === 0 ? (
         <EmptyState
           bordered={false}
-          icon={<RiTerminalBoxFill />}
+          icon={<Icon name="terminal-box-fill" />}
           title="Access tokens"
           subtitle={
             <p className="text-muted-foreground">

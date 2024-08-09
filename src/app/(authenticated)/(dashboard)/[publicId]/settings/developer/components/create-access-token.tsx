@@ -4,6 +4,7 @@ import Modal from "@/components/common/modal";
 import Tldr from "@/components/common/tldr";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
 import { RiAddLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
@@ -49,7 +50,7 @@ const CreateAccessToken = () => {
         }}
         loading={loading}
       >
-        <RiAddLine className="inline-block h-5 w-5" />
+        <Icon name="add-line" className="inline-block h-5 w-5" />
         Create an access token
       </Button>
 

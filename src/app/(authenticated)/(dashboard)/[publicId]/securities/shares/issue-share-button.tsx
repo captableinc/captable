@@ -6,6 +6,7 @@ import type {
   TStakeholders,
 } from "@/components/modals/issue-share-modal";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { RiAddFill } from "@remixicon/react";
 import type React from "react";
 
@@ -34,7 +35,7 @@ export const IssueShareButton = ({
         });
       }}
     >
-      <RiAddFill className="mr-2 h-5 w-5" />
+      <Icon name="add-fill" className="mr-2 h-5 w-5" />
       Create a share
     </Button>
   );

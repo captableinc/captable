@@ -35,6 +35,7 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { Icon } from "@/components/ui/icon";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
@@ -216,7 +217,8 @@ export const columns: ColumnDef<Safe[number]>[] = [
                     await openFileOnTab(doc.bucket.key);
                   }}
                 >
-                  <RiFileDownloadLine
+                  <Icon
+                    name="file-download-line"
                     type={doc.bucket.mimeType}
                     className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
                   />

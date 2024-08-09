@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
 import { ADMIN_PERMISSION } from "@/lib/rbac/constants";
 import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";

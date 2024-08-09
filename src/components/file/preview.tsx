@@ -1,6 +1,7 @@
 import EmptyState from "@/components/common/empty-state";
 import { OfficeViewer } from "@/components/file/office-viewer";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { PdfViewer } from "@/components/ui/pdf-viewer";
 import { fileType } from "@/lib/mime";
 import { RiFileUnknowFill as UnknownFileIcon } from "@remixicon/react";

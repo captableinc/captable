@@ -1,12 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
-import {
-  RiArrowRightLine,
-  RiMailCheckLine,
-  RiMailCloseLine,
-} from "@remixicon/react";
+
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
@@ -16,7 +13,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
   const [success, setSuccess] = useState<string | undefined>("");
 
   const { mutateAsync } = api.auth.verifyEmail.useMutation({
-    onSuccess: async ({ message }) => {
+    onSuccess: ({ message }) => {
       setLoading(false);
       setSuccess(message);
     },
@@ -26,7 +23,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
     },
   });
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = async () => {
     if (success || error) return;
 
     if (!token) {
@@ -42,7 +39,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
       setLoading(false);
       setError("Something went wrong! Please try again.");
     }
-  }, [token, success, error]);
+  };
 
   useEffect(() => {
     void onSubmit();
@@ -70,7 +67,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
             <>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
                 <span className="text-teal-500">
-                  <RiMailCheckLine className="h-6 w-auto" />
+                  <Icon name="mail-check-line" className="h-6 w-auto" />
                 </span>
               </div>
               <h1 className="text-2xl font-semibold tracking-tight">
@@ -82,7 +79,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
             </>
           ) : (
             <>
-              <RiMailCloseLine className="mb-1 h-10 w-auto" />
+              <Icon name="mail-close-line" className="mb-1 h-10 w-auto" />
               <h1 className="text-2xl font-semibold tracking-tight">
                 Verification Failed
               </h1>
@@ -96,14 +93,14 @@ const VerifyEmail = ({ token }: { token: string }) => {
             <Link href="/signin" className="mt-4">
               <Button size="lg">
                 Continue to Login page
-                <RiArrowRightLine className="ml-2 h-4 w-4" />
+                <Icon name="arrow-right-line" className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           ) : (
             <Link href="/signup" className="mt-4">
               <Button size="lg">
                 Try signing up again
-                <RiArrowRightLine className="ml-2 h-4 w-4" />
+                <Icon name="arrow-right-line" className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           )}

@@ -1,11 +1,11 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { RiUploadCloudLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import DocumentsTable from "./components/table";
 import { DocumentUploadButton } from "./document-upload-button";
@@ -32,7 +32,7 @@ const DocumentsPage = async () => {
   if (documents.length === 0) {
     return (
       <EmptyState
-        icon={<RiUploadCloudLine />}
+        icon={<Icon name="upload-cloud-line" />}
         title="You do not have any documents!"
         subtitle="Please click the button below to upload a new document."
       >

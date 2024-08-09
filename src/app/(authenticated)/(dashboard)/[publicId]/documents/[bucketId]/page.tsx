@@ -2,6 +2,7 @@ import FileIcon from "@/components/common/file-icon";
 import FilePreview from "@/components/file/preview";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
@@ -42,7 +43,7 @@ const DocumentPreview = async ({
             size="icon"
             className="-mt-1 mr-3 flex items-center rounded-full"
           >
-            <RiArrowLeftSLine className="h-5 w-5" />
+            <Icon name="arrow-left-s-line" size="md" />
           </Button>
         </Link>
 

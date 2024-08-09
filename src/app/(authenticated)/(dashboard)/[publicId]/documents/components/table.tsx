@@ -3,6 +3,7 @@
 import { dayjsExt } from "@/common/dayjs";
 import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";

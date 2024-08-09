@@ -2,6 +2,7 @@
 
 import Loading from "@/components/common/loading";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {

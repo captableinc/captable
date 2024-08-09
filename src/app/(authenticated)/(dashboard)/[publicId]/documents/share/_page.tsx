@@ -2,6 +2,7 @@ import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
@@ -20,7 +21,7 @@ const DocumentsPage = async () => {
   if (documents.length === 0) {
     return (
       <EmptyState
-        icon={<RiUploadCloudLine />}
+        icon={<Icon name="upload-cloud-line" />}
         title="You do not have any documents!"
         subtitle="Please click the button below to upload a new document."
       >
@@ -28,7 +29,7 @@ const DocumentsPage = async () => {
           companyPublicId={session.user.companyPublicId}
           trigger={
             <Button>
-              <RiAddFill className="mr-2 h-5 w-5" />
+              <Icon name="add-fill" className="mr-2 h-5 w-5" />
               Upload a document
             </Button>
           }
@@ -47,7 +48,7 @@ const DocumentsPage = async () => {
             companyPublicId={session.user.companyPublicId}
             trigger={
               <Button>
-                <RiAddFill className="mr-2 h-5 w-5" />
+                <Icon name="add-fill" className="mr-2 h-5 w-5" />
                 Document
               </Button>
             }

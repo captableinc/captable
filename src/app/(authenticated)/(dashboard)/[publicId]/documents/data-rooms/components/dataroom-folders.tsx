@@ -1,6 +1,7 @@
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { DataRoom } from "@prisma/client";
 import {
@@ -32,7 +33,7 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
           <DataRoomPopover
             trigger={
               <Button>
-                <RiAddFill className="mr-2 h-5 w-5" />
+                <Icon name="add-fill" className="mr-2 h-5 w-5" />
                 Data room
               </Button>
             }

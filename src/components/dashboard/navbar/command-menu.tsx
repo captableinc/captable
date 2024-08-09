@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  type RemixiconComponentType,
-  RiAccountCircleFill,
-  RiPieChart2Fill,
-  RiSparklingFill,
-  RiUploadCloud2Fill,
-} from "@remixicon/react";
+import { Icon, type IconName } from "@/components/ui/icon";
 
 import {
   CommandDialog,
@@ -20,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Kbd from "@/components/ui/kbd";
 import { cn } from "@/lib/utils";
-import { RiSearchLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -31,7 +24,7 @@ type CommandOption = {
   id: string;
   title: string;
   path?: string;
-  icon: RemixiconComponentType;
+  icon: IconName;
   onClick?: (publicId: string) => void;
 };
 
@@ -40,12 +33,12 @@ const Pages: CommandOption[] = [
     id: "ai",
     title: "Ask an AI",
     path: "/ai",
-    icon: RiSparklingFill,
+    icon: "sparkling-fill",
   },
   {
     id: "stakeholders",
     title: "Add a stakeholder",
-    icon: RiAccountCircleFill,
+    icon: "account-circle-fill",
     onClick: () => {
       pushModal("SingleStakeholdersModal", {
         title: "Add a stakeholder",
@@ -65,7 +58,7 @@ const Pages: CommandOption[] = [
   {
     id: "documents",
     title: "Upload document",
-    icon: RiUploadCloud2Fill,
+    icon: "upload-cloud-2-fill",
     onClick: (companyPublicId: string) => {
       pushModal("DocumentUploadModal", {
         companyPublicId,
@@ -75,7 +68,7 @@ const Pages: CommandOption[] = [
   {
     id: "esign-document",
     title: "Upload esign document",
-    icon: RiUploadCloud2Fill,
+    icon: "upload-cloud-2-fill",
     onClick: (companyPublicId: string) => {
       pushModal("AddEsignDocumentModal", {
         title: "eSign a Document",
@@ -87,7 +80,7 @@ const Pages: CommandOption[] = [
   {
     id: "equity-plan",
     title: "Create an equity plan",
-    icon: RiPieChart2Fill,
+    icon: "pie-chart-2-fill",
     onClick: () => {
       pushModal("EquityPlanModal", {
         shouldClientFetch: true,
@@ -110,7 +103,7 @@ const Pages: CommandOption[] = [
   {
     id: "share-class",
     title: "Create a share class",
-    icon: RiPieChart2Fill,
+    icon: "pie-chart-2-fill",
     onClick: () => {
       pushModal("ShareClassModal", {
         shouldClientFetch: true,
@@ -142,7 +135,7 @@ const Pages: CommandOption[] = [
         shareClasses: [],
       });
     },
-    icon: RiPieChart2Fill,
+    icon: "pie-chart-2-fill",
   },
   {
     id: "issue-stock-option",
@@ -156,7 +149,7 @@ const Pages: CommandOption[] = [
         equityPlans: [],
       });
     },
-    icon: RiPieChart2Fill,
+    icon: "pie-chart-2-fill",
   },
   {
     id: "new-safe",
@@ -168,7 +161,7 @@ const Pages: CommandOption[] = [
           "Create, sign and send a new SAFE agreement to your investors.",
       });
     },
-    icon: RiPieChart2Fill,
+    icon: "pie-chart-2-fill",
   },
   {
     id: "existing-safe",
@@ -180,7 +173,7 @@ const Pages: CommandOption[] = [
           "Record an existing SAFE agreement to keep track of it in your captable.",
       });
     },
-    icon: RiPieChart2Fill,
+    icon: "pie-chart-2-fill",
   },
 ];
 
@@ -215,7 +208,7 @@ export function CommandMenu({ companyPublicId }: CommandMenuProps) {
         onClick={() => setOpen((s) => !s)}
       >
         <div className="flex items-center">
-          <RiSearchLine className="mr-2 h-5 w-5" />
+          <Icon name="search-line" className="mr-2 h-5 w-5" />
           <span>Type a command or search</span>
         </div>
         <Kbd>
@@ -255,17 +248,14 @@ export function CommandMenu({ companyPublicId }: CommandMenuProps) {
                     page.id === "ai" ? "bg-teal-100" : "bg-gray-200",
                   )}
                 >
-                  {page.id === "ai" ? (
-                    <page.icon
-                      className="h-4 w-4 p-0.5 text-teal-600"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <page.icon
-                      className="h-4 w-4 p-0.5 text-primary"
-                      aria-hidden="true"
-                    />
-                  )}
+                  <Icon
+                    name={page.icon}
+                    size="sm"
+                    className={cn(
+                      page.id === "ai" ? "text-teal-600" : "text-primary",
+                    )}
+                    aria-hidden="true"
+                  />
                 </div>
 
                 <span className="ml-2">{page.title}</span>

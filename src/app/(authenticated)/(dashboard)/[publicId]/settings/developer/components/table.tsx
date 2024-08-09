@@ -92,9 +92,8 @@ function DeleteKeyAlert({
 
 type TokenViewerModalProps = Omit<
   DeleteDialogProps,
-  "keyId" | "openAlert" | "setOpenAlert"
+  "openAlert" | "setOpenAlert"
 > & {
-  accessToken: string;
   openViewer: boolean;
   setOpenViewer: (val: boolean) => void;
 };

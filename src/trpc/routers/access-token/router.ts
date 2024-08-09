@@ -4,6 +4,7 @@ import { Audit } from "@/server/audit";
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+import { TagType } from "./../../../lib/tags";
 
 export const accessTokenRouter = createTRPCRouter({
   listAll: withAccessControl
@@ -42,6 +43,7 @@ export const accessTokenRouter = createTRPCRouter({
 
   create: withAccessControl
     .input(z.object({ typeEnum: z.nativeEnum(AccessTokenType) }))
+    .meta({ policies: { developer: { allow: ["create"] } } })
     .mutation(async ({ ctx, input }) => {
       const {
         db,
@@ -92,74 +94,76 @@ export const accessTokenRouter = createTRPCRouter({
     }),
 
   rotate: withAccessControl
-    .input(z.object({ keyId: z.string() }))
-    .meta({ policies: { "api-keys": { allow: ["update"] } } })
+    .input(z.object({ tokenId: z.string() }))
+    .meta({ policies: { developer: { allow: ["update"] } } })
     .mutation(async ({ ctx, input }) => {
       try {
         const {
           db,
-          membership: { memberId, companyId },
+          membership: { userId, companyId },
           session,
           requestIp,
           userAgent,
         } = ctx;
         const { user } = session;
+        const { tokenId } = input;
 
         const key = await db.$transaction(async (tx) => {
-          const existingKey = await tx.apiKey.findUnique({
+          const existingToken = await tx.accessToken.findUnique({
             where: {
-              keyId: input.keyId,
+              id: tokenId,
+              userId,
               active: true,
             },
           });
 
-          if (!existingKey) {
+          if (!existingToken) {
             throw new TRPCError({
               code: "NOT_FOUND",
-              message: "Api key not found",
+              message: "Access token not found",
             });
           }
 
-          const token = createApiToken();
-          const keyId = generatePublicId();
-          const hashedToken = createSecureHash(token);
+          const { clientId, clientSecret } = initializeAccessToken({
+            prefix: existingToken.typeEnum,
+          });
+          const hashedClientSecret = await createSecureHash(clientSecret);
 
-          const newKey = await tx.apiKey.update({
+          const rotated = await tx.accessToken.update({
             where: {
-              id: existingKey.id,
-              membershipId: memberId,
+              id: existingToken.id,
             },
             data: {
-              keyId,
-              hashedToken,
-              active: true,
+              clientId,
+              clientSecret: hashedClientSecret,
             },
           });
 
           await Audit.create(
             {
-              action: "apikey.rotated",
+              action: "accessToken.rotated",
               companyId,
               actor: { type: "user", id: user.id },
               context: {
                 userAgent,
                 requestIp,
               },
-              target: [{ type: "apiKey", id: newKey.id }],
-              summary: `${user.name} rotated the apiKey ${newKey.name}`,
+              target: [{ type: "accessToken", id: rotated.id }],
+              summary: `${user.name} rotated the developer accessToken.`,
             },
             tx,
           );
-          return newKey;
+          return rotated;
         });
 
         return {
-          token: key.hashedToken,
-          keyId: key.keyId,
+          success: true,
+          token: `${key.clientId}:${key.clientSecret}`,
+          clientId: key.clientId,
           createdAt: key.createdAt,
         };
       } catch (error) {
-        console.error("Error rotating the api key :", error);
+        console.error("Error rotating the api access token :", error);
         if (error instanceof TRPCError) {
           return {
             success: false,

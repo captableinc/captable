@@ -11,7 +11,8 @@ import { copyIcons, removeTempDir } from "./generate-icons";
 const cwd = process.cwd();
 const inputDir = path.join(cwd, "temp-svg-icons");
 const inputDirRelative = path.relative(cwd, inputDir);
-const outputDir = path.join(cwd, "src", "components", "ui", "icon");
+const outputDir = path.join(cwd, "public", "icons");
+const typesDir = path.join(cwd, "src", "components", "ui", "icon");
 
 const shouldVerboseLog = process.argv.includes("--log=verbose");
 const logVerbose = shouldVerboseLog ? console.log : () => {};
@@ -26,7 +27,7 @@ async function generateIconFiles() {
   await fsExtra.ensureDir(outputDir);
 
   const spriteFilepath = path.join(outputDir, "sprite.svg");
-  const typeOutputFilepath = path.join(outputDir, "icon-names.ts");
+  const typeOutputFilepath = path.join(typesDir, "icon-names.ts");
   const currentSprite = await fsExtra
     .readFile(spriteFilepath, "utf8")
     .catch(() => "");

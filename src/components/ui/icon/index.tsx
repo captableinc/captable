@@ -2,7 +2,6 @@ import type { SVGProps } from "react";
 import type { IconName } from "./icon-names";
 
 import { cn } from "@/lib/utils";
-import href from "./sprite.svg";
 
 export type { IconName };
 
@@ -73,7 +72,7 @@ export function Icon({
       aria-hidden
     >
       {title ? <title>{title}</title> : null}
-      <use href={`${href}#${name}`} />
+      <use href={`/icons/sprite.svg#${name}`} />
     </svg>
   );
 }

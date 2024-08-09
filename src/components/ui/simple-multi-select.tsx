@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { RiCheckLine, RiCloseLine } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import { Command as CommandPrimitive } from "cmdk";
 // import { X as RemoveIcon, Ri } from "lucide-react";
 import React, {
@@ -194,7 +195,10 @@ const MultiSelectorTrigger = forwardRef<
             onClick={() => onValueChange(item)}
           >
             <span className="sr-only">Remove {item} option</span>
-            <RiCloseLine className="h-4 w-4 hover:stroke-destructive" />
+            <Icon
+              name="close-line"
+              className="h-4 w-4 hover:stroke-destructive"
+            />
           </button>
         </Badge>
       ))}
@@ -298,7 +302,7 @@ const MultiSelectorItem = forwardRef<
       onMouseDown={mousePreventDefault}
     >
       {children}
-      {isIncluded && <RiCheckLine className="h-4 w-4" />}
+      {isIncluded && <Icon name="check-line" className="h-4 w-4" />}
     </CommandItem>
   );
 });

@@ -1,5 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";

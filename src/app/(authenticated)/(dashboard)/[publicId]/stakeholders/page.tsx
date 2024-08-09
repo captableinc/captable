@@ -2,6 +2,7 @@ import EmptyState from "@/components/common/empty-state";
 import StakeholderDropdown from "@/components/stakeholder/stakeholder-dropdown";
 import StakeholderTable from "@/components/stakeholder/stakeholder-table";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";

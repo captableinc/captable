@@ -2,6 +2,7 @@
 
 import FilePreview from "@/components/file/preview";
 import { SharePageLayout } from "@/components/share/page-layout";
+import { Icon } from "@/components/ui/icon";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
@@ -24,7 +25,11 @@ const DataRoomPage = async ({
     return notFound();
   }
 
-  const { companyId, dataRoomId, recipientId } = decodedToken?.payload;
+  if (!decodedToken?.payload) {
+    return notFound();
+  }
+
+  const { companyId, dataRoomId, recipientId } = decodedToken.payload;
   if (!companyId || !recipientId || !dataRoomId) {
     return notFound();
   }

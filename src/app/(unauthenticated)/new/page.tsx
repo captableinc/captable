@@ -1,3 +1,4 @@
+import { Icon } from "@/components/ui/icon";
 import { env } from "@/env";
 import { getServerComponentAuthSession } from "@/server/auth";
 import { RiCheckboxCircleFill as CheckIcon } from "@remixicon/react";

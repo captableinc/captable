@@ -107,7 +107,7 @@ export function TemplateField({
                   {FieldTypeData.map((item) => (
                     <SelectItem key={item.label} value={item.value}>
                       <span className="flex items-center gap-x-2">
-                        <item.icon className="h-4 w-4" aria-hidden />
+                        <Icon size="sm" name={item.icon} />
                         <span className="group-[.trigger]:hidden">
                           {item.label}
                         </span>

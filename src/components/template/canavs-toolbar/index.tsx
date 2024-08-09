@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import {
   Select,
   SelectContent,
@@ -148,7 +149,7 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
                       variant="ghost"
                     >
                       <span>
-                        <item.icon className="h-4 w-4" aria-hidden />
+                        <Icon size="sm" name={item.icon} />
                       </span>
                       <span className="text-xs">{item.label}</span>
                     </Button>

@@ -42,7 +42,7 @@ const DocumentPreview = async ({
             size="icon"
             className="-mt-1 mr-3 flex items-center rounded-full"
           >
-            <Icon name="arrow-left-s-line" size="md" />
+            <Icon name="arrow-left-s-line" className="h-5 w-5" />
           </Button>
         </Link>
 

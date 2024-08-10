@@ -22,7 +22,7 @@ export const DocumentUploadButton = ({
         });
       }}
     >
-      <Icon name="add-fill" size="md" className="mr-2" />
+      <Icon name="add-fill" className="mr-2 h-5 w-5" />
       {buttonDisplayName}
     </Button>
   );

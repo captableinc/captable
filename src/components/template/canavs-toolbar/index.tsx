@@ -149,7 +149,7 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
                       variant="ghost"
                     >
                       <span>
-                        <Icon size="sm" name={item.icon} />
+                        <Icon className="h-4 w-4" name={item.icon} />
                       </span>
                       <span className="text-xs">{item.label}</span>
                     </Button>

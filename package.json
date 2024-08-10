@@ -18,6 +18,7 @@
     "db:seed": "NODE_ENV='test' tsx prisma/seeds/index.ts",
     "dev": "next dev",
     "build": "next build",
+    "build:icons": "tsx scripts/build-icons.ts",
     "start": "next start",
     "postinstall": "prisma generate",
     "prepare": "husky",

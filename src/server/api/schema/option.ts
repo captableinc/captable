@@ -52,29 +52,29 @@ export const OptionSchema = z
       example: 4,
     }),
 
-    issueDate: z.string().date().openapi({
+    issueDate: z.string().datetime().openapi({
       description: "Issue Date",
       example: "2024-01-01",
     }),
 
-    expirationDate: z.string().date().openapi({
+    expirationDate: z.string().datetime().openapi({
       description: "Expiration Date",
-      example: "2028-01-01",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
-    vestingStartDate: z.string().date().openapi({
+    vestingStartDate: z.string().datetime().openapi({
       description: "Vesting Start Date",
-      example: "2024-01-01",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
-    boardApprovalDate: z.string().date().openapi({
+    boardApprovalDate: z.string().datetime().openapi({
       description: "Board Approval Date",
-      example: "2024-01-01",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
-    rule144Date: z.string().date().openapi({
+    rule144Date: z.string().datetime().openapi({
       description: "Rule 144 Date",
-      example: "2024-01-01",
+      example: "2024-01-01T00:00:00.000Z",
     }),
 
     stakeholderId: z.string().openapi({

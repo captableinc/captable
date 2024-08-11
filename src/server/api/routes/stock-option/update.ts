@@ -42,7 +42,7 @@ export const update = withAuthApiV1
   .createRoute({
     summary: "Update Issued Options",
     description: "Update details of an issued option by its ID.",
-    tags: ["Shares"],
+    tags: ["Options"],
     method: "patch",
     path: "/v1/{companyId}/options/{id}",
     middleware: [authMiddleware()],

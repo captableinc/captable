@@ -52,11 +52,19 @@ export const getMany = withAuthApiV1
     const { db } = c.get("services");
     const query = c.req.valid("query");
 
+    // To get rid of parseCursor in each getMany route
+    //@TODO(Better to have parsing at server/db in root )
     const [data, meta] = await db.option
       .paginate({ where: { companyId: membership.companyId } })
       .withCursor({
         limit: query.limit,
         after: query.cursor,
+        getCursor({ id }) {
+          return id;
+        },
+        parseCursor(cursor) {
+          return { id: cursor };
+        },
       });
 
     const response: z.infer<typeof ResponseSchema> = {
@@ -72,6 +80,5 @@ export const getMany = withAuthApiV1
         boardApprovalDate: i.boardApprovalDate.toISOString(),
       })),
     };
-
     return c.json(response, 200);
   });

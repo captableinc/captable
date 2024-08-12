@@ -86,7 +86,11 @@ export const CreateStakeholderSchema = z.array(
     id: true,
     createdAt: true,
     updatedAt: true,
-  }),
+  })
+    .strict()
+    .openapi({
+      description: "Add one or more stakeholder accounts to a company.",
+    }),
 );
 export const UpdateStakeholderSchema = StakeholderSchema.omit({
   id: true,
@@ -94,6 +98,7 @@ export const UpdateStakeholderSchema = StakeholderSchema.omit({
   updatedAt: true,
 })
   .partial()
+  .strict()
   .refine(
     (data) => {
       return Object.values(data).some((value) => value !== undefined);

@@ -18,6 +18,7 @@ import { UpdateSingleStakeholderModal } from "./stakeholder/update-stakeholder-m
 import { TeamMemberModal } from "./team-member/team-member-modal";
 import { WipModal } from "./wip-modal";
 
+import { AddConvertibleNotesModal } from "@/app/(authenticated)/(dashboard)/[publicId]/fundraise/convertible-notes/components/add-convertible-notes-modal";
 import { AddEsignDocumentModal } from "./esign-doc";
 import { InvestorModal } from "./investor/add-investor-modal";
 
@@ -43,5 +44,7 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     NewSafeModal,
     ExistingSafeModal,
     InvestorModal,
+
+    AddConvertibleNotes: AddConvertibleNotesModal,
   },
 });

@@ -73,7 +73,7 @@ export const create = withAuthApiV1
     return c.json(
       {
         data,
-        message: "Stakeholders successfully created.",
+        message: "Convertible note successfully created.",
       },
       200,
     );

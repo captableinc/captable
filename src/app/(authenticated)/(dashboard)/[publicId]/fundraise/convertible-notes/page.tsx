@@ -1,7 +1,8 @@
 import EmptyState from "@/components/common/empty-state";
-import { Button } from "@/components/ui/button";
+
 import { RiPieChartFill } from "@remixicon/react";
 import type { Metadata } from "next";
+import { AddConvertibleNotesButton } from "./components/add-convertible-notes-button";
 
 export const metadata: Metadata = {
   title: "Convertible notes",
@@ -11,10 +12,10 @@ const ConvertibleNotesPage = () => {
   return (
     <EmptyState
       icon={<RiPieChartFill />}
-      title="Work in progress."
-      subtitle="This page is not yet available."
+      title="Create and manage convertible notes."
+      subtitle="Please click the button for creating convertible notes."
     >
-      <Button>Coming soon...</Button>
+      <AddConvertibleNotesButton />
     </EmptyState>
   );
 };

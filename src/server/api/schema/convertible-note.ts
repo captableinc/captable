@@ -50,8 +50,10 @@ export const ConvertibleNoteSchema = z
     status: z.enum(ConvertibleStatus),
     type: z.enum(ConvertibleType),
     interestMethod: z.enum(ConvertibleInterestMethod).nullable(),
-    interestAccrual: z.enum(ConvertibleInterestPaymentSchedule).nullable(),
-    interestPaymentSchedule: z.enum(ConvertibleInterestAccrual).nullable(),
+    interestAccrual: z.enum(ConvertibleInterestAccrual).nullable(),
+    interestPaymentSchedule: z
+      .enum(ConvertibleInterestPaymentSchedule)
+      .nullable(),
 
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
@@ -59,3 +61,15 @@ export const ConvertibleNoteSchema = z
   .openapi("Convertible Note");
 
 export type TConvertibleNoteSchema = z.infer<typeof ConvertibleNoteSchema>;
+
+export const CreateConvertibleNotesSchema = ConvertibleNoteSchema.omit({
+  id: true,
+  publicId: true,
+  createdAt: true,
+  updatedAt: true,
+  companyId: true,
+});
+
+export type TCreateConvertibleNotesSchema = z.infer<
+  typeof CreateConvertibleNotesSchema
+>;

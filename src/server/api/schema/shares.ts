@@ -126,9 +126,11 @@ export const CreateShareSchema = ShareSchema.omit({
   createdAt: true,
   updatedAt: true,
   companyId: true,
-}).openapi({
-  description: "Issue shares to a stakeholder in a company.",
-});
+})
+  .strict()
+  .openapi({
+    description: "Issue shares to a stakeholder in a company.",
+  });
 
 export const UpdateShareSchema = ShareSchema.omit({
   id: true,
@@ -136,6 +138,7 @@ export const UpdateShareSchema = ShareSchema.omit({
   updatedAt: true,
 })
   .partial()
+  .strict()
   .refine(
     (data) => {
       return Object.values(data).some((value) => value !== undefined);

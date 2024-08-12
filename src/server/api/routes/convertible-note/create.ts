@@ -68,7 +68,13 @@ export const create = withAuthApiV1
       },
     });
 
-    const data: z.infer<typeof ResponseSchema>["data"] = note;
+    const data: z.infer<typeof ResponseSchema>["data"] = {
+      ...note,
+      updatedAt: note.updatedAt.toISOString(),
+      createdAt: note.createdAt.toISOString(),
+      issueDate: note.issueDate.toISOString(),
+      boardApprovalDate: note.boardApprovalDate.toISOString(),
+    };
 
     return c.json(
       {

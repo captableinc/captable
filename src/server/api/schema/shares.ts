@@ -1,15 +1,6 @@
 import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
-const ShareLegendsArr = Object.values(ShareLegendsEnum) as [
-  ShareLegendsEnum,
-  ...ShareLegendsEnum[],
-];
-const SecuritiesStatusArr = Object.values(SecuritiesStatusEnum) as [
-  SecuritiesStatusEnum,
-  ...SecuritiesStatusEnum[],
-];
-
 export const ShareSchema = z
   .object({
     id: z.string().cuid().nullish().openapi({
@@ -17,7 +8,7 @@ export const ShareSchema = z
       example: "clyvb2s8d0000f1ngd72y2cxw",
     }),
 
-    status: z.enum(SecuritiesStatusArr).openapi({
+    status: z.nativeEnum(SecuritiesStatusEnum).openapi({
       description: "Security Status",
       example: "DRAFT",
     }),
@@ -67,7 +58,7 @@ export const ShareSchema = z
     }),
 
     companyLegends: z
-      .enum(ShareLegendsArr)
+      .nativeEnum(ShareLegendsEnum)
       .array()
       .openapi({
         description: "Company Legends",

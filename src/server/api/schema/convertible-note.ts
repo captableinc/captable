@@ -7,31 +7,6 @@ import {
 } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
-const ConvertibleStatus = Object.values(ConvertibleStatusEnum) as [
-  ConvertibleStatusEnum,
-  ...ConvertibleStatusEnum[],
-];
-
-const ConvertibleType = Object.values(ConvertibleTypeEnum) as [
-  ConvertibleTypeEnum,
-  ...ConvertibleTypeEnum[],
-];
-
-const ConvertibleInterestMethod = Object.values(
-  ConvertibleInterestMethodEnum,
-) as [ConvertibleInterestMethodEnum, ...ConvertibleInterestMethodEnum[]];
-
-const ConvertibleInterestPaymentSchedule = Object.values(
-  ConvertibleInterestPaymentScheduleEnum,
-) as [
-  ConvertibleInterestPaymentScheduleEnum,
-  ...ConvertibleInterestPaymentScheduleEnum[],
-];
-
-const ConvertibleInterestAccrual = Object.values(
-  ConvertibleInterestAccrualEnum,
-) as [ConvertibleInterestAccrualEnum, ...ConvertibleInterestAccrualEnum[]];
-
 export const ConvertibleNoteSchema = z
   .object({
     id: z.string().cuid(),
@@ -44,19 +19,19 @@ export const ConvertibleNoteSchema = z
     interestRate: z.number().nullable(),
     stakeholderId: z.string(),
     companyId: z.string(),
-    issueDate: z.coerce.date(),
-    boardApprovalDate: z.coerce.date(),
+    issueDate: z.string().date(),
+    boardApprovalDate: z.string().date(),
 
-    status: z.enum(ConvertibleStatus),
-    type: z.enum(ConvertibleType),
-    interestMethod: z.enum(ConvertibleInterestMethod).nullable(),
-    interestAccrual: z.enum(ConvertibleInterestAccrual).nullable(),
+    status: z.nativeEnum(ConvertibleStatusEnum),
+    type: z.nativeEnum(ConvertibleTypeEnum),
+    interestMethod: z.nativeEnum(ConvertibleInterestMethodEnum).nullable(),
+    interestAccrual: z.nativeEnum(ConvertibleInterestAccrualEnum).nullable(),
     interestPaymentSchedule: z
-      .enum(ConvertibleInterestPaymentSchedule)
+      .nativeEnum(ConvertibleInterestPaymentScheduleEnum)
       .nullable(),
 
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    createdAt: z.string().date(),
+    updatedAt: z.string().date(),
   })
   .openapi("Convertible Note");
 

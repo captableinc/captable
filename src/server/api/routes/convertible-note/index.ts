@@ -1,7 +1,5 @@
-import type { PublicAPI } from "@/server/api/hono";
-
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import { create } from "./create";
 
-export const registerConvertibleNotesRoutes = (api: PublicAPI) => {
+export const registerConvertibleNotesRoutes = (api: OpenAPIHono) =>
   api.openapi(create.route, create.handler);
-};

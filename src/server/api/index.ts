@@ -10,9 +10,13 @@ const api = PublicAPI();
 api.use("*", middlewareServices());
 
 // Register RESTful routes
-registerCompanyRoutes(api);
-registerShareRoutes(api);
-registerStakeholderRoutes(api);
-registerConvertibleNotesRoutes(api);
+
+const routes = api
+  .route("", registerCompanyRoutes(api))
+  .route("", registerConvertibleNotesRoutes(api))
+  .route("", registerShareRoutes(api))
+  .route("", registerStakeholderRoutes(api));
+
+export type APIType = typeof routes;
 
 export default api;

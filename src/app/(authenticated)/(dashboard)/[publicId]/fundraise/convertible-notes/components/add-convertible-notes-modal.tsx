@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/stepper";
 import { FormValueProvider } from "@/providers/form-value-provider";
 import { AddConvertibleNotesForm } from "./add-convertible-notes-form";
+import { UploadDocumentStep } from "./upload-document-step";
 
 export function AddConvertibleNotesModal(
   props: Omit<StepperModalProps, "children">,
@@ -20,7 +21,7 @@ export function AddConvertibleNotesModal(
         </StepperStep>
         <StepperStep title="Documents">
           <StepperModalContent>
-            <div>hello</div>
+            <UploadDocumentStep />
           </StepperModalContent>
         </StepperStep>
       </FormValueProvider>

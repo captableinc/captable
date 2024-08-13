@@ -218,9 +218,8 @@ export function FileUploader(props: FileUploaderProps) {
                     You can upload
                     {maxFileCount > 1
                       ? ` ${
-                          maxFileCount === Number.POSITIVE_INFINITY
-                            ? "multiple"
-                            : maxFileCount
+                          // biome-ignore lint/style/useNumberNamespace: <explanation>
+                          maxFileCount === Infinity ? "multiple" : maxFileCount
                         }
                       files (up to ${formatBytes(maxSize)} each)`
                       : ` a file with ${formatBytes(maxSize)}`}

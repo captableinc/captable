@@ -14,12 +14,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  StepperModalFooter,
+  StepperPrev,
+  useStepper,
+} from "@/components/ui/stepper";
 import {
   ConvertibleInterestAccrualEnum,
   ConvertibleInterestMethodEnum,
   ConvertibleInterestPaymentScheduleEnum,
-  type ConvertibleTypeEnum,
+  ConvertibleTypeEnum,
 } from "@/prisma/enums";
+import { useFormValueUpdater } from "@/providers/form-value-provider";
 
 const InterestMethodOption: Record<ConvertibleInterestMethodEnum, string> = {
   COMPOUND: "Compound",
@@ -50,28 +64,34 @@ const InterestAccrualOption: Record<ConvertibleInterestAccrualEnum, string> = {
 };
 
 const Schema = z.object({
-  capital: z.number(),
+  capital: z.coerce.number(),
   issueDate: z.string().date(),
   boardApprovalDate: z.string().date(),
   additionalTerms: z.string().optional(),
-  conversionCap: z.number().optional(),
-  discountRate: z.number().optional(),
-  interestRate: z.number().optional(),
+  conversionCap: z.coerce.number().optional(),
+  discountRate: z.coerce.number().optional(),
+  interestRate: z.coerce.number().optional(),
   interestMethod: z.nativeEnum(ConvertibleInterestMethodEnum).optional(),
   interestAccrual: z.nativeEnum(ConvertibleInterestAccrualEnum).optional(),
   interestPaymentSchedule: z
     .nativeEnum(ConvertibleInterestPaymentScheduleEnum)
     .optional(),
+  type: z.nativeEnum(ConvertibleTypeEnum),
 });
 
-type TSchema = z.infer<typeof Schema>;
+type TFormSchema = z.infer<typeof Schema>;
 
 export function AddConvertibleNotesForm() {
-  const form = useForm<TSchema>({
+  const form = useForm<TFormSchema>({
     resolver: zodResolver(Schema),
   });
+  const setValue = useFormValueUpdater<TFormSchema>();
+  const { next } = useStepper();
 
-  const onSubmit = (_data: TSchema) => {};
+  const onSubmit = (data: TFormSchema) => {
+    next();
+    setValue(data);
+  };
 
   return (
     <Form {...form}>
@@ -135,6 +155,124 @@ export function AddConvertibleNotesForm() {
 
           <FormField
             control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(TypeOption).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="interestMethod"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Interest Method</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(InterestMethodOption).map(
+                      ([key, value]) => (
+                        <SelectItem key={key} value={key}>
+                          {value}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="interestAccrual"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Interest Accrual</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(InterestAccrualOption).map(
+                      ([key, value]) => (
+                        <SelectItem key={key} value={key}>
+                          {value}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="interestPaymentSchedule"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Interest Payment Schedule</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(InterestPaymentScheduleOption).map(
+                      ([key, value]) => (
+                        <SelectItem key={key} value={key}>
+                          {value}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="issueDate"
             render={({ field }) => (
               <FormItem>
@@ -176,6 +314,10 @@ export function AddConvertibleNotesForm() {
             />
           </div>
         </div>
+        <StepperModalFooter className="pt-6">
+          <StepperPrev>Back</StepperPrev>
+          <Button type="submit">Save & Continue</Button>
+        </StepperModalFooter>
       </form>
     </Form>
   );

@@ -4,6 +4,7 @@ import {
   type StepperModalProps,
   StepperStep,
 } from "@/components/ui/stepper";
+import { FormValueProvider } from "@/providers/form-value-provider";
 import { AddConvertibleNotesForm } from "./add-convertible-notes-form";
 
 export function AddConvertibleNotesModal(
@@ -11,16 +12,18 @@ export function AddConvertibleNotesModal(
 ) {
   return (
     <StepperModal {...props}>
-      <StepperStep title="General details">
-        <StepperModalContent>
-          <AddConvertibleNotesForm />
-        </StepperModalContent>
-      </StepperStep>
-      <StepperStep title="Documents">
-        <StepperModalContent>
-          <div>hello</div>
-        </StepperModalContent>
-      </StepperStep>
+      <FormValueProvider>
+        <StepperStep title="General details">
+          <StepperModalContent>
+            <AddConvertibleNotesForm />
+          </StepperModalContent>
+        </StepperStep>
+        <StepperStep title="Documents">
+          <StepperModalContent>
+            <div>hello</div>
+          </StepperModalContent>
+        </StepperStep>
+      </FormValueProvider>
     </StepperModal>
   );
 }

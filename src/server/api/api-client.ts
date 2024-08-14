@@ -51,22 +51,22 @@ export type APIClientParams<T extends RouteConfig> = IfNever<
 
 type RouteConfig = Parameters<typeof createRoute>[0];
 
-export function createClient<
-  T extends Omit<RouteConfig, "path">,
-  P extends string,
-  U extends T & { path: P },
->(handler: U, params: APIClientParams<U>) {
+export async function createClient<U extends RouteConfig>(
+  method: U["method"],
+  url: U["path"],
+  params: APIClientParams<U>,
+) {
   const path = interpolatePath(
-    `${env.NEXT_PUBLIC_BASE_URL}/api${handler.path}`,
+    `${env.NEXT_PUBLIC_BASE_URL}/api${url}`,
     "urlParams" in params ? params.urlParams : {},
   );
 
-  const req = api(path, {
-    method: handler.method,
+  const req = await api(path, {
+    method: method,
     ...("json" in params && { json: params.json }),
     ...("searchParams" in params && { searchParams: params.searchParams }),
   });
-  handler.request?.body;
+
   return req.json<RouteConfigToTypedResponse<U>["_data"]>();
 }
 

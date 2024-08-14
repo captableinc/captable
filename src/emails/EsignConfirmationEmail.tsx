@@ -8,7 +8,7 @@ import {
   Preview,
   Tailwind,
   Text,
-} from "jsx-email";
+} from "@react-email/components";
 
 import type { ConfirmationEmailPayloadType } from "../jobs/esign-confirmation-email";
 
@@ -24,8 +24,8 @@ const ESignConfirmationEmail = ({
     <Html>
       <Head />
       <Preview>
-        {senderName} has sent you a confirmation email with completed signed
-        document.
+        {senderName ?? ""} has sent you a confirmation email with completed
+        signed document.
       </Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">

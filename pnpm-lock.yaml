@@ -179,6 +179,9 @@ importers:
       jose:
         specifier: ^5.3.0
         version: 5.3.0
+      ky:
+        specifier: ^1.6.0
+        version: 1.6.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -5966,6 +5969,10 @@ packages:
     peerDependencies:
       '@types/node': '>=18'
       typescript: '>=5.0.4'
+
+  ky@1.6.0:
+    resolution: {integrity: sha512-MG7hlH26oShC4Lysk5TYzXshHLfEY52IJ0ofOeCsifquqTymbXCSTx+g4rXO30XYxoM6Y1ed5pNnpULe9Rx19A==}
+    engines: {node: '>=18'}
 
   leac@0.6.0:
     resolution: {integrity: sha512-y+SqErxb8h7nE/fiEX07jsbuhrpO9lL8eca7/Y1nuWV2moNlXhyd59iDGcRf6moVyDMbmTNzL40SUyrFU/yDpg==}
@@ -15720,6 +15727,8 @@ snapshots:
       typescript: 5.4.5
       zod: 3.23.8
       zod-validation-error: 3.3.0(zod@3.23.8)
+
+  ky@1.6.0: {}
 
   leac@0.6.0: {}
 

@@ -19,8 +19,8 @@ export const ConvertibleNoteSchema = z
     interestRate: z.number().nullish(),
     stakeholderId: z.string(),
     companyId: z.string(),
-    issueDate: z.string().date(),
-    boardApprovalDate: z.string().date(),
+    issueDate: z.string().datetime(),
+    boardApprovalDate: z.string().datetime(),
 
     status: z.nativeEnum(ConvertibleStatusEnum),
     type: z.nativeEnum(ConvertibleTypeEnum),
@@ -30,8 +30,8 @@ export const ConvertibleNoteSchema = z
       .nativeEnum(ConvertibleInterestPaymentScheduleEnum)
       .nullish(),
 
-    createdAt: z.string().date(),
-    updatedAt: z.string().date(),
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
   })
   .openapi("Convertible Note");
 

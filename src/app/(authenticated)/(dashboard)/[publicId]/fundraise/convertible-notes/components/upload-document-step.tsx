@@ -54,7 +54,15 @@ export function UploadDocumentStep() {
     invariant(session, "session not found");
     await createNote({
       urlParams: { companyId: session.user.companyId },
-      json: formData,
+      json: {
+        ...formData,
+        ...(formData.boardApprovalDate && {
+          boardApprovalDate: new Date(formData.boardApprovalDate).toISOString(),
+        }),
+        ...(formData.issueDate && {
+          issueDate: new Date(formData.issueDate).toISOString(),
+        }),
+      },
     });
   };
 

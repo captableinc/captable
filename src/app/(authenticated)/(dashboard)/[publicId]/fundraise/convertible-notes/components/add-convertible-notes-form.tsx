@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { LinearCombobox } from "@/components/ui/combobox";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,10 @@ import {
   ConvertibleTypeEnum,
 } from "@/prisma/enums";
 import { useFormValueUpdater } from "@/providers/form-value-provider";
+import type { RouterOutputs } from "@/trpc/shared";
+import { RiAddCircleLine } from "@remixicon/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const InterestMethodOption: Record<ConvertibleInterestMethodEnum, string> = {
   COMPOUND: "Compound",
@@ -77,11 +82,22 @@ const Schema = z.object({
     .nativeEnum(ConvertibleInterestPaymentScheduleEnum)
     .optional(),
   type: z.nativeEnum(ConvertibleTypeEnum),
+  mfn: z.boolean().optional(),
+  stakeholderId: z.string(),
 });
 
-type TFormSchema = z.infer<typeof Schema>;
+export type TFormSchema = z.infer<typeof Schema>;
 
-export function AddConvertibleNotesForm() {
+interface AddConvertibleNotesFormProps {
+  stakeholders: RouterOutputs["stakeholder"]["getStakeholders"];
+}
+
+export function AddConvertibleNotesForm({
+  stakeholders,
+}: AddConvertibleNotesFormProps) {
+  const { data: session } = useSession();
+
+  const router = useRouter();
   const form = useForm<TFormSchema>({
     resolver: zodResolver(Schema),
   });
@@ -92,6 +108,11 @@ export function AddConvertibleNotesForm() {
     next();
     setValue(data);
   };
+
+  const stakeHolderOpts = stakeholders?.map((sh) => ({
+    value: sh.id,
+    label: sh.institutionName ? `${sh.institutionName} - ${sh.name}` : sh.name,
+  }));
 
   return (
     <Form {...form}>
@@ -176,6 +197,40 @@ export function AddConvertibleNotesForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="stakeholderId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stakeholder</FormLabel>
+                <div>
+                  <LinearCombobox
+                    options={stakeHolderOpts}
+                    onValueChange={(option) => field.onChange(option.value)}
+                  >
+                    <button
+                      type="button"
+                      className="cursor-pointer w-full text-left"
+                      onClick={() => {
+                        router.push(
+                          `/${session?.user.companyPublicId}/stakeholders`,
+                        );
+                      }}
+                    >
+                      <div className="flex items-center my-1 gap-x-2">
+                        <span>
+                          <RiAddCircleLine className="h-4 w-4" aria-hidden />
+                        </span>
+                        <div>Add a stakeholder</div>
+                      </div>
+                    </button>
+                  </LinearCombobox>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

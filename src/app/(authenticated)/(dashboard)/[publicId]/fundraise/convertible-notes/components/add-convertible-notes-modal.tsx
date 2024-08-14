@@ -5,8 +5,14 @@ import {
   StepperStep,
 } from "@/components/ui/stepper";
 import { FormValueProvider } from "@/providers/form-value-provider";
+import { api } from "@/trpc/server";
 import { AddConvertibleNotesForm } from "./add-convertible-notes-form";
 import { UploadDocumentStep } from "./upload-document-step";
+
+async function AddConvertibleNotesFormStep() {
+  const stakeholders = await api.stakeholder.getStakeholders.query();
+  return <AddConvertibleNotesForm stakeholders={stakeholders} />;
+}
 
 export function AddConvertibleNotesModal(
   props: Omit<StepperModalProps, "children">,
@@ -16,7 +22,7 @@ export function AddConvertibleNotesModal(
       <FormValueProvider>
         <StepperStep title="General details">
           <StepperModalContent>
-            <AddConvertibleNotesForm />
+            <AddConvertibleNotesFormStep />
           </StepperModalContent>
         </StepperStep>
         <StepperStep title="Documents">

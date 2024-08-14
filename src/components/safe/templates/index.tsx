@@ -81,6 +81,7 @@ export const style = StyleSheet.create({
 export type SafeProps = {
   investment: number;
   valuation?: number;
+  discountRate?: number;
   date: string;
   company: {
     name: string;
@@ -98,6 +99,15 @@ export type SafeProps = {
     name: string;
     email: string;
     address?: string;
+  };
+
+  options: {
+    title: string;
+    author: string;
+    creator: string;
+    subject: string;
+    keywords: string;
+    producer: string;
   };
 };
 

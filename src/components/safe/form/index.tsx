@@ -24,7 +24,7 @@ import { z } from "zod";
 import { PrePostSelector } from "./pre-post-selector";
 
 // Safe document preview
-import SafeDocument from "@/components/safe/document";
+import { PostMoneyCap, PostMoneyDiscount } from "@/components/safe/templates";
 import { PDFViewer } from "@react-pdf/renderer";
 
 type SafeFormProps = {
@@ -326,7 +326,15 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
             }
           >
             <PDFViewer className="w-full h-screen border-none rounded-md">
-              <SafeDocument
+              <PostMoneyDiscount
+                options={{
+                  author: "Y Combinator",
+                  creator: "Captable, Inc.",
+                  producer: "Captable, Inc.",
+                  title: "YC SAFE - Post Money Discount",
+                  subject: "YC SAFE - Post Money Discount",
+                  keywords: "YC, SAFE, Post Money, Discount",
+                }}
                 investor={{
                   name: "Puru Dahal",
                   email: "",

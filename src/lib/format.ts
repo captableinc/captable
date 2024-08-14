@@ -13,3 +13,10 @@ export const formatDate = (date: string) => {
     day: "numeric",
   }).format(new Date(date));
 };
+
+export const formatPercentage = (percentage: number) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "percent",
+    minimumFractionDigits: 2,
+  }).format(percentage / 100);
+};

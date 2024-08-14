@@ -12,11 +12,11 @@ export const ConvertibleNoteSchema = z
     id: z.string().cuid(),
     publicId: z.string(),
     capital: z.number(),
-    conversionCap: z.number().nullable(),
-    discountRate: z.number().nullable(),
-    mfn: z.boolean().nullable(),
-    additionalTerms: z.string().nullable(),
-    interestRate: z.number().nullable(),
+    conversionCap: z.number().nullish(),
+    discountRate: z.number().nullish(),
+    mfn: z.boolean().nullish(),
+    additionalTerms: z.string().nullish(),
+    interestRate: z.number().nullish(),
     stakeholderId: z.string(),
     companyId: z.string(),
     issueDate: z.string().date(),
@@ -24,11 +24,11 @@ export const ConvertibleNoteSchema = z
 
     status: z.nativeEnum(ConvertibleStatusEnum),
     type: z.nativeEnum(ConvertibleTypeEnum),
-    interestMethod: z.nativeEnum(ConvertibleInterestMethodEnum).nullable(),
-    interestAccrual: z.nativeEnum(ConvertibleInterestAccrualEnum).nullable(),
+    interestMethod: z.nativeEnum(ConvertibleInterestMethodEnum).nullish(),
+    interestAccrual: z.nativeEnum(ConvertibleInterestAccrualEnum).nullish(),
     interestPaymentSchedule: z
       .nativeEnum(ConvertibleInterestPaymentScheduleEnum)
-      .nullable(),
+      .nullish(),
 
     createdAt: z.string().date(),
     updatedAt: z.string().date(),
@@ -43,6 +43,7 @@ export const CreateConvertibleNotesSchema = ConvertibleNoteSchema.omit({
   createdAt: true,
   updatedAt: true,
   companyId: true,
+  status: true,
 });
 
 export type TCreateConvertibleNotesSchema = z.infer<

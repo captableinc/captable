@@ -1,33 +1,6 @@
 "use client";
 
 import {
-  RiEqualizer2Fill,
-  RiEqualizer2Line,
-  RiFileTextFill,
-  RiFileTextLine,
-  RiFolder5Fill,
-  RiFolder5Line,
-  RiFolderChart2Fill,
-  RiFolderChart2Line,
-  RiFolderChartFill,
-  RiFolderChartLine,
-  RiGroup2Fill,
-  RiGroup2Line,
-  RiHome2Fill,
-  RiHome2Line,
-  RiListCheck3,
-  RiListIndefinite,
-  RiMailSendFill,
-  RiMailSendLine,
-  RiMoneyDollarCircleFill,
-  RiMoneyDollarCircleLine,
-  RiPieChartFill,
-  RiPieChartLine,
-  RiSafeFill,
-  RiSafeLine,
-} from "@remixicon/react";
-
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -41,45 +14,56 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { NavLink } from "./nav-link";
 
+import { Icon, type IconName } from "@/components/ui/icon";
 import type { TGetCompanyList } from "@/server/company";
 import { CompanySwitcher } from "./company-switcher";
 
-const navigation = [
+type TNavigation = {
+  name: string;
+  href: string;
+  icon: IconName;
+  activeIcon: IconName;
+  subNav?: { name: string; href: string }[];
+  id?: number;
+  rootPath?: string;
+};
+
+const navigation: TNavigation[] = [
   {
     name: "Overview",
     href: "/",
-    icon: RiHome2Line,
-    activeIcon: RiHome2Fill,
+    icon: "home-2-line",
+    activeIcon: "home-2-fill",
   },
   {
     name: "Cap table",
     href: "/captable",
-    icon: RiPieChartLine,
-    activeIcon: RiPieChartFill,
+    icon: "pie-chart-line",
+    activeIcon: "pie-chart-fill",
   },
   {
     name: "Stakeholders",
     href: "/stakeholders",
-    icon: RiGroup2Line,
-    activeIcon: RiGroup2Fill,
+    icon: "group-2-line",
+    activeIcon: "group-2-fill",
   },
   {
     name: "Share classes",
     href: "/share-classes",
-    icon: RiFolderChart2Line,
-    activeIcon: RiFolderChart2Fill,
+    icon: "folder-chart-2-line",
+    activeIcon: "folder-chart-2-fill",
   },
   {
     name: "Equity plans",
     href: "/equity-plans",
-    icon: RiFolderChart2Line,
-    activeIcon: RiFolderChart2Fill,
+    icon: "folder-chart-2-line",
+    activeIcon: "folder-chart-2-fill",
   },
   {
     name: "Securities",
     href: "/securities",
-    icon: RiSafeLine,
-    activeIcon: RiSafeFill,
+    icon: "safe-line",
+    activeIcon: "safe-fill",
     subNav: [
       {
         name: "Shares",
@@ -98,8 +82,8 @@ const navigation = [
   {
     name: "Fundraise",
     href: "/fundraise",
-    icon: RiMoneyDollarCircleLine,
-    activeIcon: RiMoneyDollarCircleFill,
+    icon: "money-dollar-circle-line",
+    activeIcon: "money-dollar-circle-fill",
     subNav: [
       {
         name: "SAFEs",
@@ -121,8 +105,8 @@ const navigation = [
   {
     name: "Documents",
     href: "/documents",
-    icon: RiFolder5Line,
-    activeIcon: RiFolder5Fill,
+    icon: "folder-5-line",
+    activeIcon: "folder-5-fill",
     subNav: [
       {
         name: "Data rooms",
@@ -146,55 +130,55 @@ const navigation = [
   {
     name: "Updates",
     href: "/updates",
-    icon: RiMailSendLine,
-    activeIcon: RiMailSendFill,
+    icon: "mail-send-line",
+    activeIcon: "mail-send-fill",
   },
 
   {
     name: "Reports",
     href: "/reports",
-    icon: RiFolderChartLine,
-    activeIcon: RiFolderChartFill,
+    icon: "folder-chart-line",
+    activeIcon: "folder-chart-fill",
   },
 
   {
     name: "Audits",
     href: "/audits",
-    icon: RiListIndefinite,
-    activeIcon: RiListCheck3,
+    icon: "list-indefinite",
+    activeIcon: "list-check-3",
   },
 ];
 
-const company = [
+const company: TNavigation[] = [
   {
     id: 1,
     name: "Team",
     rootPath: "/settings/team",
     href: "/settings/team",
-    icon: RiGroup2Line,
-    activeIcon: RiGroup2Fill,
+    icon: "group-2-line",
+    activeIcon: "group-2-fill",
   },
   {
     id: 2,
     name: "Settings",
     rootPath: "/settings/company",
     href: "/settings/company",
-    icon: RiEqualizer2Line,
-    activeIcon: RiEqualizer2Fill,
+    icon: "equalizer-2-line",
+    activeIcon: "equalizer-2-fill",
   },
   {
     id: 3,
     name: "Form 3921",
     href: "/3921",
-    icon: RiFileTextLine,
-    activeIcon: RiFileTextFill,
+    icon: "file-text-line",
+    activeIcon: "file-text-fill",
   },
   {
     id: 4,
     name: "409A Valuation",
     href: "/409a",
-    icon: RiFileTextLine,
-    activeIcon: RiFileTextFill,
+    icon: "file-text-line",
+    activeIcon: "file-text-fill",
   },
 ];
 
@@ -234,25 +218,16 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
                       <Accordion type="single" collapsible>
                         <AccordionItem value="item-1" className="border-none">
                           <div className="flex">
-                            {isActive ? (
-                              <item.activeIcon
-                                className={cn(
-                                  "ml-1 mr-1 mt-1 inline-block",
-                                  "text-primary",
-                                  "h-6 w-6 shrink-0",
-                                )}
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <item.icon
-                                className={cn(
-                                  "ml-1 mr-1 mt-1 inline-block",
-                                  "text-gray-400 group-hover:text-primary",
-                                  "h-6 w-6 shrink-0",
-                                )}
-                                aria-hidden="true"
-                              />
-                            )}
+                            <Icon
+                              name={isActive ? item.activeIcon : item.icon}
+                              className={cn(
+                                "ml-1 mr-1 mt-1 inline-block",
+                                isActive
+                                  ? "text-primary"
+                                  : "text-gray-400 group-hover:text-primary",
+                                "h-6 w-6 shrink-0",
+                              )}
+                            />
 
                             <AccordionTrigger
                               className={cn(

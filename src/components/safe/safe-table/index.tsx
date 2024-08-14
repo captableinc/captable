@@ -35,9 +35,9 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { Icon } from "@/components/ui/icon";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SafeTableToolbar } from "./safe-table-toolbar";
@@ -216,7 +216,8 @@ export const columns: ColumnDef<Safe[number]>[] = [
                     await openFileOnTab(doc.bucket.key);
                   }}
                 >
-                  <RiFileDownloadLine
+                  <Icon
+                    name="file-download-line"
                     type={doc.bucket.mimeType}
                     className="mx-3 cursor-pointer text-muted-foreground hover:text-primary/80"
                   />
@@ -269,7 +270,7 @@ export const columns: ColumnDef<Safe[number]>[] = [
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <>
                   <span className="sr-only">Open menu</span>
-                  <RiMore2Fill aria-hidden className="h-4 w-4" />
+                  <Icon name="more-2-fill" aria-hidden className="h-4 w-4" />
                 </>
               </Button>
             </DropdownMenuTrigger>

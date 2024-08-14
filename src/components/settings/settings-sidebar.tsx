@@ -1,90 +1,78 @@
 "use client";
 
 import { NavLink } from "@/components/dashboard/sidebar/nav-link";
-import {
-  RiAccountCircleFill,
-  RiAccountCircleLine,
-  RiBankCardFill,
-  RiBankCardLine,
-  RiBankFill,
-  RiBankLine,
-  RiBuildingFill,
-  RiBuildingLine,
-  RiGroup2Fill,
-  RiGroup2Line,
-  RiLock2Fill,
-  RiLock2Line,
-  RiNotificationFill,
-  RiNotificationLine,
-  RiShieldUserFill,
-  RiShieldUserLine,
-  RiTerminalBoxFill,
-  RiTerminalBoxLine,
-} from "@remixicon/react";
+import { Icon, type IconName } from "@/components/ui/icon";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
-const companyNav = [
+type TNav = {
+  name: string;
+  href: string;
+  icon: IconName;
+  activeIcon: IconName;
+};
+
+const companyNav: TNav[] = [
   {
     name: "Company",
     href: "/settings/company",
-    icon: RiBuildingLine,
-    activeIcon: RiBuildingFill,
+    icon: "building-line",
+    activeIcon: "building-fill",
   },
   {
     name: "Team",
     href: "/settings/team",
-    icon: RiGroup2Line,
-    activeIcon: RiGroup2Fill,
+    icon: "group-2-line",
+    activeIcon: "group-2-fill",
   },
   {
     name: "Roles",
     href: "/settings/roles",
-    icon: RiShieldUserLine,
-    activeIcon: RiShieldUserFill,
+    icon: "shield-user-line",
+    activeIcon: "shield-user-fill",
   },
 
   {
     name: "Billing",
     href: "/settings/billing",
-    icon: RiBankCardLine,
-    activeIcon: RiBankCardFill,
+    icon: "bank-card-line",
+    activeIcon: "bank-card-fill",
   },
 
   {
     name: "Bank Accounts",
     href: "/settings/bank-accounts",
-    icon: RiBankLine,
-    activeIcon: RiBankFill,
+    icon: "bank-line",
+    activeIcon: "bank-fill",
   },
 ];
 
-const accountNav = [
+const accountNav: TNav[] = [
   {
     name: "Profile",
     href: "/settings/profile",
-    icon: RiAccountCircleLine,
-    activeIcon: RiAccountCircleFill,
+    icon: "account-circle-line",
+    activeIcon: "account-circle-fill",
   },
   {
     name: "Security",
     href: "/settings/security",
-    icon: RiLock2Line,
-    activeIcon: RiLock2Fill,
+    icon: "lock-2-line",
+    activeIcon: "lock-2-fill",
   },
 
   {
     name: "Developer",
     href: "/settings/developer",
-    icon: RiTerminalBoxLine,
-    activeIcon: RiTerminalBoxFill,
+    icon: "terminal-box-line",
+    activeIcon: "terminal-box-fill",
   },
 
   {
     name: "Notifications",
     href: "/settings/notifications",
-    icon: RiNotificationLine,
-    activeIcon: RiNotificationFill,
+    icon: "notification-line",
+    activeIcon: "notification-fill",
   },
 ];
 

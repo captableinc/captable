@@ -3,8 +3,8 @@
 import Tldr from "@/components/common/tldr";
 import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiAddFill } from "@remixicon/react";
 
 type CreateShareClassButtonProps = {
   shareClasses: ShareClassMutationType[];
@@ -34,7 +34,7 @@ export const CreateShareButton = ({
         });
       }}
     >
-      <RiAddFill className="mr-2 h-5 w-5" />
+      <Icon name="add-fill" className="mr-2 h-5 w-5" />
       Create a share class
     </Button>
   );

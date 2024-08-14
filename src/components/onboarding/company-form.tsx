@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -22,7 +23,6 @@ import {
   ZodOnboardingMutationSchema,
 } from "@/trpc/routers/onboarding-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiArrowRightLine } from "@remixicon/react";
 import { useForm } from "react-hook-form";
 
 import { dayjsExt } from "@/common/dayjs";
@@ -509,7 +509,10 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
               {type === "onboarding" || type === "create" ? (
                 <>
                   Complete Setup
-                  <RiArrowRightLine className="ml-2 inline-block h-5 w-5" />
+                  <Icon
+                    name="arrow-right-line"
+                    className="ml-2 inline-block h-5 w-5"
+                  />
                 </>
               ) : (
                 "Save"

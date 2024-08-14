@@ -1,6 +1,6 @@
 import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
-import { RiArrowRightLine, RiPieChartFill } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 
 type EmptyOverviewProps = {
@@ -11,7 +11,7 @@ type EmptyOverviewProps = {
 const EmptyOverview = ({ firstName, publicCompanyId }: EmptyOverviewProps) => {
   return (
     <EmptyState
-      icon={<RiPieChartFill />}
+      icon={<Icon name="pie-chart-fill" />}
       title={`Welcome to Captable, Inc. ${firstName && `, ${firstName}`} 👋`}
       subtitle={
         <span className="text-muted-foreground">
@@ -22,7 +22,7 @@ const EmptyOverview = ({ firstName, publicCompanyId }: EmptyOverviewProps) => {
       <Button size="lg">
         <Link href={`/${publicCompanyId}/stakeholders`}>
           Let{`'`}s get started
-          <RiArrowRightLine className="ml-5 inline-block h-4 w-5" />
+          <Icon name="arrow-right-line" className="ml-5 inline-block h-4 w-5" />
         </Link>
       </Button>
     </EmptyState>

@@ -10,10 +10,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { Icon } from "@/components/ui/icon";
 import type { TGetCompanyList } from "@/server/company";
 import { api } from "@/trpc/react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { RiAddCircleLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -77,7 +77,7 @@ export function CompanySwitcher({ companies, publicId }: CompanySwitcherProps) {
           className={SelectItemStyle}
         >
           <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-            <RiAddCircleLine className="h-4 w-4" aria-hidden />
+            <Icon name="add-circle-line" className="h-4 w-4" aria-hidden />
           </span>
 
           <SelectPrimitive.ItemText>Create Company</SelectPrimitive.ItemText>

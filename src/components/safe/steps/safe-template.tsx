@@ -37,12 +37,12 @@ import { z } from "zod";
 import { uploadFile } from "@/common/uploads";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LinearCombobox } from "@/components/ui/combobox";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { invariant } from "@/lib/error";
 import { TAG } from "@/lib/tags";
 import { api } from "@/trpc/react";
 import { ZodTemplateFieldRecipientSchema } from "@/trpc/routers/template-router/schema";
-import { RiDeleteBinLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -348,7 +348,8 @@ function Recipients() {
                   size="sm"
                   className="group h-8 w-8 p-2"
                 >
-                  <RiDeleteBinLine
+                  <Icon
+                    name="delete-bin-line"
                     aria-hidden
                     className="h-8 w-8 text-red-500/70 group-hover:text-red-500"
                   />

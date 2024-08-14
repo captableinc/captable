@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import {
   StepperModalContent,
@@ -21,7 +22,6 @@ import { TAG } from "@/lib/tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDeleteBinLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -156,7 +156,8 @@ export function AddRecipientStep({ companyPublicId }: AddRecipientStepProps) {
                           size="sm"
                           className="group h-8 w-8 p-2"
                         >
-                          <RiDeleteBinLine
+                          <Icon
+                            name="delete-bin-line"
                             aria-hidden
                             className="h-8 w-8 text-red-500/70 group-hover:text-red-500"
                           />

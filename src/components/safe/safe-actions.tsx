@@ -4,7 +4,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RiAddFill, RiSafe2Fill, RiSafeFill } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import { pushModal } from "../modals";
 
 export function SafeActions() {
@@ -12,7 +12,7 @@ export function SafeActions() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button>
-          <RiAddFill className="mr-2 h-5 w-5" />
+          <Icon name="add-fill" className="mr-2 h-5 w-5" />
           Manage SAFE
         </Button>
       </DropdownMenuTrigger>
@@ -32,7 +32,7 @@ export function SafeActions() {
                 });
               }}
             >
-              <RiSafeFill className="mr-2 h-4 w-4" />
+              <Icon name="safe-fill" className="mr-2 h-4 w-4" />
               Create a new SAFE
             </Button>
           </li>
@@ -50,7 +50,7 @@ export function SafeActions() {
                 });
               }}
             >
-              <RiSafe2Fill className="mr-2 h-4 w-4" />
+              <Icon name="safe-2-fill" className="mr-2 h-4 w-4" />
               Import existing SAFE
             </Button>
           </li>

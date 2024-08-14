@@ -1,36 +1,32 @@
-import { type FieldTypes } from "@/prisma/enums";
-import {
-  RiCalendar2Line,
-  RiListCheck3,
-  RiSketching,
-  RiText,
-} from "@remixicon/react";
+import type { FieldTypes } from "@/prisma/enums";
+
+import type { IconName } from "../ui/icon";
 
 interface OptionsItems {
   label: string;
-  icon: typeof RiSketching;
+  icon: IconName;
   value: FieldTypes;
 }
 
 export const FieldTypeData: OptionsItems[] = [
   {
     label: "Signature",
-    icon: RiSketching,
+    icon: "sketching",
     value: "SIGNATURE",
   },
   {
     label: "Text",
-    icon: RiText,
+    icon: "text",
     value: "TEXT",
   },
   {
     label: "Date",
-    icon: RiCalendar2Line,
+    icon: "calendar-2-line",
     value: "DATE",
   },
   {
     label: "Select",
-    icon: RiListCheck3,
+    icon: "list-check-3",
     value: "SELECT",
   },
 ];

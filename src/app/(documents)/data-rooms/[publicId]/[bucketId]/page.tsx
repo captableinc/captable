@@ -2,10 +2,10 @@
 
 import FilePreview from "@/components/file/preview";
 import { SharePageLayout } from "@/components/share/page-layout";
+import { Icon } from "@/components/ui/icon";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import { db } from "@/server/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -24,7 +24,11 @@ const DataRoomPage = async ({
     return notFound();
   }
 
-  const { companyId, dataRoomId, recipientId } = decodedToken?.payload;
+  if (!decodedToken?.payload) {
+    return notFound();
+  }
+
+  const { companyId, dataRoomId, recipientId } = decodedToken.payload;
   if (!companyId || !recipientId || !dataRoomId) {
     return notFound();
   }
@@ -93,7 +97,8 @@ const DataRoomPage = async ({
       }}
       title={
         <div className="flex">
-          <FolderIcon
+          <Icon
+            name="folder-3-fill"
             className="mr-3 mt-1 h-6 w-6 text-primary/60"
             aria-hidden="true"
           />

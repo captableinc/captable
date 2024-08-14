@@ -1,10 +1,10 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
 import { ADMIN_PERMISSION } from "@/lib/rbac/constants";
 import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -148,7 +148,7 @@ export const columns: ColumnDef<Role>[] = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <RiMore2Fill className="h-4 w-4" />
+              <Icon name="more-2-fill" className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

@@ -1,6 +1,6 @@
 "use client";
 
-import { RiCrossLine } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import { OTPInput, type SlotProps } from "input-otp";
 import * as React from "react";
 
@@ -55,8 +55,9 @@ const InputOTPSeparator = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div">
 >(({ ...props }, ref) => (
+  // biome-ignore lint/a11y/useAriaPropsForRole: <explanation>
   <div ref={ref} role="separator" {...props}>
-    <RiCrossLine />
+    <Icon name="cross-line" />
   </div>
 ));
 InputOTPSeparator.displayName = "InputOTPSeparator";

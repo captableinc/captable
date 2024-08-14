@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
-import { RiMailLine } from "@remixicon/react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -37,7 +37,7 @@ const CheckEmailComponent = () => {
         <div className="flex flex-col gap-y-2 text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-teal-100">
             <span className="text-teal-500">
-              <RiMailLine className="h-6 w-auto" />
+              <Icon name="mail-line" className="h-6 w-auto" />
             </span>
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">

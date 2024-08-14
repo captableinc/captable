@@ -6,10 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DropdownButton } from "@/components/ui/dropdown-button";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/react";
 import type { Block, PartialBlock } from "@blocknote/core";
 import type { Update } from "@prisma/client";
-import { RiArrowDownSLine } from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useState } from "react";
@@ -301,7 +301,7 @@ const UpdatesEditor = ({
               <Fragment>
                 <span className="sr-only">Save and continue</span>
                 Save and continue
-                <RiArrowDownSLine className="ml-1 h-5 w-5" />
+                <Icon name="arrow-down-s-line" className="ml-1 h-5 w-5" />
               </Fragment>
             }
           >

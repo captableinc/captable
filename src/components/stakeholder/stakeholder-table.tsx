@@ -9,8 +9,8 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { Icon } from "@/components/ui/icon";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -190,7 +190,7 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <RiMore2Fill className="h-4 w-4" />
+              <Icon name="more-2-fill" className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

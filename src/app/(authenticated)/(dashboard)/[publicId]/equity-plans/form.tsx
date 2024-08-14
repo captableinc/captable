@@ -3,12 +3,12 @@
 import Tldr from "@/components/common/tldr";
 import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/trpc/react";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiAddFill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
@@ -242,7 +242,11 @@ const EquityPlanForm = ({
                         >
                           <div className="flex justify-between items-center my-1">
                             <span>
-                              <RiAddFill className="h-4 w-4" aria-hidden />
+                              <Icon
+                                name="add-fill"
+                                className="h-4 w-4"
+                                aria-hidden
+                              />
                             </span>
 
                             <div>Create new share class</div>
@@ -273,7 +277,7 @@ const EquityPlanForm = ({
                           });
                         }}
                       >
-                        <RiAddFill className="mr-2 h-5 w-5" />
+                        <Icon name="add-fill" className="mr-2 h-5 w-5" />
                         Create a share class
                       </Button>
                     )}

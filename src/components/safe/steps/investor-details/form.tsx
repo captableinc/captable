@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -30,7 +31,6 @@ import { useFormValueUpdater } from "@/providers/form-value-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { RiAddCircleLine } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, useFormContext, useWatch } from "react-hook-form";
@@ -164,7 +164,11 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
                     >
                       <div className="flex items-center my-1 gap-x-2">
                         <span>
-                          <RiAddCircleLine className="h-4 w-4" aria-hidden />
+                          <Icon
+                            name="add-circle-line"
+                            className="h-4 w-4"
+                            aria-hidden
+                          />
                         </span>
                         <div>Add a stakeholder</div>
                       </div>

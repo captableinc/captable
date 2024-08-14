@@ -6,13 +6,9 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { type Option } from "@/components/ui/multi-selector";
 
+import { Icon } from "@/components/ui/icon";
 import type { ShareContactType } from "@/schema/contacts";
 import type { DataRoomRecipient, UpdateRecipient } from "@prisma/client";
-import {
-  RiCheckLine as CheckIcon,
-  RiDeleteBin2Line as DeleteIcon,
-  RiLink as LinkIcon,
-} from "@remixicon/react";
 import { Fragment, useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 import { popModal } from "../modals";
@@ -145,7 +141,7 @@ const Share = ({
                           }
                         }}
                       >
-                        <DeleteIcon className="h-4 w-4" />
+                        <Icon name="delete-bin-2-line" className="h-4 w-4" />
                         Remove
                       </Button>
                       <Button
@@ -161,9 +157,12 @@ const Share = ({
                       >
                         <Fragment>
                           {copiedId === recipient.id ? (
-                            <CheckIcon className="h-4 w-4 text-green-500 transition" />
+                            <Icon
+                              name="check-line"
+                              className="h-4 w-4 text-green-500 transition"
+                            />
                           ) : (
-                            <LinkIcon className="h-4 w-4 transition" />
+                            <Icon name="link" className="h-4 w-4 transition" />
                           )}
                           Copy link
                         </Fragment>

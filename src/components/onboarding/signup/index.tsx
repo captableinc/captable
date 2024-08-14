@@ -9,12 +9,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { api } from "@/trpc/react";
 import { ZPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiGoogleFill } from "@remixicon/react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -79,7 +79,7 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
                 type="button"
                 onClick={signInWithGoogle}
               >
-                <RiGoogleFill className="mr-2 h-4 w-4" />
+                <Icon name="google-fill" className="mr-2 h-4 w-4" />
                 Signup with <span className="font-bold">Google</span>
               </Button>
 

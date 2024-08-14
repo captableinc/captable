@@ -8,16 +8,12 @@ import { Card } from "@/components/ui/card";
 import type { ShareContactType } from "@/schema/contacts";
 import { api } from "@/trpc/react";
 
+import { Icon } from "@/components/ui/icon";
 import type { Bucket, DataRoom } from "@prisma/client";
-import { RiShareLine } from "@remixicon/react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { pushModal } from "@/components/modals";
-import {
-  RiFolder3Fill as FolderIcon,
-  RiAddFill,
-  RiUploadCloudLine,
-} from "@remixicon/react";
+
 import Link from "next/link";
 import DataRoomUploader from "./data-room-uploader";
 
@@ -50,7 +46,8 @@ const DataRoomFiles = ({
           <form>
             <div className="gap-y-3">
               <div className="flex w-full font-medium">
-                <FolderIcon
+                <Icon
+                  name="folder-3-fill"
                   className="mr-3 h-6 w-6 text-primary/60"
                   aria-hidden="true"
                 />
@@ -88,7 +85,7 @@ const DataRoomFiles = ({
                   });
                 }}
               >
-                <RiShareLine className="mr-2 h-5 w-5" />
+                <Icon name="share-line" className="mr-2 h-5 w-5" />
                 Share
               </Button>
 
@@ -97,7 +94,7 @@ const DataRoomFiles = ({
                 companyPublicId={companyPublicId}
                 trigger={
                   <Button>
-                    <RiAddFill className="mr-2 h-5 w-5" />
+                    <Icon name="add-fill" className="mr-2 h-5 w-5" />
                     Upload
                   </Button>
                 }
@@ -117,7 +114,7 @@ const DataRoomFiles = ({
             </Card>
           ) : (
             <EmptyState
-              icon={<RiUploadCloudLine />}
+              icon={<Icon name="upload-cloud-line" />}
               title="Data room is empty!"
               subtitle="Upload one or many documents to get started."
             >
@@ -126,7 +123,7 @@ const DataRoomFiles = ({
                 companyPublicId={companyPublicId}
                 trigger={
                   <Button>
-                    <RiAddFill className="mr-2 h-5 w-5" />
+                    <Icon name="add-fill" className="mr-2 h-5 w-5" />
                     Upload documents
                   </Button>
                 }

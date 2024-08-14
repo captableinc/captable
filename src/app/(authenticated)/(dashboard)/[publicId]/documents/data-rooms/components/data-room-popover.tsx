@@ -2,6 +2,7 @@
 
 import Loading from "@/components/common/loading";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,7 +11,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { api } from "@/trpc/react";
-import { RiArrowRightLine as ArrowRightIcon } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -79,7 +79,7 @@ const DataRoomPopover = ({ trigger }: DataRoomPopoverType) => {
           <div className="flex justify-end">
             <Button size="sm" variant={"secondary"} type="submit">
               Continue
-              <ArrowRightIcon className="ml-2 h-4 w-4" />
+              <Icon name="arrow-right-line" className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </form>

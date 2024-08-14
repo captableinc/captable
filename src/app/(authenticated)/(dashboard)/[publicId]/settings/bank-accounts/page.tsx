@@ -1,8 +1,8 @@
 import EmptyState from "@/components/common/empty-state";
+import { Icon } from "@/components/ui/icon";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
-import { RiBankFill } from "@remixicon/react";
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import CtaButton from "./components/cta-button";
@@ -28,7 +28,7 @@ const ApiSettingsPage = async () => {
       {data.bankAccounts.length === 0 ? (
         <EmptyState
           bordered={false}
-          icon={<RiBankFill />}
+          icon={<Icon name="bank-fill" />}
           title="Bank accounts"
           subtitle="Add a bank account to receive funds"
         >

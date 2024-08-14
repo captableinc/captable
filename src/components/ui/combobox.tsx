@@ -8,6 +8,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { Icon } from "@/components/ui/icon";
 import Kbd from "@/components/ui/kbd";
 import {
   Popover,
@@ -15,7 +16,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { RiCheckFill as CheckIcon } from "@remixicon/react";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -130,7 +130,10 @@ export const LinearCombobox = ({
 
                   <div>
                     {selectedOption?.value === option.value && (
-                      <CheckIcon className="mr-3 size-4 fill-muted-foreground group-hover:fill-primary" />
+                      <Icon
+                        name="check-fill"
+                        className="mr-3 size-4 fill-muted-foreground group-hover:fill-primary"
+                      />
                     )}
                   </div>
                 </CommandItem>

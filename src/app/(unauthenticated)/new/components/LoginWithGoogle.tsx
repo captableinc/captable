@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { RiGoogleFill as GoogleIcon } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import { signIn } from "next-auth/react";
 
 async function signInWithGoogle() {
@@ -16,7 +16,7 @@ const LoginWithGoogle = () => {
       onClick={signInWithGoogle}
       className="rounded-xl"
     >
-      <GoogleIcon className="mr-2 h-6 w-6" />
+      <Icon name="google-fill" className="mr-2 h-6 w-6" />
       <span className="text-lg">
         Continue with <span className="font-bold">Google</span>
       </span>

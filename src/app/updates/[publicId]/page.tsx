@@ -3,12 +3,12 @@
 import { dayjsExt } from "@/common/dayjs";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Icon } from "@/components/ui/icon";
 import UpdateRenderer from "@/components/update/renderer";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import { UpdateStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
 import { renderAsync } from "@react-email/components";
-import { RiLock2Line } from "@remixicon/react";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 
@@ -78,7 +78,7 @@ const PublicUpdatePage = async ({
     return (
       <div className="h-screen w-full flex justify-center items-center">
         <div className="flex items-center space-x-5">
-          <RiLock2Line className="h-10 w-10" />
+          <Icon name="lock-2-line" className="h-10 w-10" />
           <p className="text-lg font-semibold text-gray-600">
             Public access denied
           </p>

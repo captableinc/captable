@@ -1,12 +1,8 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import {
-  RiArrowDownSLine,
-  RiArrowUpSLine,
-  RiCheckLine,
-} from "@remixicon/react";
 import * as React from "react";
 
 const Select = SelectPrimitive.Root;
@@ -27,7 +23,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <RiArrowDownSLine className="h-4 w-4 opacity-50" />
+      <Icon name="arrow-down-s-line" className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -46,7 +42,7 @@ const SelectScrollUpButton = React.forwardRef<
     )}
     {...props}
   >
-    <RiArrowUpSLine aria-hidden className="h-4 w-4" />
+    <Icon name="arrow-up-s-line" aria-hidden className="h-4 w-4" />
   </SelectPrimitive.ScrollUpButton>
 ));
 
@@ -64,7 +60,7 @@ const SelectScrollDownButton = React.forwardRef<
     )}
     {...props}
   >
-    <RiArrowDownSLine className="h-4 w-4" />
+    <Icon name="arrow-down-s-line" className="h-4 w-4" />
   </SelectPrimitive.ScrollDownButton>
 ));
 
@@ -131,7 +127,7 @@ const SelectItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <RiCheckLine aria-hidden className="h-4 w-4" />
+        <Icon name="check-line" aria-hidden className="h-4 w-4" />
       </SelectPrimitive.ItemIndicator>
     </span>
 

@@ -1,11 +1,11 @@
 import EmptyState from "@/components/common/empty-state";
 import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiAddFill, RiPieChart2Line } from "@remixicon/react";
 import type { Metadata } from "next";
 import { CreateEquityPlanButton } from "./create-equity-plan-button";
 import EquityPlanTable from "./table";
@@ -44,7 +44,7 @@ const EquityPlanPage = async () => {
   if (equityPlans.length === 0) {
     return (
       <EmptyState
-        icon={<RiPieChart2Line />}
+        icon={<Icon name="pie-chart-2-line" />}
         title="You do not have any equity plans!"
         subtitle="Please click the button below to create a new equity plan."
       >

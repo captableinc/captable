@@ -9,12 +9,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { api } from "@/trpc/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiDoorLockLine, RiGoogleFill } from "@remixicon/react";
 import {
   browserSupportsWebAuthn,
   startAuthentication,
@@ -119,7 +119,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
             type="button"
             onClick={onSignInWithPasskey}
           >
-            <RiDoorLockLine className="h-5 w-5" />
+            <Icon name="door-lock-line" className="h-5 w-5" />
             Login with <span className="font-bold">Passkey</span>
           </Button>
 
@@ -129,7 +129,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
               type="button"
               onClick={signInWithGoogle}
             >
-              <RiGoogleFill className="mr-2 h-4 w-4" />
+              <Icon name="google-fill" className="mr-2 h-4 w-4" />
               Login with <span className="font-bold">Google</span>
             </Button>
           )}

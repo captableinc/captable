@@ -1,9 +1,9 @@
 "use client";
+import { Icon } from "@/components/ui/icon";
 import {
   type TypeZodAcceptMemberMutationSchema,
   ZodAcceptMemberMutationSchema,
 } from "@/trpc/routers/member-router/schema";
-import { RiArrowRightLine } from "@remixicon/react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
@@ -45,7 +45,7 @@ export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
     },
   });
 
-  async function onSubmit(values: TypeZodAcceptMemberMutationSchema) {
+  function onSubmit(values: TypeZodAcceptMemberMutationSchema) {
     acceptMember.mutate(values);
   }
 
@@ -103,7 +103,10 @@ export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
               type="submit"
             >
               Complete onboarding
-              <RiArrowRightLine className="ml-2 inline-block h-5 w-5" />
+              <Icon
+                name="arrow-right-line"
+                className="ml-2 inline-block h-5 w-5"
+              />
             </Button>
           </form>
         </Form>

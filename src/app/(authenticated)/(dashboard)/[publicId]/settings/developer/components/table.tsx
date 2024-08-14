@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Icon } from "@/components/ui/icon";
 import {
   Table,
   TableBody,
@@ -32,7 +33,6 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -122,7 +122,10 @@ const AccessTokenTable = ({ tokens }: { tokens: AccessTokens }) => {
                 <div className="flex items-center gap-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      <RiMore2Fill className="cursor-pointer text-muted-foreground hover:text-primary/80" />
+                      <Icon
+                        name="more-2-fill"
+                        className="cursor-pointer text-muted-foreground hover:text-primary/80"
+                      />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuLabel>Options</DropdownMenuLabel>

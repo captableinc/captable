@@ -1,9 +1,9 @@
 import EmptyState from "@/components/common/empty-state";
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { RiUploadCloudLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import { AddEsignDocumentButton } from "./components/add-esign-doc-button";
 import { ESignTable } from "./components/table";
@@ -19,7 +19,7 @@ const EsignDocumentPage = async () => {
   if (documents.length === 0) {
     return (
       <EmptyState
-        icon={<RiUploadCloudLine />}
+        icon={<Icon name="upload-cloud-line" />}
         title="You do not have any documents!"
         subtitle="Click the button below to upload a new document for electronic signature."
       >

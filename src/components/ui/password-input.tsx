@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { RiEyeLine, RiEyeOffLine } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
@@ -29,9 +29,17 @@ const PasswordInput = React.forwardRef<
         onClick={() => setShowPassword((show) => !show)}
       >
         {showPassword ? (
-          <RiEyeOffLine aria-hidden className="h-5 w-5 text-muted-foreground" />
+          <Icon
+            name="eye-off-line"
+            aria-hidden
+            className="h-5 w-5 text-muted-foreground"
+          />
         ) : (
-          <RiEyeLine aria-hidden className="h-5 w-5 text-muted-foreground" />
+          <Icon
+            name="eye-line"
+            aria-hidden
+            className="h-5 w-5 text-muted-foreground"
+          />
         )}
       </Button>
     </div>

@@ -2,7 +2,7 @@
 
 import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
-import { RiAddLine } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 
 const CtaButton = () => {
   return (
@@ -14,7 +14,7 @@ const CtaButton = () => {
         });
       }}
     >
-      <RiAddLine className="inline-block h-5 w-5" />
+      <Icon name="add-line" className="inline-block h-5 w-5" />
       Add a bank account
     </Button>
   );

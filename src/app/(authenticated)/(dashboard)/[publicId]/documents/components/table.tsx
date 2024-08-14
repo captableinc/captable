@@ -3,8 +3,8 @@
 import { dayjsExt } from "@/common/dayjs";
 import FileIcon from "@/components/common/file-icon";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { getPresignedGetUrl } from "@/server/file-uploads";
-import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -77,7 +77,10 @@ const DocumentsTable = ({ documents, companyPublicId }: DocumentTableProps) => {
                   <div className="flex items-center gap-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger>
-                        <RiMore2Fill className="cursor-pointer text-muted-foreground hover:text-primary/80" />
+                        <Icon
+                          name="more-2-fill"
+                          className="cursor-pointer text-muted-foreground hover:text-primary/80"
+                        />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuLabel>Options</DropdownMenuLabel>

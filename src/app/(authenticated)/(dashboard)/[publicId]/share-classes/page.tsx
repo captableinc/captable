@@ -1,9 +1,9 @@
 import EmptyState from "@/components/common/empty-state";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiPieChart2Line } from "@remixicon/react";
 import type { Metadata } from "next";
 import { CreateShareButton } from "./create-share-class-button";
 import ShareClassTable from "./table";
@@ -32,7 +32,7 @@ const SharesPage = async () => {
   if (shareClasses.length === 0) {
     return (
       <EmptyState
-        icon={<RiPieChart2Line />}
+        icon={<Icon name="pie-chart-2-line" />}
         title="You do not have any share classes!"
         subtitle="Please click the button below to create a new share class."
       >

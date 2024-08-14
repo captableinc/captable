@@ -31,9 +31,9 @@ import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
+import { Icon } from "@/components/ui/icon";
 import { getRoleId } from "@/lib/rbac/access-control-utils";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { pushModal } from "../modals";
@@ -217,7 +217,7 @@ export const columns: ColumnDef<Member[number]>[] = [
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
-                <RiMore2Fill aria-hidden className="h-4 w-4" />
+                <Icon name="more-2-fill" aria-hidden className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
           </div>

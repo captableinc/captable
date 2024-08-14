@@ -1,13 +1,9 @@
 import { PageLayout } from "@/components/dashboard/page-layout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { DataRoom } from "@prisma/client";
-import {
-  RiFolder3Fill as FolderIcon,
-  RiMore2Fill as MoreIcon,
-  RiAddFill,
-} from "@remixicon/react";
 import Link from "next/link";
 import DataRoomPopover from "./data-room-popover";
 
@@ -32,7 +28,7 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
           <DataRoomPopover
             trigger={
               <Button>
-                <RiAddFill className="mr-2 h-5 w-5" />
+                <Icon name="add-fill" className="mr-2 h-5 w-5" />
                 Data room
               </Button>
             }
@@ -55,7 +51,8 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
                     "flex w-14 flex-shrink-0 items-center justify-center rounded-l-md border text-sm font-medium ",
                   )}
                 >
-                  <FolderIcon
+                  <Icon
+                    name="folder-3-fill"
                     className="h-6 w-6 text-primary/70"
                     aria-hidden="true"
                   />
@@ -77,7 +74,11 @@ const Folders = ({ companyPublicId, folders }: FolderProps) => {
                       className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-transparent focus:ring-offset-2"
                     >
                       <span className="sr-only">Open options</span>
-                      <MoreIcon className="h-5 w-5" aria-hidden="true" />
+                      <Icon
+                        name="more-2-fill"
+                        className="h-5 w-5"
+                        aria-hidden="true"
+                      />
                     </button>
                   </div>
                 </div>

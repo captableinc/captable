@@ -6,8 +6,8 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
-import { RiAccountCircleFill } from "@remixicon/react";
 import Link from "next/link";
 
 type Props = {
@@ -43,7 +43,8 @@ const ActivityCard = async ({ className, publicId }: Props) => {
                         <div>
                           <div className="relative px-1">
                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-teal-100 ring-8 ring-white">
-                              <RiAccountCircleFill
+                              <Icon
+                                name="account-circle-fill"
                                 className="h-5 w-5 text-teal-500"
                                 aria-hidden="true"
                               />

@@ -2,10 +2,10 @@ import EmptyState from "@/components/common/empty-state";
 import StakeholderDropdown from "@/components/stakeholder/stakeholder-dropdown";
 import StakeholderTable from "@/components/stakeholder/stakeholder-table";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { api } from "@/trpc/server";
-import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -32,7 +32,11 @@ const StakeholdersPage = async () => {
   if (stakeholders.length === 0) {
     return (
       <EmptyState
-        icon={<RiGroup2Fill />}
+        icon={
+          <div>
+            <Icon name="group-2-fill" />
+          </div>
+        }
         title="You do not have any stakeholders!"
         subtitle="Please click the button below to add or import stakeholders."
       >

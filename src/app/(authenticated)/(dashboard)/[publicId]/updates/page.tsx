@@ -1,9 +1,9 @@
 import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import UpdateTable from "@/components/update/update-table";
 import { api } from "@/trpc/server";
-import { RiAddFill, RiMailSendLine } from "@remixicon/react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -21,13 +21,13 @@ const UpdatesPage = async ({
   if (updates.data.length === 0) {
     return (
       <EmptyState
-        icon={<RiMailSendLine />}
+        icon={<Icon name="mail-send-line" />}
         title="You have not sent any updates."
         subtitle="Please click the button below to send an update to your stakeholders."
       >
         <Link href={`/${publicId}/updates/new`} passHref>
           <Button asChild>
-            <RiAddFill className="mr-2 h-5 w-5" />
+            <Icon name="add-fill" className="mr-2 h-5 w-5" />
             Create an update
           </Button>
         </Link>
@@ -48,7 +48,7 @@ const UpdatesPage = async ({
         <div>
           <Link href={`/${publicId}/updates/new`} passHref>
             <Button asChild>
-              <RiAddFill className="mr-2 h-5 w-5" />
+              <Icon name="add-fill" className="mr-2 h-5 w-5" />
               Draft an update
             </Button>
           </Link>

@@ -1,9 +1,9 @@
 import EmptyState from "@/components/common/empty-state";
 import { OfficeViewer } from "@/components/file/office-viewer";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { PdfViewer } from "@/components/ui/pdf-viewer";
 import { fileType } from "@/lib/mime";
-import { RiFileUnknowFill as UnknownFileIcon } from "@remixicon/react";
 
 type FilePreviewProps = {
   name: string;
@@ -40,7 +40,7 @@ const UnknownPreview = ({ url, name, mimeType }: FilePreviewProps) => {
     <EmptyState
       title="Preview not available"
       subtitle={`This file type - ${mimeType} is not yet supported by the previewer. You can download the file by clicking the button below.`}
-      icon={<UnknownFileIcon />}
+      icon={<Icon name="file-unknow-fill" />}
     >
       <a href={url} target="_blank" rel="noopener noreferrer">
         <Button>Download {name}</Button>

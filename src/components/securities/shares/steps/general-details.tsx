@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
 import {
   MultiSelector,
@@ -36,7 +37,6 @@ import { SecuritiesStatusEnum, ShareLegendsEnum } from "@/prisma/enums";
 import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RiAddFill } from "@remixicon/react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
@@ -161,7 +161,11 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                         >
                           <div className="flex justify-between items-center">
                             <span>
-                              <RiAddFill className="h-4 w-4" aria-hidden />
+                              <Icon
+                                name="add-fill"
+                                className="h-4 w-4"
+                                aria-hidden
+                              />
                             </span>
 
                             <div>Create new share class</div>

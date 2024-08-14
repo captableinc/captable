@@ -1,4 +1,4 @@
-import { RiInformationLine } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import Link from "next/link";
 
 type TldrProps = {
@@ -14,7 +14,8 @@ const Tldr = ({ message, cta }: TldrProps) => {
     <div className="mt-3 rounded-md bg-teal-50 p-4 text-left">
       <div className="flex">
         <div className="flex-shrink-0">
-          <RiInformationLine
+          <Icon
+            name="information-line"
             className="h-5 w-5 text-teal-600"
             aria-hidden="true"
           />

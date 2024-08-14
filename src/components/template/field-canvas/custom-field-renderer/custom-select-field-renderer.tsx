@@ -5,9 +5,9 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { Icon } from "@/components/ui/icon";
 import { Input } from "@/components/ui/input";
-import { type TemplateFieldForm } from "@/providers/template-field-provider";
-import { RiDeleteBinLine } from "@remixicon/react";
+import type { TemplateFieldForm } from "@/providers/template-field-provider";
 import { nanoid } from "nanoid";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -62,7 +62,8 @@ export function CustomSelectFieldRenderer({
               size="sm"
               className="group h-8 w-8 p-2"
             >
-              <RiDeleteBinLine
+              <Icon
+                name="delete-bin-line"
                 aria-hidden
                 className="h-8 w-8 text-red-500/70 group-hover:text-red-500"
               />

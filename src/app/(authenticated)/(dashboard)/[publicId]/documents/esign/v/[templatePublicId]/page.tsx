@@ -2,10 +2,10 @@ import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
 import { api } from "@/trpc/server";
-import { RiCheckFill } from "@remixicon/react";
 
 type BadgeVariant =
   | "warning"
@@ -87,7 +87,10 @@ export default async function TemplateDetailViewPage({
                       <div className="flex items-start gap-x-2" key={item.id}>
                         <div>
                           <div className="rounded-full bg-green-700 ">
-                            <RiCheckFill className="h-5 w-5 text-white" />
+                            <Icon
+                              name="check-fill"
+                              className="h-5 w-5 text-white"
+                            />
                           </div>
                         </div>
                         <p className="break-words text-sm font-medium text-primary/80">

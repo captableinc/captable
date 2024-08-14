@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import {
   DescendantProvider,
@@ -8,7 +9,6 @@ import {
   useDescendants,
   useDescendantsInit,
 } from "@/providers/descendants";
-import { RiCheckLine } from "@remixicon/react";
 import {
   type ComponentProps,
   type ReactNode,
@@ -155,7 +155,11 @@ function StepList() {
             )}
           >
             {stepId < currentStep ? (
-              <RiCheckLine className="h-4 w-4 text-white" aria-hidden="true" />
+              <Icon
+                name="check-line"
+                className="h-4 w-4 text-white"
+                aria-hidden="true"
+              />
             ) : (
               <span
                 className={cn(

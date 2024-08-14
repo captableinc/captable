@@ -1,7 +1,7 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { RiArrowDownSLine } from "@remixicon/react";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -34,7 +34,10 @@ const AccordionTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      <RiArrowDownSLine className="h-4 w-4 shrink-0 transition-transform duration-200" />
+      <Icon
+        name="arrow-down-s-line"
+        className="h-4 w-4 shrink-0 transition-transform duration-200"
+      />
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ));

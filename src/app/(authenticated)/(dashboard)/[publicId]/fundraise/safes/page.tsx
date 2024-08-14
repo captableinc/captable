@@ -3,8 +3,8 @@ import { PageLayout } from "@/components/dashboard/page-layout";
 import { SafeActions } from "@/components/safe/safe-actions";
 import { SafeTable } from "@/components/safe/safe-table";
 import { Card } from "@/components/ui/card";
+import { Icon } from "@/components/ui/icon";
 import { api } from "@/trpc/server";
-import { RiSafeFill } from "@remixicon/react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ const SafePage = async () => {
   if (!safes?.data?.length) {
     return (
       <EmptyState
-        icon={<RiSafeFill />}
+        icon={<Icon name="safe-fill" />}
         title="Create and manage SAFE agreements."
         subtitle="Please click the button for creating agreements."
       >

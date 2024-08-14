@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { RiCloseLine as CloseIcon } from "@remixicon/react";
+import { Icon } from "@/components/ui/icon";
 import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -112,6 +112,7 @@ function transToGroupOption(options: Option[], groupBy?: string) {
   }
 
   const groupOption: GroupOption = {};
+  // biome-ignore lint/complexity/noForEach: <explanation>
   options.forEach((option) => {
     const key = (option[groupBy] as string) || "";
     if (!groupOption[key]) {
@@ -207,11 +208,13 @@ const MultipleSelector = React.forwardRef<
       ref,
       () => ({
         selectedValue: [...selected],
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
         input: inputRef.current!,
       }),
       [selected],
     );
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     const handleUnselect = React.useCallback(
       (option: Option) => {
         const newOptions = selected.filter((s) => s.value !== option.value);
@@ -227,6 +230,7 @@ const MultipleSelector = React.forwardRef<
         if (input) {
           if (e.key === "Delete" || e.key === "Backspace") {
             if (input.value === "" && selected.length > 0) {
+              // biome-ignore lint/style/noNonNullAssertion: <explanation>
               handleUnselect(selected[selected.length - 1]!);
             }
           }
@@ -239,12 +243,14 @@ const MultipleSelector = React.forwardRef<
       [handleUnselect, selected],
     );
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       if (value) {
         setSelected(value);
       }
     }, [value]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       /** If `onSearch` is provided, do not trigger options updated. */
       if (!arrayOptions || onSearch) {
@@ -256,6 +262,7 @@ const MultipleSelector = React.forwardRef<
       }
     }, [arrayDefaultOptions, arrayOptions, groupBy, onSearch, options]);
 
+    // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       const doSearch = async () => {
         setIsLoading(true);
@@ -387,6 +394,7 @@ const MultipleSelector = React.forwardRef<
                 >
                   {option.label}
                   <button
+                    type="button"
                     className={cn(
                       "ml-1 rounded-full outline-none",
                       (disabled || option.fixed) && "hidden",
@@ -402,7 +410,10 @@ const MultipleSelector = React.forwardRef<
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <CloseIcon className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    <Icon
+                      name="close-line"
+                      className="h-3 w-3 text-muted-foreground hover:text-foreground"
+                    />
                   </button>
                 </Badge>
               );

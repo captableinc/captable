@@ -1,7 +1,7 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
 import type { DialogProps } from "@radix-ui/react-dialog";
-import { RiSearchLine } from "@remixicon/react";
 import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";
 
@@ -42,7 +42,7 @@ const CommandInput = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
   <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-    <RiSearchLine className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+    <Icon name="search-line" className="mr-2 h-4 w-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(

@@ -2,9 +2,9 @@
 
 import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
 import { getServerComponentAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
 import { Fragment } from "react";
 import DataRoomPopover from "./components/data-room-popover";
 import Folders from "./components/dataroom-folders";
@@ -44,14 +44,14 @@ const DataRoomPage = async () => {
       ) : (
         <Fragment>
           <EmptyState
-            icon={<RiFolderCheckFill />}
+            icon={<Icon name="folder-check-fill" />}
             title="You don't have any data rooms yet."
             subtitle="A secure spaces to share multiple documents with investors, stakeholders and external parties."
           >
             <DataRoomPopover
               trigger={
                 <Button>
-                  <RiAddFill className="mr-2 h-5 w-5" />
+                  <Icon name="add-fill" className="mr-2 h-5 w-5" />
                   Create a data room
                 </Button>
               }

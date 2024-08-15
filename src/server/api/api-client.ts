@@ -5,12 +5,6 @@ import type {
   z,
 } from "@hono/zod-openapi";
 
-import ky from "ky";
-
-const api = ky.create({
-  cache: "no-cache",
-});
-
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type ExtractParams<T> = T extends { params: z.ZodType<any, any, any> }
   ? z.infer<T["params"]>
@@ -47,7 +41,9 @@ export type APIClientParams<T extends RouteConfig> = IfNever<
   IfNever<
     ExtractRequestBody<T["request"]>,
     { json: ExtractRequestBody<T["request"]> }
-  >;
+  > & {
+    headers?: Headers;
+  };
 
 type RouteConfig = Parameters<typeof createRoute>[0];
 
@@ -56,18 +52,27 @@ export async function createClient<U extends RouteConfig>(
   url: U["path"],
   params: APIClientParams<U>,
 ) {
-  const path = interpolatePath(
-    `${env.NEXT_PUBLIC_BASE_URL}/api${url}`,
-    "urlParams" in params ? params.urlParams : {},
-  );
+  try {
+    const path = buildPath(url, params);
+    const headers = buildHeaders(params.headers);
+    const requestOptions = buildRequestOptions(method, headers, params);
 
-  const req = await api(path, {
-    method: method,
-    ...("json" in params && { json: params.json }),
-    ...("searchParams" in params && { searchParams: params.searchParams }),
-  });
+    const response = await fetch(path, requestOptions);
 
-  return req.json<RouteConfigToTypedResponse<U>["_data"]>();
+    if (!response.ok) {
+      const errorMessage = await getErrorMessage(response);
+      throw new Error(`HTTP Error: ${response.status} - ${errorMessage}`);
+    }
+
+    try {
+      return response.json() as RouteConfigToTypedResponse<U>["_data"];
+    } catch (_jsonError) {
+      throw new Error("Failed to parse JSON response.");
+    }
+  } catch (error) {
+    console.error("Error in createClient:", error);
+    throw error;
+  }
 }
 
 function interpolatePath(
@@ -77,4 +82,54 @@ function interpolatePath(
   return path.replace(/{([^}]+)}/g, (_, key) =>
     encodeURIComponent(String(params[key])),
   );
+}
+
+function buildHeaders(customHeaders?: HeadersInit): Headers {
+  const headers = new Headers(customHeaders);
+  headers.set("Content-Type", "application/json");
+  return headers;
+}
+
+function buildPath<U extends RouteConfig>(
+  url: string,
+  params: APIClientParams<U>,
+): string {
+  let path = interpolatePath(
+    `${env.NEXT_PUBLIC_BASE_URL}/api${url}`,
+    "urlParams" in params ? params.urlParams : {},
+  );
+
+  if ("searchParams" in params) {
+    const queryString = new URLSearchParams(params.searchParams).toString();
+    path += `?${queryString}`;
+  }
+
+  return path;
+}
+
+function buildRequestOptions<U extends RouteConfig>(
+  method: string,
+  headers: Headers,
+  params: APIClientParams<U>,
+): RequestInit {
+  const requestOptions: RequestInit = {
+    method: method.toUpperCase(),
+    credentials: "include",
+    headers,
+  };
+
+  if ("json" in params) {
+    requestOptions.body = JSON.stringify(params.json);
+  }
+
+  return requestOptions;
+}
+
+async function getErrorMessage(response: Response): Promise<string> {
+  try {
+    const data = await response.json();
+    return data.message || "Unknown error occurred.";
+  } catch {
+    return response.statusText || "Unknown error occurred.";
+  }
 }

@@ -12,7 +12,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { StepperModalFooter, StepperPrev } from "@/components/ui/stepper";
+import {
+  StepperModalFooter,
+  StepperPrev,
+  useStepper,
+} from "@/components/ui/stepper";
 import { invariant } from "@/lib/error";
 import { TAG } from "@/lib/tags";
 import { useFormValueState } from "@/providers/form-value-provider";
@@ -39,7 +43,8 @@ type TSchema = z.infer<typeof Schema>;
 
 export function UploadDocumentStep() {
   const { onOpenChange } = useDialogState();
-  const { mutateAsync } = api.bucket.create.useMutation();
+  const { reset } = useStepper();
+  const { mutateAsync: bucketUpload } = api.bucket.create.useMutation();
   const { mutateAsync: documentUpload } = api.document.create.useMutation();
   const router = useRouter();
   const { data: session } = useSession();
@@ -56,55 +61,63 @@ export function UploadDocumentStep() {
     TCreateConvertibleNoteRes,
     Error,
     TCreateConvertibleNoteParams
-  >(
-    (params) => {
-      return createConvertibleNote(params);
-    },
-    {
-      onSuccess: () => {
-        router.refresh();
-        toast.success("Convertible note created successfully");
-        onOpenChange(false);
-      },
-    },
-  );
+  >((params) => {
+    return createConvertibleNote(params);
+  });
 
-  const onSubmit = async (data: TSchema) => {
+  const onSubmit = (data: TSchema) => {
     invariant(session, "session not found");
 
-    const note = await createNote({
-      urlParams: { companyId: session.user.companyId },
-      json: {
-        ...formData,
-        ...(formData.boardApprovalDate && {
-          boardApprovalDate: new Date(formData.boardApprovalDate).toISOString(),
-        }),
-        ...(formData.issueDate && {
-          issueDate: new Date(formData.issueDate).toISOString(),
-        }),
+    const handleSubmit = async () => {
+      const note = await createNote({
+        urlParams: { companyId: session.user.companyId },
+        json: {
+          ...formData,
+          ...(formData.boardApprovalDate && {
+            boardApprovalDate: new Date(
+              formData.boardApprovalDate,
+            ).toISOString(),
+          }),
+          ...(formData.issueDate && {
+            issueDate: new Date(formData.issueDate).toISOString(),
+          }),
+        },
+      });
+
+      for (const file of data.files) {
+        const { key, mimeType, name, size } = await uploadFile(file, {
+          identifier: session.user.companyPublicId,
+          keyPrefix: "convertible-note",
+        });
+
+        const data = await bucketUpload({
+          key,
+          mimeType,
+          name,
+          size,
+          tags: [TAG.CONVERTIBLE_NOTE],
+        });
+
+        await documentUpload({
+          bucketId: data.id,
+          name: data.name,
+          convertibleNoteId: note.data.id,
+        });
+      }
+    };
+
+    onOpenChange(false);
+    reset();
+
+    toast.promise(handleSubmit, {
+      loading: "Creating Convertible Note...",
+      success: () => {
+        router.refresh();
+
+        return "Convertible note created successfully";
       },
+      error: "Failed to create convertible note",
     });
-
-    for (const file of data.files) {
-      const { key, mimeType, name, size } = await uploadFile(file, {
-        identifier: session.user.companyPublicId,
-        keyPrefix: "convertible-note",
-      });
-
-      const data = await mutateAsync({
-        key,
-        mimeType,
-        name,
-        size,
-        tags: [TAG.CONVERTIBLE_NOTE],
-      });
-
-      await documentUpload({
-        bucketId: data.id,
-        name: data.name,
-        convertibleNoteId: note.data.id,
-      });
-    }
   };
 
   return (

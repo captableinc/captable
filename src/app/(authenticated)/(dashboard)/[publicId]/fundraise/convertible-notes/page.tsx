@@ -15,12 +15,12 @@ export const metadata: Metadata = {
 };
 
 const ConvertibleNotesPage = async () => {
-  // const session = await withServerSession();
+  const session = await withServerSession();
   const notes = await getManyConvertibleNote({
     searchParams: {
       limit: 50,
     },
-    urlParams: { companyId: "clzjkpjne0005kpdrg9ibpg9x" },
+    urlParams: { companyId: session.user.companyId },
     headers: headers(),
   });
 

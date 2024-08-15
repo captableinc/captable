@@ -185,7 +185,8 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                     <div>
                       <LinearCombobox
                         options={statusOpts}
-                        onValueChange={(option) => field.onChange(option.value)}
+                        onChange={field.onChange}
+                        defaultValue={field.value}
                       />
                     </div>
                     <FormMessage className="text-xs font-light" />

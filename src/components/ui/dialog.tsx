@@ -4,9 +4,49 @@ import Kbd from "@/components/ui/kbd";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as React from "react";
 
+import { useControllableState } from "@/hooks/use-controllable-state";
+import { invariant } from "@/lib/error";
 import { cn } from "@/lib/utils";
 
-const Dialog = DialogPrimitive.Root;
+const DialogContext = React.createContext<null | {
+  open: boolean;
+  onOpenChange: (val: boolean) => void;
+}>(null);
+
+export const useDialogState = () => {
+  const val = React.useContext(DialogContext);
+
+  invariant(val, "useDialogState should be used inside DialogContextProvider");
+
+  return val;
+};
+
+function Dialog({
+  onOpenChange,
+  open,
+  children,
+  defaultOpen,
+  ...rest
+}: DialogPrimitive.DialogProps) {
+  const [open_ = false, onOpenChange_] = useControllableState({
+    onChange: onOpenChange,
+    prop: open,
+    defaultProp: defaultOpen,
+  });
+
+  const handleOpenChange = (val: boolean) => {
+    onOpenChange_(val);
+  };
+  return (
+    <DialogContext.Provider
+      value={{ open: open_, onOpenChange: handleOpenChange }}
+    >
+      <DialogPrimitive.Root open={open_} onOpenChange={onOpenChange_} {...rest}>
+        {children}
+      </DialogPrimitive.Root>
+    </DialogContext.Provider>
+  );
+}
 
 const DialogTrigger = DialogPrimitive.Trigger;
 

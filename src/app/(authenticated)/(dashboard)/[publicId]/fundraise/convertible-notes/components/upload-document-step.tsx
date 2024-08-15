@@ -2,6 +2,7 @@
 
 import { uploadFile } from "@/common/uploads";
 import { Button } from "@/components/ui/button";
+import { useDialogState } from "@/components/ui/dialog";
 import { FileUploader } from "@/components/ui/file-uploader";
 import {
   Form,
@@ -37,6 +38,7 @@ const Schema = z.object({
 type TSchema = z.infer<typeof Schema>;
 
 export function UploadDocumentStep() {
+  const { onOpenChange } = useDialogState();
   const { mutateAsync } = api.bucket.create.useMutation();
   const { mutateAsync: documentUpload } = api.document.create.useMutation();
   const router = useRouter();
@@ -62,6 +64,7 @@ export function UploadDocumentStep() {
       onSuccess: () => {
         router.refresh();
         toast.success("Convertible note created successfully");
+        onOpenChange(false);
       },
     },
   );

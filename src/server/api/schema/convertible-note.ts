@@ -49,3 +49,11 @@ export const CreateConvertibleNotesSchema = ConvertibleNoteSchema.omit({
 export type TCreateConvertibleNotesSchema = z.infer<
   typeof CreateConvertibleNotesSchema
 >;
+
+export const ConvertibleNoteSchemaWithStakeHolder = z
+  .object({
+    stakeholder: z.object({
+      name: z.string(),
+    }),
+  })
+  .merge(ConvertibleNoteSchema);

@@ -21,7 +21,9 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import type { TFormSchema } from "./add-convertible-notes-form";
 
@@ -32,6 +34,7 @@ const Schema = z.object({
 type TSchema = z.infer<typeof Schema>;
 
 export function UploadDocumentStep() {
+  const router = useRouter();
   const { data: session } = useSession();
   const formData = useFormValueState<TFormSchema>();
 
@@ -46,9 +49,17 @@ export function UploadDocumentStep() {
     TCreateConvertibleNoteRes,
     Error,
     TCreateConvertibleNoteParams
-  >((params) => {
-    return createConvertibleNote(params);
-  }, {});
+  >(
+    (params) => {
+      return createConvertibleNote(params);
+    },
+    {
+      onSuccess: () => {
+        router.refresh();
+        toast.success("Convertible note created successfully");
+      },
+    },
+  );
 
   const onSubmit = async (data: TSchema) => {
     invariant(session, "session not found");

@@ -136,7 +136,8 @@ export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
                     <div>
                       <LinearCombobox
                         options={shareClassOpts}
-                        onValueChange={(option) => field.onChange(option.value)}
+                        onChange={field.onChange}
+                        defaultValue={field.value}
                       >
                         <button
                           type="button"

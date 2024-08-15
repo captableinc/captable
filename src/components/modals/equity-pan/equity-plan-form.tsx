@@ -214,7 +214,8 @@ export const EquityPlanForm = ({
                     {shareClasses.length > 0 ? (
                       <LinearCombobox
                         options={shareClassOpts}
-                        onValueChange={(option) => field.onChange(option.value)}
+                        onChange={field.onChange}
+                        defaultValue={field.value}
                       >
                         <button
                           type="button"

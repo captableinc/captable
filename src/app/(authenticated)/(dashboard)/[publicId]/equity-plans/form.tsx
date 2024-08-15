@@ -216,7 +216,8 @@ const EquityPlanForm = ({
                     {shareClasses.length > 0 ? (
                       <LinearCombobox
                         options={shareClassOpts}
-                        onValueChange={(option) => field.onChange(option.value)}
+                        onChange={field.onChange}
+                        defaultValue={field.value}
                       >
                         <button
                           type="button"
@@ -294,7 +295,8 @@ const EquityPlanForm = ({
                   <div>
                     <LinearCombobox
                       options={defaultCancellatonBehaviorOpts}
-                      onValueChange={(option) => field.onChange(option.value)}
+                      onChange={field.onChange}
+                      defaultValue={field.value}
                     />
                   </div>
                   <FormMessage className="text-xs font-light" />

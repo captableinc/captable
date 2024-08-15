@@ -233,7 +233,8 @@ function PredefinedTemplateSelect() {
           <div>
             <LinearCombobox
               options={templateTypes}
-              onValueChange={(option) => field.onChange(option.value)}
+              onChange={field.onChange}
+              defaultValue={field.value}
             />
           </div>
           <FormMessage className="text-xs font-light" />

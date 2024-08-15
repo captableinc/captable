@@ -130,14 +130,9 @@ export const InvestorForm = ({ investor }: InvestorFormProps) => {
                   <FormLabel>Type</FormLabel>
                   <div>
                     <LinearCombobox
-                      defaultOption={{
-                        value: field.value,
-                        label: camelCase(field.value),
-                      }}
                       options={investorTypeOpts}
-                      onValueChange={(option) => {
-                        field.onChange(option.value);
-                      }}
+                      onChange={field.onChange}
+                      defaultValue={field.value}
                     />
                   </div>
                   <FormMessage className="text-xs font-light" />

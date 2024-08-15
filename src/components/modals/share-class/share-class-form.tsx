@@ -75,16 +75,9 @@ const ShareClassForm = ({
   const { watch } = form;
   const router = useRouter();
   const isSubmitting = form.formState.isSubmitting;
-  const watchConversionRights = watch("conversionRights") as string;
-  const [renderShareClassInput, setRenderShareClassInput] = useState(false);
-  const [defShareTypeOpt, setDefShareTypeOpt] = useState<ComboBoxOption>();
-  useEffect(() => {
-    if (watchConversionRights === "CONVERTS_TO_SHARE_CLASS_ID") {
-      setRenderShareClassInput(true);
-    } else {
-      setRenderShareClassInput(false);
-    }
-  }, [watchConversionRights]);
+  const watchConversionRights = watch("conversionRights");
+  const renderShareClassInput =
+    watchConversionRights === "CONVERTS_TO_SHARE_CLASS_ID";
 
   const createMutation = api.shareClass.create.useMutation({
     onSuccess: ({ success, message }) => {
@@ -117,14 +110,6 @@ const ShareClassForm = ({
       ? await createMutation.mutateAsync(values)
       : await updateMutation.mutateAsync(values);
   };
-
-  useEffect(() => {
-    setDefShareTypeOpt(
-      shareClassTypeOpts.find(
-        (opt) => opt.value === form.getValues().classType,
-      ),
-    );
-  }, [form.getValues]);
 
   const shareClassTypeOpts = [
     { value: "COMMON", label: "Common share" },
@@ -161,8 +146,8 @@ const ShareClassForm = ({
                   <div>
                     <LinearCombobox
                       options={shareClassTypeOpts}
-                      onValueChange={(option) => field.onChange(option.value)}
-                      defaultOption={defShareTypeOpt}
+                      onChange={field.onChange}
+                      defaultValue={field.value}
                     />
                   </div>
                   <FormMessage className="text-xs font-light" />

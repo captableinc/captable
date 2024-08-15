@@ -228,7 +228,8 @@ export const VestingDetails = (props: VestingDetailsProps) => {
                   <div>
                     <LinearCombobox
                       options={stakeHolderOpts}
-                      onValueChange={(option) => field.onChange(option.value)}
+                      onChange={field.onChange}
+                      defaultValue={field.value}
                     />
                   </div>
                   <FormMessage className="text-xs font-light" />

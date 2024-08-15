@@ -116,6 +116,7 @@ function buildRequestOptions<U extends RouteConfig>(
     method: method.toUpperCase(),
     credentials: "include",
     headers,
+    cache: "no-store",
   };
 
   if ("json" in params) {

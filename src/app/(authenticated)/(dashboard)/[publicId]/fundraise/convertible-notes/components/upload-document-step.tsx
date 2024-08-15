@@ -1,5 +1,6 @@
 "use client";
 
+import { uploadFile } from "@/common/uploads";
 import { Button } from "@/components/ui/button";
 import { FileUploader } from "@/components/ui/file-uploader";
 import {
@@ -12,12 +13,14 @@ import {
 } from "@/components/ui/form";
 import { StepperModalFooter, StepperPrev } from "@/components/ui/stepper";
 import { invariant } from "@/lib/error";
+import { TAG } from "@/lib/tags";
 import { useFormValueState } from "@/providers/form-value-provider";
 import {
   type TCreateConvertibleNoteParams,
   type TCreateConvertibleNoteRes,
   createConvertibleNote,
 } from "@/server/api/client-handlers/convertible-note";
+import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -34,6 +37,8 @@ const Schema = z.object({
 type TSchema = z.infer<typeof Schema>;
 
 export function UploadDocumentStep() {
+  const { mutateAsync } = api.bucket.create.useMutation();
+  const { mutateAsync: documentUpload } = api.document.create.useMutation();
   const router = useRouter();
   const { data: session } = useSession();
   const formData = useFormValueState<TFormSchema>();
@@ -63,7 +68,8 @@ export function UploadDocumentStep() {
 
   const onSubmit = async (data: TSchema) => {
     invariant(session, "session not found");
-    await createNote({
+
+    const note = await createNote({
       urlParams: { companyId: session.user.companyId },
       json: {
         ...formData,
@@ -75,6 +81,27 @@ export function UploadDocumentStep() {
         }),
       },
     });
+
+    for (const file of data.files) {
+      const { key, mimeType, name, size } = await uploadFile(file, {
+        identifier: session.user.companyPublicId,
+        keyPrefix: "convertible-note",
+      });
+
+      const data = await mutateAsync({
+        key,
+        mimeType,
+        name,
+        size,
+        tags: [TAG.CONVERTIBLE_NOTE],
+      });
+
+      await documentUpload({
+        bucketId: data.id,
+        name: data.name,
+        convertibleNoteId: note.data.id,
+      });
+    }
   };
 
   return (

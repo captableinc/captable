@@ -33,6 +33,7 @@ const S3 = new S3Client({
 
 export type TypeKeyPrefixes =
   | "new-safes"
+  | "convertible-note"
   | "existing-safes"
   | "signed-esign-doc"
   | "unsigned-esign-doc"

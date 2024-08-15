@@ -1,5 +1,6 @@
 import { type APIClientParams, createClient } from "../api-client";
 import type { create } from "../routes/convertible-note/create";
+import type { deleteOne } from "../routes/convertible-note/delete";
 import type { getMany } from "../routes/convertible-note/getMany";
 
 type CreateRoute = typeof create.route;
@@ -32,4 +33,21 @@ export const getManyConvertibleNote = (
 export type TGetManyConvertibleNoteParams = APIClientParams<GetManyRoute>;
 export type TGetManyConvertibleNoteRes = Awaited<
   ReturnType<typeof getManyConvertibleNote>
+>;
+
+type DeleteOneRoute = typeof deleteOne.route;
+
+export const deleteOneConvertibleNote = (
+  params: TDeleteOneConvertibleNoteParams,
+) => {
+  return createClient<DeleteOneRoute>(
+    "delete",
+    "/v1/{companyId}/convertible-notes/{id}",
+    params,
+  );
+};
+
+export type TDeleteOneConvertibleNoteParams = APIClientParams<DeleteOneRoute>;
+export type TDeleteOneConvertibleNoteRes = Awaited<
+  ReturnType<typeof deleteOneConvertibleNote>
 >;

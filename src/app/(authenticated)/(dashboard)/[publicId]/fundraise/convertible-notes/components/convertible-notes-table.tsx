@@ -33,8 +33,18 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import type { TGetManyConvertibleNoteRes } from "@/server/api/client-handlers/convertible-note";
+import { invariant } from "@/lib/error";
+import {
+  type TDeleteOneConvertibleNoteParams,
+  type TDeleteOneConvertibleNoteRes,
+  type TGetManyConvertibleNoteRes,
+  deleteOneConvertibleNote,
+} from "@/server/api/client-handlers/convertible-note";
 import { RiMore2Fill } from "@remixicon/react";
+import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type ConvertibleNote = TGetManyConvertibleNoteRes["data"];
 
@@ -176,6 +186,33 @@ export const columns: ColumnDef<ConvertibleNote[number]>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const { data: session } = useSession();
+      const note = row.original;
+      const router = useRouter();
+
+      const { mutateAsync: deleteNote } = useMutation<
+        TDeleteOneConvertibleNoteRes,
+        Error,
+        TDeleteOneConvertibleNoteParams
+      >(
+        (params) => {
+          return deleteOneConvertibleNote(params);
+        },
+        {
+          onSuccess: (res) => {
+            router.refresh();
+            toast.success(res.message);
+          },
+        },
+      );
+
+      const handleDelete = async () => {
+        invariant(session, "session not found");
+        await deleteNote({
+          urlParams: { companyId: session.user.companyId, id: note.id },
+        });
+      };
+
       return (
         <DropdownMenu>
           <div className="items-end justify-end text-right">
@@ -196,7 +233,7 @@ export const columns: ColumnDef<ConvertibleNote[number]>[] = [
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem onSelect={() => {}} className="text-red-500">
+            <DropdownMenuItem onSelect={handleDelete} className="text-red-500">
               Delete Note
             </DropdownMenuItem>
           </DropdownMenuContent>

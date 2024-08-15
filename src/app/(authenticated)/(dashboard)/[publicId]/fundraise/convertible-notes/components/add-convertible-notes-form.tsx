@@ -211,7 +211,8 @@ export function AddConvertibleNotesForm({
                 <div>
                   <LinearCombobox
                     options={stakeHolderOpts}
-                    onValueChange={(option) => field.onChange(option.value)}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
                   >
                     <button
                       type="button"

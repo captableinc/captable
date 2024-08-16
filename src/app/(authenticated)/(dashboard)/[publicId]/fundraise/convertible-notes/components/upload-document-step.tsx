@@ -57,6 +57,8 @@ export function UploadDocumentStep() {
     },
   });
 
+  const isLoading = form.formState.isSubmitting;
+
   const { mutateAsync: createNote } = useMutation<
     TCreateConvertibleNoteRes,
     Error,
@@ -148,6 +150,7 @@ export function UploadDocumentStep() {
                   maxSize={1024 * 1024 * 50}
                   // biome-ignore lint/style/useNumberNamespace: <explanation>
                   maxFileCount={Infinity}
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormMessage />
@@ -156,8 +159,10 @@ export function UploadDocumentStep() {
         />
 
         <StepperModalFooter className="pt-6">
-          <StepperPrev>Back</StepperPrev>
-          <Button type="submit">Save & Continue</Button>
+          <StepperPrev disabled={isLoading}>Back</StepperPrev>
+          <Button disabled={isLoading} type="submit">
+            Save & Continue
+          </Button>
         </StepperModalFooter>
       </form>
     </Form>

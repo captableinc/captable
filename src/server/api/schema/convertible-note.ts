@@ -108,6 +108,13 @@ export const CreateConvertibleNotesSchema = ConvertibleNoteSchema.omit({
   updatedAt: true,
   companyId: true,
   status: true,
+}).extend({
+  documents: z
+    .array(z.object({ id: z.string() }))
+    .min(1)
+    .openapi({
+      description: "List of id's for the documents uploaded",
+    }),
 });
 
 export type TCreateConvertibleNotesSchema = z.infer<

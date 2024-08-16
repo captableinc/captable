@@ -11,12 +11,9 @@ api.use("*", middlewareServices());
 
 // Register RESTful routes
 
-const routes = api
-  .route("", registerCompanyRoutes(api))
-  .route("", registerConvertibleNotesRoutes(api))
-  .route("", registerShareRoutes(api))
-  .route("", registerStakeholderRoutes(api));
-
-export type APIType = typeof routes;
+registerCompanyRoutes(api);
+registerConvertibleNotesRoutes(api);
+registerShareRoutes(api);
+registerStakeholderRoutes(api);
 
 export default api;

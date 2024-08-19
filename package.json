@@ -92,7 +92,7 @@
     "nanoid": "^5.0.4",
     "next": "^14.2.4",
     "next-auth": "^4.24.7",
-    "next-nprogress-bar": "^2.3.11",
+    "next-nprogress-bar": "^2.3.13",
     "nodemailer": "^6.9.14",
     "papaparse": "^5.4.1",
     "pdf-lib": "^1.17.1",

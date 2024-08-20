@@ -13,7 +13,7 @@ import {
   type uploadEsignDocumentsOptions,
 } from "@/server/esign";
 import { withoutAuth } from "@/trpc/api/trpc";
-import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
+import { encodeSignatureToken } from "../../template-field-router/procedures/add-fields";
 import { SignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth
@@ -218,9 +218,10 @@ export const signTemplateProcedure = withoutAuth
           },
         });
         if (nextDelivery) {
-          const token = await EncodeEmailToken({
+          const token = await encodeSignatureToken({
             recipientId: nextDelivery.id,
             templateId: template.id,
+            db: tx,
           });
           const email = nextDelivery.email;
 

@@ -1,43 +1,49 @@
-/* eslint-disable @typescript-eslint/prefer-for-of */
+import { customId } from "@/common/id";
 import {
   EsignNotificationEmailJob,
   type ExtendedEsignPayloadType,
 } from "@/jobs/esign-email";
-import { decode, encode } from "@/lib/jwt";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
+import type { TPrismaOrTransaction } from "@/server/db";
 import { withAuth } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 import { ZodAddFieldMutationSchema } from "../schema";
 
-const emailTokenPayloadSchema = z.object({
-  id: z.string(),
-  rec: z.string(),
-});
-
-type TEmailTokenPayloadSchema = z.infer<typeof emailTokenPayloadSchema>;
-
-interface EncodeEmailTokenOption {
+interface TEncodeSignatureTokenOption {
+  db: TPrismaOrTransaction;
   templateId: string;
   recipientId: string;
 }
 
-export function EncodeEmailToken({
+export async function encodeSignatureToken({
   recipientId,
   templateId,
-}: EncodeEmailTokenOption) {
-  const encodeToken: TEmailTokenPayloadSchema = {
-    rec: recipientId,
-    id: templateId,
-  };
+  db,
+}: TEncodeSignatureTokenOption) {
+  const token = customId();
 
-  return encode(encodeToken);
+  await db.eSignToken.create({
+    data: {
+      templateId,
+      recipientId,
+      token,
+    },
+  });
+
+  return token;
 }
 
-export async function DecodeEmailToken(jwt: string) {
-  const { payload } = await decode(jwt);
-  return emailTokenPayloadSchema.parse(payload);
+export function decodeSignatureToken(token: string, db: TPrismaOrTransaction) {
+  return db.eSignToken.findFirstOrThrow({
+    where: {
+      token,
+    },
+    select: {
+      recipientId: true,
+      templateId: true,
+    },
+  });
 }
 
 export const addFieldProcedure = withAuth
@@ -165,9 +171,10 @@ export const addFieldProcedure = withAuth
               throw new Error("not found");
             }
 
-            const token = await EncodeEmailToken({
+            const token = await encodeSignatureToken({
               recipientId: recipient.id,
               templateId: template.id,
+              db: tx,
             });
 
             const email = recipient.email;

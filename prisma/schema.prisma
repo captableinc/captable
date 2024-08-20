@@ -189,7 +189,6 @@ model BankAccount {
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@unique([companyId, accountNumber])
-  @@unique([companyId, primary], name: "unique_primary_account")
   @@index([companyId])
 }
 

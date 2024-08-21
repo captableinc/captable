@@ -4,6 +4,9 @@ import { singleton } from "@/lib/singleton";
 import PgBoss from "pg-boss";
 import type { z } from "zod";
 
+const CONNECTION_URL =
+  process.env.QUEUE_DATABASE_URL ?? (process.env.DATABASE_URL as string);
+
 const queue = singleton(
   "pg-boss",
   () =>
@@ -21,9 +24,6 @@ const queue = singleton(
       noScheduling: false,
     }),
 );
-
-const CONNECTION_URL =
-  process.env.QUEUE_DATABASE_URL ?? (process.env.DATABASE_URL as string);
 
 type JobTypes = typeof JOB_TYPES;
 

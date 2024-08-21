@@ -30,52 +30,55 @@ const Schema = z.object({
   token: z.string(),
 });
 
-export type TESignNotificationJobInput = z.infer<typeof Schema>;
+export type TESignNotificationEmailJobInput = z.infer<typeof Schema>;
 
 const config = defineWorkerConfig({
   name: "email.esign-notification",
   schema: Schema,
 });
 
-export const eSignNotificationJob = defineJob(config);
-export const eSignNotificationWorker = defineWorker(config, async (job) => {
-  const { email, token, sender, ...rest } = job.data;
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+export const eSignNotificationEmailJob = defineJob(config);
+export const eSignNotificationEmailWorker = defineWorker(
+  config,
+  async (job) => {
+    const { email, token, sender, ...rest } = job.data;
+    const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
-  await db.$transaction(async (tx) => {
-    const recipient = await tx.esignRecipient.update({
-      where: {
-        id: job.data.recipient.id,
-      },
-      data: {
-        status: "SENT",
-      },
+    await db.$transaction(async (tx) => {
+      const recipient = await tx.esignRecipient.update({
+        where: {
+          id: job.data.recipient.id,
+        },
+        data: {
+          status: "SENT",
+        },
+      });
+
+      await tx.template.update({
+        where: {
+          id: recipient.templateId,
+        },
+        data: {
+          status: "SENT",
+        },
+      });
     });
 
-    await tx.template.update({
-      where: {
-        id: recipient.templateId,
-      },
-      data: {
-        status: "SENT",
+    const html = await renderAsync(
+      EsignEmail({
+        signingLink: `${baseUrl}/esign/${token}`,
+        sender,
+        ...rest,
+      }),
+    );
+    await sendMail({
+      to: email,
+      ...(sender?.email && { replyTo: sender.email }),
+      subject: "eSign Document Request",
+      html,
+      headers: {
+        "X-From-Name": sender?.name || "Captable",
       },
     });
-  });
-
-  const html = await renderAsync(
-    EsignEmail({
-      signingLink: `${baseUrl}/esign/${token}`,
-      sender,
-      ...rest,
-    }),
-  );
-  await sendMail({
-    to: email,
-    ...(sender?.email && { replyTo: sender.email }),
-    subject: "eSign Document Request",
-    html,
-    headers: {
-      "X-From-Name": sender?.name || "Captable",
-    },
-  });
-});
+  },
+);

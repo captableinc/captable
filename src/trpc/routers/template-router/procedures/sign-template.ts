@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { dayjsExt } from "@/common/dayjs";
-import { eSignNotificationJob } from "@/jobs/esign-email";
+import { eSignNotificationEmailJob } from "@/jobs/esign-email";
 import { eSignPdfJob } from "@/jobs/esign-pdf";
 import type { TemplateStatus } from "@/prisma/enums";
 import { EsignAudit } from "@/server/audit";
@@ -242,7 +242,7 @@ export const signTemplateProcedure = withoutAuth
             tx,
           );
 
-          await eSignNotificationJob.emit({
+          await eSignNotificationEmailJob.emit({
             email,
             token,
             sender,

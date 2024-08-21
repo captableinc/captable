@@ -1,6 +1,6 @@
 import {
-  type TESignNotificationJobInput,
-  eSignNotificationJob,
+  type TESignNotificationEmailJobInput,
+  eSignNotificationEmailJob,
 } from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
 import { Audit } from "@/server/audit";
@@ -45,7 +45,7 @@ export const addFieldProcedure = withAuth
     try {
       const user = ctx.session.user;
       const { userAgent, requestIp } = ctx;
-      const mails: TESignNotificationJobInput[] = [];
+      const mails: TESignNotificationEmailJobInput[] = [];
 
       if (input.status === "COMPLETE" && (!user.email || !user.name)) {
         return {
@@ -201,7 +201,7 @@ export const addFieldProcedure = withAuth
       });
 
       if (mails.length) {
-        await eSignNotificationJob.bulkEmit(
+        await eSignNotificationEmailJob.bulkEmit(
           mails.map((data) => ({
             data,
             singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,

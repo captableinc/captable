@@ -8,10 +8,7 @@ import {
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import type { Job } from "pg-boss";
-import {
-  type ConfirmationEmailPayloadType,
-  EsignConfirmationEmailJob,
-} from "./esign-confirmation-email";
+import { eSignConfirmationEmailJob } from "./esign-confirmation-email";
 
 export type EsignPdfPayloadType = {
   fields: EsignGetTemplateType["fields"];
@@ -80,7 +77,7 @@ export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
 
     const file = await getPresignedGetUrl(bucketData.key);
 
-    const recipientData: { data: ConfirmationEmailPayloadType }[] =
+    await eSignConfirmationEmailJob.bulkEmit(
       recipients.map((recipient) => ({
         data: {
           fileUrl: file.url,
@@ -90,8 +87,7 @@ export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
           senderName: sender.name || "Captable",
           senderEmail: sender.email as string,
         },
-      }));
-
-    await new EsignConfirmationEmailJob().bulkEmit(recipientData);
+      })),
+    );
   }
 }

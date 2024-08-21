@@ -1,3 +1,4 @@
+import { eSignNotificationWorker } from "./esign-email";
 import { sendMemberInviteEmailWorker } from "./member-inivite-email";
 import { passwordResetEmailWorker } from "./password-reset-email";
 import { queueManager } from "./queue";
@@ -9,4 +10,5 @@ export function registerJobs() {
   queueManager.register(shareUpdateEmailWorker);
   queueManager.register(passwordResetEmailWorker);
   queueManager.register(sendMemberInviteEmailWorker);
+  queueManager.register(eSignNotificationWorker);
 }

@@ -90,15 +90,14 @@ function defineWorker<
 function defineJob<U extends ReturnType<typeof defineWorkerConfig>>(config: U) {
   type TSchema = U["schema"];
   return {
-    emit: async (data: z.infer<TSchema>, options?: PgBoss.JobOptions) => {
+    emit: (data: z.infer<TSchema>, options?: PgBoss.JobOptions) => {
       const data_ = config.schema.parse(data);
-      await queue.send(config.name, data_, options ?? {});
+      return queue.send(config.name, data_, options ?? {});
     },
-    bulkEmit: async (
-      data: Omit<PgBoss.JobInsert<z.infer<TSchema>>, "name">,
-      options?: PgBoss.JobOptions,
-    ) => {
-      await queue.send(config.name, data, options ?? {});
+    bulkEmit: (data: Omit<PgBoss.JobInsert<z.infer<TSchema>>, "name">[]) => {
+      return queue.insert(
+        data.map((items) => ({ ...items, name: config.name })),
+      );
     },
   };
 }

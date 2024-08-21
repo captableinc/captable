@@ -1,40 +1,67 @@
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/jobs/base";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "./queue";
 
-export interface EsignEmailPayloadType {
-  documentName?: string;
-  message?: string | null;
-  recipient: {
-    id: string;
-    name: string | null | undefined;
-    email: string;
-  };
-  sender?: {
-    name: string | null | undefined;
-    email: string | null | undefined;
-  };
-  company?: {
-    name: string;
-    logo: string | null | undefined;
-  };
-}
+const Schema = z.object({
+  documentName: z.string().optional(),
+  message: z.string().nullish(),
+  recipient: z.object({
+    id: z.string(),
+    name: z.string().nullish(),
+    email: z.string().email(),
+  }),
+  sender: z
+    .object({
+      name: z.string().nullish(),
+      email: z.string().email().nullish(),
+    })
+    .optional(),
+  company: z
+    .object({
+      name: z.string(),
+      logo: z.string().nullish(),
+    })
+    .optional(),
+  email: z.string().email(),
+  token: z.string(),
+});
 
-interface AdditionalPayloadType {
-  email: string;
-  token: string;
-}
+export type TESignNotificationJobInput = z.infer<typeof Schema>;
 
-export type ExtendedEsignPayloadType = EsignEmailPayloadType &
-  AdditionalPayloadType;
+const config = defineWorkerConfig({
+  name: "email.esign-notification",
+  schema: Schema,
+});
 
-export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
-  const { email, token, sender, ...rest } = payload;
+export const eSignNotificationJob = defineJob(config);
+export const eSignNotificationWorker = defineWorker(config, async (job) => {
+  const { email, token, sender, ...rest } = job.data;
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
+
+  await db.$transaction(async (tx) => {
+    const recipient = await tx.esignRecipient.update({
+      where: {
+        id: job.data.recipient.id,
+      },
+      data: {
+        status: "SENT",
+      },
+    });
+
+    await tx.template.update({
+      where: {
+        id: recipient.templateId,
+      },
+      data: {
+        status: "SENT",
+      },
+    });
+  });
+
   const html = await renderAsync(
     EsignEmail({
       signingLink: `${baseUrl}/esign/${token}`,
@@ -51,32 +78,4 @@ export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
       "X-From-Name": sender?.name || "Captable",
     },
   });
-};
-
-export class EsignNotificationEmailJob extends BaseJob<ExtendedEsignPayloadType> {
-  readonly type = "email.esign-notification";
-
-  async work(job: Job<ExtendedEsignPayloadType>): Promise<void> {
-    await db.$transaction(async (tx) => {
-      const recipient = await tx.esignRecipient.update({
-        where: {
-          id: job.data.recipient.id,
-        },
-        data: {
-          status: "SENT",
-        },
-      });
-
-      await tx.template.update({
-        where: {
-          id: recipient.templateId,
-        },
-        data: {
-          status: "SENT",
-        },
-      });
-    });
-
-    await sendEsignEmail(job.data);
-  }
-}
+});

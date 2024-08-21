@@ -1,10 +1,10 @@
+import { queueManager } from "../lib/queue";
 import { authVerificationEmailWorker } from "./auth-verification-email";
 import { eSignConfirmationEmailWorker } from "./esign-confirmation-email";
 import { eSignNotificationEmailWorker } from "./esign-email";
 import { eSignPdfWorker } from "./esign-pdf";
 import { sendMemberInviteEmailWorker } from "./member-inivite-email";
 import { passwordResetEmailWorker } from "./password-reset-email";
-import { queueManager } from "./queue";
 import { shareDataRoomEmailWorker } from "./share-data-room-email";
 import { shareUpdateEmailWorker } from "./share-update-email";
 

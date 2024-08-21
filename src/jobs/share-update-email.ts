@@ -2,7 +2,7 @@ import ShareUpdateEmail from "@/emails/ShareUpdateEmail";
 import { sendMail } from "@/server/mailer";
 import { renderAsync } from "@react-email/components";
 import { z } from "zod";
-import { defineJob, defineWorker, defineWorkerConfig } from "./queue";
+import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
 const config = defineWorkerConfig({
   name: "email.share-update",

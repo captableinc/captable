@@ -7,8 +7,8 @@ import {
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 import { eSignConfirmationEmailJob } from "./esign-confirmation-email";
-import { defineJob, defineWorker, defineWorkerConfig } from "./queue";
 
 const fields = z.array(z.any()) as z.ZodType<EsignGetTemplateType["fields"]>;
 

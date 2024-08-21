@@ -1,22 +1,27 @@
 import ShareUpdateEmail from "@/emails/ShareUpdateEmail";
-import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
 import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "./queue";
 
-export type UpdateSharePayloadType = {
-  update: {
-    title: string;
-  };
-  link: string;
-  companyName: string;
-  senderName: string;
-  email: string;
-  recipientName?: string | null | undefined;
-  senderEmail?: string | null | undefined;
-};
+const config = defineWorkerConfig({
+  name: "email.share-update",
+  schema: z.object({
+    update: z.object({
+      title: z.string(),
+    }),
+    link: z.string(),
+    companyName: z.string(),
+    senderName: z.string(),
+    email: z.string().email(),
+    recipientName: z.string().nullish(),
+    senderEmail: z.string().email().nullish(),
+  }),
+});
 
-export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
+export const shareUpdateEmailJob = defineJob(config);
+
+export const shareUpdateEmailWorker = defineWorker(config, async (job) => {
   const {
     update,
     link,
@@ -25,7 +30,7 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
     senderName,
     email,
     senderEmail,
-  } = payload;
+  } = job.data;
   await sendMail({
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
@@ -44,12 +49,4 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
       "X-From-Name": senderName,
     },
   });
-};
-
-export class ShareUpdateEmailJob extends BaseJob<UpdateSharePayloadType> {
-  readonly type = "email.share-update";
-
-  async work(job: Job<UpdateSharePayloadType>): Promise<void> {
-    await sendShareUpdateEmail(job.data);
-  }
-}
+});

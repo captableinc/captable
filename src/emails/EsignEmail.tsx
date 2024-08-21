@@ -21,7 +21,10 @@ import {
   UserAvatarIcon,
 } from "../components/common/icons";
 
-type TEsignEmailProps = TESignNotificationEmailJobInput & {
+type TEsignEmailProps = Omit<
+  TESignNotificationEmailJobInput,
+  "token" | "email"
+> & {
   signingLink: string;
 };
 

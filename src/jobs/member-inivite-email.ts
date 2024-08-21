@@ -1,30 +1,32 @@
 import MemberInviteEmail from "@/emails/MemberInviteEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/jobs/base";
 import { constants } from "@/lib/constants";
 import { sendMail } from "@/server/mailer";
 import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "./queue";
 
-type MemberInvitePayloadType = {
-  email: string;
-  passwordResetToken: string;
-  user: {
-    email?: string | null | undefined;
-    name?: string | null | undefined;
-  };
-  verificationToken: string;
-  company: {
-    name: string;
-    id: string;
-  };
-};
+const config = defineWorkerConfig({
+  name: "email.member-invite",
+  schema: z.object({
+    email: z.string(),
+    passwordResetToken: z.string(),
+    user: z.object({
+      email: z.string().email().nullish(),
+      name: z.string().nullish(),
+    }),
+    verificationToken: z.string(),
+    company: z.object({
+      name: z.string(),
+      id: z.string(),
+    }),
+  }),
+});
 
-export const sendMemberInviteEmail = async (
-  payload: MemberInvitePayloadType,
-) => {
+export const sendMemberInviteEmailJob = defineJob(config);
+export const sendMemberInviteEmailWorker = defineWorker(config, async (job) => {
   const { email, passwordResetToken, verificationToken, company, user } =
-    payload;
+    job.data;
 
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
@@ -47,12 +49,4 @@ export const sendMemberInviteEmail = async (
       }),
     ),
   });
-};
-
-export class SendMemberInviteEmailJob extends BaseJob<MemberInvitePayloadType> {
-  readonly type = "email.member-invite";
-
-  async work(job: Job<MemberInvitePayloadType>): Promise<void> {
-    await sendMemberInviteEmail(job.data);
-  }
-}
+});

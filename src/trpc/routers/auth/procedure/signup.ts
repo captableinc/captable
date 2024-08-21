@@ -1,4 +1,4 @@
-import { sendAuthVerificationEmail } from "@/jobs/auth-verification-email";
+import { authVerificationEmailJob } from "@/jobs/auth-verification-email";
 
 import { generateVerificationToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
@@ -52,7 +52,7 @@ export const signupProcedure = withoutAuth
 
     const verificationToken = await generateVerificationToken(email);
 
-    await sendAuthVerificationEmail({
+    await authVerificationEmailJob.emit({
       email: verificationToken.identifier,
       token: verificationToken.token,
     });

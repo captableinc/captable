@@ -4,7 +4,23 @@ import { singleton } from "@/lib/singleton";
 import PgBoss from "pg-boss";
 import type { z } from "zod";
 
-let queue!: PgBoss;
+const queue = singleton(
+  "pg-boss",
+  () =>
+    new PgBoss({
+      connectionString: CONNECTION_URL,
+      max: 5,
+      retryBackoff: true,
+      retryLimit: 4,
+      expireInHours: 48,
+      archiveCompletedAfterSeconds: 60 * 60 * 2, // 2 hours
+      deleteAfterDays: 2,
+      retentionDays: 2,
+
+      noSupervisor: false,
+      noScheduling: false,
+    }),
+);
 
 const CONNECTION_URL =
   process.env.QUEUE_DATABASE_URL ?? (process.env.DATABASE_URL as string);
@@ -29,28 +45,6 @@ function createQueue() {
 
   async function start() {
     log.info(logPrefix("Starting queue manager"));
-
-    if (!queue) {
-      const pgBossInstance = singleton(
-        "pg-boss",
-        () =>
-          new PgBoss({
-            connectionString: CONNECTION_URL,
-            max: 5,
-            retryBackoff: true,
-            retryLimit: 4,
-            expireInHours: 48,
-            archiveCompletedAfterSeconds: 60 * 60 * 2, // 2 hours
-            deleteAfterDays: 2,
-            retentionDays: 2,
-
-            noSupervisor: false,
-            noScheduling: false,
-          }),
-      );
-
-      queue = pgBossInstance;
-    }
 
     queue.on("error", (error) => {
       log.error(logPrefix("error"), {

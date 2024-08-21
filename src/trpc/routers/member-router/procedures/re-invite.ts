@@ -1,4 +1,4 @@
-import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
+import { sendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
 import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/auth";
@@ -93,7 +93,7 @@ export const reInviteProcedure = withAuth
         return { verificationToken, company, email, passwordResetToken };
       });
 
-    const payload = {
+    await sendMemberInviteEmailJob.emit({
       verificationToken,
       passwordResetToken,
       email,
@@ -102,9 +102,7 @@ export const reInviteProcedure = withAuth
         email: user.email,
         name: user.name,
       },
-    };
-
-    await new SendMemberInviteEmailJob().emit(payload);
+    });
 
     return { success: true };
   });

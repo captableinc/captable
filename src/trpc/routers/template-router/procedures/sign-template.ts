@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
 
 import { dayjsExt } from "@/common/dayjs";
-import { EsignNotificationEmailJob } from "@/jobs/esign-email";
-import { EsignPdfJob } from "@/jobs/esign-pdf";
+import { eSignNotificationJob } from "@/jobs/esign-email";
+import { eSignPdfJob } from "@/jobs/esign-pdf";
 import type { TemplateStatus } from "@/prisma/enums";
 import { EsignAudit } from "@/server/audit";
 import {
@@ -242,7 +242,7 @@ export const signTemplateProcedure = withoutAuth
             tx,
           );
 
-          await new EsignNotificationEmailJob().emit({
+          await eSignNotificationJob.emit({
             email,
             token,
             sender,
@@ -287,7 +287,7 @@ async function signPdf({
 }: TSignPdfOptions) {
   const audits = await getEsignAudits({ templateId, tx: db });
 
-  await new EsignPdfJob().emit(
+  await eSignPdfJob.emit(
     {
       bucketKey,
       data,

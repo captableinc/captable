@@ -92,6 +92,33 @@ export const bankAccountsRouter = createTRPCRouter({
       const user = session.user;
 
       try {
+
+        const isTherePrimary = await db.bankAccount.findFirst({
+          where:{
+            companyId,
+            primary: true
+          }
+        })
+
+        const isThereNonPrimary = await db.bankAccount.findFirst({
+          where: {
+            companyId,
+            primary: false
+          }
+        })
+
+        if (input.isPrimary) {
+          if (isTherePrimary) {
+            throw new TRPCError({code: 'INTERNAL_SERVER_ERROR', message: "Looks like there is an account set to primary"})
+          }
+        }
+
+        if (!input.isPrimary) {
+          if (isThereNonPrimary) {
+            throw new TRPCError({code: 'INTERNAL_SERVER_ERROR', message: "Looks like there is an account set to non-primary"})
+          }
+        }
+
         const newBankAccount = await db.bankAccount.create({
           data: {
             beneficiaryName: input.beneficiaryName,

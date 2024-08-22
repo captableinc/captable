@@ -90,7 +90,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
   const { mutateAsync: handleBankAccount, isLoading, isSuccess } =
     api.bankAccounts.create.useMutation({
       onSuccess: ({message}) => {
-        if (message.includes("Looks like you have created both primary and non-primary accounts")) {
+        if (message.includes("Looks like you have created both primary and non-primary accounts") || message.includes("Looks like there is an account set to primary") || message.includes("Looks like there is an account set to non-primary")) {
           toast.error(message)
         } else {
           toast.success(message)
@@ -100,7 +100,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
 
       onError: (error) => {
         console.log("Error creating Bank Account", error);
-        toast.error("An error occurred while deleting bank account.");
+        toast.error("An error occurred while creating bank account.");
       },
     });
 

@@ -39,6 +39,9 @@ type AddBankAccountType = {
   data: any
 };
 
+type PrimarySwitchedTypeEnum = "null" | "primarySwitchedToTrue" | "primarySwitchedToFalse"
+
+
 const formSchema = z
   .object({
     id: z.string().min(1),
@@ -64,7 +67,8 @@ const formSchema = z
       message: "Confirm Routing Number is required",
     }),
     accountType: z.nativeEnum(BankAccountTypeEnum).default("CHECKING"),
-    isPrimary: z.boolean().default(false),
+    primary: z.boolean().default(false),
+    primarySwitched: z.enum(["null", "primarySwitchedToTrue", "primarySwitchedToFalse"]).default("null")
   })
   .refine((data) => data.routingNumber === data.confirmRoutingNumber, {
     path: ["confirmRoutingNumber"],
@@ -77,7 +81,8 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
 
   const router = useRouter();
   const utils = api.useUtils();
-  const [switchEnabled, setSwitchEnabled] = useState(false)
+  const [switchEnabled, setSwitchEnabled] = useState(false);
+  const [primarySwitched, setPrimarySwitch] = useState<PrimarySwitchedTypeEnum>("null");
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -90,7 +95,8 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
       routingNumber: data?.routingNumber,
       confirmRoutingNumber: "",
       accountType: data?.accountType,
-      isPrimary: data?.primary,
+      primary: data?.primary,
+      primarySwitched: "null",
     },
   });
 
@@ -111,9 +117,26 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
     setSwitchEnabled(true)
   }
 
-  const handleFormSubmit = async (data: any) => {
+  const handleSetPrimary = (e: boolean) => {
+
+    if (data?.primary) {
+      setPrimarySwitch("primarySwitchedToFalse");
+    } else {
+      setPrimarySwitch("primarySwitchedToTrue");
+    }
+    form.setValue("primary", e)
+    
+    
+  }
+
+  const handleFormSubmit = async (data: TFormSchema) => {
     try {
+      
+
+      data = {...data, primarySwitched: primarySwitched}
+
       console.log('data', data)
+
       await handleUpdateBankAccount(data);
     } catch (error) {
       console.log("Error creating Bank Account", error);
@@ -301,7 +324,7 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="isPrimary"
+                name="primary"
                 render={({ field }) => (
                   <FormItem className="flex justify-center items-center">
                     <FormLabel className="pr-2">Primary Account</FormLabel>
@@ -313,7 +336,7 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
                             !switchEnabled && <Switch
                             id="is-primary"
                             className="mt-0"
-                            onCheckedChange={(e) => form.setValue("isPrimary", e)}
+                            onCheckedChange={(e) => form.setValue("primary", e)}
                             defaultChecked={data?.primary}
                           />
                           } 
@@ -327,7 +350,7 @@ export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountTy
                             id="is-primary"
                             className="mt-0"
                             disabled={!switchEnabled}
-                            onCheckedChange={(e) => form.setValue("isPrimary", e)}
+                            onCheckedChange={(e) => handleSetPrimary(e)}
                             defaultChecked={data?.primary}
                           />
                         }

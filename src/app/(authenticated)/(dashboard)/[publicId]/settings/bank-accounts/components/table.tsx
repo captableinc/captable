@@ -105,9 +105,9 @@ const BankAccountsTable = ({
         <TableBody>
           {bankAccounts.map((bank) => (
             <TableRow key={bank.id}>
+              <TableCell>{bank.bankName}</TableCell>
               <TableCell>{bank.accountNumber}</TableCell>
-              <TableCell>{bank.accountNumber}</TableCell>
-              <TableCell>success</TableCell>
+              <TableCell>{bank.id ? "success" : "unsuccessful"}</TableCell>
 
               <TableCell>
                 <div className="flex items-center gap-4">

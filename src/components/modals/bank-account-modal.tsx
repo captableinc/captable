@@ -24,10 +24,9 @@ import { Switch } from "@/components/ui/switch";
 import { BankAccountTypeEnum } from "@/prisma/enums";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UseFormReturn, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { z } from "zod";
 import { api } from "@/trpc/react";
-import { DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 
@@ -71,7 +70,7 @@ type TFormSchema = z.infer<typeof formSchema>;
 
 export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
   const router = useRouter();
-  const utils = api.useUtils();
+  const pathname = usePathname();
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -107,6 +106,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
   const handleSubmit = async (data: TFormSchema) => {
     try {
       await handleBankAccount(data);
+      window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/${pathname}`
     } catch (error) {
       console.log("Error creating Bank Account", error);
     }

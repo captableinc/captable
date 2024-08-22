@@ -1,8 +1,6 @@
-import { env } from "@/env";
 import { createHash } from "@/lib/crypto";
-import type { Prisma } from "@prisma/client";
 import { nanoid } from "nanoid";
-import { db } from "./db";
+import { type TPrismaOrTransaction, db } from "./db";
 
 export const checkVerificationToken = async (
   token: string,
@@ -62,7 +60,7 @@ export async function generateInviteToken() {
 interface revokeExistingInviteTokensOptions {
   memberId: string;
   email: string;
-  tx?: Prisma.TransactionClient;
+  tx?: TPrismaOrTransaction;
 }
 
 export async function revokeExistingInviteTokens({

@@ -14,7 +14,7 @@ import {
   Section,
   Tailwind,
   Text,
-} from "jsx-email";
+} from "@react-email/components";
 import {
   ArrowRight,
   SignatureIcon,
@@ -34,7 +34,7 @@ const EsignEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>{sender?.name} has sent you a document to sign.</Preview>
+      <Preview>{sender?.name ?? ""} has sent you a document to sign.</Preview>
       <Tailwind>
         <Body className="mx-auto my-auto bg-white font-sans">
           <Container className="mx-auto my-[40px] max-w-[465px] border-separate rounded border border-solid border-neutral-200 p-[20px]">

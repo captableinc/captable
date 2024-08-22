@@ -58,8 +58,8 @@ export const AuditSchema = z.object({
     "update.shared",
     "update.unshared",
 
-    "apiKey.created",
-    "apiKey.deleted",
+    "accessToken.created",
+    "accessToken.deleted",
 
     "bankAccount.created",
     "bankAccount.deleted",
@@ -100,7 +100,7 @@ export const AuditSchema = z.object({
         "share",
         "update",
         "stakeholder",
-        "apiKey",
+        "accessToken",
         "bankAccount",
         "bucket",
         "stripeSession",

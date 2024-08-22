@@ -1,5 +1,3 @@
-import { Audit } from "@/server/audit";
-import { createApiToken } from "@/lib/crypto";
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { BankAccountTypeEnum } from "@/prisma/enums";
@@ -7,6 +5,7 @@ import { BankAccountTypeEnum } from "@/prisma/enums";
 import z from "zod";
 import { Prisma } from "@prisma/client";
 import { checkMembership } from "@/server/auth";
+import { Audit } from "@/server/audit";
 
 
 export const bankAccountsRouter = createTRPCRouter({
@@ -88,7 +87,6 @@ export const bankAccountsRouter = createTRPCRouter({
         session,
       } = ctx;
 
-      const token = createApiToken();
       const user = session.user;
 
       try {
@@ -150,7 +148,6 @@ export const bankAccountsRouter = createTRPCRouter({
   
         return {
           id: newBankAccount.id,
-          token,
           message: "Bank Account created!"
         };
       } catch (error) {

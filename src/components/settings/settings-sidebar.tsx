@@ -52,12 +52,6 @@ const companyNav = [
   },
 
   {
-    name: "API Keys",
-    href: "/settings/api",
-    icon: RiTerminalBoxLine,
-    activeIcon: RiTerminalBoxFill,
-  },
-  {
     name: "Bank Accounts",
     href: "/settings/bank-accounts",
     icon: RiBankLine,
@@ -77,6 +71,13 @@ const accountNav = [
     href: "/settings/security",
     icon: RiLock2Line,
     activeIcon: RiLock2Fill,
+  },
+
+  {
+    name: "Developer",
+    href: "/settings/developer",
+    icon: RiTerminalBoxLine,
+    activeIcon: RiTerminalBoxFill,
   },
 
   {

@@ -1,7 +1,7 @@
 import ShareUpdateEmail from "@/emails/ShareUpdateEmail";
 import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
-import { render } from "jsx-email";
+import { renderAsync } from "@react-email/components";
 import type { Job } from "pg-boss";
 
 export type UpdateSharePayloadType = {
@@ -30,7 +30,7 @@ export const sendShareUpdateEmail = async (payload: UpdateSharePayloadType) => {
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
     subject: `${senderName} shared an update - ${update.title}`,
-    html: await render(
+    html: await renderAsync(
       ShareUpdateEmail({
         senderName: senderName,
         recipientName,

@@ -1,9 +1,8 @@
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 import { env } from "@/env";
 import { BaseJob } from "@/jobs/base";
-
 import { sendMail } from "@/server/mailer";
-import { render } from "jsx-email";
+import { renderAsync } from "@react-email/components";
 import type { Job } from "pg-boss";
 
 export type PasswordResetPayloadType = {
@@ -19,7 +18,7 @@ export const sendPasswordResetEmail = async (
 
   const confirmLink = `${baseUrl}/reset-password/${token}`;
 
-  const html = await render(
+  const html = await renderAsync(
     PasswordResetEmail({
       resetLink: confirmLink,
     }),

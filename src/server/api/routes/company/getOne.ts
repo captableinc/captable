@@ -1,59 +1,66 @@
-import { withCompanyAuth } from "@/server/api/auth";
-import { ApiError, ErrorResponses } from "@/server/api/error";
-import type { PublicAPI } from "@/server/api/hono";
-import { ApiCompanySchema } from "@/server/api/schema/company";
-import { createRoute, z } from "@hono/zod-openapi";
-import type { Context } from "hono";
+import { ApiError } from "@/server/api/error";
+import { CompanySchema } from "@/server/api/schema/company";
+import { z } from "@hono/zod-openapi";
+
+import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 export const RequestSchema = z.object({
-  id: z
-    .string()
-    .cuid()
-    .openapi({
-      description: "Company ID",
-      param: {
-        name: "id",
-        in: "path",
-      },
-
-      example: "clxwbok580000i7nge8nm1ry0",
-    }),
-});
-
-const route = createRoute({
-  summary: "Get a companies",
-  description: "Get a company by ID",
-  tags: ["Company"],
-  method: "get",
-  path: "/v1/companies/{id}",
-  request: { params: RequestSchema },
-  responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: ApiCompanySchema,
-        },
-      },
-      description: "Get a company by ID",
+  id: z.string().openapi({
+    param: {
+      name: "id",
+      in: "path",
     },
-
-    ...ErrorResponses,
-  },
+    description: "Company ID",
+    type: "string",
+    example: "clxwbok580000i7nge8nm1ry0",
+  }),
 });
-const getOne = (app: PublicAPI) => {
-  app.openapi(route, async (c: Context) => {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const { company } = (await withCompanyAuth(c)) as { company: any };
 
-    if (!company) {
+const ResponseSchema = z.object({
+  data: CompanySchema,
+});
+
+export const getOne = withAuthApiV1
+  .createRoute({
+    method: "get",
+    path: "/v1/companies/{id}",
+    tags: ["Company"],
+    summary: "Get a company",
+    description: "Fetch details of a single company by its ID.",
+    middleware: [authMiddleware({ withoutMembershipCheck: true })],
+    request: { params: RequestSchema },
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: ResponseSchema,
+          },
+        },
+        description: "Details of the requested company.",
+      },
+    },
+  })
+  .handler(async (c) => {
+    const { db } = c.get("services");
+    const { membership } = c.get("session");
+    const { id: companyId } = c.req.valid("param");
+
+    const member = await db.member.findFirst({
+      where: { companyId, id: membership.memberId },
+      select: { companyId: true },
+    });
+
+    if (!member) {
       throw new ApiError({
-        code: "NOT_FOUND",
-        message: "Company not found",
+        code: "UNAUTHORIZED",
+        message: `user is not a member of the company id:${companyId}`,
       });
     }
 
-    return c.json(company, 200);
+    const company = await db.company.findFirstOrThrow({
+      where: {
+        id: member.companyId,
+      },
+    });
+    return c.json({ data: company }, 200);
   });
-};
-
-export default getOne;

@@ -255,198 +255,63 @@ export const bankAccountsRouter = createTRPCRouter({
         } = ctx;
 
         const {id: stakeHolderId, confirmRoutingNumber, primarySwitched, ...rest } = input;
-
         const user = session.user;
 
-        console.log('input', input)
+        await db.$transaction( async (tx) => {
+          if (input.primarySwitched === "primarySwitchedToTrue") {
 
-        // db.$transaction(async (tx) => {
-
-        //   const { companyId } = await checkMembership({
-        //     tx,
-        //     session: ctx.session,
-        //   });
-
-        //   // const bankData = {
-        //   //   beneficiaryName: input.beneficiaryName,
-        //   //   beneficiaryAddress: input.beneficiaryAddress,
-        //   //   bankName: input.bankName,
-        //   //   bankAddress: input.bankAddress,
-        //   //   routingNumber: input.routingNumber,
-        //   //   accountNumber: input.accountNumber,
-        //   //   accountType: input.accountType,
-        //   //   primary: input.primary,
-        //   //   id: input.id,
-        //   // }
+            await tx.bankAccount.updateMany({
+              where: {
+                companyId,
+                primary: true
+              },
+              data: {
+                primary: false
+              }
+            })
+            
+          } else if (input.primarySwitched === "primarySwitchedToFalse") {
   
-        //   if (input.primarySwitched !== "null") {
-        //     // get all accoutns
-        //     const allAccounts = await tx.bankAccount.findMany()
-
-        //     console.log('allAccounts', allAccounts)
+            const allAccounts = await tx.bankAccount.findMany();
   
-        //     if (input.primarySwitched === "primarySwitchedToTrue") {
-        //       // update the rest of bankaccounts from true 
-              
-        //       allAccounts.forEach(async (e) => {
-        //         await tx.bankAccount.update({
-        //           where: {
-        //             id: e.id,
-        //             companyId: e.companyId,
-        //             primary: true
-        //           },
-        //           data: {
-        //             primary: false
-        //           }
-        //         })
-        //       })
-
-        //       // tx.bankAccount.updateMany({
-        //       //   where: {
-        //       //     companyId,
-        //       //     primary: true,
-        //       //   },
-        //       //   data: {
-        //       //     primary: false
-        //       //   }
-        //       // })
-  
-        //       // allAccounts.forEach(async (e) => {
-        //       //   console.log('e', e)
-        //       //   // const updatedAccounts = await tx.$queryRaw`
-        //       //   //   UPDATE "BankAccount" 
-        //       //   //   SET "primary" = false 
-        //       //   //   WHERE "companyId" = ${companyId} AND "primary" = true
-                  
-        //       //   //   update "BankAccount"
-        //       //   //   SET "primary" = true
-        //       //   //   WHERE "companyId" = ${companyId} AND "primary" = false
-
-        //       //   //   `
-
-        //       //   //   console.log('updatedAccounts', updatedAccounts)
-                
-
-        //       //   await tx.bankAccount.update({
-        //       //     where: {
-        //       //       id: e.id,
-        //       //       companyId: e.companyId,
-        //       //       primary: true
-        //       //     },
-        //       //     data: {
-        //       //       primary: false
-        //       //     }
-        //       //   })
-        //       // })
-
-        //       await tx.bankAccount.update({
-        //         where: {
-        //           id: input.id,
-        //           companyId: companyId,
-        //         },
-        //         data: {
-        //           ...rest,
-        //         }
-        //       })
-        //     }
-        //     // else if (input.primarySwitched === "primarySwitchedToFalse") {
-        //     //   // await db.bankAccount.updateMany({
-  
-        //     //   allAccounts.forEach(async (e) => {
-        //     //     await tx.bankAccount.update({
-        //     //       where: {
-        //     //         id: e.id,
-        //     //       },
-        //     //       data: {
-        //     //         primary: true
-        //     //       }
-        //     //     })
-        //     //   })
-        //     //   //   where: {
-        //     //   //     companyId,
-        //     //   //     primary: false,
-        //     //   //   },
-        //     //   //   data: {
-        //     //   //     primary: true
-        //     //   //   }
-        //     //   // })
-        //     // }
-        //   }
-  
-          
-        
-        //   // const updateBankAccount = await tx.bankAccount.update({
-        //   //   where: {
-        //   //     id: input.id,
-        //   //   },
-        //   //   data: {
-        //   //     ...bankData
-        //   //   }
-        //   // })
-  
-        //   // await Audit.create(
-        //   //   {
-        //   //     action: "bankAccount.updated",
-        //   //     companyId,
-        //   //     actor: { type: "user", id: user.id },
-        //   //     context: {
-        //   //       userAgent,
-        //   //       requestIp,
-        //   //     },
-        //   //     target: [{ type: "bankAccount", id: updateBankAccount.id }],
-        //   //     summary: `${user.name} updated the bank account ${updateBankAccount.id}`,
-        //   //   },
-        //   //   db
-        //   // );
-        // })
-        // const updatedAccounts = await db.$executeRaw`
-        //           UPDATE "BankAccount" 
-        //           SET "primary" = NULL 
-        //           WHERE "companyId" = ${companyId} AND "primary" = true
-        //          `
-
-        if (input.primarySwitched === "primarySwitchedToTrue") {
-
-          await db.bankAccount.updateMany({
-            where: {
-              companyId,
-              primary: true
-            },
-            data: {
-              primary: false
-            }
-          })
-
-
-          
-        } else if (input.primarySwitched === "primarySwitchedToFalse") {
-
-          const allAccounts = await db.bankAccount.findMany();
-
-          // convert the first one we get to primary as automatic function
-          await db.bankAccount.update({
-            where: {
-              companyId,
-              id: allAccounts[0]?.id
-            },
-            data: {
-              primary: true
-            }
-          })
-        }
-
-        await db.bankAccount.update({
-          where: {
-            id: input.id,
-            companyId
-          },
-          data: {
-            ...rest
+            // convert the first one we get to primary as automatic function
+            await tx.bankAccount.update({
+              where: {
+                companyId,
+                id: allAccounts[0]?.id
+              },
+              data: {
+                primary: true
+              }
+            })
           }
+  
+          const updated = await tx.bankAccount.update({
+            where: {
+              id: input.id,
+              companyId
+            },
+            data: {
+              ...rest
+            }
+          })
+
+          await Audit.create(
+            {
+              action: "bankAccount.updated",
+              companyId: user.companyId,
+              actor: { type: "user", id: user.id },
+              context: {
+                requestIp,
+                userAgent,
+              },
+              target: [{ type: "bankAccount", id: updated.id }],
+              summary: `${user.name} updated detailes of Bank Account Number : ${updated.accountNumber}`,
+            },
+            tx,
+          );
         })
-
-        
-
+      
         return { success: true, message: "Bank Account updated successfully."}
       } catch (error) {
         console.error("Error updating bank account :", error);

@@ -26,6 +26,8 @@ export type EsignPdfPayloadType = {
   audits: {
     id: string;
     summary: string;
+    action: string;
+    occurredAt: Date;
   }[];
   bucketKey: string;
   templateName: string;
@@ -58,6 +60,7 @@ export class EsignPdfJob extends BaseJob<EsignPdfPayloadType> {
       data,
       fields,
       audits,
+      templateName,
     });
     const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
       buffer: Buffer.from(modifiedPdfBytes),

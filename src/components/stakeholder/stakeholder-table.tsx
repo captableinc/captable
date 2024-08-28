@@ -9,11 +9,16 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { useDataTable } from "@/hooks/use-data-table";
+import {
+  usePaginatedQueryParams,
+  usePaginatedTable,
+} from "@/hooks/use-paginated-data-table";
+import type { TGetManyStakeholderRes } from "@/server/api/client-handlers/stakeholder";
+import { useManyStakeholder } from "@/server/api/client-hooks/stakeholder";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
-import type { ColumnDef } from "@tanstack/react-table";
-import React from "react";
+import type { ColumnDef, PaginationState } from "@tanstack/react-table";
+import { use, useState } from "react";
 import { Allow } from "../rbac/allow";
 import { Button } from "../ui/button";
 import {
@@ -30,6 +35,7 @@ type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"];
 
 type StakeholderTableType = {
   stakeholders: Stakeholder;
+  companyId: string;
 };
 
 const getStakeholderType = (type: string) => {
@@ -72,7 +78,7 @@ const getCurrentRelationship = (relationship: string) => {
   }
 };
 
-export const columns: ColumnDef<Stakeholder[number]>[] = [
+export const columns: ColumnDef<TGetManyStakeholderRes["data"][number]>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -206,8 +212,38 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
   },
 ];
 
-const StakeholderTable = ({ stakeholders }: StakeholderTableType) => {
-  const table = useDataTable({ columns, data: stakeholders });
+const StakeholderTable = ({ companyId }: StakeholderTableType) => {
+  const [{ limit, page }, setData] = usePaginatedQueryParams();
+
+  const pageIndex = page - 1;
+  const pageSize = limit;
+
+  const { data } = useManyStakeholder({
+    searchParams: { limit, page },
+    urlParams: { companyId },
+  });
+
+  const table = usePaginatedTable({
+    pageCount: data?.meta.pageCount ?? -1,
+    columns,
+    data: data?.data ?? [],
+    state: {
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const updateValue = updater({ pageIndex, pageSize });
+
+        setData({
+          limit: updateValue.pageSize,
+          page: updateValue.pageIndex + 1,
+        });
+      }
+    },
+  });
   return (
     <div className="w-full p-6">
       <DataTable table={table}>

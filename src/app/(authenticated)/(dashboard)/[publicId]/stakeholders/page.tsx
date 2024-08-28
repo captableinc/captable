@@ -4,6 +4,7 @@ import StakeholderTable from "@/components/stakeholder/stakeholder-table";
 import { Card } from "@/components/ui/card";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
+import { withServerSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 const StakeholdersPage = async () => {
+  const session = await withServerSession();
+
   const { allow } = await serverAccessControl();
   const stakeholders = await allow(api.stakeholder.getStakeholders.query(), [
     "stakeholder",
@@ -55,7 +58,10 @@ const StakeholdersPage = async () => {
       </div>
 
       <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-        <StakeholderTable stakeholders={stakeholders} />
+        <StakeholderTable
+          companyId={session.user.companyId}
+          stakeholders={stakeholders}
+        />
       </Card>
     </div>
   );

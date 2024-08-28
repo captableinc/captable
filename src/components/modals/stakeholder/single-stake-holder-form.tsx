@@ -23,13 +23,13 @@ import {
   StakeholderRelationshipEnum,
   StakeholderTypeEnum,
 } from "@/prisma/enums";
+import type { TGetManyStakeholderRes } from "@/server/api/client-handlers/stakeholder";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export type TStakeholder =
-  RouterOutputs["stakeholder"]["getStakeholders"][number];
+export type TStakeholder = TGetManyStakeholderRes["data"][number];
 
 type TSingleStakeholderForm =
   | {

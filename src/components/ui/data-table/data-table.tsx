@@ -1,6 +1,6 @@
 import { type ReactNode, createContext, useContext } from "react";
 
-import { type Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 
 interface DataTableRootProps<TData> {
   children: ReactNode;
@@ -12,13 +12,13 @@ interface TDataTableContext<TData> {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const dataTableContext = createContext<TDataTableContext<any> | null>(null);
+const TableStateContext = createContext<TDataTableContext<any> | null>(null);
 
-export const useDataTable = () => {
-  const context = useContext(dataTableContext);
+export const useTable = () => {
+  const context = useContext(TableStateContext);
 
   if (!context) {
-    throw new Error("useDataTable should be called inside DataTable");
+    throw new Error("useTable should be called inside DataTable");
   }
 
   return context;
@@ -29,8 +29,8 @@ export function DataTable<TData>({
   table,
 }: DataTableRootProps<TData>) {
   return (
-    <dataTableContext.Provider value={{ table: table }}>
+    <TableStateContext.Provider value={{ table: table }}>
       {children}
-    </dataTableContext.Provider>
+    </TableStateContext.Provider>
   );
 }

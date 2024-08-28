@@ -1,9 +1,9 @@
 import { flexRender } from "@tanstack/react-table";
 import { TableBody, TableCell, TableRow } from "../table";
-import { useDataTable } from "./data-table";
+import { useTable } from "./data-table";
 
 export function DataTableBody() {
-  const { table } = useDataTable();
+  const { table } = useTable();
 
   const columnLength = table.getAllColumns().length;
 

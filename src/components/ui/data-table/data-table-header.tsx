@@ -1,10 +1,10 @@
 import { flexRender } from "@tanstack/react-table";
 import { TableHead, TableHeader, TableRow } from "../table";
 
-import { useDataTable } from "./data-table";
+import { useTable } from "./data-table";
 
 export function DataTableHeader() {
-  const { table } = useDataTable();
+  const { table } = useTable();
   return (
     <TableHeader>
       {table.getHeaderGroups().map((headerGroup) => (

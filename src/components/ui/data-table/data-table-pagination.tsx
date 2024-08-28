@@ -1,8 +1,8 @@
 import { Button } from "../button";
-import { useDataTable } from "./data-table";
+import { useTable } from "./data-table";
 
 export function DataTablePagination() {
-  const { table } = useDataTable();
+  const { table } = useTable();
 
   return (
     <div className="flex items-center justify-end space-x-2 py-4">

@@ -1,11 +1,11 @@
-import { useDataTable } from "@/components/ui/data-table/data-table";
+import { useTable } from "@/components/ui/data-table/data-table";
 import { ResetButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableFacetedFilter } from "@/components/ui/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "@/components/ui/data-table/data-table-view-options";
 import { getActions } from "@/server/audit/schema";
 
 export function AuditTableToolbar() {
-  const { table } = useDataTable();
+  const { table } = useTable();
   const isFiltered = table.getState().columnFilters.length > 0;
   const actions = getActions();
 

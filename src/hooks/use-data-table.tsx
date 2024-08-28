@@ -16,8 +16,13 @@ import { useState } from "react";
 
 type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
+export type TDataTableOptions<TData> = MakeOptional<
+  TableOptions<TData>,
+  "getCoreRowModel"
+>;
+
 export function useDataTable<TData extends RowData>(
-  options: MakeOptional<TableOptions<TData>, "getCoreRowModel">,
+  options: TDataTableOptions<TData>,
 ) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

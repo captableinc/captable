@@ -94,6 +94,7 @@
     "next-auth": "^4.24.7",
     "next-nprogress-bar": "^2.3.11",
     "nodemailer": "^6.9.14",
+    "nuqs": "^1.17.8",
     "papaparse": "^5.4.1",
     "pdf-lib": "^1.17.1",
     "pg-boss": "^9.0.3",

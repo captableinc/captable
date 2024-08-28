@@ -200,6 +200,9 @@ importers:
       nodemailer:
         specifier: ^6.9.14
         version: 6.9.14
+      nuqs:
+        specifier: ^1.17.8
+        version: 1.17.8(next@14.2.4(@babel/core@7.24.5)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.3.1))(react@18.3.1))
       papaparse:
         specifier: ^5.4.1
         version: 5.4.1
@@ -6616,6 +6619,11 @@ packages:
 
   nprogress@0.2.0:
     resolution: {integrity: sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==}
+
+  nuqs@1.17.8:
+    resolution: {integrity: sha512-JqsnzO+hJyjJE7ebuhpHMLA2iGY48e2xr0oJQFhj7kjUmDABL2XOup47rxF5TL/5b9jEsmU2t0lAKin1VdK1/A==}
+    peerDependencies:
+      next: '>=13.4 <14.0.2 || ^14.0.3'
 
   oauth@0.9.15:
     resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
@@ -16702,6 +16710,11 @@ snapshots:
     optional: true
 
   nprogress@0.2.0: {}
+
+  nuqs@1.17.8(next@14.2.4(@babel/core@7.24.5)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)):
+    dependencies:
+      mitt: 3.0.1
+      next: 14.2.4(@babel/core@7.24.5)(@opentelemetry/api@1.9.0)(react-dom@18.2.0(react@18.3.1))(react@18.3.1)
 
   oauth@0.9.15: {}
 

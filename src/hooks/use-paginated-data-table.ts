@@ -104,6 +104,28 @@ function parseFilteringState<T extends UseQueryStatesKeysMap>(
   return columnFilters;
 }
 
+function keyMapInitial<KeyMap extends UseQueryStatesKeysMap>(keyMap: KeyMap) {
+  return Object.keys(keyMap).reduce(
+    (obj, key) => {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      const { defaultValue } = keyMap[key]!;
+
+      obj[key as keyof KeyMap] = defaultValue ?? null;
+      return obj;
+    },
+    {} as Values<KeyMap>,
+  );
+}
+
+function toQueryState<KeyMap extends UseQueryStatesKeysMap>(
+  updateValue: ColumnFiltersState,
+) {
+  return updateValue.reduce<Record<string, unknown>>((prev, current) => {
+    prev[current.id] = current.value;
+    return prev;
+  }, {}) as Values<KeyMap>;
+}
+
 export function useFilterQueryParams<KeyMap extends UseQueryStatesKeysMap>(
   keyMap: KeyMap,
 ) {
@@ -113,15 +135,7 @@ export function useFilterQueryParams<KeyMap extends UseQueryStatesKeysMap>(
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const defaultValue = useMemo(() => {
-    const keys = Object.keys(keyMap);
-
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    return keys.reduce<Record<string, any>>((prev, curr) => {
-      const defaultValue = keyMap[curr as keyof KeyMap]?.defaultValue ?? null;
-
-      prev[curr] = defaultValue;
-      return prev;
-    }, {});
+    return keyMapInitial(keyMap);
   }, []);
 
   const onColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
@@ -129,19 +143,9 @@ export function useFilterQueryParams<KeyMap extends UseQueryStatesKeysMap>(
       const updateValue = updater(columnFilters);
 
       if (updateValue.length) {
-        const stateValue = updateValue.reduce<Record<string, unknown>>(
-          (prev, current) => {
-            prev[current.id] = current.value;
-            return prev;
-          },
-          {},
-        );
-
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        setState(stateValue as any);
+        setState(toQueryState<KeyMap>(updateValue));
       } else {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        setState(defaultValue as any);
+        setState(defaultValue);
       }
     }
   };

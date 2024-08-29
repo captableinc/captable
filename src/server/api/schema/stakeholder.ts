@@ -108,7 +108,7 @@ export const UpdateStakeholderSchema = StakeholderSchema.omit({
     description: "Update a stakeholder by ID",
   });
 
-const sortFields = generateSortParam(["createdAt", "name"] as const);
+const sortFields = generateSortParam(["createdAt", "name", "email"] as const);
 
 export const parseManyStakeholderSortParam = sortFields.parseSortParam;
 export const ManyStakeholderSortParams = sortFields.sortParams;

@@ -4,8 +4,6 @@ import { DEFAULT_PAGINATION_LIMIT, OFFSET_MAXIMUM_LIMIT } from "../const";
 const sortDirections = ["asc", "desc"] as const;
 type SortDirection = (typeof sortDirections)[number];
 
-const SortDirectionSchema = z.enum(sortDirections);
-
 export const OffsetPaginationQuerySchema = z.object({
   limit: z.coerce
     .number()

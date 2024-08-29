@@ -30,7 +30,6 @@ export function useDataTable<TData extends RowData>(
   const [rowSelection, setRowSelection] = useState({});
 
   return useReactTable({
-    ...options,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -49,5 +48,6 @@ export function useDataTable<TData extends RowData>(
       rowSelection,
       ...(options?.state && { ...options.state }),
     },
+    ...options,
   });
 }

@@ -13,6 +13,7 @@ export const useManyStakeholder = (data: TGetManyStakeholderParams) =>
       data.urlParams.companyId,
       String(data.searchParams.limit),
       String(data.searchParams.page),
+      String(data.searchParams.sort),
     ],
     queryFn: () => getManyStakeholder(data),
   });

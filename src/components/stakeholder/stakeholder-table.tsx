@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
@@ -16,10 +15,11 @@ import {
 } from "@/hooks/use-paginated-data-table";
 import type { TGetManyStakeholderRes } from "@/server/api/client-handlers/stakeholder";
 import { useManyStakeholder } from "@/server/api/client-hooks/stakeholder";
+import { ManyStakeholderSortParams } from "@/server/api/schema/stakeholder";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
-import type { ColumnDef, PaginationState } from "@tanstack/react-table";
-import { use, useState } from "react";
+import { createColumnHelper } from "@tanstack/react-table";
+
 import { Allow } from "../rbac/allow";
 import { Button } from "../ui/button";
 import {
@@ -79,8 +79,11 @@ const getCurrentRelationship = (relationship: string) => {
   }
 };
 
-export const columns: ColumnDef<TGetManyStakeholderRes["data"][number]>[] = [
-  {
+const columnHelper =
+  createColumnHelper<TGetManyStakeholderRes["data"][number]>();
+
+const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -99,85 +102,42 @@ export const columns: ColumnDef<TGetManyStakeholderRes["data"][number]>[] = [
         aria-label="Select row"
       />
     ),
-    enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "name",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    accessorFn: (row) => row.name,
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Email"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "Institution name",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Institute name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => <div>{row.original.institutionName ?? ""}</div>,
-  },
-  {
-    accessorKey: "Type",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Type"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => {
-      const type = row.original.stakeholderType as string;
+    enableSorting: false,
+  }),
+  columnHelper.accessor("name", {
+    header: "Name",
+    cell: (row) => <div className="font-medium">{row.getValue()}</div>,
+  }),
+  columnHelper.accessor("email", {
+    header: "Email",
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor("institutionName", {
+    header: "Institute name",
+    cell: (info) => info.getValue(),
+    enableSorting: false,
+  }),
+  columnHelper.accessor("stakeholderType", {
+    header: "Type",
+    cell: (info) => {
+      const type = info.getValue();
       return (
         <Badge variant={type === "INDIVIDUAL" ? "info" : "success"}>
           {getStakeholderType(type)}
         </Badge>
       );
     },
-  },
-  {
-    accessorKey: "Association",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Association"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => {
-      return (
-        <div>{getCurrentRelationship(row.original.currentRelationship)}</div>
-      );
-    },
-  },
-  {
-    id: "actions",
+    enableSorting: false,
+  }),
+  columnHelper.accessor("currentRelationship", {
+    header: "Association",
+    cell: (info) => getCurrentRelationship(info.getValue()),
+    enableSorting: false,
+  }),
+
+  columnHelper.display({
+    id: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
       const singleStakeholder = row.original;
@@ -210,15 +170,20 @@ export const columns: ColumnDef<TGetManyStakeholderRes["data"][number]>[] = [
         </DropdownMenu>
       );
     },
-  },
+  }),
 ];
 
 const StakeholderTable = ({ companyId }: StakeholderTableType) => {
-  const { limit, page, onPaginationChange, pageIndex, pageSize } =
+  const { limit, page, onPaginationChange, pagination } =
     usePaginatedQueryParams();
 
+  const { onSortingChange, sorting, sort } = useSortQueryParams(
+    ManyStakeholderSortParams,
+    "createdAt.desc",
+  );
+
   const { data } = useManyStakeholder({
-    searchParams: { limit, page },
+    searchParams: { limit, page, sort },
     urlParams: { companyId },
   });
 
@@ -227,12 +192,12 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
     columns,
     data: data?.data ?? [],
     state: {
-      pagination: {
-        pageIndex,
-        pageSize,
-      },
+      pagination,
+      sorting,
     },
     onPaginationChange,
+    onSortingChange,
+    manualSorting: true,
   });
   return (
     <div className="w-full p-6">

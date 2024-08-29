@@ -632,6 +632,7 @@ model Template {
 
   completedOn DateTime?
   eSignAudits EsignAudit[]
+  eSignTokens ESignToken[]
 
   @@index([bucketId])
   @@index([uploaderId])
@@ -661,6 +662,7 @@ model EsignRecipient {
   updatedAt      DateTime        @updatedAt
   templateFields TemplateField[]
   eSignAudits    EsignAudit[]
+  eSignTokens    ESignToken[]
 
   @@index([memberId])
   @@index([templateId])
@@ -1120,7 +1122,6 @@ model BillingCustomer {
 }
 
 enum AccessTokenType {
-  sig @map("Signature token")
   doc @map("Data room token")
   api @map("API access token")
   upd @map("Investor update token")
@@ -1143,4 +1144,22 @@ model AccessToken {
 
   @@index([userId])
   @@index([typeEnum, clientId])
+}
+
+model ESignToken {
+  id         String   @id @default(cuid())
+  token      String
+  templateId String
+  template   Template @relation(fields: [templateId], references: [id])
+
+  recipientId String
+  recipient   EsignRecipient @relation(fields: [recipientId], references: [id])
+
+  expiresAt DateTime?
+  lastUsed  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([templateId])
+  @@index([recipientId])
 }

@@ -1,9 +1,11 @@
 "use client";
 
+import { WipModal } from "./wip-modal";
 import { createPushModal } from "pushmodal";
 import { BankAccountModal } from "./bank-account-modal";
 import { DocumentUploadModal } from "./document-upload-modal";
 import { EquityPlanModal } from "./equity-pan/equity-plan-modal";
+import { ManageEsignRecipientsModal } from "./esign-recipients/manage-esign-recipients-modal";
 import { ExistingSafeModal } from "./existing-safe-modal";
 import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
@@ -16,8 +18,6 @@ import { MultipleStakeholdersModal } from "./stakeholder/multiple-stakeholders-m
 import { SingleStakeholdersModal } from "./stakeholder/single-stake-holder-modal";
 import { UpdateSingleStakeholderModal } from "./stakeholder/update-stakeholder-modal";
 import { TeamMemberModal } from "./team-member/team-member-modal";
-import { WipModal } from "./wip-modal";
-
 import { AddEsignDocumentModal } from "./esign-doc";
 import { InvestorModal } from "./investor/add-investor-modal";
 
@@ -38,6 +38,7 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     IssueStockOptionModal,
     AddEsignDocumentModal,
     BankAccountModal,
+    ManageEsignRecipientsModal,
 
     // Safe modals
     NewSafeModal,

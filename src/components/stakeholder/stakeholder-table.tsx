@@ -9,6 +9,7 @@ import { DataTableContent } from "@/components/ui/data-table/data-table-content"
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import {
+  useFilterQueryParams,
   usePaginatedQueryParams,
   usePaginatedTable,
   useSortQueryParams,
@@ -20,6 +21,7 @@ import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { createColumnHelper } from "@tanstack/react-table";
 
+import { parseAsString } from "nuqs";
 import { Allow } from "../rbac/allow";
 import { Button } from "../ui/button";
 import {
@@ -181,6 +183,9 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
     ManyStakeholderSortParams,
     "createdAt.desc",
   );
+  const { columnFilters, onColumnFiltersChange } = useFilterQueryParams({
+    name: parseAsString,
+  });
 
   const { data } = useManyStakeholder({
     searchParams: { limit, page, sort },
@@ -194,11 +199,13 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
     state: {
       pagination,
       sorting,
+      columnFilters,
     },
     onPaginationChange,
     onSortingChange,
-    manualSorting: true,
+    onColumnFiltersChange,
   });
+
   return (
     <div className="w-full p-6">
       <DataTable table={table}>

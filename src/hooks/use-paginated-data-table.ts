@@ -1,4 +1,6 @@
 import type {
+  ColumnFilter,
+  ColumnFiltersState,
   PaginationState,
   RowData,
   SortingState,
@@ -6,11 +8,14 @@ import type {
   Updater,
 } from "@tanstack/react-table";
 import {
+  type UseQueryStatesKeysMap,
+  type Values,
   parseAsInteger,
   parseAsStringLiteral,
   useQueryState,
   useQueryStates,
 } from "nuqs";
+import { useMemo } from "react";
 import { type TDataTableOptions, useDataTable } from "./use-data-table";
 
 type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
@@ -82,6 +87,67 @@ export function useSortQueryParams<
   return { onSortingChange, setSort, sort, sorting };
 }
 
+function parseFilteringState<T extends UseQueryStatesKeysMap>(
+  filter: Values<T>,
+) {
+  const columnFilters: ColumnFilter[] = [];
+
+  for (const key in filter) {
+    if (Object.prototype.hasOwnProperty.call(filter, key)) {
+      const value = filter[key];
+      if (value) {
+        columnFilters.push({ id: key, value });
+      }
+    }
+  }
+
+  return columnFilters;
+}
+
+export function useFilterQueryParams<KeyMap extends UseQueryStatesKeysMap>(
+  keyMap: KeyMap,
+) {
+  const [state, setState] = useQueryStates(keyMap);
+
+  const columnFilters = parseFilteringState(state);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  const defaultValue = useMemo(() => {
+    const keys = Object.keys(keyMap);
+
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    return keys.reduce<Record<string, any>>((prev, curr) => {
+      const defaultValue = keyMap[curr as keyof KeyMap]?.defaultValue ?? null;
+
+      prev[curr] = defaultValue;
+      return prev;
+    }, {});
+  }, []);
+
+  const onColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
+    if (typeof updater === "function") {
+      const updateValue = updater(columnFilters);
+
+      if (updateValue.length) {
+        const stateValue = updateValue.reduce<Record<string, unknown>>(
+          (prev, current) => {
+            prev[current.id] = current.value;
+            return prev;
+          },
+          {},
+        );
+
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        setState(stateValue as any);
+      } else {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        setState(defaultValue as any);
+      }
+    }
+  };
+  return { columnFilters, onColumnFiltersChange };
+}
+
 export function usePaginatedTable<TData extends RowData>(
   options: Omit<TDataTableOptions<TData>, "state"> & { state: TState },
 ) {
@@ -90,7 +156,6 @@ export function usePaginatedTable<TData extends RowData>(
     manualSorting: true,
     manualFiltering: true,
     pageCount: options.pageCount ?? -1,
-
     ...options,
   });
 }

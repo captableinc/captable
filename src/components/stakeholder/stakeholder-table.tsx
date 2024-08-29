@@ -12,6 +12,7 @@ import { DataTablePagination } from "@/components/ui/data-table/data-table-pagin
 import {
   usePaginatedQueryParams,
   usePaginatedTable,
+  useSortQueryParams,
 } from "@/hooks/use-paginated-data-table";
 import type { TGetManyStakeholderRes } from "@/server/api/client-handlers/stakeholder";
 import { useManyStakeholder } from "@/server/api/client-hooks/stakeholder";
@@ -213,10 +214,8 @@ export const columns: ColumnDef<TGetManyStakeholderRes["data"][number]>[] = [
 ];
 
 const StakeholderTable = ({ companyId }: StakeholderTableType) => {
-  const [{ limit, page }, setData] = usePaginatedQueryParams();
-
-  const pageIndex = page - 1;
-  const pageSize = limit;
+  const { limit, page, onPaginationChange, pageIndex, pageSize } =
+    usePaginatedQueryParams();
 
   const { data } = useManyStakeholder({
     searchParams: { limit, page },
@@ -233,16 +232,7 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
         pageSize,
       },
     },
-    onPaginationChange: (updater) => {
-      if (typeof updater === "function") {
-        const updateValue = updater({ pageIndex, pageSize });
-
-        setData({
-          limit: updateValue.pageSize,
-          page: updateValue.pageIndex + 1,
-        });
-      }
-    },
+    onPaginationChange,
   });
   return (
     <div className="w-full p-6">

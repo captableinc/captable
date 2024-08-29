@@ -1,6 +1,11 @@
 import { z } from "@hono/zod-openapi";
 import { DEFAULT_PAGINATION_LIMIT, OFFSET_MAXIMUM_LIMIT } from "../const";
 
+const sortDirections = ["asc", "desc"] as const;
+type SortDirection = (typeof sortDirections)[number];
+
+const SortDirectionSchema = z.enum(sortDirections);
+
 export const OffsetPaginationQuerySchema = z.object({
   limit: z.coerce
     .number()
@@ -33,7 +38,8 @@ export const OffsetPaginationQuerySchema = z.object({
       example: 1,
       default: 1,
       minimum: 1,
-    }),
+    })
+    .openapi("Offset Pagination query"),
 });
 
 export const PaginationQuerySchema = z.object({
@@ -136,3 +142,29 @@ export const OffsetPaginationResponseSchema = z
     description:
       "A schema representing the pagination details of an offset-based pagination system.",
   });
+
+export function generateSortParam<T extends readonly string[]>(sortFields: T) {
+  type SortField = T[number];
+  type SortParam = `${SortField}.${SortDirection}`;
+
+  const sortParams = sortFields.flatMap((field) =>
+    sortDirections.map((direction) => `${field}.${direction}` as const),
+  ) as readonly SortParam[];
+
+  const parseSortParam = <S extends SortParam>(sort: S) => {
+    type Field = S extends `${infer F}.${SortDirection}` ? F : never;
+    const [field, direction] = sort.split(".") as [Field, SortDirection];
+    return { [field]: direction } as { [K in Field]: SortDirection };
+  };
+  return {
+    schema: z.enum(sortParams as [SortParam, ...SortParam[]]).openapi({
+      description: "sort by",
+      param: {
+        name: "sort",
+        in: "query",
+      },
+    }),
+    sortParams,
+    parseSortParam,
+  };
+}

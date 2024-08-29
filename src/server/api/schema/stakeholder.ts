@@ -4,6 +4,8 @@ import {
 } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
+import { OffsetPaginationQuerySchema, generateSortParam } from "./pagination";
+
 const StakeholderTypeArray = Object.values(StakeholderTypeEnum) as [
   StakeholderTypeEnum,
   ...StakeholderTypeEnum[],
@@ -106,6 +108,19 @@ export const UpdateStakeholderSchema = StakeholderSchema.omit({
     description: "Update a stakeholder by ID",
   });
 
+const sortFields = generateSortParam(["createdAt", "name"] as const);
+
+export const parseManyStakeholderSortParam = sortFields.parseSortParam;
+export const ManyStakeholderSortParams = sortFields.sortParams;
+
+export const ManyStakeholderQuerySchema = z
+  .object({
+    sort: sortFields.schema.optional().default("createdAt.desc"),
+  })
+  .merge(OffsetPaginationQuerySchema);
+
 export type TStakeholderSchema = z.infer<typeof StakeholderSchema>;
 export type TCreateStakeholderSchema = z.infer<typeof CreateStakeholderSchema>;
 export type TUpdateStakeholderSchema = z.infer<typeof UpdateStakeholderSchema>;
+export type TManyStakeholderSortParams =
+  (typeof ManyStakeholderSortParams)[number];

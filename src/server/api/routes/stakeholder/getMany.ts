@@ -1,9 +1,10 @@
 import { z } from "@hono/zod-openapi";
+import { OffsetPaginationResponseSchema } from "../../schema/pagination";
 import {
-  OffsetPaginationQuerySchema,
-  OffsetPaginationResponseSchema,
-} from "../../schema/pagination";
-import { StakeholderSchema } from "../../schema/stakeholder";
+  ManyStakeholderQuerySchema,
+  StakeholderSchema,
+  parseManyStakeholderSortParam,
+} from "../../schema/stakeholder";
 import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
@@ -33,7 +34,7 @@ export const getMany = withAuthApiV1
     path: "/v1/{companyId}/stakeholders",
     middleware: [authMiddleware()],
     request: {
-      query: OffsetPaginationQuerySchema,
+      query: ManyStakeholderQuerySchema,
       params: ParamsSchema,
     },
     responses: {
@@ -50,13 +51,17 @@ export const getMany = withAuthApiV1
   .handler(async (c) => {
     const { membership } = c.get("session");
     const { db } = c.get("services");
-    const query = c.req.valid("query");
+    const { limit, page, sort } = c.req.valid("query");
 
     const [data, meta] = await db.stakeholder
-      .paginate({ where: { companyId: membership.companyId } })
+      .paginate({
+        where: { companyId: membership.companyId },
+        orderBy: parseManyStakeholderSortParam(sort),
+      })
       .withPages({
         includePageCount: true,
-        ...query,
+        limit,
+        page,
       });
 
     const response: z.infer<typeof ResponseSchema> = {

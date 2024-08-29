@@ -115,7 +115,7 @@
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "ts-pattern": "^5.1.1",
+    "ts-pattern": "^5.3.1",
     "ua-parser-js": "^1.0.37",
     "usehooks-ts": "^3.1.0",
     "zod": "^3.23.8"

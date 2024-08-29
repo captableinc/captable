@@ -147,11 +147,6 @@ export function AuditLogTemplate({
               </Text>
             </View>
             <View style={styles.column}>
-              <Text style={styles.text}>
-                {dayjsExt(item.occurredAt).format("llll")}
-              </Text>
-            </View>
-            <View style={styles.column}>
               <Text style={styles.text}>{item.summary}</Text>
             </View>
           </View>

@@ -4,14 +4,6 @@ import {
 } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
-const StakeholderTypeArray = Object.values(StakeholderTypeEnum) as [
-  StakeholderTypeEnum,
-  ...StakeholderTypeEnum[],
-];
-const StakeholderRelationshipArray = Object.values(
-  StakeholderRelationshipEnum,
-) as [StakeholderRelationshipEnum, ...StakeholderRelationshipEnum[]];
-
 export const StakeholderSchema = z
   .object({
     id: z.string().cuid().openapi({
@@ -34,12 +26,12 @@ export const StakeholderSchema = z
       example: "ACME Corp",
     }),
 
-    stakeholderType: z.enum(StakeholderTypeArray).openapi({
+    stakeholderType: z.nativeEnum(StakeholderTypeEnum).openapi({
       description: "Stakeholder type",
       example: "INDIVIDUAL",
     }),
 
-    currentRelationship: z.enum(StakeholderRelationshipArray).openapi({
+    currentRelationship: z.nativeEnum(StakeholderRelationshipEnum).openapi({
       description: "Current relationship with the company",
       example: "EMPLOYEE",
     }),

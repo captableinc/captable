@@ -88,7 +88,8 @@ export const GeneralDetails = () => {
                 <div>
                   <LinearCombobox
                     options={typesOpts}
-                    onValueChange={(option) => field.onChange(option.value)}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
                   />
                 </div>
                 <FormMessage className="text-xs font-light" />
@@ -132,7 +133,8 @@ export const GeneralDetails = () => {
                 <div>
                   <LinearCombobox
                     options={STATUSES}
-                    onValueChange={(option) => field.onChange(option.value)}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
                   />
                 </div>
 

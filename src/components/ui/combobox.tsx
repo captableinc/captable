@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -14,6 +15,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useControllableState } from "@/hooks/use-controllable-state";
 import { cn } from "@/lib/utils";
 import { RiCheckFill as CheckIcon } from "@remixicon/react";
 import type React from "react";
@@ -27,32 +29,36 @@ export type ComboBoxOption = {
 
 export const LinearCombobox = ({
   options,
-  onValueChange,
   defaultOption,
   children,
+  defaultValue,
+  value: value_,
+  onChange,
 }: {
   options: ComboBoxOption[];
-  onValueChange?: (option: ComboBoxOption) => void;
   defaultOption?: ComboBoxOption;
   children?: React.ReactNode;
+  defaultValue?: string;
+  value?: string;
+  onChange?(val: string): void;
 }) => {
-  const [openPopover, setOpenPopover] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<ComboBoxOption | null>(
-    null,
-  );
-  const [searchValue, setSearchValue] = useState("");
-  const onValueChangeRef = useRef(onValueChange);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useControllableState({
+    defaultProp: defaultValue,
+    prop: value_,
+    onChange,
+  });
 
-  useEffect(() => {
-    if (selectedOption && onValueChangeRef.current) {
-      onValueChangeRef.current(selectedOption);
-    }
-  }, [selectedOption]);
+  const [searchValue, setSearchValue] = useState("");
+
+  const selectedOption = options.find((item) => item.value === value);
 
   return (
-    <Popover open={openPopover} onOpenChange={setOpenPopover} modal>
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
+          role="combobox"
+          aria-expanded={open}
           aria-label="Select option"
           variant="outline"
           size="lg"
@@ -79,7 +85,6 @@ export const LinearCombobox = ({
       <PopoverContent
         className="w-[206px] p-0 rounded-lg"
         align="start"
-        onCloseAutoFocus={(e) => e.preventDefault()}
         sideOffset={6}
       >
         <Command className="rounded-lg relative">
@@ -89,8 +94,8 @@ export const LinearCombobox = ({
               if (Number.parseInt(value) < options.length) {
                 const possibleOption = options[Number.parseInt(value)];
                 if (possibleOption) {
-                  setSelectedOption(possibleOption);
-                  setOpenPopover(false);
+                  setValue(possibleOption.value);
+                  setOpen(false);
                   setSearchValue("");
                   return;
                 }
@@ -102,16 +107,15 @@ export const LinearCombobox = ({
           />
 
           <CommandList>
+            <CommandEmpty>No item found.</CommandEmpty>
             <CommandGroup>
               {options.map((option, index) => (
                 <CommandItem
                   key={option.value}
                   value={option.value}
                   onSelect={(value) => {
-                    setSelectedOption(
-                      options.find((p) => p.value === value) || null,
-                    );
-                    setOpenPopover(false);
+                    setValue(value);
+                    setOpen(false);
                     setSearchValue("");
                   }}
                   className="group rounded-md flex justify-between items-center w-full text-[0.8125rem] leading-normal text-primary"

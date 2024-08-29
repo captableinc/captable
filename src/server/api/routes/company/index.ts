@@ -1,8 +1,9 @@
-import type { PublicAPI } from "@/server/api/hono";
+import type { OpenAPIHono } from "@hono/zod-openapi";
 import { getMany } from "./getMany";
 import { getOne } from "./getOne";
 
-export const registerCompanyRoutes = (api: PublicAPI) => {
-  api.openapi(getMany.route, getMany.handler);
-  api.openapi(getOne.route, getOne.handler);
+export const registerCompanyRoutes = (api: OpenAPIHono) => {
+  return api
+    .openapi(getMany.route, getMany.handler)
+    .openapi(getOne.route, getOne.handler);
 };

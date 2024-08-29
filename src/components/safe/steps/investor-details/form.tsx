@@ -151,7 +151,8 @@ export function InvestorDetailsForm({ stakeholders }: InvestorsDetailsProps) {
                 <div>
                   <LinearCombobox
                     options={stakeHolderOpts}
-                    onValueChange={(option) => field.onChange(option.value)}
+                    onChange={field.onChange}
+                    defaultValue={field.value}
                   >
                     <button
                       type="button"

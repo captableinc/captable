@@ -1,5 +1,6 @@
 import type { MemberStatusEnum } from "@/prisma/enums";
-import { db } from "@/server/db";
+import type { TPrismaOrTransaction } from "@/server/db";
+
 import { faker } from "@faker-js/faker";
 import bcrypt from "bcryptjs";
 import colors from "colors";
@@ -14,7 +15,7 @@ type UserType = {
   status?: MemberStatusEnum;
 };
 
-const seedTeam = async () => {
+const seedTeam = async (tx: TPrismaOrTransaction) => {
   const team = [
     {
       name: faker.person.fullName(),
@@ -60,14 +61,15 @@ const seedTeam = async () => {
   ];
 
   console.log(`Seeding ${team.length} team members`.blue);
-  const companies = await db.company.findMany();
+  const companies = await tx.company.findMany();
 
+  // biome-ignore lint/complexity/noForEach: <explanation>
   team.forEach(async (t) => {
     // const { name, email, image, title, status, isOnboarded } = t
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash("P@ssw0rd!", salt);
     const { name, email, title, status, isOnboarded } = t;
-    const user = await db.user.create({
+    const user = await tx.user.create({
       data: {
         name,
         email,
@@ -77,8 +79,9 @@ const seedTeam = async () => {
       },
     });
 
+    // biome-ignore lint/complexity/noForEach: <explanation>
     companies.forEach(async (company) => {
-      await db.member.create({
+      await tx.member.create({
         data: {
           title,
           isOnboarded,

@@ -1,5 +1,5 @@
 import { generatePublicId } from "@/common/id";
-import { db } from "@/server/db";
+import type { TPrismaOrTransaction } from "@/server/db";
 import { faker } from "@faker-js/faker";
 import colors from "colors";
 import { sample } from "lodash-es";
@@ -19,7 +19,7 @@ type CompanyType = {
   zipcode: string;
   country: string;
 };
-const seedCompanies = async (count = 4) => {
+const seedCompanies = async (tx: TPrismaOrTransaction, count = 4) => {
   const companies: CompanyType[] = [];
 
   for (let i = 0; i < count; i++) {
@@ -41,11 +41,15 @@ const seedCompanies = async (count = 4) => {
 
   console.log(`Seeding ${companies.length} companies`.blue);
 
-  const records = await db.company.createMany({
+  const records = await tx.company.createManyAndReturn({
     data: companies,
+    select: {
+      id: true,
+      name: true,
+    },
   });
 
-  console.log(`🎉 Seeded ${records.count} companies`.green);
+  console.log(`🎉 Seeded ${records.length} companies`.green);
   return records;
 };
 

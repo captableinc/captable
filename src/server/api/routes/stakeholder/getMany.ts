@@ -57,7 +57,7 @@ export const getMany = withAuthApiV1
       .paginate({
         where: {
           companyId: membership.companyId,
-          ...(name && name !== "" && { name: { contains: "" } }),
+          ...(name && { name: { contains: name, mode: "insensitive" } }),
         },
         orderBy: parseManyStakeholderSortParam(sort),
       })

@@ -183,12 +183,17 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
     ManyStakeholderSortParams,
     "createdAt.desc",
   );
-  const { columnFilters, onColumnFiltersChange } = useFilterQueryParams({
+  const { columnFilters, onColumnFiltersChange, state } = useFilterQueryParams({
     name: parseAsString,
   });
 
   const { data } = useManyStakeholder({
-    searchParams: { limit, page, sort },
+    searchParams: {
+      limit,
+      page,
+      sort,
+      ...(state.name && { name: state.name }),
+    },
     urlParams: { companyId },
   });
 

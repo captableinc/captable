@@ -116,6 +116,7 @@ export const ManyStakeholderSortParams = sortFields.sortParams;
 export const ManyStakeholderQuerySchema = z
   .object({
     sort: sortFields.schema.optional().default("createdAt.desc"),
+    name: z.string().optional(),
   })
   .merge(OffsetPaginationQuerySchema);
 

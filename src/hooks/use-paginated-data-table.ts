@@ -149,7 +149,7 @@ export function useFilterQueryParams<KeyMap extends UseQueryStatesKeysMap>(
       }
     }
   };
-  return { columnFilters, onColumnFiltersChange };
+  return { columnFilters, onColumnFiltersChange, state };
 }
 
 export function usePaginatedTable<TData extends RowData>(

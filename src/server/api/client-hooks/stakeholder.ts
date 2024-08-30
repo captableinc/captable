@@ -14,6 +14,7 @@ export const useManyStakeholder = (data: TGetManyStakeholderParams) =>
       String(data.searchParams.limit),
       String(data.searchParams.page),
       String(data.searchParams.sort),
+      String(data.searchParams?.name ?? ""),
     ],
     queryFn: () => getManyStakeholder(data),
   });

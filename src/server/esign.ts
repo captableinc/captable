@@ -26,12 +26,14 @@ export async function getEsignAudits({
     select: {
       id: true,
       summary: true,
+      occurredAt: true,
+      action: true,
     },
   });
   return audits;
 }
 
-type TGetEsignAudits = Awaited<ReturnType<typeof getEsignAudits>>;
+export type TGetEsignAudits = Awaited<ReturnType<typeof getEsignAudits>>;
 
 interface getEsignTemplateOptions {
   templateId: string;
@@ -104,6 +106,7 @@ export interface GenerateEsignSignPdfOptionsType {
   data: Record<string, string>;
   fields: EsignGetTemplateType["fields"];
   audits: TGetEsignAudits;
+  templateName: string;
 }
 
 export async function generateEsignPdf({
@@ -111,6 +114,7 @@ export async function generateEsignPdf({
   data,
   fields,
   audits,
+  templateName,
 }: GenerateEsignSignPdfOptionsType) {
   const docBuffer = await getFileFromS3(bucketKey);
   const pdfDoc = await PDFDocument.load(docBuffer);
@@ -174,7 +178,9 @@ export async function generateEsignPdf({
   }
 
   if (audits.length) {
-    const audit = await renderToBuffer(AuditLogTemplate({ audits }));
+    const audit = await renderToBuffer(
+      AuditLogTemplate({ audits, templateName }),
+    );
     const auditPDFDoc = await PDFDocument.load(audit);
     const indices = auditPDFDoc.getPageIndices();
     const copiedPages = await pdfDoc.copyPages(auditPDFDoc, indices);

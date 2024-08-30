@@ -1,6 +1,6 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import * as React from "react";
 
 import { dayjsExt } from "@/common/dayjs";
@@ -15,7 +15,6 @@ import { DataTablePagination } from "@/components/ui/data-table/data-table-pagin
 import type { RouterOutputs } from "@/trpc/shared";
 
 import { Button } from "@/components/ui/button";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -23,7 +22,8 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
-import { formatCurrency, formatNumber } from "@/lib/utils";
+import { cn, formatCurrency, formatNumber } from "@/lib/utils";
+import type { SecuritiesStatusEnum } from "@/prisma/enums";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { api } from "@/trpc/react";
 import {
@@ -41,38 +41,24 @@ type SharesType = {
   shares: Share;
 };
 
-const humanizeShareStatus = (type: string) => {
-  switch (type) {
-    case "ACTIVE":
-      return "Active";
-    case "DRAFT":
-      return "Draft";
-    case "SIGNED":
-      return "Signed";
-    case "PENDING":
-      return "Pending";
-    default:
-      return "";
-  }
+const statusHumanizeMap: Record<SecuritiesStatusEnum, string> = {
+  ACTIVE: "Active",
+  DRAFT: "Draft",
+  SIGNED: "Signed",
+  PENDING: "Pending",
 };
 
-const StatusColorProvider = (type: string) => {
-  switch (type) {
-    case "ACTIVE":
-      return "bg-green-50 text-green-600 ring-green-600/20";
-    case "DRAFT":
-      return "bg-yellow-50 text-yellow-600 ring-yellow-600/20";
-    case "SIGNED":
-      return "bg-blue-50 text-blue-600 ring-blue-600/20";
-    case "PENDING":
-      return "bg-gray-50 text-gray-600 ring-gray-600/20";
-    default:
-      return "";
-  }
+const statusColorMap: Record<SecuritiesStatusEnum, string> = {
+  ACTIVE: "bg-green-50 text-green-600 ring-green-600/20",
+  DRAFT: "bg-yellow-50 text-yellow-600 ring-yellow-600/20",
+  SIGNED: "bg-blue-50 text-blue-600 ring-blue-600/20",
+  PENDING: "bg-gray-50 text-gray-600 ring-gray-600/20",
 };
 
-export const columns: ColumnDef<Share[number]>[] = [
-  {
+const columnHelper = createColumnHelper<Share[number]>();
+
+const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -93,148 +79,84 @@ export const columns: ColumnDef<Share[number]>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "stakeholderName",
-    accessorKey: "stakeholder.name",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Stakeholder"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
+  }),
+  columnHelper.accessor("stakeholder.name", {
+    header: "Stakeholder",
+    cell: (row) => (
       <div className="flex">
         <Avatar className="rounded-full">
           <AvatarImage src={"/placeholders/user.svg"} />
         </Avatar>
         <div className="ml-2 pt-2">
-          <p>{row?.original?.stakeholder?.name}</p>
+          <p>{row.getValue()}</p>
         </div>
       </div>
     ),
-  },
-  {
-    id: "status",
-    accessorKey: "status",
-    header: ({ column }) => (
-      <SortButton
-        label="Status"
-        onClick={() => column.toggleSorting(column?.getIsSorted() === "asc")}
-      />
-    ),
-    cell: ({ row }) => {
-      const status = row.original?.status;
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (row) => {
+      const status = row.getValue();
       return (
         <span
-          className={`inline-flex items-center rounded-md ${StatusColorProvider(
-            status,
-          )} px-2 py-1 text-xs text-center font-medium ring-1 ring-inset `}
+          className={cn(
+            "inline-flex items-center rounded-md",
+            statusColorMap[status],
+            "px-2 py-1 text-xs text-center font-medium ring-1 ring-inset",
+          )}
         >
-          {humanizeShareStatus(status)}
+          {statusHumanizeMap[status]}
         </span>
       );
     },
-  },
-  {
-    id: "shareClass",
-    accessorKey: "shareClass.classType",
-
-    header: ({ column }) => (
-      <SortButton
-        label="Share class"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="text-center">{row.original.shareClass.classType}</div>
-    ),
-  },
-  {
-    id: "quantity",
-    accessorKey: "quantity",
-    header: ({ column }) => (
-      <div className="flex justify-end">
-        <SortButton
-          label="Quantity"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      </div>
-    ),
-    cell: ({ row }) => {
-      const quantity = row.original.quantity;
+  }),
+  columnHelper.accessor("shareClass.classType", {
+    header: "Share class",
+    cell: (row) => <div className="text-center">{row.getValue()}</div>,
+  }),
+  columnHelper.accessor("quantity", {
+    header: "Quantity",
+    cell: (row) => {
+      const quantity = row.getValue();
       return (
         <div className="text-center">
           {quantity ? formatNumber(quantity) : null}
         </div>
       );
     },
-  },
-  {
-    id: "pricePerShare",
-    accessorKey: "pricePerShare",
-    header: ({ column }) => (
-      <div className="flex justify-end">
-        <SortButton
-          label="Unit price"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      </div>
-    ),
-    cell: ({ row }) => {
-      const price = row.original.pricePerShare;
+  }),
+  columnHelper.accessor("pricePerShare", {
+    header: "Unit price",
+    cell: (row) => {
+      const price = row.getValue();
       return (
         <div className="text-center">
           {price ? formatCurrency(price, "USD") : null}
         </div>
       );
     },
-  },
-  {
-    id: "issueDate",
-    accessorKey: "issueDate",
-    header: ({ column }) => (
-      <SortButton
-        label="Issued"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      />
-    ),
-    cell: ({ row }) => (
-      <div className="text-center">
-        {dayjsExt(row.original.issueDate).format("DD/MM/YYYY")}
+  }),
+  columnHelper.accessor("issueDate", {
+    header: "Issued",
+    cell: (row) => (
+      <div className="text-center" suppressHydrationWarning>
+        {dayjsExt(row.getValue()).format("DD/MM/YYYY")}
       </div>
     ),
-  },
-  {
-    id: "boardApprovalDate",
-    accessorKey: "boardApprovalDate",
-    header: ({ column }) => (
-      <div className="flex justify-end">
-        <SortButton
-          label="Board Approved"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
+  }),
+  columnHelper.accessor("boardApprovalDate", {
+    header: "Board Approved",
+    cell: (row) => (
+      <div className="text-center" suppressHydrationWarning>
+        {dayjsExt(row.getValue()).format("DD/MM/YYYY")}
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="text-center">
-        {dayjsExt(row.original.boardApprovalDate).format("DD/MM/YYYY")}
-      </div>
-    ),
-  },
-  {
+  }),
+  columnHelper.display({
     id: "Documents",
     enableHiding: false,
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Documents"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
+    enableSorting: false,
+    header: "Board Approved",
     cell: ({ row }) => {
       const documents = row?.original?.documents;
 
@@ -276,10 +198,12 @@ export const columns: ColumnDef<Share[number]>[] = [
         </DropdownMenu>
       );
     },
-  },
-  {
+  }),
+
+  columnHelper.display({
     id: "actions",
     enableHiding: false,
+    enableSorting: false,
     cell: ({ row }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
@@ -332,7 +256,7 @@ export const columns: ColumnDef<Share[number]>[] = [
         </DropdownMenu>
       );
     },
-  },
+  }),
 ];
 
 const ShareTable = ({ shares }: SharesType) => {

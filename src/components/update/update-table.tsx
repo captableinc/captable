@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
@@ -16,12 +15,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
+import type { UpdateStatusEnum } from "@/prisma/enums";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiAddCircleLine } from "@remixicon/react";
-import type { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { type ReactElement, useState } from "react";
 import { pushModal } from "../modals";
 import { ChangeUpdateVisibilityAlertDialog } from "./change-update-visibility-alert-dialog";
 import { UpdateTableToolbar } from "./update-table-toolbar";
@@ -32,15 +32,10 @@ type UpdateTableType = {
   updates: Update;
 };
 
-const getUpdateStatus = (status: string) => {
-  switch (status) {
-    case "DRAFT":
-      return <Badge variant="warning">Draft</Badge>;
-    case "PUBLIC":
-      return <Badge variant="success">Public</Badge>;
-    case "PRIVATE":
-      return <Badge variant="destructive">Private</Badge>;
-  }
+const UpdateStatus: Record<UpdateStatusEnum, ReactElement> = {
+  DRAFT: <Badge variant="warning">Draft</Badge>,
+  PUBLIC: <Badge variant="success">Public</Badge>,
+  PRIVATE: <Badge variant="destructive">Private</Badge>,
 };
 
 const UpdateActions = (row: { original: Update[number] }) => {
@@ -108,8 +103,10 @@ const UpdateActions = (row: { original: Update[number] }) => {
   );
 };
 
-export const columns: ColumnDef<Update[number]>[] = [
-  {
+const columnHelper = createColumnHelper<Update[number]>();
+
+const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -130,36 +127,23 @@ export const columns: ColumnDef<Update[number]>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "title",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Title"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    accessorFn: (row) => row.title,
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("title")}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: () => {
-      return <div>Sharing status</div>;
-    },
-    cell: ({ row }) => <div>{getUpdateStatus(row.original.status)}</div>,
-  },
-  {
-    accessorKey: "actions",
-    header: () => {
-      return <div>Actions</div>;
-    },
-    cell: ({ row }) => <div>{UpdateActions(row)}</div>,
-  },
+  }),
+
+  columnHelper.accessor("title", {
+    header: "Title",
+    cell: (row) => <div className="font-medium">{row.getValue()}</div>,
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (row) => <div>{UpdateStatus[row.getValue()]}</div>,
+  }),
+  columnHelper.display({
+    id: "actions",
+    header: "Title",
+    cell: ({ row }) => UpdateActions(row),
+    enableSorting: false,
+    enableHiding: false,
+  }),
 ];
 
 const UpdateTable = ({ updates }: UpdateTableType) => {

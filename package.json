@@ -30,7 +30,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@ark-ui/react": "^2.2.3",
+    "@ark-ui/react": "^3.9.0",
     "@aws-sdk/client-s3": "^3.577.0",
     "@aws-sdk/s3-request-presigner": "^3.577.0",
     "@blocknote/react": "^0.12.2",

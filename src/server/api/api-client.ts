@@ -52,27 +52,13 @@ export async function createClient<U extends RouteConfig>(
   url: U["path"],
   params: APIClientParams<U>,
 ) {
-  try {
-    const path = buildPath(url, params);
-    const headers = buildHeaders(params.headers);
-    const requestOptions = buildRequestOptions(method, headers, params);
+  const path = buildPath(url, params);
+  const headers = buildHeaders(params.headers);
+  const requestOptions = buildRequestOptions(method, headers, params);
 
-    const response = await fetch(path, requestOptions);
+  const response = await fetch(path, requestOptions);
 
-    if (!response.ok) {
-      const errorMessage = await getErrorMessage(response);
-      throw new Error(`HTTP Error: ${response.status} - ${errorMessage}`);
-    }
-
-    try {
-      return response.json() as RouteConfigToTypedResponse<U>["_data"];
-    } catch (_jsonError) {
-      throw new Error("Failed to parse JSON response.");
-    }
-  } catch (error) {
-    console.error("Error in createClient:", error);
-    throw error;
-  }
+  return response.json() as RouteConfigToTypedResponse<U>["_data"];
 }
 
 function interpolatePath(

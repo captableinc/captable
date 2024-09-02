@@ -196,9 +196,9 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
   });
 
   const table = usePaginatedTable({
-    pageCount: data?.meta.pageCount ?? -1,
+    pageCount: data?.meta?.pageCount ?? -1,
     columns,
-    data: data.data,
+    data: data?.data ?? [],
     state: {
       pagination,
       sorting,
@@ -209,7 +209,7 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
     onColumnFiltersChange,
   });
 
-  if (data?.data?.length === 0 && data.meta.totalCount === 0) {
+  if (data && data?.data?.length === 0 && data?.meta?.totalCount === 0) {
     return (
       <EmptyState
         icon={<RiGroup2Fill />}

@@ -16,7 +16,7 @@ const UpdatesPage = async ({
 }: {
   params: { publicId: string };
 }) => {
-  const updates = await api.update.get.query();
+  const updates = await api.update.get();
 
   if (updates.data.length === 0) {
     return (

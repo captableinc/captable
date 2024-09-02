@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 const TeamMembersPage = async () => {
   const [members, roles] = await Promise.all([
-    api.member.getMembers.query(),
-    api.rbac.listRoles.query(),
+    api.member.getMembers(),
+    api.rbac.listRoles(),
   ]);
   return (
     <div className="flex flex-col gap-y-3">

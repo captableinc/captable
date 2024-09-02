@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const EsignDocumentPage = async () => {
   const session = await withServerComponentSession();
-  const { documents } = await api.template.all.query();
+  const { documents } = await api.template.all();
 
   if (documents.length === 0) {
     return (

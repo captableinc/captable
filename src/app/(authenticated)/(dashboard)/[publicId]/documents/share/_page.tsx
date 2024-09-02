@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 const DocumentsPage = async () => {
-  const documents = await api.document.getAll.query();
+  const documents = await api.document.getAll();
   const session = await withServerComponentSession();
 
   if (documents.length === 0) {

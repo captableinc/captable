@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 };
 
 const OptionsPage = async () => {
-  const options = await api.securities.getOptions.query();
-  const stakeholders = await api.stakeholder.getStakeholders.query();
-  const equityPlans = await api.equityPlan.getPlans.query();
+  const options = await api.securities.getOptions();
+  const stakeholders = await api.stakeholder.getStakeholders();
+  const equityPlans = await api.equityPlan.getPlans();
 
   if (options?.data?.length === 0) {
     return (

@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 };
 const BillingPage = async () => {
   const [{ products }, { subscription }] = await Promise.all([
-    api.billing.getProducts.query(),
-    api.billing.getSubscription.query(),
+    api.billing.getProducts(),
+    api.billing.getSubscription(),
   ]);
 
   return (

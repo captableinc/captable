@@ -36,6 +36,11 @@ export const StakeholderSchema = z
       example: "ACME Corp",
     }),
 
+    taxId: z.string().nullish().openapi({
+      description: "Tax id",
+      example: "12-3456789",
+    }),
+
     stakeholderType: z.enum(StakeholderTypeArray).openapi({
       description: "Stakeholder type",
       example: "INDIVIDUAL",

@@ -2,7 +2,6 @@
 
 import { pushModal } from "@/components/modals";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
@@ -17,13 +16,14 @@ import {
 import type { TGetManyStakeholderRes } from "@/server/api/client-handlers/stakeholder";
 import { useManyStakeholder } from "@/server/api/client-hooks/stakeholder";
 import { ManyStakeholderSortParams } from "@/server/api/schema/stakeholder";
-import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
+import { RiGroup2Fill, RiMore2Fill } from "@remixicon/react";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { parseAsString } from "nuqs";
+import EmptyState from "../common/empty-state";
 import { Allow } from "../rbac/allow";
 import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,12 +32,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import StakeholderDropdown from "./stakeholder-dropdown";
 import { StakeholderTableToolbar } from "./stakeholder-table-toolbar";
 
-type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"];
-
 type StakeholderTableType = {
-  stakeholders: Stakeholder;
   companyId: string;
 };
 
@@ -200,7 +198,7 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
   const table = usePaginatedTable({
     pageCount: data?.meta.pageCount ?? -1,
     columns,
-    data: data?.data ?? [],
+    data: data.data,
     state: {
       pagination,
       sorting,
@@ -211,17 +209,33 @@ const StakeholderTable = ({ companyId }: StakeholderTableType) => {
     onColumnFiltersChange,
   });
 
+  if (data?.data?.length === 0 && data.meta.totalCount === 0) {
+    return (
+      <EmptyState
+        icon={<RiGroup2Fill />}
+        title="You do not have any stakeholders!"
+        subtitle="Please click the button below to add or import stakeholders."
+      >
+        <Allow action="create" subject="stakeholder">
+          <StakeholderDropdown />
+        </Allow>
+      </EmptyState>
+    );
+  }
+
   return (
-    <div className="w-full p-6">
-      <DataTable table={table}>
-        <StakeholderTableToolbar />
-        <DataTableContent>
-          <DataTableHeader />
-          <DataTableBody />
-        </DataTableContent>
-        <DataTablePagination />
-      </DataTable>
-    </div>
+    <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
+      <div className="w-full p-6">
+        <DataTable table={table}>
+          <StakeholderTableToolbar />
+          <DataTableContent>
+            <DataTableHeader />
+            <DataTableBody />
+          </DataTableContent>
+          <DataTablePagination />
+        </DataTable>
+      </div>
+    </Card>
   );
 };
 

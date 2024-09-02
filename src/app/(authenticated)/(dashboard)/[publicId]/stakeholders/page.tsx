@@ -1,26 +1,25 @@
-import EmptyState from "@/components/common/empty-state";
 import StakeholderDropdown from "@/components/stakeholder/stakeholder-dropdown";
 import StakeholderTable from "@/components/stakeholder/stakeholder-table";
-import { Card } from "@/components/ui/card";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
 import { withServerSession } from "@/server/auth";
-import { api } from "@/trpc/server";
-import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
 export const metadata: Metadata = {
   title: "Stakeholders",
 };
 
-const StakeholdersPage = async () => {
+const StakeholdersPage = async ({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) => {
   const session = await withServerSession();
 
   const { allow } = await serverAccessControl();
-  const stakeholders = await allow(api.stakeholder.getStakeholders(), [
-    "stakeholder",
-    "read",
-  ]);
+  const stakeholders = allow(true, ["stakeholder", "read"]);
 
   const stakeholderDropdown = allow(
     <StakeholderDropdown />,
@@ -30,18 +29,6 @@ const StakeholdersPage = async () => {
 
   if (!stakeholders) {
     return <UnAuthorizedState />;
-  }
-
-  if (stakeholders.length === 0) {
-    return (
-      <EmptyState
-        icon={<RiGroup2Fill />}
-        title="You do not have any stakeholders!"
-        subtitle="Please click the button below to add or import stakeholders."
-      >
-        {stakeholderDropdown}
-      </EmptyState>
-    );
   }
 
   return (
@@ -57,12 +44,11 @@ const StakeholdersPage = async () => {
         <div>{stakeholderDropdown}</div>
       </div>
 
-      <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-        <StakeholderTable
-          companyId={session.user.companyId}
-          stakeholders={stakeholders}
-        />
-      </Card>
+      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <Suspense>
+          <StakeholderTable companyId={session.user.companyId} />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 };

@@ -47,7 +47,7 @@ export const addFieldProcedure = withAuth
       const { userAgent, requestIp } = ctx;
       const mails: TESignNotificationEmailJobInput[] = [];
 
-      if (input.status === "COMPLETE" && (!user.email || !user.name)) {
+      if (input.status === "PENDING" && (!user.email || !user.name)) {
         return {
           success: false,
           title: "Validation failed",
@@ -146,7 +146,7 @@ export const addFieldProcedure = withAuth
           },
         });
 
-        if (input.status === "COMPLETE") {
+        if (input.status === "PENDING") {
           const nonDeletableRecipientIdList = recipientList.map(
             (item) => item.id,
           );
@@ -189,6 +189,9 @@ export const addFieldProcedure = withAuth
                 name: template.company.name,
                 logo: template.company.logo,
               },
+              requestIp,
+              companyId,
+              userAgent,
             });
 
             if (template.orderedDelivery) {
@@ -201,20 +204,24 @@ export const addFieldProcedure = withAuth
       });
 
       if (mails.length) {
-        await eSignNotificationEmailJob.bulkEmit(
-          mails.map((data) => ({
-            data,
-            singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,
-          })),
-        );
+        // await eSignNotificationEmailJob.bulkEmit(
+        //   mails.map((data) => ({
+        //     data,
+        //     singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,
+        //   })),
+        // );
+
+        for (const mail of mails) {
+          await eSignNotificationEmailJob.emit(mail);
+        }
       }
 
       return {
         success: true,
         title:
-          input.status === "COMPLETE" ? "Sent for e-sign" : "Saved in draft",
+          input.status === "PENDING" ? "Sent for e-sign" : "Saved in draft",
         message:
-          input.status === "COMPLETE"
+          input.status === "PENDING"
             ? "Successfully sent document for e-signature."
             : "Your template fields has been created.",
       };

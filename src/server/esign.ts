@@ -224,7 +224,6 @@ export async function uploadEsignDocuments({
 }
 
 export interface CompleteEsignDocumentsOptionsType {
-  templateName: string;
   companyId: string;
   db: PrismaTransactionalClient;
   requestIp: string;
@@ -239,7 +238,6 @@ export async function completeEsignDocuments({
   db,
   requestIp,
   templateId,
-  templateName,
   uploaderName,
   userAgent,
   bucketData,
@@ -253,21 +251,6 @@ export async function completeEsignDocuments({
       status: "COMPLETE",
     },
   });
-
-  await EsignAudit.create(
-    {
-      action: "document.complete",
-      companyId,
-      templateId,
-      ip: requestIp,
-      location: "",
-      userAgent: userAgent,
-      summary: `"${templateName}" completely signed at ${dayjsExt(
-        new Date(),
-      ).format("lll")}`,
-    },
-    db,
-  );
 
   const { id: bucketId, name } = await createBucketHandler({
     db,

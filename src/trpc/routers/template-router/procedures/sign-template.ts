@@ -1,18 +1,13 @@
-/* eslint-disable @typescript-eslint/prefer-for-of */
-
 import { dayjsExt } from "@/common/dayjs";
 import { eSignNotificationEmailJob } from "@/jobs/esign-email";
-import { eSignPdfJob } from "@/jobs/esign-pdf";
+import { type TEsignPdfSchema, eSignPdfJob } from "@/jobs/esign-pdf";
 import type { TemplateStatus } from "@/prisma/enums";
 import { EsignAudit } from "@/server/audit";
-import {
-  type CompleteEsignDocumentsOptionsType,
-  type GenerateEsignSignPdfOptionsType,
-  getEsignAudits,
-  getEsignTemplate,
-  type uploadEsignDocumentsOptions,
-} from "@/server/esign";
+import type { TEsignAuditSchema } from "@/server/audit/schema";
+import type { TPrismaOrTransaction } from "@/server/db";
+import { getEsignTemplate } from "@/server/esign";
 import { withoutAuth } from "@/trpc/api/trpc";
+import { UAParser } from "ua-parser-js";
 import { EncodeEmailToken } from "../../template-field-router/procedures/add-fields";
 import { SignTemplateMutationSchema } from "../schema";
 
@@ -20,6 +15,10 @@ export const signTemplateProcedure = withoutAuth
   .input(SignTemplateMutationSchema)
   .mutation(async ({ ctx, input }) => {
     const { db, requestIp, userAgent } = ctx;
+
+    const userAgentParser = new UAParser(userAgent);
+    const userAgentResult = userAgentParser.getResult();
+    const browser = userAgentResult.browser.name;
 
     await db.$transaction(async (tx) => {
       const template = await getEsignTemplate({
@@ -65,21 +64,20 @@ export const signTemplateProcedure = withoutAuth
           }
         }
 
-        await EsignAudit.create(
-          {
-            action: "recipient.signed",
+        await createSignedAuditLog({
+          data: {
+            browser,
             companyId: template.companyId,
             recipientId: recipient.id,
             templateId: template.id,
             ip: ctx.requestIp,
             location: "",
             userAgent: ctx.userAgent,
-            summary: `${recipient.name ? recipient.name : ""} signed "${
-              template.name
-            }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            templateName: template.name,
+            recipientName: recipient.name,
           },
           tx,
-        );
+        });
 
         const allRecipients = await tx.esignRecipient.findMany({
           where: {
@@ -118,30 +116,28 @@ export const signTemplateProcedure = withoutAuth
             return prev;
           }, {});
 
-          await EsignAudit.create(
-            {
-              action: "recipient.signed",
+          await createSignedAuditLog({
+            data: {
+              browser,
               companyId: template.companyId,
               recipientId: recipient.id,
               templateId: template.id,
               ip: ctx.requestIp,
               location: "",
               userAgent: ctx.userAgent,
-              summary: `${recipient.name ? recipient.name : ""} signed "${
-                template.name
-              }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+              templateName: template.name,
+              recipientName: recipient.name,
             },
             tx,
-          );
+          });
 
-          await signPdf({
+          await completeDocument({
             bucketKey,
             companyId,
             templateName,
             fields: template.fields,
             data,
             templateId: template.id,
-            db: tx,
             requestIp,
             userAgent,
             company: template.company,
@@ -150,36 +146,32 @@ export const signTemplateProcedure = withoutAuth
               name: item.name,
             })),
             sender,
-            uploaderName: sender.name || "Captable",
           });
 
           templateStatus = "COMPLETE";
         }
       } else {
-        await EsignAudit.create(
-          {
-            action: "recipient.signed",
+        await createSignedAuditLog({
+          data: {
+            browser,
             companyId: template.companyId,
             recipientId: recipient.id,
             templateId: template.id,
             ip: ctx.requestIp,
             location: "",
             userAgent: ctx.userAgent,
-            summary: `${recipient.name ? recipient.name : ""} signed "${
-              template.name
-            }" on ${ctx.userAgent} at ${dayjsExt(new Date()).format("lll")}`,
+            templateName: template.name,
+            recipientName: recipient.name,
           },
           tx,
-        );
+        });
 
-        await signPdf({
-          bucketKey,
+        await completeDocument({
           companyId,
           templateName,
           fields: template.fields,
           data: input.data,
           templateId: template.id,
-          db: tx,
           requestIp,
           userAgent,
           sender,
@@ -190,7 +182,7 @@ export const signTemplateProcedure = withoutAuth
             },
           ],
           company: template.company,
-          uploaderName: sender.name || "Captable",
+          bucketKey,
         });
 
         templateStatus = "COMPLETE";
@@ -224,24 +216,6 @@ export const signTemplateProcedure = withoutAuth
           });
           const email = nextDelivery.email;
 
-          await EsignAudit.create(
-            {
-              action: "document.email.sent",
-              companyId: template.companyId,
-              recipientId: recipient.id,
-              templateId: template.id,
-              ip: ctx.requestIp,
-              location: "",
-              userAgent: ctx.userAgent,
-              summary: `${sender.name ? sender.name : ""} sent "${
-                template.name
-              }" to ${
-                recipient.name ? recipient.name : ""
-              } for eSignature at ${dayjsExt(new Date()).format("lll")}`,
-            },
-            tx,
-          );
-
           await eSignNotificationEmailJob.emit({
             email,
             token,
@@ -250,6 +224,9 @@ export const signTemplateProcedure = withoutAuth
             documentName: template.name,
             recipient: nextDelivery,
             company: template.company,
+            companyId: template.companyId,
+            requestIp: ctx.requestIp,
+            userAgent: ctx.userAgent,
           });
         }
       }
@@ -258,50 +235,53 @@ export const signTemplateProcedure = withoutAuth
     return {};
   });
 
-interface TSignPdfOptions
-  extends Omit<GenerateEsignSignPdfOptionsType, "audits">,
-    Omit<uploadEsignDocumentsOptions, "buffer">,
-    Omit<CompleteEsignDocumentsOptionsType, "bucketData"> {
-  templateId: string;
-  company: {
-    name: string;
-    logo?: string | null;
+interface TCreateSignedAuditLogOptions {
+  data: Omit<TEsignAuditSchema, "action" | "summary"> & {
+    recipientName?: string | null;
+    templateName: string;
+    browser?: string;
   };
-  sender: { name: string | null; email: string | null };
-  recipients: { name: string | null; email: string }[];
+  tx: TPrismaOrTransaction;
 }
 
-async function signPdf({
-  userAgent,
-  requestIp,
-  db,
-  bucketKey,
-  companyId,
-  templateName,
+async function createSignedAuditLog({
   data,
-  fields,
-  sender,
-  templateId,
-  recipients,
-  company,
-}: TSignPdfOptions) {
-  const audits = await getEsignAudits({ templateId, tx: db });
+  tx,
+}: TCreateSignedAuditLogOptions) {
+  const { recipientName, templateName, browser, ...rest } = data;
 
+  await EsignAudit.create(
+    {
+      action: "recipient.signed",
+      ...rest,
+      summary: `${
+        recipientName ?? "unknown recipient"
+      } signed "${templateName}" on ${
+        browser ?? "unknown browser"
+      } at ${dayjsExt(new Date()).format("lll")}`,
+    },
+    tx,
+  );
+}
+
+async function completeDocument(
+  options: Omit<TEsignPdfSchema, "sender"> & {
+    sender: {
+      name: string | null;
+      email: string | null;
+    };
+  },
+) {
   await eSignPdfJob.emit(
     {
-      bucketKey,
-      data,
-      fields,
-      audits,
-      companyId,
-      requestIp,
-      templateId,
-      templateName,
-      userAgent,
-      recipients,
-      sender: sender as { email: string; name: string },
-      company,
+      ...options,
+      sender: {
+        name: options.sender.name ?? "Captable",
+        email: options.sender.email ?? "Unknown email",
+      },
     },
-    { singletonKey: `esign-${templateId}`, useSingletonQueue: true },
+    {
+      singletonKey: `esign-${options.templateId}`,
+    },
   );
 }

@@ -19,9 +19,6 @@ const queue = singleton(
       archiveCompletedAfterSeconds: 60 * 60 * 2, // 2 hours
       deleteAfterDays: 2,
       retentionDays: 2,
-
-      noSupervisor: false,
-      noScheduling: false,
     }),
 );
 
@@ -36,8 +33,7 @@ export type JobType = {
 
 interface WorkerFactory {
   name: JobType;
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  handler: (job: PgBoss.Job<any>) => Promise<any>;
+  handler: (job: PgBoss.Job<unknown>[]) => Promise<unknown>;
 }
 
 function createQueue() {
@@ -57,6 +53,7 @@ function createQueue() {
 
     for (const [jobName, job] of jobs.entries()) {
       log.info(logPrefix(`Registering job:${jobName}`));
+
       await queue.work(jobName, job.handler);
     }
   }

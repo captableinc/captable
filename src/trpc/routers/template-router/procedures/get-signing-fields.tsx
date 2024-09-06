@@ -25,6 +25,9 @@ export const getSigningFieldsProcedure = withoutAuth
       const { bucket, status } = await tx.template.findFirstOrThrow({
         where: {
           id: recipient.templateId,
+          status: {
+            notIn: ["COMPLETE", "DRAFT"],
+          },
         },
         select: {
           bucket: {

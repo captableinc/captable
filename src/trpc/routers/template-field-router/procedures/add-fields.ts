@@ -204,16 +204,12 @@ export const addFieldProcedure = withAuth
       });
 
       if (mails.length) {
-        // await eSignNotificationEmailJob.bulkEmit(
-        //   mails.map((data) => ({
-        //     data,
-        //     singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,
-        //   })),
-        // );
-
-        for (const mail of mails) {
-          await eSignNotificationEmailJob.emit(mail);
-        }
+        await eSignNotificationEmailJob.bulkEmit(
+          mails.map((data) => ({
+            data,
+            singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,
+          })),
+        );
       }
 
       return {

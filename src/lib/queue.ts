@@ -15,7 +15,6 @@ const queue = singleton(
       max: 5,
       retryBackoff: true,
       retryLimit: 4,
-      expireInHours: 48,
       archiveCompletedAfterSeconds: 60 * 60 * 2, // 2 hours
       deleteAfterDays: 2,
       retentionDays: 2,
@@ -33,7 +32,8 @@ export type JobType = {
 
 interface WorkerFactory {
   name: JobType;
-  handler: (job: PgBoss.Job<unknown>[]) => Promise<unknown>;
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  handler: PgBoss.WorkHandler<any>;
 }
 
 function createQueue() {
@@ -54,6 +54,7 @@ function createQueue() {
     for (const [jobName, job] of jobs.entries()) {
       log.info(logPrefix(`Registering job:${jobName}`));
 
+      await queue.createQueue(jobName);
       await queue.work(jobName, job.handler);
     }
   }
@@ -71,10 +72,16 @@ function defineWorker<
   U extends ReturnType<typeof defineWorkerConfig>,
   T extends U["schema"],
   V,
->(config: U, handler: (job: PgBoss.Job<z.infer<T>>) => Promise<V>) {
+>(config: U, handler: (data: PgBoss.Job<z.infer<T>>) => Promise<V>) {
   return {
     name: config.name,
-    handler,
+    handler: ([job]: PgBoss.Job<z.infer<T>>[]) => {
+      if (!job) {
+        throw new Error("");
+      }
+
+      return handler(job);
+    },
   };
 }
 
@@ -83,9 +90,14 @@ function defineJob<U extends ReturnType<typeof defineWorkerConfig>>(config: U) {
   return {
     emit: (data: z.infer<TSchema>, options?: PgBoss.JobOptions) => {
       const data_ = config.schema.parse(data);
+
       return queue.send(config.name, data_, options ?? {});
     },
     bulkEmit: (data: Omit<PgBoss.JobInsert<z.infer<TSchema>>, "name">[]) => {
+      for (const item of data) {
+        config.schema.parse(item.data);
+      }
+
       return queue.insert(
         data.map((items) => ({ ...items, name: config.name })),
       );

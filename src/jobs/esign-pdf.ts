@@ -23,6 +23,8 @@ const config = defineWorkerConfig({
         z.object({
           id: z.string(),
           summary: z.string(),
+          action: z.string(),
+          occurredAt: z.date(),
         }),
       ),
       bucketKey: z.string(),
@@ -52,6 +54,7 @@ export const eSignPdfWorker = defineWorker(config, async (job) => {
     data,
     fields,
     audits,
+    templateName,
   });
   const { fileUrl: _fileUrl, ...bucketData } = await uploadEsignDocuments({
     buffer: Buffer.from(modifiedPdfBytes),

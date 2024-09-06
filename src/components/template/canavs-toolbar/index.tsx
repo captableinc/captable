@@ -108,7 +108,7 @@ export function CanvasToolbar({ recipients }: CanvasToolbarProps) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: reason
   const onSignatureRequest = useCallback((canSubmit: boolean) => {
     if (canSubmit && submitRef.current) {
-      setValue("status", "COMPLETE");
+      setValue("status", "PENDING");
       submitRef.current.click();
     }
   }, []);

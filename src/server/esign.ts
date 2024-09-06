@@ -250,6 +250,7 @@ export async function completeEsignDocuments({
     },
     data: {
       completedOn: new Date(),
+      status: "COMPLETE",
     },
   });
 

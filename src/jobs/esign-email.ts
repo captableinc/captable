@@ -1,5 +1,7 @@
+import { dayjsExt } from "@/common/dayjs";
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
+import { EsignAudit } from "@/server/audit";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
 import { renderAsync } from "@react-email/components";
@@ -28,6 +30,9 @@ const Schema = z.object({
     .optional(),
   email: z.string().email(),
   token: z.string(),
+  userAgent: z.string(),
+  requestIp: z.string(),
+  companyId: z.string(),
 });
 
 export type TESignNotificationEmailJobInput = z.infer<typeof Schema>;
@@ -41,7 +46,17 @@ export const eSignNotificationEmailJob = defineJob(config);
 export const eSignNotificationEmailWorker = defineWorker(
   config,
   async (job) => {
-    const { email, token, sender, ...rest } = job.data;
+    const {
+      email,
+      token,
+      sender,
+      userAgent,
+      requestIp,
+      documentName,
+      companyId,
+      ...rest
+    } = job.data;
+
     const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
     await db.$transaction(async (tx) => {
@@ -62,12 +77,31 @@ export const eSignNotificationEmailWorker = defineWorker(
           status: "SENT",
         },
       });
+
+      await EsignAudit.create(
+        {
+          action: "document.email.sent",
+          companyId,
+          recipientId: recipient.id,
+          templateId: recipient.templateId,
+          ip: requestIp,
+          location: "",
+          userAgent,
+          summary: `${
+            sender?.name ? sender.name : ""
+          } sent "${documentName}" to ${
+            recipient.name ? recipient.name : ""
+          } for eSignature at ${dayjsExt(new Date()).format("lll")}`,
+        },
+        tx,
+      );
     });
 
     const html = await renderAsync(
       EsignEmail({
         signingLink: `${baseUrl}/esign/${token}`,
         sender,
+        documentName,
         ...rest,
       }),
     );

@@ -602,8 +602,7 @@ model TemplateField {
 enum TemplateStatus {
   DRAFT
   COMPLETE
-  SENT
-  WAITING
+  PENDING
   CANCELLED
 }
 

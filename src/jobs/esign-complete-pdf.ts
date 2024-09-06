@@ -1,3 +1,4 @@
+import { EsignAudit } from "@/server/audit";
 import { db } from "@/server/db";
 import { completeEsignDocuments } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
@@ -25,7 +26,7 @@ export const Schema = z.object({
   ),
   sender: z.object({
     email: z.string().email(),
-    name: z.string().nullish(),
+    name: z.string(),
   }),
   bucketData: z.object({
     key: z.string(),
@@ -62,7 +63,7 @@ export const eSignCompletePDFWorker = defineWorker(config, async (job) => {
       requestIp,
       templateId,
       templateName,
-      uploaderName: sender.name || "Captable",
+      uploaderName: sender.name,
       userAgent,
     });
   });
@@ -76,8 +77,8 @@ export const eSignCompletePDFWorker = defineWorker(config, async (job) => {
         documentName: templateName,
         recipient,
         company,
-        senderName: sender.name || "Captable",
-        senderEmail: sender.email as string,
+        senderName: sender.name,
+        senderEmail: sender.email,
       },
     })),
   );

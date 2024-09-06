@@ -23,7 +23,7 @@ import {
 
 type TEsignEmailProps = Omit<
   TESignNotificationEmailJobInput,
-  "token" | "email"
+  "token" | "email" | "userAgent" | "requestIp" | "companyId"
 > & {
   signingLink: string;
 };

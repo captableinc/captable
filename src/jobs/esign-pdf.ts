@@ -5,6 +5,8 @@ import {
   uploadEsignDocuments,
 } from "@/server/esign";
 
+import { dayjsExt } from "@/common/dayjs";
+import { EsignAudit } from "@/server/audit";
 import { db } from "@/server/db";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
@@ -45,6 +47,21 @@ export const eSignPdfWorker = defineWorker(config, async (job) => {
     recipients,
     company,
   } = job.data;
+
+  await EsignAudit.create(
+    {
+      action: "document.complete",
+      companyId,
+      templateId,
+      ip: requestIp,
+      location: "",
+      userAgent: userAgent,
+      summary: `"${templateName}" completely signed at ${dayjsExt(
+        new Date(),
+      ).format("lll")}`,
+    },
+    db,
+  );
 
   const audits = await getEsignAudits({ templateId, tx: db });
 

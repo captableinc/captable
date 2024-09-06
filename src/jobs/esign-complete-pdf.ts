@@ -1,4 +1,3 @@
-import { EsignAudit } from "@/server/audit";
 import { db } from "@/server/db";
 import { completeEsignDocuments } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
@@ -62,7 +61,6 @@ export const eSignCompletePDFWorker = defineWorker(config, async (job) => {
       db: tx,
       requestIp,
       templateId,
-      templateName,
       uploaderName: sender.name,
       userAgent,
     });

@@ -96,7 +96,7 @@
     "nodemailer": "^6.9.14",
     "papaparse": "^5.4.1",
     "pdf-lib": "^1.17.1",
-    "pg-boss": "^9.0.3",
+    "pg-boss": "^10.1.1",
     "pino": "^9.3.1",
     "pino-pretty": "^11.2.2",
     "prisma-extension-pagination": "^0.7.4",

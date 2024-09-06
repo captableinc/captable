@@ -69,15 +69,6 @@ export const eSignNotificationEmailWorker = defineWorker(
         },
       });
 
-      await tx.template.update({
-        where: {
-          id: recipient.templateId,
-        },
-        data: {
-          status: "SENT",
-        },
-      });
-
       await EsignAudit.create(
         {
           action: "document.email.sent",

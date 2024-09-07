@@ -1,7 +1,7 @@
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 import { env } from "@/env";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
@@ -20,7 +20,7 @@ export const passwordResetEmailWorker = defineWorker(config, async (job) => {
 
   const confirmLink = `${baseUrl}/reset-password/${token}`;
 
-  const html = await renderAsync(
+  const html = await render(
     PasswordResetEmail({
       resetLink: confirmLink,
     }),

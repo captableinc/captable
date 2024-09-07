@@ -1,6 +1,6 @@
 import ESignConfirmationEmail from "@/emails/EsignConfirmationEmail";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
@@ -32,7 +32,7 @@ export const eSignConfirmationEmailWorker = defineWorker(
   async (job) => {
     const payload = job.data;
 
-    const html = await renderAsync(
+    const html = await render(
       ESignConfirmationEmail({
         documentName: payload.documentName,
         recipient: payload.recipient,

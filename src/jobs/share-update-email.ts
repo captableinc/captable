@@ -1,6 +1,6 @@
 import ShareUpdateEmail from "@/emails/ShareUpdateEmail";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
@@ -35,7 +35,7 @@ export const shareUpdateEmailWorker = defineWorker(config, async (job) => {
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
     subject: `${senderName} shared an update - ${update.title}`,
-    html: await renderAsync(
+    html: await render(
       ShareUpdateEmail({
         senderName: senderName,
         recipientName,

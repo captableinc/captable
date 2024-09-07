@@ -2,7 +2,7 @@ import MemberInviteEmail from "@/emails/MemberInviteEmail";
 import { env } from "@/env";
 import { constants } from "@/lib/constants";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
@@ -41,7 +41,7 @@ export const sendMemberInviteEmailWorker = defineWorker(config, async (job) => {
   await sendMail({
     to: email,
     subject: `Join ${company.name} on ${constants.title}`,
-    html: await renderAsync(
+    html: await render(
       MemberInviteEmail({
         inviteLink,
         companyName: company.name,

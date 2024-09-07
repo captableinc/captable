@@ -4,7 +4,7 @@ import { env } from "@/env";
 import { EsignAudit } from "@/server/audit";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
@@ -88,7 +88,7 @@ export const eSignNotificationEmailWorker = defineWorker(
       );
     });
 
-    const html = await renderAsync(
+    const html = await render(
       EsignEmail({
         signingLink: `${baseUrl}/esign/${token}`,
         sender,

@@ -18,6 +18,7 @@ const queue = singleton(
       archiveCompletedAfterSeconds: 60 * 60 * 2, // 2 hours
       deleteAfterDays: 2,
       retentionDays: 2,
+      schema: "captable_queue",
     }),
 );
 

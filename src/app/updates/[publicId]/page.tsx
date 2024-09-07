@@ -7,7 +7,7 @@ import UpdateRenderer from "@/components/update/renderer";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import { UpdateStatusEnum } from "@/prisma/enums";
 import { db } from "@/server/db";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { RiLock2Line } from "@remixicon/react";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
@@ -100,7 +100,7 @@ const PublicUpdatePage = async ({
 
   const company = update?.company;
   const author = update?.author;
-  const html = await renderAsync(<UpdateRenderer html={update.html} />);
+  const html = await render(<UpdateRenderer html={update.html} />);
 
   return (
     <SharePageLayout

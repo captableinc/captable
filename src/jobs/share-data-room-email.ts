@@ -1,6 +1,6 @@
 import ShareDataRoomEmail from "@/emails/ShareDataRoomEmail";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
+import { render } from "@react-email/components";
 import { z } from "zod";
 import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
@@ -33,7 +33,7 @@ export const shareDataRoomEmailWorker = defineWorker(config, async (job) => {
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
     subject: `${senderName} shared a data room - ${dataRoom}`,
-    html: await renderAsync(
+    html: await render(
       ShareDataRoomEmail({
         senderName: senderName,
         recipientName,

@@ -1,11 +1,14 @@
+import EmptyState from "@/components/common/empty-state";
 import StakeholderDropdown from "@/components/stakeholder/stakeholder-dropdown";
 import StakeholderTable from "@/components/stakeholder/stakeholder-table";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
+import { getManyStakeholder } from "@/server/api/client-handlers/stakeholder";
+import { ManyStakeholderQuerySchema } from "@/server/api/schema/stakeholder";
 import { withServerSession } from "@/server/auth";
+import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Stakeholders",
@@ -19,7 +22,20 @@ const StakeholdersPage = async ({
   const session = await withServerSession();
 
   const { allow } = await serverAccessControl();
-  const stakeholders = allow(true, ["stakeholder", "read"]);
+
+  const { limit, page, sort, name } =
+    ManyStakeholderQuerySchema.parse(searchParams);
+
+  const stakeholders = await allow(
+    getManyStakeholder({
+      searchParams: { limit, page, sort, ...(name && { name }) },
+      urlParams: {
+        companyId: session.user.companyId,
+      },
+      headers: headers(),
+    }),
+    ["stakeholder", "read"],
+  );
 
   const stakeholderDropdown = allow(
     <StakeholderDropdown />,
@@ -29,6 +45,22 @@ const StakeholdersPage = async ({
 
   if (!stakeholders) {
     return <UnAuthorizedState />;
+  }
+
+  if (
+    stakeholders?.data &&
+    stakeholders?.data.length === 0 &&
+    Object.keys(searchParams).length === 0
+  ) {
+    return (
+      <EmptyState
+        icon={<RiGroup2Fill />}
+        title="You do not have any stakeholders!"
+        subtitle="Please click the button below to add or import stakeholders."
+      >
+        {stakeholderDropdown}
+      </EmptyState>
+    );
   }
 
   return (
@@ -44,11 +76,13 @@ const StakeholdersPage = async ({
         <div>{stakeholderDropdown}</div>
       </div>
 
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
-        <Suspense>
-          <StakeholderTable companyId={session.user.companyId} />
-        </Suspense>
-      </ErrorBoundary>
+      <StakeholderTable
+        limit={limit}
+        page={page}
+        sort={sort}
+        stakeholders={stakeholders}
+        name={name}
+      />
     </div>
   );
 };

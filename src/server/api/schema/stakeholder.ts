@@ -117,10 +117,11 @@ const sortFields = generateSortParam(["createdAt", "name", "email"] as const);
 
 export const parseManyStakeholderSortParam = sortFields.parseSortParam;
 export const ManyStakeholderSortParams = sortFields.sortParams;
+export const ManyStakeholderSortParamsSchema = sortFields.schema;
 
 export const ManyStakeholderQuerySchema = z
   .object({
-    sort: sortFields.schema.optional().default("createdAt.desc"),
+    sort: ManyStakeholderSortParamsSchema.optional().default("createdAt.desc"),
     name: z.string().optional(),
   })
   .merge(OffsetPaginationQuerySchema);
@@ -130,3 +131,6 @@ export type TCreateStakeholderSchema = z.infer<typeof CreateStakeholderSchema>;
 export type TUpdateStakeholderSchema = z.infer<typeof UpdateStakeholderSchema>;
 export type TManyStakeholderSortParams =
   (typeof ManyStakeholderSortParams)[number];
+export type TManyStakeholderQuerySchema = z.infer<
+  typeof ManyStakeholderQuerySchema
+>;

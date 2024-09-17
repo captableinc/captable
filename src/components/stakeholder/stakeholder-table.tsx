@@ -7,20 +7,12 @@ import { DataTableBody } from "@/components/ui/data-table/data-table-body";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import {
-  useFilterQueryParams,
-  usePaginatedQueryParams,
-  usePaginatedTable,
-  useSortQueryParams,
-} from "@/hooks/use-paginated-data-table";
+import { usePaginatedTable } from "@/hooks/use-paginated-data-table";
 import type { TGetManyStakeholderRes } from "@/server/api/client-handlers/stakeholder";
-import { useManyStakeholder } from "@/server/api/client-hooks/stakeholder";
-import { ManyStakeholderSortParams } from "@/server/api/schema/stakeholder";
-import { RiGroup2Fill, RiMore2Fill } from "@remixicon/react";
+import type { TManyStakeholderQuerySchema } from "@/server/api/schema/stakeholder";
+import { RiMore2Fill } from "@remixicon/react";
 import { createColumnHelper } from "@tanstack/react-table";
 
-import { parseAsString } from "nuqs";
-import EmptyState from "../common/empty-state";
 import { Allow } from "../rbac/allow";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -32,12 +24,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import StakeholderDropdown from "./stakeholder-dropdown";
 import { StakeholderTableToolbar } from "./stakeholder-table-toolbar";
 
 type StakeholderTableType = {
-  companyId: string;
-};
+  stakeholders: TGetManyStakeholderRes;
+} & TManyStakeholderQuerySchema;
 
 const getStakeholderType = (type: string) => {
   switch (type) {
@@ -173,55 +164,22 @@ const columns = [
   }),
 ];
 
-const StakeholderTable = ({ companyId }: StakeholderTableType) => {
-  const { limit, page, onPaginationChange, pagination } =
-    usePaginatedQueryParams();
-
-  const { onSortingChange, sorting, sort } = useSortQueryParams(
-    ManyStakeholderSortParams,
-    "createdAt.desc",
-  );
-  const { columnFilters, onColumnFiltersChange, state } = useFilterQueryParams({
-    name: parseAsString,
-  });
-
-  const { data } = useManyStakeholder({
-    searchParams: {
-      limit,
-      page,
-      sort,
-      ...(state.name && { name: state.name }),
-    },
-    urlParams: { companyId },
-  });
-
+const StakeholderTable = ({
+  stakeholders,
+  page,
+  limit,
+  sort,
+  name,
+}: StakeholderTableType) => {
   const table = usePaginatedTable({
-    pageCount: data?.meta?.pageCount ?? -1,
+    pageCount: stakeholders?.meta?.pageCount ?? -1,
     columns,
-    data: data?.data ?? [],
-    state: {
-      pagination,
-      sorting,
-      columnFilters,
-    },
-    onPaginationChange,
-    onSortingChange,
-    onColumnFiltersChange,
+    data: stakeholders?.data ?? [],
+    limit,
+    page,
+    sort,
+    filterFields: [{ id: "name", value: name }],
   });
-
-  if (data && data?.data?.length === 0 && data?.meta?.totalCount === 0) {
-    return (
-      <EmptyState
-        icon={<RiGroup2Fill />}
-        title="You do not have any stakeholders!"
-        subtitle="Please click the button below to add or import stakeholders."
-      >
-        <Allow action="create" subject="stakeholder">
-          <StakeholderDropdown />
-        </Allow>
-      </EmptyState>
-    );
-  }
 
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">

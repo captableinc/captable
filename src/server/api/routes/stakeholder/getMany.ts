@@ -51,13 +51,18 @@ export const getMany = withAuthApiV1
   .handler(async (c) => {
     const { membership } = c.get("session");
     const { db } = c.get("services");
-    const { limit, page, sort, name } = c.req.valid("query");
+    const { limit, page, sort, name: query } = c.req.valid("query");
 
     const [data, meta] = await db.stakeholder
       .paginate({
         where: {
           companyId: membership.companyId,
-          ...(name && { name: { contains: name, mode: "insensitive" } }),
+          ...(query && {
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              { email: { contains: query, mode: "insensitive" } },
+            ],
+          }),
         },
         orderBy: parseManyStakeholderSortParam(sort),
       })

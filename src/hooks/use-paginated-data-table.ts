@@ -1,55 +1,15 @@
+"use client";
+
 import type {
-  ColumnFilter,
   ColumnFiltersState,
-  PaginationState,
   RowData,
   SortingState,
-  TableState,
   Updater,
 } from "@tanstack/react-table";
-import {
-  type UseQueryStatesKeysMap,
-  type Values,
-  parseAsInteger,
-  parseAsStringLiteral,
-  useQueryState,
-  useQueryStates,
-} from "nuqs";
-import { useMemo } from "react";
+
+import { useRouter } from "next/navigation";
 import { type TDataTableOptions, useDataTable } from "./use-data-table";
-
-type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
-
-type TState = MakeRequired<Partial<TableState>, "pagination">;
-
-export function usePaginatedQueryParams() {
-  const [{ limit, page }, setParams] = useQueryStates({
-    page: parseAsInteger.withDefault(1),
-    limit: parseAsInteger.withDefault(10),
-  });
-
-  const pageIndex = page - 1;
-  const pageSize = limit;
-
-  const onPaginationChange = (updater: Updater<PaginationState>) => {
-    if (typeof updater === "function") {
-      const updateValue = updater({ pageIndex, pageSize });
-
-      setParams({
-        limit: updateValue.pageSize,
-        page: updateValue.pageIndex + 1,
-      });
-    }
-  };
-
-  return {
-    pagination: { pageIndex, pageSize },
-    onPaginationChange,
-    limit,
-    page,
-    setParams,
-  };
-}
+import { useUpdateSearchParams } from "./use-update-search-params";
 
 function parseSortingState(sort: string) {
   const [field, direction] = sort.split(".");
@@ -59,44 +19,15 @@ function parseSortingState(sort: string) {
   return state;
 }
 
-export function useSortQueryParams<
-  T extends readonly string[],
-  U extends T[number],
-  V extends T[number],
->(schema: T, defaultValue: U) {
-  const [sort, setSort] = useQueryState<V>(
-    "sort",
-    //@ts-expect-error
-    parseAsStringLiteral(schema).withDefault(defaultValue),
-  );
-
-  const sorting = parseSortingState(sort);
-
-  const onSortingChange = (updater: Updater<SortingState>) => {
-    if (typeof updater === "function") {
-      const updateValue = updater(sorting);
-
-      const sortValue = updateValue[0]
-        ? `${updateValue[0]?.id}.${updateValue[0]?.desc ? "desc" : "asc"}`
-        : defaultValue;
-
-      setSort(sortValue as V);
-    }
-  };
-
-  return { onSortingChange, setSort, sort, sorting };
-}
-
-function parseFilteringState<T extends UseQueryStatesKeysMap>(
-  filter: Values<T>,
+function parseFilteringState(
+  filterFields?: { id: string; value: string | undefined }[],
 ) {
-  const columnFilters: ColumnFilter[] = [];
+  const columnFilters: ColumnFiltersState = [];
 
-  for (const key in filter) {
-    if (Object.prototype.hasOwnProperty.call(filter, key)) {
-      const value = filter[key];
-      if (value) {
-        columnFilters.push({ id: key, value });
+  if (filterFields) {
+    for (const filter of filterFields) {
+      if (filter.value) {
+        columnFilters.push({ id: filter.id, value: [filter.value] });
       }
     }
   }
@@ -104,62 +35,87 @@ function parseFilteringState<T extends UseQueryStatesKeysMap>(
   return columnFilters;
 }
 
-function keyMapInitial<KeyMap extends UseQueryStatesKeysMap>(keyMap: KeyMap) {
-  return Object.keys(keyMap).reduce(
-    (obj, key) => {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      const { defaultValue } = keyMap[key]!;
+export function usePaginatedTable<TData extends RowData>({
+  page,
+  limit,
+  sort,
+  filterFields = [],
+  ...options
+}: TDataTableOptions<TData> & {
+  page: number;
+  limit: number;
+  sort: string;
+  filterFields?: { id: string; value: string | undefined }[];
+}) {
+  const router = useRouter();
 
-      obj[key as keyof KeyMap] = defaultValue ?? null;
-      return obj;
-    },
-    {} as Values<KeyMap>,
-  );
-}
+  const updateSearchParams = useUpdateSearchParams();
 
-function toQueryState<KeyMap extends UseQueryStatesKeysMap>(
-  updateValue: ColumnFiltersState,
-) {
-  return updateValue.reduce<Record<string, unknown>>((prev, current) => {
-    prev[current.id] = current.value;
-    return prev;
-  }, {}) as Values<KeyMap>;
-}
+  const pageIndex = page - 1;
+  const pageSize = limit;
+  const sorting = parseSortingState(sort);
 
-export function useFilterQueryParams<KeyMap extends UseQueryStatesKeysMap>(
-  keyMap: KeyMap,
-) {
-  const [state, setState] = useQueryStates(keyMap);
+  const columnFilters = parseFilteringState(filterFields);
 
-  const columnFilters = parseFilteringState(state);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const defaultValue = useMemo(() => {
-    return keyMapInitial(keyMap);
-  }, []);
-
-  const onColumnFiltersChange = (updater: Updater<ColumnFiltersState>) => {
-    if (typeof updater === "function") {
-      const updateValue = updater(columnFilters);
-
-      if (updateValue.length) {
-        setState(toQueryState<KeyMap>(updateValue));
-      } else {
-        setState(defaultValue);
-      }
-    }
-  };
-  return { columnFilters, onColumnFiltersChange, state };
-}
-
-export function usePaginatedTable<TData extends RowData>(
-  options: Omit<TDataTableOptions<TData>, "state"> & { state: TState },
-) {
   return useDataTable({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
     pageCount: options.pageCount ?? -1,
+    state: {
+      pagination: {
+        pageIndex,
+        pageSize,
+        ...(options?.state?.pagination && { ...options.state.pagination }),
+      },
+      sorting,
+      columnFilters,
+      ...(options?.state && { ...options.state }),
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const updateValue = updater({ pageIndex, pageSize });
+        updateSearchParams({
+          limit: updateValue.pageSize,
+          page: updateValue.pageIndex + 1,
+        });
+      }
+    },
+
+    onSortingChange: (updater: Updater<SortingState>) => {
+      if (typeof updater === "function") {
+        const updateValue = updater(sorting);
+
+        const sortValue = updateValue[0]
+          ? `${updateValue[0]?.id}.${updateValue[0]?.desc ? "desc" : "asc"}`
+          : undefined;
+
+        updateSearchParams({ sort: sortValue });
+      }
+    },
+
+    onColumnFiltersChange: (updater: Updater<ColumnFiltersState>) => {
+      if (typeof updater === "function") {
+        const updateValue = updater(columnFilters);
+        if (updateValue.length) {
+          const state = updateValue.reduce<Record<string, unknown>>(
+            (prev, curr) => {
+              prev[curr.id] = curr.value;
+
+              return prev;
+            },
+            {},
+          );
+
+          //@ts-expect-error
+          updateSearchParams({ ...state });
+        } else {
+          const path = window.location.pathname;
+          router.push(path);
+        }
+      }
+    },
+
     ...options,
   });
 }

@@ -10,16 +10,17 @@ const CheckEmailComponent = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
-  const { mutateAsync, isLoading } = api.auth.resendEmail.useMutation({
-    onSuccess: () => {
-      toast.success("🎉 Email successfully re-sent.");
-    },
-    onError: () => {
-      toast.error(
-        "Uh oh! Something went wrong, please try again or contact support.",
-      );
-    },
-  });
+  const { mutateAsync, isPending: isLoading } =
+    api.auth.resendEmail.useMutation({
+      onSuccess: () => {
+        toast.success("🎉 Email successfully re-sent.");
+      },
+      onError: () => {
+        toast.error(
+          "Uh oh! Something went wrong, please try again or contact support.",
+        );
+      },
+    });
 
   async function Resend() {
     try {

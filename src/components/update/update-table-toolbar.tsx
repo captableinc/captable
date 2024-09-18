@@ -1,10 +1,10 @@
-import { useDataTable } from "@/components/ui/data-table/data-table";
+import { useTable } from "@/components/ui/data-table/data-table";
 import { ResetButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableViewOptions } from "@/components/ui/data-table/data-table-view-options";
 import { Input } from "@/components/ui/input";
 
 export const UpdateTableToolbar = () => {
-  const { table } = useDataTable();
+  const { table } = useTable();
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

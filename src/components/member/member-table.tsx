@@ -1,20 +1,8 @@
 "use client";
 
-import * as React from "react";
+import type * as React from "react";
 
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,7 +19,9 @@ import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
+import { useDataTable } from "@/hooks/use-data-table";
 import { getRoleId } from "@/lib/rbac/access-control-utils";
+import type { MemberStatusEnum } from "@/prisma/enums";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { useSession } from "next-auth/react";
@@ -39,7 +29,6 @@ import { useRouter } from "next/navigation";
 import { pushModal } from "../modals";
 import { DataTable } from "../ui/data-table/data-table";
 import { DataTableBody } from "../ui/data-table/data-table-body";
-import { SortButton } from "../ui/data-table/data-table-buttons";
 import { DataTableContent } from "../ui/data-table/data-table-content";
 import { DataTableHeader } from "../ui/data-table/data-table-header";
 import { DataTablePagination } from "../ui/data-table/data-table-pagination";
@@ -53,33 +42,28 @@ type MembersType = {
   roles: Roles;
 };
 
-const humanizeStatus = (status: string) => {
-  if (status === "PENDING") {
-    return (
-      <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-        Pending
-      </span>
-    );
-  }
-  if (status === "ACTIVE") {
-    return (
-      <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-        Active
-      </span>
-    );
-  }
-  if (status === "INACTIVE") {
-    return (
-      <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-        Inactive
-      </span>
-    );
-  }
-  return "Unknown";
+const humanizeStatus: Record<MemberStatusEnum, React.ReactElement> = {
+  ACTIVE: (
+    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+      Active
+    </span>
+  ),
+  INACTIVE: (
+    <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+      Inactive
+    </span>
+  ),
+  PENDING: (
+    <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+      Pending
+    </span>
+  ),
 };
 
-export const columns: ColumnDef<Member[number]>[] = [
-  {
+const columnHelper = createColumnHelper<Member[number]>();
+
+export const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -100,64 +84,40 @@ export const columns: ColumnDef<Member[number]>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "name",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    accessorFn: (row) => row.user?.name,
-    cell: ({ row }) => (
+  }),
+  columnHelper.accessor("user.name", {
+    header: "Name",
+    cell: (row) => (
       <div className="flex">
         <Avatar className="rounded-full">
           <AvatarImage
-            src={row.original?.user?.image ?? "/placeholders/user.svg"}
+            src={row.row.original?.user?.image ?? "/placeholders/user.svg"}
           />
         </Avatar>
 
         <div className=" ml-2">
-          <p>{row.original?.user?.name}</p>
-          <p>{row.original?.user?.email}</p>
+          <p>{row.getValue()}</p>
+          <p>{row.row.original?.user?.email}</p>
         </div>
       </div>
     ),
-  },
-  {
-    accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Title"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => <div className="text-left">{row.getValue("title")}</div>,
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Status"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => <div>{humanizeStatus(row.original.status)}</div>,
+  }),
+  columnHelper.accessor("title", {
+    header: "Title",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (row) => <div>{humanizeStatus[row.getValue()]}</div>,
     filterFn: (row, id, value: string[]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return value.includes(row.getValue(id));
     },
-  },
-  {
+  }),
+
+  columnHelper.display({
     id: "actions",
     enableHiding: false,
+    enableSorting: false,
     cell: ({ row, table }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const router = useRouter();
@@ -278,38 +238,13 @@ export const columns: ColumnDef<Member[number]>[] = [
         </DropdownMenu>
       );
     },
-  },
+  }),
 ];
 
 const MemberTable = ({ members, roles }: MembersType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  const table = useReactTable({
+  const table = useDataTable({
     data: members,
     columns: columns,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
     meta: {
       roles,
     },

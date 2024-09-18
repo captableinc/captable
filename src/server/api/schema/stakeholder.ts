@@ -4,6 +4,8 @@ import {
 } from "@/prisma/enums";
 import { z } from "@hono/zod-openapi";
 
+import { OffsetPaginationQuerySchema, generateSortParam } from "./pagination";
+
 const StakeholderTypeArray = Object.values(StakeholderTypeEnum) as [
   StakeholderTypeEnum,
   ...StakeholderTypeEnum[],
@@ -32,6 +34,11 @@ export const StakeholderSchema = z
     institutionName: z.string().nullish().openapi({
       description: "Institution name",
       example: "ACME Corp",
+    }),
+
+    taxId: z.string().nullish().openapi({
+      description: "Tax id",
+      example: "12-3456789",
     }),
 
     stakeholderType: z.enum(StakeholderTypeArray).openapi({
@@ -106,6 +113,24 @@ export const UpdateStakeholderSchema = StakeholderSchema.omit({
     description: "Update a stakeholder by ID",
   });
 
+const sortFields = generateSortParam(["createdAt", "name", "email"] as const);
+
+export const parseManyStakeholderSortParam = sortFields.parseSortParam;
+export const ManyStakeholderSortParams = sortFields.sortParams;
+export const ManyStakeholderSortParamsSchema = sortFields.schema;
+
+export const ManyStakeholderQuerySchema = z
+  .object({
+    sort: ManyStakeholderSortParamsSchema.optional().default("createdAt.desc"),
+    name: z.string().optional(),
+  })
+  .merge(OffsetPaginationQuerySchema);
+
 export type TStakeholderSchema = z.infer<typeof StakeholderSchema>;
 export type TCreateStakeholderSchema = z.infer<typeof CreateStakeholderSchema>;
 export type TUpdateStakeholderSchema = z.infer<typeof UpdateStakeholderSchema>;
+export type TManyStakeholderSortParams =
+  (typeof ManyStakeholderSortParams)[number];
+export type TManyStakeholderQuerySchema = z.infer<
+  typeof ManyStakeholderQuerySchema
+>;

@@ -1,23 +1,41 @@
 import EmptyState from "@/components/common/empty-state";
 import StakeholderDropdown from "@/components/stakeholder/stakeholder-dropdown";
 import StakeholderTable from "@/components/stakeholder/stakeholder-table";
-import { Card } from "@/components/ui/card";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/lib/rbac/access-control";
-import { api } from "@/trpc/server";
+import { getManyStakeholder } from "@/server/api/client-handlers/stakeholder";
+import { ManyStakeholderQuerySchema } from "@/server/api/schema/stakeholder";
+import { withServerSession } from "@/server/auth";
 import { RiGroup2Fill } from "@remixicon/react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Stakeholders",
 };
 
-const StakeholdersPage = async () => {
+const StakeholdersPage = async ({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) => {
+  const session = await withServerSession();
+
   const { allow } = await serverAccessControl();
-  const stakeholders = await allow(api.stakeholder.getStakeholders.query(), [
-    "stakeholder",
-    "read",
-  ]);
+
+  const { limit, page, sort, name } =
+    ManyStakeholderQuerySchema.parse(searchParams);
+
+  const stakeholders = await allow(
+    getManyStakeholder({
+      searchParams: { limit, page, sort, ...(name && { name }) },
+      urlParams: {
+        companyId: session.user.companyId,
+      },
+      headers: headers(),
+    }),
+    ["stakeholder", "read"],
+  );
 
   const stakeholderDropdown = allow(
     <StakeholderDropdown />,
@@ -29,7 +47,11 @@ const StakeholdersPage = async () => {
     return <UnAuthorizedState />;
   }
 
-  if (stakeholders.length === 0) {
+  if (
+    stakeholders?.data &&
+    stakeholders?.data.length === 0 &&
+    Object.keys(searchParams).length === 0
+  ) {
     return (
       <EmptyState
         icon={<RiGroup2Fill />}
@@ -54,9 +76,13 @@ const StakeholdersPage = async () => {
         <div>{stakeholderDropdown}</div>
       </div>
 
-      <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
-        <StakeholderTable stakeholders={stakeholders} />
-      </Card>
+      <StakeholderTable
+        limit={limit}
+        page={page}
+        sort={sort}
+        stakeholders={stakeholders}
+        name={name}
+      />
     </div>
   );
 };

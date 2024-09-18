@@ -1,23 +1,12 @@
 "use client";
 
+import { useDataTable } from "@/hooks/use-data-table";
 import { ADMIN_PERMISSION } from "@/lib/rbac/constants";
 import type { TPermission } from "@/lib/rbac/schema";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { pushModal } from "../modals";
@@ -27,7 +16,6 @@ import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { DataTable } from "../ui/data-table/data-table";
 import { DataTableBody } from "../ui/data-table/data-table-body";
-import { SortButton } from "../ui/data-table/data-table-buttons";
 import { DataTableContent } from "../ui/data-table/data-table-content";
 import { DataTableHeader } from "../ui/data-table/data-table-header";
 import { DataTablePagination } from "../ui/data-table/data-table-pagination";
@@ -47,8 +35,10 @@ interface RoleTableProps {
   roles: Role[];
 }
 
-export const columns: ColumnDef<Role>[] = [
-  {
+const columnHelper = createColumnHelper<Role>();
+
+export const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -69,27 +59,17 @@ export const columns: ColumnDef<Role>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "name",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    accessorKey: "name",
-    cell: ({ row }) => {
-      return <div>{row.getValue("name")}</div>;
-    },
-  },
-  {
-    accessorKey: "type",
+  }),
+
+  columnHelper.accessor("name", {
+    header: "Name",
+    cell: (row) => row.getValue(),
+  }),
+
+  columnHelper.accessor("type", {
     header: () => <div className="text-right">Type</div>,
-    cell: ({ row }) => {
-      const type = row.original.type;
+    cell: (row) => {
+      const type = row.getValue();
       return (
         <div className="text-right">
           <Badge variant={type === "default" ? "secondary" : "success"}>
@@ -98,9 +78,11 @@ export const columns: ColumnDef<Role>[] = [
         </div>
       );
     },
-  },
-  {
+  }),
+
+  columnHelper.display({
     id: "actions",
+    enableSorting: false,
     enableHiding: false,
     cell: ({ row }) => {
       const role = row.original;
@@ -177,7 +159,7 @@ export const columns: ColumnDef<Role>[] = [
         </DropdownMenu>
       );
     },
-  },
+  }),
 ];
 
 function getPermission(permissions_: TPermission[]) {
@@ -197,31 +179,9 @@ function getPermission(permissions_: TPermission[]) {
 }
 
 export function RoleTable({ roles }: RoleTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-
-  const table = useReactTable({
+  const table = useDataTable({
     data: roles,
     columns: columns,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   });
 
   return (

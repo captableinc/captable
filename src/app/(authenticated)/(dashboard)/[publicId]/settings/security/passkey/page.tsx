@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Security",
 };
 export default async function PasskeyPage() {
-  const passkeys = await api.passkey.find.query();
+  const passkeys = await api.passkey.find();
   return (
     <div className="flex flex-col gap-y-3">
       <div className="flex items-center justify-between gap-y-3 ">

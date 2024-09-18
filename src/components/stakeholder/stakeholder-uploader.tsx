@@ -17,7 +17,7 @@ const StakeholderUploader = () => {
 
   const router = useRouter();
 
-  const { mutateAsync, isLoading } =
+  const { mutateAsync, isPending: isLoading } =
     api.stakeholder.addStakeholders.useMutation({
       onSuccess: ({ success, message }) => {
         if (success) {

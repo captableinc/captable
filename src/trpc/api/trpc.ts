@@ -21,6 +21,7 @@ import {
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 import * as Sentry from "@sentry/nextjs";
+import { cache } from "react";
 
 interface Meta {
   policies: addPolicyOption;
@@ -38,7 +39,7 @@ interface Meta {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = cache(async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
 
   return {
@@ -48,12 +49,11 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     userAgent: getUserAgent(opts.headers),
     ...opts,
   };
-};
+});
 
 export type CreateTRPCContextType = Awaited<
   ReturnType<typeof createTRPCContext>
 >;
-
 const withAuthTrpcContext = ({ session, ...rest }: CreateTRPCContextType) => {
   if (!session || !session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -126,22 +126,12 @@ export type withAccessControlTrpcContextType = ReturnType<
  * ZodErrors so that you get typesafety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
-const t = initTRPC
-  .context<typeof createTRPCContext>()
-  .meta<Meta>()
-  .create({
-    transformer: superjson,
-    errorFormatter({ shape, error }) {
-      return {
-        ...shape,
-        data: {
-          ...shape.data,
-          zodError:
-            error.cause instanceof ZodError ? error.cause.flatten() : null,
-        },
-      };
-    },
-  });
+const t = initTRPC.context<CreateTRPCContextType>().meta<Meta>().create({
+  /**
+   * @see https://trpc.io/docs/server/data-transformers
+   */
+  transformer: superjson,
+});
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -155,7 +145,6 @@ const t = initTRPC
  *
  * @see https://trpc.io/docs/router
  */
-export const createTRPCRouter = t.router;
 
 const sentryMiddleware = t.middleware(
   Sentry.trpcMiddleware({
@@ -213,3 +202,6 @@ export const withAccessControl = t.procedure.use(
     });
   }),
 );
+
+export const createTRPCRouter = t.router;
+export const createCallerFactory = t.createCallerFactory;

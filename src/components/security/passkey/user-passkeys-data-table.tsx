@@ -1,33 +1,19 @@
 "use client";
 
+import { dayjsExt } from "@/common/dayjs";
 import { Badge } from "@/components/ui/badge";
+import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import type { RouterOutputs } from "@/trpc/shared";
-import * as React from "react";
-
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
-import { dayjsExt } from "@/common/dayjs";
-import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { useDataTable } from "@/hooks/use-data-table";
 import { api } from "@/trpc/react";
+import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
+import * as React from "react";
 import { toast } from "sonner";
 import { Button } from "../../ui/button";
 import {
@@ -60,94 +46,52 @@ const humanizeDeviceType = (type: string) => {
   }
 };
 
-export const columns: ColumnDef<Passkey[number]>[] = [
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Device Name"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => <div className="text-left">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "credentialDeviceType",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Device type"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">
-        {humanizeDeviceType(row.getValue("credentialDeviceType"))}
-      </div>
+const columnHelper = createColumnHelper<Passkey[number]>();
+
+const columns = [
+  columnHelper.accessor("name", {
+    header: "Device Name",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+  columnHelper.accessor("credentialDeviceType", {
+    header: "Device type",
+    cell: (row) => (
+      <div className="text-left">{humanizeDeviceType(row.getValue())}</div>
     ),
-  },
-  {
-    accessorKey: "credentialBackedUp",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Backup"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
+  }),
+  columnHelper.accessor("credentialBackedUp", {
+    header: "Backup",
+    cell: (row) => (
       <div className="text-left">
         <Badge
-          variant={row.getValue("credentialBackedUp") ? "success" : "warning"}
+          variant={row.getValue() ? "success" : "warning"}
           className="h-7 align-middle"
         >
-          {row.getValue("credentialBackedUp") ? "Done" : "Pending"}
+          {row.getValue() ? "Done" : "Pending"}
         </Badge>
       </div>
     ),
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Created"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">
-        {dayjsExt(row.getValue("createdAt")).fromNow()}
+  }),
+  columnHelper.accessor("createdAt", {
+    header: "Created",
+    cell: (row) => (
+      <div className="text-left" suppressHydrationWarning>
+        {dayjsExt(row.getValue()).fromNow()}
       </div>
     ),
-  },
-
-  {
-    accessorKey: "lastUsedAt",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Used"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">
-        {row.getValue("lastUsedAt")
-          ? dayjsExt(row.getValue("lastUsedAt")).fromNow()
-          : "Not yet"}
+  }),
+  columnHelper.accessor("lastUsedAt", {
+    header: "Used",
+    cell: (row) => (
+      <div className="text-left" suppressHydrationWarning>
+        {row.getValue() ? dayjsExt(row.getValue()).fromNow() : "Not yet"}
       </div>
     ),
-  },
-  {
+  }),
+  columnHelper.display({
     id: "actions",
     enableHiding: false,
+    enableSorting: false,
     cell: ({ row }) => {
       const [open, setOpen] = React.useState<boolean>(false);
       const router = useRouter();
@@ -213,38 +157,13 @@ export const columns: ColumnDef<Passkey[number]>[] = [
         </>
       );
     },
-  },
+  }),
 ];
 
 const PasskeyTable = ({ passkey }: PasskeyType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  const table = useReactTable({
+  const table = useDataTable({
     data: passkey ?? [],
     columns: columns,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   });
 
   return (

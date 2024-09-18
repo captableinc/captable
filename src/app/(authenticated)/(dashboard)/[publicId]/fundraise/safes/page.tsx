@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const SafePage = async () => {
-  const safes = await api.safe.getSafes.query();
+  const safes = await api.safe.getSafes();
 
   if (!safes?.data?.length) {
     return (

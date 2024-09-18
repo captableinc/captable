@@ -12,12 +12,12 @@ import { GeneralDetails } from "./steps/general-details";
 import { RelevantDates } from "./steps/relevant-dates";
 
 async function ContributionDetailsStep() {
-  const stakeholders = await api.stakeholder.getStakeholders.query();
+  const stakeholders = await api.stakeholder.getStakeholders();
   return <ContributionDetails stakeholders={stakeholders} />;
 }
 
 async function GeneralDetailsStep() {
-  const shareClasses = await api.shareClass.get.query();
+  const shareClasses = await api.shareClass.get();
   return <GeneralDetails shareClasses={shareClasses} />;
 }
 

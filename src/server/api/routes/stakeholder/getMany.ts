@@ -1,14 +1,15 @@
 import { z } from "@hono/zod-openapi";
+import { OffsetPaginationResponseSchema } from "../../schema/pagination";
 import {
-  PaginationQuerySchema,
-  PaginationResponseSchema,
-} from "../../schema/pagination";
-import { StakeholderSchema } from "../../schema/stakeholder";
+  ManyStakeholderQuerySchema,
+  StakeholderSchema,
+  parseManyStakeholderSortParam,
+} from "../../schema/stakeholder";
 import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
 
 const ResponseSchema = z.object({
   data: z.array(StakeholderSchema),
-  meta: PaginationResponseSchema,
+  meta: OffsetPaginationResponseSchema,
 });
 
 const ParamsSchema = z.object({
@@ -33,7 +34,7 @@ export const getMany = withAuthApiV1
     path: "/v1/{companyId}/stakeholders",
     middleware: [authMiddleware()],
     request: {
-      query: PaginationQuerySchema,
+      query: ManyStakeholderQuerySchema,
       params: ParamsSchema,
     },
     responses: {
@@ -50,13 +51,25 @@ export const getMany = withAuthApiV1
   .handler(async (c) => {
     const { membership } = c.get("session");
     const { db } = c.get("services");
-    const query = c.req.valid("query");
+    const { limit, page, sort, name: query } = c.req.valid("query");
 
     const [data, meta] = await db.stakeholder
-      .paginate({ where: { companyId: membership.companyId } })
-      .withCursor({
-        limit: query.limit,
-        after: query.cursor,
+      .paginate({
+        where: {
+          companyId: membership.companyId,
+          ...(query && {
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              { email: { contains: query, mode: "insensitive" } },
+            ],
+          }),
+        },
+        orderBy: parseManyStakeholderSortParam(sort),
+      })
+      .withPages({
+        includePageCount: true,
+        limit,
+        page,
       });
 
     const response: z.infer<typeof ResponseSchema> = {

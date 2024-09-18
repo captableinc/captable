@@ -1,18 +1,6 @@
 "use client";
 
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -31,10 +19,10 @@ import { api } from "@/trpc/react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { useDataTable } from "@/hooks/use-data-table";
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
@@ -48,8 +36,10 @@ type SafesType = {
   safes: Safe;
 };
 
-export const columns: ColumnDef<Safe[number]>[] = [
-  {
+const columnHelper = createColumnHelper<Safe[number]>();
+
+export const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -70,124 +60,59 @@ export const columns: ColumnDef<Safe[number]>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "stakeholderName",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Stakeholder"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    accessorFn: (row) => row?.stakeholder?.name,
-    cell: ({ row }) => (
+  }),
+
+  columnHelper.accessor("stakeholder.name", {
+    header: "Stakeholder",
+    cell: (row) => (
       <div className="flex">
         <Avatar className="h-10 w-10 rounded-full">
           <AvatarImage src={"/avatar.svg"} />
         </Avatar>
         <div className=" ml-2 pt-2">
-          <p>{row?.original?.stakeholder?.name}</p>
+          <p>{row.getValue()}</p>
         </div>
       </div>
     ),
-  },
-  {
-    accessorKey: "capital",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Capital"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">{row.getValue("capital")}</div>
-    ),
-  },
-  {
-    accessorKey: "valuationCap",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="ValuationCap"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">{row.getValue("valuationCap")}</div>
-    ),
-  },
-  {
-    accessorKey: "type",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Type"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => <div className="text-left">{row.getValue("type")}</div>,
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Status"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">{row.getValue("status")}</div>
-    ),
-  },
-  {
-    accessorKey: "discountRate",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Discount Rate"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">{row.getValue("discountRate")}</div>
-    ),
-  },
-  {
-    accessorKey: "issueDate",
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Issue Date"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-left">
-        {new Date().toLocaleDateString(row.getValue("issueDate"))}
+  }),
+
+  columnHelper.accessor("capital", {
+    header: "Capital",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+
+  columnHelper.accessor("valuationCap", {
+    header: "Valuation Cap",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+
+  columnHelper.accessor("type", {
+    header: "Type",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+
+  columnHelper.accessor("status", {
+    header: "Status",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+
+  columnHelper.accessor("discountRate", {
+    header: "Discount Rate",
+    cell: (row) => <div className="text-left">{row.getValue()}</div>,
+  }),
+  columnHelper.accessor("issueDate", {
+    header: "Issue Date",
+    cell: (row) => (
+      <div className="text-left" suppressHydrationWarning>
+        {new Date(row.getValue()).toLocaleDateString()}
       </div>
     ),
-  },
-  {
+  }),
+  columnHelper.display({
     id: "Documents",
+    enableSorting: false,
     enableHiding: false,
-    header: ({ column }) => {
-      return (
-        <SortButton
-          label="Documents"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
-      );
-    },
+    header: "Documents",
     cell: ({ row }) => {
       const openFileOnTab = async (key: string) => {
         const fileUrl = await getPresignedGetUrl(key);
@@ -235,9 +160,10 @@ export const columns: ColumnDef<Safe[number]>[] = [
         </DropdownMenu>
       );
     },
-  },
-  {
+  }),
+  columnHelper.display({
     id: "actions",
+    enableSorting: false,
     enableHiding: false,
     cell: ({ row }) => {
       const router = useRouter();
@@ -289,38 +215,13 @@ export const columns: ColumnDef<Safe[number]>[] = [
         </DropdownMenu>
       );
     },
-  },
+  }),
 ];
 
 export const SafeTable = ({ safes }: SafesType) => {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  const table = useReactTable({
+  const table = useDataTable({
     data: safes ?? [],
     columns: columns,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   });
 
   return (

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const ApiSettingsPage = async () => {
   const { allow } = await serverAccessControl();
 
-  const data = await allow(api.bankAccounts.getAll.query(), [
+  const data = await allow(api.bankAccounts.getAll(), [
     "bank-accounts",
     "read",
   ]);

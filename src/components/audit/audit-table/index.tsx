@@ -1,33 +1,17 @@
 "use client";
 
-import * as React from "react";
-
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
-import { Checkbox } from "@/components/ui/checkbox";
-
-import { type RouterOutputs } from "@/trpc/shared";
-
 import { dayjsExt } from "@/common/dayjs";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { useDataTable } from "@/hooks/use-data-table";
+import type { RouterOutputs } from "@/trpc/shared";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import * as React from "react";
 import { AuditTableToolbar } from "./audit-table-toolbar";
 
 type Audit = RouterOutputs["audit"]["getAudits"]["data"];
@@ -36,8 +20,10 @@ interface AuditTableProps {
   audits: Audit;
 }
 
-export const columns: ColumnDef<Audit[number]>[] = [
-  {
+const columnHelper = createColumnHelper<Audit[number]>();
+
+export const columns = [
+  columnHelper.display({
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -58,83 +44,43 @@ export const columns: ColumnDef<Audit[number]>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    id: "action",
-    accessorKey: "action",
-    header: () => {
-      return <div>Action</div>;
-    },
-    cell: ({ row }) => (
+  }),
+
+  columnHelper.accessor("action", {
+    header: "Action",
+    cell: (row) => (
       <div>
-        <Badge variant="secondary">{row.getValue("action")}</Badge>
+        <Badge variant="secondary">{row.getValue()}</Badge>
       </div>
     ),
-    filterFn: (row, id, value: string[]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-  },
+  }),
 
-  {
-    id: "occurredAt",
-    accessorKey: "occurredAt",
-    header: ({ column }) => {
+  columnHelper.accessor("occurredAt", {
+    header: "Time",
+    cell: (row) => {
+      const date = new Date(row.getValue());
+      const formattedDate = dayjsExt(date).format("lll");
       return (
-        <SortButton
-          label="Time"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        />
+        <time suppressHydrationWarning dateTime={date.toISOString()}>
+          {formattedDate}
+        </time>
       );
     },
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("occurredAt"));
-      const formattedDate = dayjsExt(date).format("lll");
-      return <time dateTime={date.toISOString()}>{formattedDate}</time>;
-    },
-  },
+  }),
 
-  {
-    id: "summary",
-    accessorKey: "summary",
-    header: () => {
-      return <div>Summary</div>;
-    },
-    cell: ({ row }) => {
-      return <p>{row.getValue("summary")}</p>;
-    },
-  },
+  columnHelper.accessor("summary", {
+    header: "Summary",
+    cell: (row) => row.getValue(),
+  }),
 ];
 
 export function AuditTable({ audits }: AuditTableProps) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  const table = useReactTable({
+  const table = useDataTable({
     data: audits,
     columns: columns,
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   });
 
   return (

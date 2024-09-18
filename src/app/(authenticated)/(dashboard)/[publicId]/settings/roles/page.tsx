@@ -8,7 +8,7 @@ import { api } from "@/trpc/server";
 export default async function RolesPage() {
   const { allow } = await serverAccessControl();
 
-  const data = await allow(api.rbac.listRoles.query(), ["roles", "read"]);
+  const data = await allow(api.rbac.listRoles(), ["roles", "read"]);
 
   const canCreate = allow(true, ["roles", "create"]);
 

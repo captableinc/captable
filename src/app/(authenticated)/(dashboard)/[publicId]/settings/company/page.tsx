@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 
 const CompanySettingsPage = async () => {
   const { allow } = await serverAccessControl();
-  const data = await allow(api.company.getCompany.query(), [
-    "company",
-    "update",
-  ]);
+  const data = await allow(api.company.getCompany(), ["company", "update"]);
 
   if (!data?.company) {
     return <UnAuthorizedState />;

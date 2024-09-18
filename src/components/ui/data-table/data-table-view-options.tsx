@@ -9,10 +9,10 @@ import {
 } from "../dropdown-menu";
 
 import { RiArrowDownSLine } from "@remixicon/react";
-import { useDataTable } from "./data-table";
+import { useTable } from "./data-table";
 
 export function DataTableViewOptions() {
-  const { table } = useDataTable();
+  const { table } = useTable();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

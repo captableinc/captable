@@ -26,7 +26,7 @@ export default async function SigningPage(props: SigningPageProps) {
     templateId,
     signableFields,
     status: templateStatus,
-  } = await api.template.getSigningFields.query({
+  } = await api.template.getSigningFields({
     token,
   });
 

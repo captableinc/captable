@@ -1,4 +1,4 @@
-import { useDataTable } from "../ui/data-table/data-table";
+import { useTable } from "../ui/data-table/data-table";
 import { ResetButton } from "../ui/data-table/data-table-buttons";
 import { DataTableFacetedFilter } from "../ui/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "../ui/data-table/data-table-view-options";
@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { statusValues } from "./data";
 
 export function MemberTableToolbar() {
-  const { table } = useDataTable();
+  const { table } = useTable();
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

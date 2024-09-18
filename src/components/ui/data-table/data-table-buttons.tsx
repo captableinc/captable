@@ -1,20 +1,6 @@
 import { cn } from "@/lib/utils";
-import { RiCloseLine, RiExpandUpDownLine } from "@remixicon/react";
+import { RiCloseLine } from "@remixicon/react";
 import { Button, type ButtonProps } from "../button";
-
-interface SortButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children"> {
-  label: string;
-}
-
-export function SortButton({ label, className, ...rest }: SortButtonProps) {
-  return (
-    <button {...rest} className={cn("flex cursor-pointer", className)}>
-      {label}
-      <RiExpandUpDownLine aria-hidden className="ml-2 h-4 w-4" />
-    </button>
-  );
-}
 
 type ResetButtonProps = Omit<ButtonProps, "children" | "variant">;
 

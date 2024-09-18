@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 };
 
 const SharesPage = async () => {
-  const shares = await api.securities.getShares.query();
-  const stakeholders = await api.stakeholder.getStakeholders.query();
-  const shareClasses = await api.shareClass.get.query();
+  const shares = await api.securities.getShares();
+  const stakeholders = await api.stakeholder.getStakeholders();
+  const shareClasses = await api.shareClass.get();
 
   if (shares?.data?.length === 0) {
     return (

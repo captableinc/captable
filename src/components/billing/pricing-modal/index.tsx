@@ -44,7 +44,7 @@ function Plans({ products, subscription }: PricingProps) {
   const [billingInterval, setBillingInterval] =
     useState<PricingPlanInterval>("month");
 
-  const { mutateAsync: checkoutWithStripe, isLoading: checkoutLoading } =
+  const { mutateAsync: checkoutWithStripe, isPending: checkoutLoading } =
     api.billing.checkout.useMutation({
       onSuccess: async ({ stripeSessionId }) => {
         const stripe = await getStripeClient();
@@ -52,7 +52,7 @@ function Plans({ products, subscription }: PricingProps) {
       },
     });
 
-  const { mutateAsync: stripePortal, isLoading: stripePortalLoading } =
+  const { mutateAsync: stripePortal, isPending: stripePortalLoading } =
     api.billing.stripePortal.useMutation({
       onSuccess: ({ url }) => {
         router.push(url);

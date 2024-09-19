@@ -93,7 +93,7 @@ services:
         mc alias set myminio http://minio:9002 captable password;
         mc mb myminio/captable-private-bucket;
         mc mb myminio/captable-public-bucket;
-        mc policy set public myminio/captable-public-bucket;
+        mc anonymous set public myminio/captable-public-bucket;
         exit 0;
       "
 volumes:

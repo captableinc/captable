@@ -1,62 +1,64 @@
+import { dayjsExt } from "@/common/dayjs";
 import EsignEmail from "@/emails/EsignEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/jobs/base";
+import { EsignAudit } from "@/server/audit";
 import { db } from "@/server/db";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { render } from "@react-email/components";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
-export interface EsignEmailPayloadType {
-  documentName?: string;
-  message?: string | null;
-  recipient: {
-    id: string;
-    name: string | null | undefined;
-    email: string;
-  };
-  sender?: {
-    name: string | null | undefined;
-    email: string | null | undefined;
-  };
-  company?: {
-    name: string;
-    logo: string | null | undefined;
-  };
-}
+const Schema = z.object({
+  documentName: z.string().optional(),
+  message: z.string().nullish(),
+  recipient: z.object({
+    id: z.string(),
+    name: z.string().nullish(),
+    email: z.string().email(),
+  }),
+  sender: z
+    .object({
+      name: z.string().nullish(),
+      email: z.string().email().nullish(),
+    })
+    .optional(),
+  company: z
+    .object({
+      name: z.string(),
+      logo: z.string().nullish(),
+    })
+    .optional(),
+  email: z.string().email(),
+  token: z.string(),
+  userAgent: z.string(),
+  requestIp: z.string(),
+  companyId: z.string(),
+});
 
-interface AdditionalPayloadType {
-  email: string;
-  token: string;
-}
+export type TESignNotificationEmailJobInput = z.infer<typeof Schema>;
 
-export type ExtendedEsignPayloadType = EsignEmailPayloadType &
-  AdditionalPayloadType;
+const config = defineWorkerConfig({
+  name: "email.esign-notification",
+  schema: Schema,
+});
 
-export const sendEsignEmail = async (payload: ExtendedEsignPayloadType) => {
-  const { email, token, sender, ...rest } = payload;
-  const baseUrl = env.NEXT_PUBLIC_BASE_URL;
-  const html = await renderAsync(
-    EsignEmail({
-      signingLink: `${baseUrl}/esign/${token}`,
+export const eSignNotificationEmailJob = defineJob(config);
+export const eSignNotificationEmailWorker = defineWorker(
+  config,
+  async (job) => {
+    const {
+      email,
+      token,
       sender,
-      ...rest,
-    }),
-  );
-  await sendMail({
-    to: email,
-    ...(sender?.email && { replyTo: sender.email }),
-    subject: "eSign Document Request",
-    html,
-    headers: {
-      "X-From-Name": sender?.name || "Captable",
-    },
-  });
-};
+      userAgent,
+      requestIp,
+      documentName,
+      companyId,
+      ...rest
+    } = job.data;
 
-export class EsignNotificationEmailJob extends BaseJob<ExtendedEsignPayloadType> {
-  readonly type = "email.esign-notification";
+    const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
-  async work(job: Job<ExtendedEsignPayloadType>): Promise<void> {
     await db.$transaction(async (tx) => {
       const recipient = await tx.esignRecipient.update({
         where: {
@@ -67,16 +69,41 @@ export class EsignNotificationEmailJob extends BaseJob<ExtendedEsignPayloadType>
         },
       });
 
-      await tx.template.update({
-        where: {
-          id: recipient.templateId,
+      await EsignAudit.create(
+        {
+          action: "document.email.sent",
+          companyId,
+          recipientId: recipient.id,
+          templateId: recipient.templateId,
+          ip: requestIp,
+          location: "",
+          userAgent,
+          summary: `${
+            sender?.name ? sender.name : ""
+          } sent "${documentName}" to ${
+            recipient.name ? recipient.name : ""
+          } for eSignature at ${dayjsExt(new Date()).format("lll")}`,
         },
-        data: {
-          status: "SENT",
-        },
-      });
+        tx,
+      );
     });
 
-    await sendEsignEmail(job.data);
-  }
-}
+    const html = await render(
+      EsignEmail({
+        signingLink: `${baseUrl}/esign/${token}`,
+        sender,
+        documentName,
+        ...rest,
+      }),
+    );
+    await sendMail({
+      to: email,
+      ...(sender?.email && { replyTo: sender.email }),
+      subject: "eSign Document Request",
+      html,
+      headers: {
+        "X-From-Name": sender?.name || "Captable",
+      },
+    });
+  },
+);

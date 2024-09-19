@@ -1,23 +1,25 @@
 import AccountVerificationEmail from "@/emails/AccountVerificationEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { render } from "@react-email/components";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
-export type AuthVerificationPayloadType = {
-  email: string;
-  token: string;
-};
+const config = defineWorkerConfig({
+  name: "email.auth-verify",
+  schema: z.object({
+    email: z.string(),
+    token: z.string(),
+  }),
+});
 
-export const sendAuthVerificationEmail = async (
-  payload: AuthVerificationPayloadType,
-) => {
-  const { email, token } = payload;
+export const authVerificationEmailJob = defineJob(config);
+export const authVerificationEmailWorker = defineWorker(config, async (job) => {
+  const { email, token } = job.data;
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
   const confirmLink = `${baseUrl}/verify-email/${token}`;
 
-  const html = await renderAsync(
+  const html = await render(
     AccountVerificationEmail({
       verifyLink: confirmLink,
     }),
@@ -28,12 +30,4 @@ export const sendAuthVerificationEmail = async (
     subject: "Confirm your email",
     html,
   });
-};
-
-export class AuthVerificationEmailJob extends BaseJob<AuthVerificationPayloadType> {
-  readonly type = "email.auth-verify";
-
-  async work(job: Job<AuthVerificationPayloadType>): Promise<void> {
-    await sendAuthVerificationEmail(job.data);
-  }
-}
+});

@@ -10,9 +10,9 @@ import {
   Text,
 } from "@react-email/components";
 
-import type { ConfirmationEmailPayloadType } from "../jobs/esign-confirmation-email";
+import type { TSchema } from "../jobs/esign-confirmation-email";
 
-type Payload = Omit<ConfirmationEmailPayloadType, "fileUrl">;
+type Payload = Omit<TSchema, "fileUrl">;
 
 const ESignConfirmationEmail = ({
   documentName,

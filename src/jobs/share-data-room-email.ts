@@ -1,22 +1,25 @@
 import ShareDataRoomEmail from "@/emails/ShareDataRoomEmail";
-import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { render } from "@react-email/components";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
-export type DataRoomEmailPayloadType = {
-  link: string;
-  dataRoom: string;
-  email: string;
-  senderName: string;
-  companyName: string;
-  recipientName?: string | null | undefined;
-  senderEmail?: string | null | undefined;
-};
+const config = defineWorkerConfig({
+  name: "email.share-data-room",
+  schema: z.object({
+    link: z.string(),
+    dataRoom: z.string(),
+    email: z.string().email(),
+    senderName: z.string(),
+    companyName: z.string(),
+    recipientName: z.string().nullish(),
+    senderEmail: z.string().email().nullish(),
+  }),
+});
 
-export const sendShareDataRoomEmail = async (
-  payload: DataRoomEmailPayloadType,
-) => {
+export const shareDataRoomEmailJob = defineJob(config);
+
+export const shareDataRoomEmailWorker = defineWorker(config, async (job) => {
   const {
     dataRoom,
     link,
@@ -25,12 +28,12 @@ export const sendShareDataRoomEmail = async (
     senderName,
     email,
     senderEmail,
-  } = payload;
+  } = job.data;
   await sendMail({
     to: email,
     ...(senderEmail && { replyTo: senderEmail }),
     subject: `${senderName} shared a data room - ${dataRoom}`,
-    html: await renderAsync(
+    html: await render(
       ShareDataRoomEmail({
         senderName: senderName,
         recipientName,
@@ -44,12 +47,4 @@ export const sendShareDataRoomEmail = async (
       "X-From-Name": senderName,
     },
   });
-};
-
-export class ShareDataRoomEmailJob extends BaseJob<DataRoomEmailPayloadType> {
-  readonly type = "email.share-data-room";
-
-  async work(job: Job<DataRoomEmailPayloadType>): Promise<void> {
-    await sendShareDataRoomEmail(job.data);
-  }
-}
+});

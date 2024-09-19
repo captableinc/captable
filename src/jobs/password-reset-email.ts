@@ -1,24 +1,26 @@
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 import { env } from "@/env";
-import { BaseJob } from "@/jobs/base";
 import { sendMail } from "@/server/mailer";
-import { renderAsync } from "@react-email/components";
-import type { Job } from "pg-boss";
+import { render } from "@react-email/components";
+import { z } from "zod";
+import { defineJob, defineWorker, defineWorkerConfig } from "../lib/queue";
 
-export type PasswordResetPayloadType = {
-  email: string;
-  token: string;
-};
+const config = defineWorkerConfig({
+  name: "email.password-reset",
+  schema: z.object({
+    email: z.string(),
+    token: z.string(),
+  }),
+});
 
-export const sendPasswordResetEmail = async (
-  payload: PasswordResetPayloadType,
-) => {
-  const { email, token } = payload;
+export const passwordResetEmailJob = defineJob(config);
+export const passwordResetEmailWorker = defineWorker(config, async (job) => {
+  const { email, token } = job.data;
   const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
   const confirmLink = `${baseUrl}/reset-password/${token}`;
 
-  const html = await renderAsync(
+  const html = await render(
     PasswordResetEmail({
       resetLink: confirmLink,
     }),
@@ -29,12 +31,4 @@ export const sendPasswordResetEmail = async (
     subject: "Reset your password",
     html,
   });
-};
-
-export class PasswordResetEmailJob extends BaseJob<PasswordResetPayloadType> {
-  readonly type = "email.password-reset";
-
-  async work(job: Job<PasswordResetPayloadType>): Promise<void> {
-    await sendPasswordResetEmail(job.data);
-  }
-}
+});

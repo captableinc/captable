@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/prefer-for-of */
 import {
-  EsignNotificationEmailJob,
-  type ExtendedEsignPayloadType,
+  type TESignNotificationEmailJobInput,
+  eSignNotificationEmailJob,
 } from "@/jobs/esign-email";
 import { decode, encode } from "@/lib/jwt";
 import { Audit } from "@/server/audit";
@@ -46,9 +45,9 @@ export const addFieldProcedure = withAuth
     try {
       const user = ctx.session.user;
       const { userAgent, requestIp } = ctx;
-      const mails: ExtendedEsignPayloadType[] = [];
+      const mails: TESignNotificationEmailJobInput[] = [];
 
-      if (input.status === "COMPLETE" && (!user.email || !user.name)) {
+      if (input.status === "PENDING" && (!user.email || !user.name)) {
         return {
           success: false,
           title: "Validation failed",
@@ -147,7 +146,7 @@ export const addFieldProcedure = withAuth
           },
         });
 
-        if (input.status === "COMPLETE") {
+        if (input.status === "PENDING") {
           const nonDeletableRecipientIdList = recipientList.map(
             (item) => item.id,
           );
@@ -190,6 +189,9 @@ export const addFieldProcedure = withAuth
                 name: template.company.name,
                 logo: template.company.logo,
               },
+              requestIp,
+              companyId,
+              userAgent,
             });
 
             if (template.orderedDelivery) {
@@ -202,7 +204,7 @@ export const addFieldProcedure = withAuth
       });
 
       if (mails.length) {
-        new EsignNotificationEmailJob().bulkEmit(
+        await eSignNotificationEmailJob.bulkEmit(
           mails.map((data) => ({
             data,
             singletonKey: `esign-notify-${template.id}-${data.recipient.id}`,
@@ -213,9 +215,9 @@ export const addFieldProcedure = withAuth
       return {
         success: true,
         title:
-          input.status === "COMPLETE" ? "Sent for e-sign" : "Saved in draft",
+          input.status === "PENDING" ? "Sent for e-sign" : "Saved in draft",
         message:
-          input.status === "COMPLETE"
+          input.status === "PENDING"
             ? "Successfully sent document for e-signature."
             : "Your template fields has been created.",
       };

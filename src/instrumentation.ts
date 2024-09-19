@@ -2,8 +2,9 @@ import { isSentryEnabled } from "@/constants/sentry";
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { startJobs } = await import("@/jobs/start");
-    await startJobs();
+    const { registerJobs } = await import("@/jobs/register");
+
+    await registerJobs();
 
     if (isSentryEnabled) {
       await import("../sentry.server.config");

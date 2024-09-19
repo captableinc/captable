@@ -60,6 +60,9 @@ export const env = createEnv({
     // sentry
     SENTRY_ORG: z.string().optional(),
     SENTRY_PROJECT: z.string().optional(),
+
+    //job queue
+    QUEUE_DATABASE_URL: z.string().optional(),
   },
 
   /**
@@ -116,6 +119,9 @@ export const env = createEnv({
     NEXT_PUBLIC_SENTRY_DSN: readRuntimePublicEnvVariable(
       "NEXT_PUBLIC_SENTRY_DSN",
     ),
+
+    /// job queue
+    WORKER_DATABASE_URL: process.env.WORKER_DATABASE_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -31,7 +31,7 @@ export const TemplateFieldForm = ({
         toast.error(`${title}, ${message}`);
       }
 
-      if (status === "COMPLETE") {
+      if (status === "PENDING") {
         router.push(`/${companyPublicId}/documents/esign`);
       }
     },

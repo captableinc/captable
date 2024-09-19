@@ -12,7 +12,7 @@ const TemplateFieldMetaType = z.object({
 export type TTemplateFieldMetaType = z.infer<typeof TemplateFieldMetaType>;
 
 export const ZodAddFieldMutationSchema = z.object({
-  status: z.nativeEnum(TemplateStatus),
+  status: z.enum([TemplateStatus.DRAFT, TemplateStatus.PENDING]),
   templatePublicId: z.string(),
   data: z.array(
     z.object({

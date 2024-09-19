@@ -8,5 +8,5 @@ export const JOB_TYPES = {
     "esign-confirmation",
     "esign-notification",
   ],
-  generate: ["esign-pdf"],
+  esign: ["generate-pdf", "complete-pdf"],
 } as const;

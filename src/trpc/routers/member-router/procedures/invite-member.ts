@@ -1,4 +1,4 @@
-import { SendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
+import { sendMemberInviteEmailJob } from "@/jobs/member-inivite-email";
 import { getRoleById } from "@/lib/rbac/access-control";
 import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
@@ -141,7 +141,7 @@ export const inviteMemberProcedure = withAccessControl
       },
     );
 
-    const payload = {
+    await sendMemberInviteEmailJob.emit({
       verificationToken,
       passwordResetToken,
       email,
@@ -150,9 +150,7 @@ export const inviteMemberProcedure = withAccessControl
         email: user.email,
         name: user.name,
       },
-    };
-
-    await new SendMemberInviteEmailJob().emit(payload);
+    });
 
     return { success: true };
   });

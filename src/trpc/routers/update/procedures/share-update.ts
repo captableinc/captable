@@ -1,8 +1,5 @@
 import { env } from "@/env";
-import {
-  ShareUpdateEmailJob,
-  type UpdateSharePayloadType,
-} from "@/jobs/share-update-email";
+import { shareUpdateEmailJob } from "@/jobs/share-update-email";
 import { encode } from "@/lib/jwt";
 import { UpdateStatusEnum } from "@/prisma/enums";
 import { ShareRecipientSchema } from "@/schema/contacts";
@@ -88,7 +85,7 @@ export const shareUpdateProcedure = withAuth
 
         const link = `${baseUrl}/updates/${update.publicId}?token=${token}`;
 
-        const payload: UpdateSharePayloadType = {
+        await shareUpdateEmailJob.emit({
           senderName: `${senderName}`,
           recipientName: recipient.name,
           companyName: company.name,
@@ -98,9 +95,7 @@ export const shareUpdateProcedure = withAuth
           link,
           email,
           senderEmail,
-        };
-
-        await new ShareUpdateEmailJob().emit(payload);
+        });
       }
     };
 

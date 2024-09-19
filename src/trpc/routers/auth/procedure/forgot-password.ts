@@ -1,4 +1,4 @@
-import { PasswordResetEmailJob } from "@/jobs/password-reset-email";
+import { passwordResetEmailJob } from "@/jobs/password-reset-email";
 import { generatePasswordResetToken } from "@/lib/token";
 import { getUserByEmail } from "@/server/user";
 import { withoutAuth } from "@/trpc/api/trpc";
@@ -18,7 +18,7 @@ export const forgotPasswordProcedure = withoutAuth
     }
     const { email, token } = await generatePasswordResetToken(input);
 
-    await new PasswordResetEmailJob().emit({ email, token });
+    await passwordResetEmailJob.emit({ email, token });
 
     return {
       success: true,

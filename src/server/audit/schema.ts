@@ -59,6 +59,7 @@ export const AuditSchema = z.object({
     "update.unshared",
 
     "accessToken.created",
+    "accessToken.rotated",
     "accessToken.deleted",
 
     "bucket.created",

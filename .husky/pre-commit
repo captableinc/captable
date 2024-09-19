@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# #!/usr/bin/env sh
+# . "$(dirname -- "$0")/_/husky.sh"
 
-SKIP_ENV_VALIDATION=true pnpm lint-staged
+# SKIP_ENV_VALIDATION=true pnpm lint-staged

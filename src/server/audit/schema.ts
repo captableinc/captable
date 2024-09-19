@@ -61,6 +61,10 @@ export const AuditSchema = z.object({
     "accessToken.created",
     "accessToken.deleted",
 
+    "bankAccount.created",
+    "bankAccount.deleted",
+    "bankAccount.updated",
+
     "bucket.created",
 
     "dataroom.created",
@@ -97,6 +101,7 @@ export const AuditSchema = z.object({
         "update",
         "stakeholder",
         "accessToken",
+        "bankAccount",
         "bucket",
         "stripeSession",
         "stripeBillingPortalSession",
@@ -106,7 +111,7 @@ export const AuditSchema = z.object({
         "passkey",
       ]),
       id: z.string().optional().nullable(),
-    }),
+    })
   ),
 
   context: z.object({

@@ -28,15 +28,22 @@ import { usePathname, useRouter } from "next/navigation";
 import { z } from "zod";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { ConfirmDialog } from "../common/confirmDialog";
+import { useState } from "react";
 
 
 type AddBankAccountType = {
   title: string | React.ReactNode;
   subtitle: string | React.ReactNode;
+  data: any
 };
+
+type PrimarySwitchedTypeEnum = "null" | "primarySwitchedToTrue" | "primarySwitchedToFalse"
+
 
 const formSchema = z
   .object({
+    id: z.string().min(1),
     beneficiaryName: z.string().min(1, {
       message: "Beneficiary Name is required",
     }),
@@ -59,7 +66,8 @@ const formSchema = z
       message: "Confirm Routing Number is required",
     }),
     accountType: z.nativeEnum(BankAccountTypeEnum).default("CHECKING"),
-    isPrimary: z.boolean().default(false),
+    primary: z.boolean().default(false),
+    primarySwitched: z.enum(["null", "primarySwitchedToTrue", "primarySwitchedToFalse"]).default("null")
   })
   .refine((data) => data.routingNumber === data.confirmRoutingNumber, {
     path: ["confirmRoutingNumber"],
@@ -68,44 +76,63 @@ const formSchema = z
 
 type TFormSchema = z.infer<typeof formSchema>;
 
-export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
+export const EditBankAccountModal = ({ title, subtitle, data }: AddBankAccountType) => {
+
   const router = useRouter();
   const pathname = usePathname();
+  const [switchEnabled, setSwitchEnabled] = useState(false);
+  const [primarySwitched, setPrimarySwitch] = useState<PrimarySwitchedTypeEnum>("null");
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      beneficiaryName: "",
-      beneficiaryAddress: "",
-      bankName: "",
-      bankAddress: "",
-      accountNumber: "",
-      routingNumber: "",
+      id: data?.id,
+      beneficiaryName: data?.beneficiaryAddress,
+      beneficiaryAddress: data?.beneficiaryAddress,
+      bankName: data?.bankName,
+      bankAddress: data?.bankAddress,
+      accountNumber: data?.accountNumber,
+      routingNumber: data?.routingNumber,
       confirmRoutingNumber: "",
-      accountType: BankAccountTypeEnum.CHECKING,
-      isPrimary: false,
+      accountType: data?.accountType,
+      primary: data?.primary,
+      primarySwitched: "null",
     },
   });
 
-  const { mutateAsync: handleBankAccount, isLoading, isSuccess } =
-    api.bankAccounts.create.useMutation({
+  const { mutateAsync: handleUpdateBankAccount, isLoading, isSuccess } =
+    api.bankAccounts.updateBankAccount.useMutation({
       onSuccess: ({message}) => {
-        if (message.includes("Looks like you have created both primary and non-primary accounts") || message.includes("Looks like there is an account set to primary") || message.includes("Looks like there is an account set to non-primary")) {
-          toast.error(message)
-        } else {
-          toast.success(message)
-        }
+        toast.success(message)
         router.refresh()
       },
 
       onError: (error) => {
-        console.log("Error creating Bank Account", error);
-        toast.error("An error occurred while creating bank account.");
+        console.log("Error updating Bank Account", error);
+        toast.error("An error occurred while updating bank account.");
       },
     });
 
-  const handleSubmit = async (data: TFormSchema) => {
+  const handleEnableSwitch = () => {
+    setSwitchEnabled(true)
+  }
+
+  const handleSetPrimary = (e: boolean) => {
+
+    if (data?.primary) {
+      setPrimarySwitch("primarySwitchedToFalse");
+    } else {
+      setPrimarySwitch("primarySwitchedToTrue");
+    }
+    form.setValue("primary", e)
+    
+    
+  }
+
+  const handleFormSubmit = async (data: TFormSchema) => {
     try {
-      await handleBankAccount(data);
+      data = {...data, primarySwitched: primarySwitched}
+
+      await handleUpdateBankAccount(data);
       window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/${pathname}`
     } catch (error) {
       console.log("Error creating Bank Account", error);
@@ -116,7 +143,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
     <Modal size="xl" title={title} subtitle={subtitle}>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleSubmit)}
+          onSubmit={form.handleSubmit(handleFormSubmit)}
           className="flex flex-col gap-y-4"
         >
           <div className="flex items-center gap-4">
@@ -128,7 +155,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                   <FormItem>
                     <FormLabel>Beneficiary Name</FormLabel>
                     <FormControl>
-                      <Input {...field} required />
+                      <Input {...field} required  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,7 +171,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                   <FormItem>
                     <FormLabel>Beneficiary Address</FormLabel>
                     <FormControl>
-                      <Input {...field} required />
+                      <Input {...field} required  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,7 +189,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                   <FormItem>
                     <FormLabel>Bank Name</FormLabel>
                     <FormControl>
-                      <Input {...field} required />
+                      <Input {...field} required  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -200,6 +227,7 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
                       required
                       type="number"
                       className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      
                     />
                   </FormControl>
 
@@ -292,18 +320,39 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="isPrimary"
+                name="primary"
                 render={({ field }) => (
                   <FormItem className="flex justify-center items-center">
                     <FormLabel className="pr-2">Primary Account</FormLabel>
                     <FormControl>
-                      <Switch
-                        id="is-primary"
-                        className="mt-0"
-                        onCheckedChange={(e) => form.setValue("isPrimary", e)}
-                        defaultChecked={false}
-                      />
+                      <>
+                        <ConfirmDialog title="Edit Primary/ Secondary" 
+                          body={`Please note that other primary/secondary account will be set as secondary/primary, are you sure you want to proceed?`} 
+                          trigger={ 
+                            !switchEnabled && <Switch
+                            id="is-primary"
+                            className="mt-0"
+                            onCheckedChange={(e) => form.setValue("primary", e)}
+                            defaultChecked={data?.primary}
+                          />
+                          } 
+                          onConfirm={handleEnableSwitch} 
+                        />
+
+                        { 
+                        switchEnabled 
+                          && 
+                          <Switch
+                            id="is-primary"
+                            className="mt-0"
+                            disabled={!switchEnabled}
+                            onCheckedChange={(e) => handleSetPrimary(e)}
+                            defaultChecked={data?.primary}
+                          />
+                        }
+                      </>
                     </FormControl>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -311,10 +360,12 @@ export const BankAccountModal = ({ title, subtitle }: AddBankAccountType) => {
             </div>
           </div>
           
-            <Button type="submit" disabled={isLoading}>Submit</Button>
+            <Button type="submit">Update</Button>
           
         </form>
       </Form>
+
+      
     </Modal>
   );
 };

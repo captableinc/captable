@@ -233,6 +233,7 @@ model Member {
   updates          Update[]
   dataRooms        DataRoomRecipient[]
   UpdateRecipient  UpdateRecipient[]
+  SafeSignerMember SafeSignerMember[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -296,13 +297,13 @@ model Stakeholder {
   investments      Investment[]
   shares           Share[]
   options          Option[]
-  safes            Safe[]
   convertibleNotes ConvertibleNote[]
   updates          UpdateRecipient[]
   dataRooms        DataRoomRecipient[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  SafeSignerStakeholder SafeSignerStakeholder[]
 
   @@index([companyId])
 }
@@ -844,11 +845,14 @@ model Safe {
 
   documents Document[]
 
-  stakeholderId String
-  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
-
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  signer             SafeSignerMember @relation(fields: [safeSignerMemberId], references: [id])
+  safeSignerMemberId String
+
+  signerStakeholder       SafeSignerStakeholder @relation(fields: [safeSignerStakeholderId], references: [id])
+  safeSignerStakeholderId String
 
   bankAccountId String
   bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
@@ -860,8 +864,31 @@ model Safe {
 
   @@unique([publicId, companyId])
   @@index([companyId])
-  @@index([stakeholderId])
   @@index([bankAccountId])
+  @@index([safeSignerMemberId])
+  @@index([safeSignerStakeholderId])
+}
+
+model SafeSignerMember {
+  id String @id @default(cuid())
+
+  member   Member                @relation(fields: [memberId], references: [id])
+  memberId String
+  Safe     Safe[]
+  fields   DocumentCustomField[]
+
+  @@index([memberId])
+}
+
+model SafeSignerStakeholder {
+  id String @id @default(cuid())
+
+  stakeholder   Stakeholder           @relation(fields: [stakeholderId], references: [id])
+  stakeholderId String
+  Safe          Safe[]
+  fields        DocumentCustomField[]
+
+  @@index([stakeholderId])
 }
 
 enum ConvertibleStatusEnum {
@@ -1151,4 +1178,29 @@ model AccessToken {
 
   @@index([userId])
   @@index([typeEnum, clientId])
+}
+
+model DocumentCustomField {
+  id             String     @id @default(cuid())
+  name           String
+  type           FieldTypes @default(TEXT)
+  defaultValue   String     @default("")
+  readOnly       Boolean    @default(false)
+  required       Boolean    @default(false)
+  prefilledValue String?
+
+  /// [TemplateFieldMeta]
+  meta Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  safeSignerStakeholder   SafeSignerStakeholder? @relation(fields: [safeSignerStakeholderId], references: [id])
+  safeSignerStakeholderId String?
+
+  safeSignerMember   SafeSignerMember? @relation(fields: [safeSignerMemberId], references: [id])
+  safeSignerMemberId String?
+
+  @@index([safeSignerStakeholderId])
+  @@index([safeSignerMemberId])
 }

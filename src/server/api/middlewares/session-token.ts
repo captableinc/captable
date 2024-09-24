@@ -74,7 +74,6 @@ async function fetchSessionFromAuthUrl(
     new Request(newUrl, {
       method: "GET",
       headers: clonedRequest.headers,
-      body: clonedRequest.body,
     }),
   );
 

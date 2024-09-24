@@ -25,6 +25,7 @@ const AuthHeaderSchema = z.object({
   authorization: z
     .string()
     .regex(/^Bearer [a-zA-Z0-9_]+/)
+    .optional()
     .openapi({
       description: "Bearer token to authorize the request",
       example: "Bearer api_x0X0x0X0x0X0x0X0x0X0x0X",
@@ -92,7 +93,7 @@ const createApi = <V extends Version, L extends boolean>(
 };
 
 export const authMiddleware = (option?: accessTokenAuthMiddlewareOptions) =>
-  some(sessionCookieAuthMiddleware(), accessTokenAuthMiddleware(option));
+  some(accessTokenAuthMiddleware(option), sessionCookieAuthMiddleware());
 
 export const ApiV1 = createApi("v1");
 

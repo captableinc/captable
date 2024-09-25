@@ -212,7 +212,7 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
   return (
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
-        <div className="fixed h-screen gap-y-4 py-4 mb-2">
+        <div className="fixed h-screen gap-y-4 py-4">
           <div className="flex items-center px-1 py-2">
             <CaptableLogo className="h-7 w-auto" />
 

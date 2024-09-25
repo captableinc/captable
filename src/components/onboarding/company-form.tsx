@@ -194,11 +194,30 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
 
   const isDirty = form.formState.isDirty;
 
+  type IncorpType = "llc" | "c-corp" | "s-corp" | "other";
+
+  const existingIncorpType = data?.company.incorporationType as IncorpType;
+
+  const humanizeIncorpType = (key: IncorpType) => {
+    switch (key) {
+      case "llc":
+        return "LLC - Limited Liability Company";
+      case "c-corp":
+        return "C-Corp - C Corporation";
+      case "s-corp":
+        return "S-Corp - S Corporation";
+      case "other":
+        return "Others or International";
+      default:
+        return "Unknown Incorporation Type";
+    }
+  };
+
   const incorpTypeOpts = [
-    { value: "llc", label: "LLC - Limited Liability Company" },
-    { value: "c-corp", label: "C-Corp - C Corporation" },
-    { value: "s-corp", label: "S-Corp - S Corporation" },
-    { value: "other", label: "Others or International" },
+    { value: "llc", label: humanizeIncorpType("llc") },
+    { value: "c-corp", label: humanizeIncorpType("c-corp") },
+    { value: "s-corp", label: humanizeIncorpType("s-corp") },
+    { value: "other", label: humanizeIncorpType("other") },
   ];
 
   return (
@@ -425,6 +444,12 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
                     {/* Used Linear-combobox instead of Select Component */}
                     <div>
                       <LinearCombobox
+                        defaultOption={{
+                          value: existingIncorpType ?? "",
+                          label: existingIncorpType
+                            ? humanizeIncorpType(existingIncorpType)
+                            : "Select type",
+                        }}
                         options={incorpTypeOpts}
                         onValueChange={(option) => {
                           field.onChange(option.value);

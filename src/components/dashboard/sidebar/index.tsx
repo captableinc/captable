@@ -212,14 +212,14 @@ export function SideBar({ className, publicId, companies }: SideBarProps) {
   return (
     <ScrollArea className="h-screen px-3">
       <div className={cn("pb-12", className)}>
-        <div className="fixed gap-y-4 py-4">
+        <div className="fixed h-screen gap-y-4 py-4">
           <div className="flex items-center px-1 py-2">
             <CaptableLogo className="h-7 w-auto" />
 
             <CompanySwitcher companies={companies} publicId={publicId} />
           </div>
 
-          <div className="overflow-auto py-2">
+          <div className="overflow-auto h-full pt-2 pb-8">
             <ul className="space-y-1">
               {navigation.map((item) => {
                 const href = basePath + item.href;

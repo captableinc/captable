@@ -1,3 +1,4 @@
+import { generatePublicId } from "@/common/id";
 import {
   CreateStakeholderSchema,
   StakeholderSchema,
@@ -7,10 +8,15 @@ import {
   withAuthApiV1,
 } from "@/server/api/utils/endpoint-creator";
 import { z } from "@hono/zod-openapi";
+import {
+  CreateSafeSchema,
+  SafeSchema,
+  type TSafeSchema,
+} from "../../schema/safe";
 
 const ResponseSchema = z.object({
   message: z.string(),
-  data: z.array(StakeholderSchema.pick({ id: true, name: true })),
+  data: SafeSchema,
 });
 
 const ParamsSchema = z.object({
@@ -38,7 +44,7 @@ export const create = withAuthApiV1
       body: {
         content: {
           "application/json": {
-            schema: CreateStakeholderSchema,
+            schema: CreateSafeSchema,
           },
         },
       },
@@ -56,57 +62,98 @@ export const create = withAuthApiV1
     },
   })
   .handler(async (c) => {
-    const { db, audit, client } = c.get("services");
+    const { db } = c.get("services");
     const { membership } = c.get("session");
-    const { requestIp, userAgent } = client as {
-      requestIp: string;
-      userAgent: string;
-    };
 
     const body = c.req.valid("json");
 
-    const stakeholders = await db.$transaction(async (tx) => {
-      const inputDataWithCompanyId = body.map((stakeholder) => ({
-        ...stakeholder,
-        companyId: membership.companyId,
-      }));
-
-      const addedStakeholders = await tx.stakeholder.createManyAndReturn({
-        data: inputDataWithCompanyId,
+    const safe = await db.$transaction(async (tx) => {
+      const stakeholder = await tx.stakeholder.findFirstOrThrow({
+        where: {
+          id: body.signerStakeholderId,
+          companyId: membership.companyId,
+        },
         select: {
           id: true,
-          name: true,
         },
       });
 
-      const auditPromises = addedStakeholders.map((stakeholder) =>
-        audit.create(
-          {
-            action: "stakeholder.added",
-            companyId: membership.companyId,
-            actor: { type: "user", id: membership.userId },
-            context: {
-              requestIp,
-              userAgent,
-            },
-            target: [{ type: "stakeholder", id: stakeholder.id }],
-            summary: `${membership.user.name} added the stakholder in the company : ${stakeholder.name}`,
-          },
-          tx,
-        ),
-      );
-      await Promise.all(auditPromises);
+      const member = await tx.member.findFirstOrThrow({
+        where: {
+          id: body.signerMemberId,
+          companyId: membership.companyId,
+        },
+        select: {
+          id: true,
+        },
+      });
 
-      return addedStakeholders;
+      const bankAccount = await tx.bankAccount.findFirstOrThrow({
+        where: {
+          id: body.bankAccountId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const signerMember = await tx.safeSignerMember.create({
+        data: {
+          memberId: member.id,
+          fields: {
+            create: {
+              type: "SIGNATURE",
+              name: "Signature",
+              required: true,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const signerStakeholder = await tx.safeSignerStakeholder.create({
+        data: {
+          stakeholderId: stakeholder.id,
+          fields: {
+            create: {
+              type: "SIGNATURE",
+              name: "Signature",
+              required: true,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const { signerMemberId, signerStakeholderId, ...rest } = body;
+
+      const safe = await tx.safe.create({
+        data: {
+          ...rest,
+          publicId: generatePublicId(),
+          signerMemberId: signerMember.id,
+          signerStakeholderId: signerStakeholder.id,
+          companyId: membership.companyId,
+          bankAccountId: bankAccount.id,
+        },
+      });
+
+      return safe;
     });
 
-    const data: z.infer<typeof ResponseSchema>["data"] = stakeholders;
+    const data: TSafeSchema = {
+      ...safe,
+      createdAt: new Date(safe.createdAt).toISOString(),
+      updatedAt: new Date(safe.updatedAt).toISOString(),
+      issueDate: new Date(safe.issueDate).toISOString(),
+      boardApprovalDate: safe.boardApprovalDate
+        ? new Date(safe.boardApprovalDate).toISOString()
+        : safe.boardApprovalDate,
+    };
 
-    return c.json(
-      {
-        data,
-        message: "Stakeholders successfully created.",
-      },
-      200,
-    );
+    return c.json({ data, message: "safe created successfully" });
   });

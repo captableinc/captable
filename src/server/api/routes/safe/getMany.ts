@@ -1,5 +1,4 @@
-import { ApiError } from "@/server/api/error";
-import { ApiSafeSchema, type ApiSafeType } from "@/server/api/schema/safe";
+import { SafeSchema, type TSafeSchema } from "@/server/api/schema/safe";
 import {
   authMiddleware,
   withAuthApiV1,
@@ -19,7 +18,7 @@ const ParamsSchema = z.object({
 });
 
 const ResponseSchema = z.object({
-  data: ApiSafeSchema.array(),
+  data: z.array(SafeSchema),
 });
 
 export const getMany = withAuthApiV1
@@ -46,20 +45,23 @@ export const getMany = withAuthApiV1
   })
   .handler(async (c) => {
     const { db } = c.get("services");
-    const { companyId } = c.req.valid("param");
+    const { membership } = c.get("session");
 
-    const safes = (await db.safe.findMany({
+    const safes = await db.safe.findMany({
       where: {
-        companyId,
+        companyId: membership.companyId,
       },
-    })) as ApiSafeType[];
+    });
 
-    if (!safes) {
-      throw new ApiError({
-        code: "NOT_FOUND",
-        message: "No safe with the provided Id",
-      });
-    }
+    const data: TSafeSchema[] = safes.map((safe) => ({
+      ...safe,
+      createdAt: new Date(safe.createdAt).toISOString(),
+      updatedAt: new Date(safe.updatedAt).toISOString(),
+      issueDate: new Date(safe.issueDate).toISOString(),
+      boardApprovalDate: safe.boardApprovalDate
+        ? new Date(safe.boardApprovalDate).toISOString()
+        : safe.boardApprovalDate,
+    }));
 
-    return c.json({ data: safes }, 200);
+    return c.json({ data }, 200);
   });

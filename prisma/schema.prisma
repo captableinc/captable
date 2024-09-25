@@ -830,7 +830,7 @@ enum SafeTemplateEnum {
 
 model Safe {
   id           String            @id @default(cuid())
-  publicId     String? // eg. SAFE-01
+  publicId     String
   type         SafeTypeEnum      @default(POST_MONEY)
   status       SafeStatusEnum    @default(DRAFT)
   capital      Float // Amount of money invested

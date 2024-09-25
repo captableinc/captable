@@ -1,5 +1,5 @@
 import { ApiError } from "@/server/api/error";
-import { ApiSafeSchema, type ApiSafeType } from "@/server/api/schema/safe";
+import { SafeSchema, type TSafeSchema } from "@/server/api/schema/safe";
 import {
   authMiddleware,
   withAuthApiV1,
@@ -28,7 +28,7 @@ const ParamsSchema = z.object({
 });
 
 const ResponseSchema = z.object({
-  data: ApiSafeSchema,
+  data: SafeSchema,
 });
 
 export const getOne = withAuthApiV1
@@ -58,12 +58,12 @@ export const getOne = withAuthApiV1
     const { membership } = c.get("session");
     const { id } = c.req.valid("param");
 
-    const safe = (await db.safe.findUnique({
+    const safe = await db.safe.findUnique({
       where: {
         id,
         companyId: membership.companyId,
       },
-    })) as ApiSafeType | null;
+    });
 
     if (!safe) {
       throw new ApiError({
@@ -71,6 +71,15 @@ export const getOne = withAuthApiV1
         message: `SAFE with id ${id} could not be found`,
       });
     }
+    const data: TSafeSchema = {
+      ...safe,
+      createdAt: new Date(safe.createdAt).toISOString(),
+      updatedAt: new Date(safe.updatedAt).toISOString(),
+      issueDate: new Date(safe.issueDate).toISOString(),
+      boardApprovalDate: safe.boardApprovalDate
+        ? new Date(safe.boardApprovalDate).toISOString()
+        : safe.boardApprovalDate,
+    };
 
-    return c.json({ data: safe }, 200);
+    return c.json({ data }, 200);
   });

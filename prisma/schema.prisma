@@ -848,11 +848,11 @@ model Safe {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  signer             SafeSignerMember @relation(fields: [safeSignerMemberId], references: [id])
-  safeSignerMemberId String
+  signer         SafeSignerMember @relation(fields: [signerMemberId], references: [id])
+  signerMemberId String
 
-  signerStakeholder       SafeSignerStakeholder @relation(fields: [safeSignerStakeholderId], references: [id])
-  safeSignerStakeholderId String
+  signerStakeholder   SafeSignerStakeholder @relation(fields: [signerStakeholderId], references: [id])
+  signerStakeholderId String
 
   bankAccountId String
   bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
@@ -865,8 +865,8 @@ model Safe {
   @@unique([publicId, companyId])
   @@index([companyId])
   @@index([bankAccountId])
-  @@index([safeSignerMemberId])
-  @@index([safeSignerStakeholderId])
+  @@index([signerMemberId])
+  @@index([signerStakeholderId])
 }
 
 model SafeSignerMember {

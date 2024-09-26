@@ -31,7 +31,7 @@ const ResponseSchema = z.object({
   }),
 });
 
-export const _delete = withAuthApiV1
+export const deleteOne = withAuthApiV1
   .createRoute({
     method: "delete",
     path: "/v1/{companyId}/shares/{id}",

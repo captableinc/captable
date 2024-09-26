@@ -57,6 +57,12 @@ export const getMany = withAuthApiV1
       .withCursor({
         limit: query.limit,
         after: query.cursor,
+        getCursor({ id }) {
+          return id;
+        },
+        parseCursor(cursor) {
+          return { id: cursor };
+        },
       });
 
     const response: z.infer<typeof ResponseSchema> = {

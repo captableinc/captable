@@ -93,6 +93,7 @@ export type TSafeSchema = z.infer<typeof SafeSchema>;
 
 export const CreateSafeSchema = SafeSchema.omit({
   createdAt: true,
+  updatedAt: true,
   documents: true,
   id: true,
   publicId: true,

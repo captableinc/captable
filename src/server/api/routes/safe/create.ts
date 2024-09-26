@@ -139,6 +139,7 @@ export const create = withAuthApiV1
           signerStakeholderId: signerStakeholder.id,
           companyId: membership.companyId,
           bankAccountId: bankAccount.id,
+          issueDate: new Date(rest.issueDate),
         },
       });
 

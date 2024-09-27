@@ -22,9 +22,8 @@
     "postinstall": "prisma generate",
     "prepare": "husky",
     "lint": "biome check --apply ./src",
-    "email:dev": "mailpit",
+    "email:dev": "email dev --dir ./src/emails --port 3005",
     "format": "biome format --write ./src && prisma format",
-    "email:preview": "email preview ./src/emails",
     "copy:pdfjs": "node scripts/copy-pdfjs-worker.cjs",
     "knip": "knip",
     "test": "vitest"

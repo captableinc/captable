@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import { constants } from "@/lib/constants";
 import {
   Button,
@@ -15,18 +16,19 @@ interface SafeSigningEmailProps {
   companyName: string;
   type: string;
   investmentAmount: string;
-  link: string;
-  baseUrl: string;
+  token: string;
 }
+
+const baseUrl = env.NEXT_PUBLIC_BASE_URL;
 
 export function SafeSigningEmail({
   name = "John doe",
   companyName = "Acme inc",
   type = "post money",
   investmentAmount = "$100,000",
-  link = "https://www.example.com",
-  baseUrl = "http://localhost:3000",
+  token = "23343dsdsdsd233d",
 }: SafeSigningEmailProps) {
+  const link = `${baseUrl}/safe/${token}`;
   return (
     <Html>
       <Tailwind>

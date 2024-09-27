@@ -6,6 +6,7 @@ import { eSignNotificationEmailWorker } from "./esign-email";
 import { eSignPdfWorker } from "./esign-pdf";
 import { sendMemberInviteEmailWorker } from "./member-inivite-email";
 import { passwordResetEmailWorker } from "./password-reset-email";
+import { safeSigningEmailWorker } from "./safe-signing-email";
 import { shareDataRoomEmailWorker } from "./share-data-room-email";
 import { shareUpdateEmailWorker } from "./share-update-email";
 
@@ -19,6 +20,7 @@ export async function registerJobs() {
   queueManager.register(eSignConfirmationEmailWorker);
   queueManager.register(eSignPdfWorker);
   queueManager.register(eSignCompletePDFWorker);
+  queueManager.register(safeSigningEmailWorker);
 
   //start
   await queueManager.start();

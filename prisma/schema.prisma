@@ -872,10 +872,11 @@ model Safe {
 model SafeSignerMember {
   id String @id @default(cuid())
 
-  member   Member                @relation(fields: [memberId], references: [id])
-  memberId String
-  Safe     Safe[]
-  fields   DocumentCustomField[]
+  member           Member                @relation(fields: [memberId], references: [id])
+  memberId         String
+  Safe             Safe[]
+  fields           DocumentCustomField[]
+  SafeSigningToken SafeSigningToken[]
 
   @@index([memberId])
 }
@@ -883,12 +884,36 @@ model SafeSignerMember {
 model SafeSignerStakeholder {
   id String @id @default(cuid())
 
-  stakeholder   Stakeholder           @relation(fields: [stakeholderId], references: [id])
-  stakeholderId String
-  Safe          Safe[]
-  fields        DocumentCustomField[]
+  stakeholder      Stakeholder           @relation(fields: [stakeholderId], references: [id])
+  stakeholderId    String
+  Safe             Safe[]
+  fields           DocumentCustomField[]
+  SafeSigningToken SafeSigningToken[]
 
   @@index([stakeholderId])
+}
+
+enum SafeSignerType {
+  STAKEHOLDER
+  MEMBER
+}
+
+model SafeSigningToken {
+  id    String         @id @default(cuid())
+  token String         @unique
+  type  SafeSignerType
+
+  signerMember   SafeSignerMember? @relation(fields: [signerMemberId], references: [id])
+  signerMemberId String?
+
+  signerStakeholder   SafeSignerStakeholder? @relation(fields: [signerStakeholderId], references: [id])
+  signerStakeholderId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([signerStakeholderId])
+  @@index([signerMemberId])
 }
 
 enum ConvertibleStatusEnum {

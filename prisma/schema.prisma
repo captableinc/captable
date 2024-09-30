@@ -881,9 +881,14 @@ model SafeSignerMember {
   @@index([memberId])
 }
 
-model SafeSignerStakeholder {
-  id String @id @default(cuid())
+enum SafeSigningStatus {
+  SIGNED
+  PENDING
+}
 
+model SafeSignerStakeholder {
+  id               String                @id @default(cuid())
+  status           SafeSigningStatus     @default(PENDING)
   stakeholder      Stakeholder           @relation(fields: [stakeholderId], references: [id])
   stakeholderId    String
   Safe             Safe[]
@@ -893,15 +898,10 @@ model SafeSignerStakeholder {
   @@index([stakeholderId])
 }
 
-enum SafeSignerType {
-  STAKEHOLDER
-  MEMBER
-}
-
 model SafeSigningToken {
-  id    String         @id @default(cuid())
-  token String         @unique
-  type  SafeSignerType
+  id     String            @id @default(cuid())
+  status SafeSigningStatus @default(PENDING)
+  token  String            @unique
 
   signerMember   SafeSignerMember? @relation(fields: [signerMemberId], references: [id])
   signerMemberId String?

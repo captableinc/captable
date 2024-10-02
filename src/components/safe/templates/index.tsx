@@ -93,12 +93,15 @@ export type SafeProps = {
     name: string;
     email: string;
     title: string;
+    signature?: string;
   };
 
   investor: {
     name: string;
     email: string;
-    address?: string;
+    address?: string | null;
+    title?: string;
+    signature?: string;
   };
 
   options: {

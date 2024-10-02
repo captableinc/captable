@@ -71,3 +71,9 @@ export const ZodAddExistingSafeMutationSchema = z
 export type TypeZodAddExistingSafeMutationSchema = z.infer<
   typeof ZodAddExistingSafeMutationSchema
 >;
+
+export const SignSafeSchema = z.object({
+  data: z.record(z.string()),
+  token: z.string(),
+  safeId: z.string(),
+});

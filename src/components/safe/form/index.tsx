@@ -1,7 +1,8 @@
+"use client";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,16 +25,17 @@ import { z } from "zod";
 import { PrePostSelector } from "./pre-post-selector";
 
 // Safe document preview
-import { PostMoneyCap, PostMoneyDiscount } from "@/components/safe/templates";
+import { PostMoneyDiscount } from "@/components/safe/templates";
+import { createSafe } from "@/server/api/client-handlers/safe";
 import { PDFViewer } from "@react-pdf/renderer";
+import { useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 type SafeFormProps = {
   type: "create" | "import";
 };
 
 const SafeFormSchema = z.object({
-  id: z.string().optional(),
-  publicId: z.string().optional(),
   type: z.nativeEnum(SafeTypeEnum),
   status: z.nativeEnum(SafeStatusEnum),
   capital: z.coerce.number(),
@@ -42,14 +44,19 @@ const SafeFormSchema = z.object({
   mfn: z.boolean().optional().default(false),
   proRata: z.boolean().optional().default(false),
   issueDate: z.string().date(),
-  stakeholderId: z.string(),
-  memberId: z.string(),
+  signerStakeholderId: z.string(),
+  signerMemberId: z.string(),
   bankAccountId: z.string(),
 });
 
 type SafeFormType = z.infer<typeof SafeFormSchema>;
 
+const placeholder = "________________________________________";
+
 export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
+  const { data: session } = useSession();
+  const { mutate } = useMutation(createSafe);
+
   const form = useForm<SafeFormType>({
     resolver: zodResolver(SafeFormSchema),
     defaultValues: {
@@ -64,7 +71,10 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
   const isSubmitting = form.formState.isSubmitting;
 
   const handleSubmit = (data: SafeFormType) => {
-    console.log(data);
+    mutate({
+      json: { ...data },
+      urlParams: { companyId: session?.user.companyId ?? "" },
+    });
   };
 
   return (
@@ -83,7 +93,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5 mt-5">
           <FormField
             control={form.control}
-            name="stakeholderId"
+            name="signerMemberId"
             render={() => {
               return (
                 <FormItem>
@@ -96,7 +106,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
                   </FormLabel>
                   <MemberSelector
                     onSelect={(value: string) => {
-                      form.setValue("memberId", value);
+                      form.setValue("signerMemberId", value);
                     }}
                   />
 
@@ -108,14 +118,14 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
 
           <FormField
             control={form.control}
-            name="stakeholderId"
+            name="signerStakeholderId"
             render={() => {
               return (
                 <FormItem>
                   <FormLabel>Investor</FormLabel>
                   <InvestorSelector
                     onSelect={(value: string) => {
-                      form.setValue("stakeholderId", value);
+                      form.setValue("signerStakeholderId", value);
                     }}
                   />
                   <FormMessage className="text-xs font-light" />
@@ -126,7 +136,7 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
 
           <FormField
             control={form.control}
-            name="stakeholderId"
+            name="bankAccountId"
             render={() => {
               return (
                 <FormItem>
@@ -336,8 +346,17 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
                   keywords: "YC, SAFE, Post Money, Discount",
                 }}
                 investor={{
-                  name: "Puru Dahal",
-                  email: "",
+                  name: placeholder,
+                  email: placeholder,
+                  address: placeholder,
+                  signature: placeholder,
+                  title: placeholder,
+                }}
+                sender={{
+                  email: placeholder,
+                  name: placeholder,
+                  title: placeholder,
+                  signature: placeholder,
                 }}
                 investment={100000}
                 valuation={1000000}

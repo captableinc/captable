@@ -90,7 +90,7 @@
     "lodash-es": "^4.17.21",
     "mime": "^4.0.3",
     "nanoid": "^5.0.4",
-    "next": "^14.2.5",
+    "next": "^14.2.14",
     "next-auth": "^4.24.7",
     "next-nprogress-bar": "^2.3.13",
     "nodemailer": "^6.9.14",

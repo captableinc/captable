@@ -1,4 +1,5 @@
-import { generatePublicId } from "@/common/id";
+import { customId, generatePublicId } from "@/common/id";
+import { safeSigningEmailJob } from "@/jobs/safe-signing-email";
 import {
   CreateStakeholderSchema,
   StakeholderSchema,
@@ -67,7 +68,7 @@ export const create = withAuthApiV1
 
     const body = c.req.valid("json");
 
-    const safe = await db.$transaction(async (tx) => {
+    const { safe, emailList } = await db.$transaction(async (tx) => {
       const stakeholder = await tx.stakeholder.findFirstOrThrow({
         where: {
           id: body.signerStakeholderId,
@@ -75,6 +76,8 @@ export const create = withAuthApiV1
         },
         select: {
           id: true,
+          email: true,
+          name: true,
         },
       });
 
@@ -85,6 +88,18 @@ export const create = withAuthApiV1
         },
         select: {
           id: true,
+          workEmail: true,
+          user: {
+            select: {
+              email: true,
+              name: true,
+            },
+          },
+          company: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
 
@@ -129,6 +144,26 @@ export const create = withAuthApiV1
         },
       });
 
+      const signerStakeholderToken = await tx.safeSigningToken.create({
+        data: {
+          token: generatePublicId(),
+          signerStakeholderId: signerStakeholder.id,
+        },
+        select: {
+          token: true,
+        },
+      });
+
+      const signerMemberToken = await tx.safeSigningToken.create({
+        data: {
+          token: generatePublicId(),
+          signerMemberId: signerMember.id,
+        },
+        select: {
+          token: true,
+        },
+      });
+
       const { signerMemberId, signerStakeholderId, ...rest } = body;
 
       const safe = await tx.safe.create({
@@ -143,7 +178,31 @@ export const create = withAuthApiV1
         },
       });
 
-      return safe;
+      const emailList = [
+        {
+          data: {
+            email: stakeholder.email,
+            token: signerStakeholderToken.token,
+            name: stakeholder.name,
+          },
+        },
+        {
+          data: {
+            email: member.workEmail ?? (member.user.email as string),
+            token: signerMemberToken.token,
+            name: member.user.name ?? "Unknown user",
+          },
+        },
+      ].map((item) => ({
+        data: {
+          ...item.data,
+          type: body.type === "POST_MONEY" ? "Post money" : "Pre Money",
+          companyName: member.company.name,
+          investmentAmount: String(body.capital),
+        },
+      }));
+
+      return { safe, emailList };
     });
 
     const data: TSafeSchema = {
@@ -155,6 +214,8 @@ export const create = withAuthApiV1
         ? new Date(safe.boardApprovalDate).toISOString()
         : safe.boardApprovalDate,
     };
+
+    await safeSigningEmailJob.bulkEmit(emailList);
 
     return c.json({ data, message: "safe created successfully" });
   });

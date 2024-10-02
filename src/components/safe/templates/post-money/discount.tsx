@@ -1,5 +1,3 @@
-"use client";
-
 import { Indent, type SafeProps, style } from "@/components/safe/templates";
 import { formatDate, formatPercentage, formatUsd } from "@/lib/format";
 import { Document, Link, Page, Text, View } from "@react-pdf/renderer";
@@ -11,6 +9,7 @@ const PostMoneyDiscount = ({
   date,
   company,
   options,
+  sender,
 }: SafeProps) => {
   const { title, author, subject, keywords, creator, producer } = options;
 
@@ -769,50 +768,59 @@ const PostMoneyDiscount = ({
 
         <View style={style.pt20}>
           <Text style={[style.title, { color: "blue" }]}>{company.name}</Text>
-          <Text style={[style.pb20, style.pt20]}>
-            By (signature): __________________________________
-          </Text>
+          {sender?.signature ? (
+            <Text style={[style.pb20, style.pt20]}>
+              By (signature): {sender.signature}
+            </Text>
+          ) : null}
 
-          <Text style={style.pb20}>
-            Name: ________________________________________
-          </Text>
+          {sender?.name ? (
+            <Text style={style.pb20}>Name: {sender.name}</Text>
+          ) : null}
 
-          <Text style={style.pb20}>
-            Title: _________________________________________
-          </Text>
-          <Text style={style.pb20}>
-            Address: ______________________________________
-          </Text>
+          {sender?.title ? (
+            <Text style={style.pb20}>Title: {sender?.title}</Text>
+          ) : null}
+
+          {company?.address ? (
+            <Text style={style.pb20}>Address: {company?.address}</Text>
+          ) : null}
+
           <Text style={style.pb20}>
             ______________________________________________
           </Text>
-          <Text style={style.pb20}>
-            Email: ________________________________________
-          </Text>
+          {sender?.email ? (
+            <Text style={style.pb20}>Email: {sender?.email}</Text>
+          ) : null}
         </View>
 
         <View style={style.pt20}>
           <Text style={[style.title]}>INVESTOR:</Text>
-          <Text style={[style.pb20, style.pt20]}>
-            By (signature): __________________________________
-          </Text>
 
-          <Text style={style.pb20}>
-            Name: ________________________________________
-          </Text>
+          {investor.signature ? (
+            <Text style={[style.pb20, style.pt20]}>
+              By (signature): {investor.signature}
+            </Text>
+          ) : null}
 
-          <Text style={style.pb20}>
-            Title: _________________________________________
-          </Text>
-          <Text style={style.pb20}>
-            Address: ______________________________________
-          </Text>
+          {investor.name ? (
+            <Text style={style.pb20}>Name: {investor.name}</Text>
+          ) : null}
+
+          {investor.title ? (
+            <Text style={style.pb20}>Title: {investor.title}</Text>
+          ) : null}
+
+          {investor.address ? (
+            <Text style={style.pb20}>Address: {investor.address}</Text>
+          ) : null}
+
           <Text style={style.pb20}>
             ______________________________________________
           </Text>
-          <Text style={style.pb20}>
-            Email: ________________________________________
-          </Text>
+          {investor.email ? (
+            <Text style={style.pb20}>Email: {investor.email}</Text>
+          ) : null}
         </View>
       </Page>
     </Document>

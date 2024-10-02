@@ -848,11 +848,11 @@ model Safe {
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
-  signer         SafeSignerMember @relation(fields: [signerMemberId], references: [id])
-  signerMemberId String
+  signerMember   SafeSignerMember @relation(fields: [signerMemberId], references: [id])
+  signerMemberId String           @unique
 
   signerStakeholder   SafeSignerStakeholder @relation(fields: [signerStakeholderId], references: [id])
-  signerStakeholderId String
+  signerStakeholderId String                @unique
 
   bankAccountId String
   bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
@@ -870,11 +870,11 @@ model Safe {
 }
 
 model SafeSignerMember {
-  id String @id @default(cuid())
-
+  id               String                @id @default(cuid())
+  status           SafeSigningStatus     @default(PENDING)
   member           Member                @relation(fields: [memberId], references: [id])
   memberId         String
-  Safe             Safe[]
+  safe             Safe?
   fields           DocumentCustomField[]
   SafeSigningToken SafeSigningToken[]
 
@@ -891,7 +891,7 @@ model SafeSignerStakeholder {
   status           SafeSigningStatus     @default(PENDING)
   stakeholder      Stakeholder           @relation(fields: [stakeholderId], references: [id])
   stakeholderId    String
-  Safe             Safe[]
+  safe             Safe?
   fields           DocumentCustomField[]
   SafeSigningToken SafeSigningToken[]
 
@@ -899,9 +899,8 @@ model SafeSignerStakeholder {
 }
 
 model SafeSigningToken {
-  id     String            @id @default(cuid())
-  status SafeSigningStatus @default(PENDING)
-  token  String            @unique
+  id    String @id @default(cuid())
+  token String @unique
 
   signerMember   SafeSignerMember? @relation(fields: [signerMemberId], references: [id])
   signerMemberId String?

@@ -80,8 +80,6 @@ function buildPath<U extends RouteConfig>(
   url: string,
   params: APIClientParams<U>,
 ): string {
-  console.log({ env: env.NEXT_PUBLIC_BASE_URL });
-
   let path = interpolatePath(
     `${"http://localhost:3000"}/api${url}`,
     "urlParams" in params ? params.urlParams : {},

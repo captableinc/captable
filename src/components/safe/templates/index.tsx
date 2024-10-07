@@ -76,6 +76,12 @@ export const style = StyleSheet.create({
   pb20: {
     paddingBottom: 20,
   },
+  signatureRow: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 2,
+    alignItems: "center",
+  },
 });
 
 export type SafeProps = {

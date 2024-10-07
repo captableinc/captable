@@ -1,6 +1,6 @@
 import { Indent, type SafeProps, style } from "@/components/safe/templates";
 import { formatDate, formatPercentage, formatUsd } from "@/lib/format";
-import { Document, Link, Page, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Link, Page, Text, View } from "@react-pdf/renderer";
 
 const PostMoneyDiscount = ({
   investor,
@@ -768,10 +768,25 @@ const PostMoneyDiscount = ({
 
         <View style={style.pt20}>
           <Text style={[style.title, { color: "blue" }]}>{company.name}</Text>
+
           {sender?.signature ? (
-            <Text style={[style.pb20, style.pt20]}>
-              By (signature): {sender.signature}
-            </Text>
+            <View style={[style.pb20, style.pt20, style.signatureRow]}>
+              <Text>
+                By (signature):{" "}
+                {!sender.signature.startsWith("data:image/")
+                  ? sender?.signature
+                  : null}
+              </Text>
+
+              {sender.signature.startsWith("data:image/") ? (
+                <Image
+                  style={{
+                    width: 50,
+                  }}
+                  src={sender.signature}
+                />
+              ) : null}
+            </View>
           ) : null}
 
           {sender?.name ? (
@@ -797,10 +812,24 @@ const PostMoneyDiscount = ({
         <View style={style.pt20}>
           <Text style={[style.title]}>INVESTOR:</Text>
 
-          {investor.signature ? (
-            <Text style={[style.pb20, style.pt20]}>
-              By (signature): {investor.signature}
-            </Text>
+          {investor?.signature ? (
+            <View style={[style.pb20, style.pt20, style.signatureRow]}>
+              <Text>
+                By (signature):{" "}
+                {!investor.signature.startsWith("data:image/")
+                  ? investor?.signature
+                  : null}
+              </Text>
+
+              {investor.signature.startsWith("data:image/") ? (
+                <Image
+                  style={{
+                    width: 50,
+                  }}
+                  src={investor.signature}
+                />
+              ) : null}
+            </View>
           ) : null}
 
           {investor.name ? (

@@ -1,6 +1,7 @@
 import { uploadFile } from "@/common/uploads";
 import { PostMoneyDiscount } from "@/components/safe/templates";
 import { TAG } from "@/lib/tags";
+import type { TPrismaOrTransaction } from "@/server/db";
 import { withoutAuth } from "@/trpc/api/trpc";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
@@ -23,6 +24,7 @@ export const signSafeProcedure = withoutAuth
             id: true,
             status: true,
             stakeholderId: true,
+            fields: true,
           },
         },
         signerMember: {
@@ -30,6 +32,7 @@ export const signSafeProcedure = withoutAuth
             id: true,
             status: true,
             memberId: true,
+            fields: true,
           },
         },
       },
@@ -37,6 +40,11 @@ export const signSafeProcedure = withoutAuth
 
     let safeSignerMemberStatus = safe.signerMember.status;
     let safeSignerStakeholderStatus = safe.signerStakeholder.status;
+
+    let investorSignature =
+      safe.signerStakeholder.fields[0]?.prefilledValue ?? undefined;
+    let memberSignature =
+      safe.signerMember.fields[0]?.prefilledValue ?? undefined;
 
     const token = await ctx.db.safeSigningToken.findFirstOrThrow({
       where: {
@@ -55,6 +63,18 @@ export const signSafeProcedure = withoutAuth
     });
 
     if (token.signerMemberId) {
+      const [signatureField] = await saveFieldValues(
+        safe.signerMember.fields,
+        input.data,
+        ctx.db,
+      );
+
+      if (!signatureField) {
+        throw new Error("signature filed not found");
+      }
+
+      memberSignature = signatureField;
+
       await ctx.db.safeSignerMember.update({
         where: { id: token.signerMemberId },
         data: {
@@ -65,6 +85,18 @@ export const signSafeProcedure = withoutAuth
     }
 
     if (token.signerStakeholderId) {
+      const [signatureField] = await saveFieldValues(
+        safe.signerStakeholder.fields,
+        input.data,
+        ctx.db,
+      );
+
+      if (!signatureField) {
+        throw new Error("signature filed not found");
+      }
+
+      investorSignature = signatureField;
+
       await ctx.db.safeSignerStakeholder.update({
         where: { id: token.signerStakeholderId },
         data: {
@@ -134,6 +166,7 @@ export const signSafeProcedure = withoutAuth
             email: sender?.workEmail ?? sender?.user?.email ?? "unknown email",
             name: sender.user.name ?? "unknown member",
             title: "company representative",
+            signature: memberSignature,
           },
           date: new Date().toISOString(),
           investment: 3434,
@@ -143,6 +176,7 @@ export const signSafeProcedure = withoutAuth
             email: investor.email,
             address: investor.streetAddress,
             title: investor.currentRelationship,
+            signature: investorSignature,
           },
           options: {
             author: "Y Combinator",
@@ -186,3 +220,31 @@ export const signSafeProcedure = withoutAuth
 
     return {};
   });
+
+async function saveFieldValues(
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  fields: Record<string, any>[],
+  data: Record<string, string>,
+  tx: TPrismaOrTransaction,
+) {
+  const values = [];
+
+  for (const field of fields) {
+    const value = data?.[field?.id];
+
+    if (value) {
+      await tx.documentCustomField.update({
+        where: {
+          id: field.id,
+        },
+        data: {
+          prefilledValue: value,
+        },
+      });
+
+      values.push(value);
+    }
+  }
+
+  return values;
+}

@@ -81,14 +81,14 @@ export const columns: ColumnDef<Safe[number]>[] = [
         />
       );
     },
-    accessorFn: (row) => row?.stakeholder?.name,
+    accessorFn: (row) => row?.signerStakeholder?.stakeholder?.name,
     cell: ({ row }) => (
       <div className="flex">
         <Avatar className="h-10 w-10 rounded-full">
           <AvatarImage src={"/avatar.svg"} />
         </Avatar>
         <div className=" ml-2 pt-2">
-          <p>{row?.original?.stakeholder?.name}</p>
+          <p>{row?.original?.signerStakeholder?.stakeholder?.name}</p>
         </div>
       </div>
     ),

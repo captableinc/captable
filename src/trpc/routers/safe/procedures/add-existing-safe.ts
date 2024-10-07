@@ -15,44 +15,44 @@ export const addExistingSafeProcedure = withAuth
       await ctx.db.$transaction(async (tx) => {
         const { companyId, memberId } = await checkMembership({ session, tx });
 
-        const safe = await tx.safe.create({
-          data: {
-            publicId: generatePublicId(),
-            companyId,
-            ...rest,
-            issueDate: new Date(input.issueDate),
-            boardApprovalDate: new Date(input.boardApprovalDate),
-          },
-        });
+        // const safe = await tx.safe.create({
+        //   data: {
+        //     publicId: generatePublicId(),
+        //     companyId,
+        //     ...rest,
+        //     issueDate: new Date(input.issueDate),
+        //     boardApprovalDate: new Date(input.boardApprovalDate),
+        //   },
+        // });
 
-        const bulkDocuments = documents.map((doc) => ({
-          companyId,
-          uploaderId: memberId,
-          publicId: generatePublicId(),
-          name: doc.name,
-          bucketId: doc.bucketId,
-          safeId: safe.id,
-        }));
+        // const bulkDocuments = documents.map((doc) => ({
+        //   companyId,
+        //   uploaderId: memberId,
+        //   publicId: generatePublicId(),
+        //   name: doc.name,
+        //   bucketId: doc.bucketId,
+        //   safeId: safe.id,
+        // }));
 
-        await tx.document.createMany({
-          data: bulkDocuments,
-          skipDuplicates: true,
-        });
+        // await tx.document.createMany({
+        //   data: bulkDocuments,
+        //   skipDuplicates: true,
+        // });
 
-        await Audit.create(
-          {
-            action: "safe.imported",
-            companyId,
-            actor: { type: "user", id: user.id },
-            context: {
-              userAgent,
-              requestIp,
-            },
-            target: [{ type: "company", id: companyId }],
-            summary: `${user.name} imported existing SAFEs.`,
-          },
-          tx,
-        );
+        // await Audit.create(
+        //   {
+        //     action: "safe.imported",
+        //     companyId,
+        //     actor: { type: "user", id: user.id },
+        //     context: {
+        //       userAgent,
+        //       requestIp,
+        //     },
+        //     target: [{ type: "company", id: companyId }],
+        //     summary: `${user.name} imported existing SAFEs.`,
+        //   },
+        //   tx,
+        // );
       });
 
       return {

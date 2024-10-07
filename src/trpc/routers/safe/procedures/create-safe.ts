@@ -100,29 +100,29 @@ export const createSafeProcedure = withAuth
 
         let safeData: null | SafeCreateBody;
 
-        if (inputRest.safeTemplate === "CUSTOM") {
-          const { document, ...rest } = inputRest;
+        // if (inputRest.safeTemplate === "CUSTOM") {
+        //   const { document, ...rest } = inputRest;
 
-          safeData = {
-            ...rest,
-            publicId: generatePublicId(),
-            companyId,
-            boardApprovalDate: new Date(rest.boardApprovalDate),
-            issueDate: new Date(rest.issueDate),
-          };
-        } else {
-          safeData = {
-            ...inputRest,
-            publicId: generatePublicId(),
-            companyId,
-            boardApprovalDate: new Date(inputRest.boardApprovalDate),
-            issueDate: new Date(inputRest.issueDate),
-          };
-        }
+        //   safeData = {
+        //     ...rest,
+        //     publicId: generatePublicId(),
+        //     companyId,
+        //     boardApprovalDate: new Date(rest.boardApprovalDate),
+        //     issueDate: new Date(rest.issueDate),
+        //   };
+        // } else {
+        //   safeData = {
+        //     ...inputRest,
+        //     publicId: generatePublicId(),
+        //     companyId,
+        //     boardApprovalDate: new Date(inputRest.boardApprovalDate),
+        //     issueDate: new Date(inputRest.issueDate),
+        //   };
+        // }
 
-        await tx.safe.create({
-          data: safeData,
-        });
+        // await tx.safe.create({
+        //   data: safeData,
+        // });
 
         await Audit.create(
           {

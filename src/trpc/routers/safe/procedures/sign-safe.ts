@@ -15,6 +15,7 @@ export const signSafeProcedure = withoutAuth
         id: input.safeId,
       },
       select: {
+        id: true,
         companyId: true,
         status: true,
         signerStakeholder: {
@@ -78,8 +79,6 @@ export const signSafeProcedure = withoutAuth
     const hasUnSignedFields = allStatus.includes("PENDING");
 
     if (!hasUnSignedFields) {
-      console.log("hello");
-
       const { investor, company, sender } = await ctx.db.$transaction(
         async (tx) => {
           const investor = await tx.stakeholder.findFirstOrThrow({
@@ -176,7 +175,7 @@ export const signSafeProcedure = withoutAuth
       });
 
       await createDocumentHandler({
-        input: { bucketId, name },
+        input: { bucketId, name, safeId: safe.id },
         requestIp: ctx.requestIp,
         db: ctx.db,
         userAgent: ctx.userAgent,

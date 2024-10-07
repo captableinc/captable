@@ -33,6 +33,7 @@ import { useSession } from "next-auth/react";
 
 type SafeFormProps = {
   type: "create" | "import";
+  handleClose: () => void;
 };
 
 const SafeFormSchema = z.object({
@@ -53,7 +54,7 @@ type SafeFormType = z.infer<typeof SafeFormSchema>;
 
 const placeholder = "________________________________________";
 
-export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
+export const SafeForm: React.FC<SafeFormProps> = ({ type, handleClose }) => {
   const { data: session } = useSession();
   const { mutate } = useMutation(createSafe);
 
@@ -75,6 +76,8 @@ export const SafeForm: React.FC<SafeFormProps> = ({ type }) => {
       json: { ...data },
       urlParams: { companyId: session?.user.companyId ?? "" },
     });
+
+    handleClose();
   };
 
   return (

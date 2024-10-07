@@ -12,6 +12,7 @@ type SafeModalProps = {
 export const SafeModal: React.FC<SafeModalProps> = ({ type }) => {
   const [open, setOpen] = useState(true);
 
+  const handleClose = () => setOpen(false);
   return (
     <Modal
       size="4xl"
@@ -80,7 +81,7 @@ export const SafeModal: React.FC<SafeModalProps> = ({ type }) => {
         },
       }}
     >
-      <SafeForm type={type} />
+      <SafeForm handleClose={handleClose} type={type} />
     </Modal>
   );
 };

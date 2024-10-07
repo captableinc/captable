@@ -1,7 +1,7 @@
 "use client";
 
 import { dayjsExt } from "@/common/dayjs";
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { Allow } from "@/components/rbac/allow";
 import {
   AlertDialog,
@@ -89,9 +89,9 @@ const AccessTokenTable = ({ tokens }: { tokens: AccessTokens }) => {
   return (
     <Card className="mx-auto mt-3 w-[28rem] sm:w-[38rem] md:w-full">
       <div className="mx-3">
-        <Tldr
-          message="
-          For security reasons, we have no ways to retrieve your complete access token. If you lose your access key, you will need to create or rotate and replace with a new one.
+        <Message
+          description="
+          For security reasons, we have no ways to retrieve your complete API keys. If you lose your API key, you will need to create or rotate and replace with a new one.
         "
         />
       </div>

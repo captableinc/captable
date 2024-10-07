@@ -26,6 +26,7 @@ export type ComboBoxOption = {
 };
 
 export const LinearCombobox = ({
+  placeholder,
   options,
   onValueChange,
   defaultOption,
@@ -35,6 +36,7 @@ export const LinearCombobox = ({
   onValueChange?: (option: ComboBoxOption) => void;
   defaultOption?: ComboBoxOption;
   children?: React.ReactNode;
+  placeholder?: string;
 }) => {
   const [openPopover, setOpenPopover] = useState(false);
   const [selectedOption, setSelectedOption] = useState<ComboBoxOption | null>(
@@ -71,7 +73,7 @@ export const LinearCombobox = ({
           ) : defaultOption ? (
             <>{defaultOption.label}</>
           ) : (
-            <>Select an Option</>
+            <>{placeholder || "Select an option"}</>
           )}
         </Button>
       </PopoverTrigger>
@@ -130,7 +132,7 @@ export const LinearCombobox = ({
 
                   <div>
                     {selectedOption?.value === option.value && (
-                      <CheckIcon className="mr-3 size-4 fill-muted-foreground group-hover:fill-primary" />
+                      <CheckIcon className="size-4 fill-muted-foreground group-hover:fill-primary" />
                     )}
                   </div>
                 </CommandItem>

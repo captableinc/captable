@@ -23,9 +23,13 @@ export const getSafesProcedure = withAuth.query(
           additionalTerms: true,
           issueDate: true,
           boardApprovalDate: true,
-          stakeholder: {
+          signerStakeholder: {
             select: {
-              name: true,
+              stakeholder: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
           documents: {

@@ -200,11 +200,14 @@ export class ApiError extends HTTPException {
 export function handleError(err: Error, c: Context): Response {
   if (err instanceof ApiError) {
     if (err.status >= 500) {
-      log.error("ApiError", {
-        name: err.name,
-        code: err.code,
-        status: err.status,
-      });
+      log.error(
+        {
+          name: err.name,
+          code: err.code,
+          status: err.status,
+        },
+        "ApiError",
+      );
     }
     return c.json(
       {
@@ -219,11 +222,14 @@ export function handleError(err: Error, c: Context): Response {
 
   if (err instanceof HTTPException) {
     if (err.status >= 500) {
-      log.error("HTTPException", {
-        name: err.name,
-        status: err.status,
-        message: err.message,
-      });
+      log.error(
+        {
+          name: err.name,
+          status: err.status,
+          message: err.message,
+        },
+        "HTTPException",
+      );
     }
     const code = statusToCode(err.status);
     return c.json(
@@ -241,12 +247,15 @@ export function handleError(err: Error, c: Context): Response {
    * This is a generic error, we should log it and return a 500
    */
 
-  log.error("UnhandledError", {
-    name: err.name,
-    message: err.message,
-    cause: err.cause,
-    stack: err.stack,
-  });
+  log.error(
+    {
+      name: err.name,
+      message: err.message,
+      cause: err.cause,
+      stack: err.stack,
+    },
+    "UnhandledError",
+  );
 
   return c.json(
     {

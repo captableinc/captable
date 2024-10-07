@@ -14,18 +14,18 @@ export const metadata: Metadata = {
 const ApiSettingsPage = async () => {
   const { allow } = await serverAccessControl();
 
-  const data = await allow(api.bankAccounts.getAll.query(), [
+  const bankAccounts = await allow(api.bankAccounts.getAll.query(), [
     "bank-accounts",
     "read",
   ]);
 
-  if (!data) {
+  if (!bankAccounts) {
     return <UnAuthorizedState />;
   }
 
   return (
     <Fragment>
-      {data.bankAccounts.length === 0 ? (
+      {bankAccounts.length === 0 ? (
         <EmptyState
           bordered={false}
           icon={<RiBankFill />}

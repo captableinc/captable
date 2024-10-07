@@ -189,6 +189,7 @@ model BankAccount {
 
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  safes     Safe[]
 
   @@unique([companyId, accountNumber])
   @@unique([companyId, primary], name: "unique_primary_account")
@@ -232,6 +233,7 @@ model Member {
   updates          Update[]
   dataRooms        DataRoomRecipient[]
   UpdateRecipient  UpdateRecipient[]
+  SafeSignerMember SafeSignerMember[]
 
   @@unique([companyId, userId])
   @@index([companyId])
@@ -295,13 +297,13 @@ model Stakeholder {
   investments      Investment[]
   shares           Share[]
   options          Option[]
-  safes            Safe[]
   convertibleNotes ConvertibleNote[]
   updates          UpdateRecipient[]
   dataRooms        DataRoomRecipient[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  SafeSignerStakeholder SafeSignerStakeholder[]
 
   @@index([companyId])
 }
@@ -811,20 +813,24 @@ enum SafeStatusEnum {
 
 // YC Standard Safe
 enum SafeTemplateEnum {
-  POST_MONEY_CAP      @map("Valuation Cap, no Discount")
-  POST_MONEY_DISCOUNT @map("Discount, no Valuation Cap")
-  POST_MONEY_MFN      @map("MFN, no Valuation Cap, no Discount")
+  YC_POST_1 @map("YC Post Money - Valuation Cap, no Discount")
+  YC_POST_2 @map("YC Post Money - Discount, no Valuation Cap")
+  YC_POST_3 @map("YC Post Money - MFN, no Valuation Cap, no Discount")
+  YC_POST_4 @map("YC Post Money - Valuation Cap, Pro Rata, no Discount")
+  YC_POST_5 @map("YC Post Money - Discount, Pro Rata, no Valuation Cap")
+  YC_POST_6 @map("YC Post Money - MFN, Pro Rata, no Valuation Cap & Discount")
 
-  POST_MONEY_CAP_WITH_PRO_RATA      @map("Valuation Cap, no Discount, include Pro Rata Rights")
-  POST_MONEY_DISCOUNT_WITH_PRO_RATA @map("Discount, no Valuation Cap, include Pro Rata Rights")
-  POST_MONEY_MFN_WITH_PRO_RATA      @map("MFN, no Valuation Cap, no Discount, include Pro Rata Rights")
+  YC_PRE_1 @map("YC Pre Money - Valuation Cap, no Discount")
+  YC_PRE_3 @map("YC Pre Money - Valuation Cap & Discount")
+  YC_PRE_2 @map("YC Pre Money - Discount, no Valuation Cap")
+  YC_PRE_4 @map("YC Pre Money - MFN, no Valuation Cap")
 
   CUSTOM @map("Custom")
 }
 
 model Safe {
   id           String            @id @default(cuid())
-  publicId     String // eg. SAFE-01
+  publicId     String
   type         SafeTypeEnum      @default(POST_MONEY)
   status       SafeStatusEnum    @default(DRAFT)
   capital      Float // Amount of money invested
@@ -839,20 +845,74 @@ model Safe {
 
   documents Document[]
 
-  stakeholderId String
-  stakeholder   Stakeholder @relation(fields: [stakeholderId], references: [id], onDelete: Cascade)
-
   companyId String
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  signerMember   SafeSignerMember @relation(fields: [signerMemberId], references: [id])
+  signerMemberId String           @unique
+
+  signerStakeholder   SafeSignerStakeholder @relation(fields: [signerStakeholderId], references: [id])
+  signerStakeholderId String                @unique
+
+  bankAccountId String
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+
   issueDate         DateTime
-  boardApprovalDate DateTime
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  boardApprovalDate DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@unique([publicId, companyId])
   @@index([companyId])
+  @@index([bankAccountId])
+  @@index([signerMemberId])
+  @@index([signerStakeholderId])
+}
+
+model SafeSignerMember {
+  id               String                @id @default(cuid())
+  status           SafeSigningStatus     @default(PENDING)
+  member           Member                @relation(fields: [memberId], references: [id])
+  memberId         String
+  safe             Safe?
+  fields           DocumentCustomField[]
+  SafeSigningToken SafeSigningToken[]
+
+  @@index([memberId])
+}
+
+enum SafeSigningStatus {
+  SIGNED
+  PENDING
+}
+
+model SafeSignerStakeholder {
+  id               String                @id @default(cuid())
+  status           SafeSigningStatus     @default(PENDING)
+  stakeholder      Stakeholder           @relation(fields: [stakeholderId], references: [id])
+  stakeholderId    String
+  safe             Safe?
+  fields           DocumentCustomField[]
+  SafeSigningToken SafeSigningToken[]
+
   @@index([stakeholderId])
+}
+
+model SafeSigningToken {
+  id    String @id @default(cuid())
+  token String @unique
+
+  signerMember   SafeSignerMember? @relation(fields: [signerMemberId], references: [id])
+  signerMemberId String?
+
+  signerStakeholder   SafeSignerStakeholder? @relation(fields: [signerStakeholderId], references: [id])
+  signerStakeholderId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([signerStakeholderId])
+  @@index([signerMemberId])
 }
 
 enum ConvertibleStatusEnum {
@@ -1142,4 +1202,29 @@ model AccessToken {
 
   @@index([userId])
   @@index([typeEnum, clientId])
+}
+
+model DocumentCustomField {
+  id             String     @id @default(cuid())
+  name           String
+  type           FieldTypes @default(TEXT)
+  defaultValue   String     @default("")
+  readOnly       Boolean    @default(false)
+  required       Boolean    @default(false)
+  prefilledValue String?
+
+  /// [TemplateFieldMeta]
+  meta Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  safeSignerStakeholder   SafeSignerStakeholder? @relation(fields: [safeSignerStakeholderId], references: [id])
+  safeSignerStakeholderId String?
+
+  safeSignerMember   SafeSignerMember? @relation(fields: [safeSignerMemberId], references: [id])
+  safeSignerMemberId String?
+
+  @@index([safeSignerStakeholderId])
+  @@index([safeSignerMemberId])
 }

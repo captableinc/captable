@@ -1,5 +1,5 @@
 import EmptyState from "@/components/common/empty-state";
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { Card } from "@/components/ui/card";
 import { withServerComponentSession } from "@/server/auth";
 import { db } from "@/server/db";
@@ -53,8 +53,8 @@ const EquityPlanPage = async () => {
           title="Create an equity plan"
           shareClasses={shareClasses}
           subtitle={
-            <Tldr
-              message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
+            <Message
+              description="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
               cta={{
                 label: "Learn more",
                 // TODO - this link should be updated to the correct URL
@@ -83,8 +83,8 @@ const EquityPlanPage = async () => {
             shareClasses={shareClasses}
             title="Create an equity plan"
             subtitle={
-              <Tldr
-                message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
+              <Message
+                description="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
                 cta={{
                   label: "Learn more",
                   // TODO - this link should be updated to the correct URL

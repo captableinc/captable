@@ -9,6 +9,7 @@ import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
 import { NewSafeModal } from "./new-safe-modal";
 import { RoleCreateUpdateModal } from "./role-create-update-modal";
+import { SafeModal } from "./safe";
 import { ShareClassModal } from "./share-class/share-class-modal";
 import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";
@@ -40,6 +41,7 @@ export const { pushModal, popModal, ModalProvider } = createPushModal({
     BankAccountModal,
 
     // Safe modals
+    SafeModal,
     NewSafeModal,
     ExistingSafeModal,
     InvestorModal,

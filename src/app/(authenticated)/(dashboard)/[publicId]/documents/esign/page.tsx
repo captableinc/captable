@@ -24,7 +24,7 @@ const EsignDocumentPage = async () => {
         subtitle="Click the button below to upload a new document for electronic signature."
       >
         <AddEsignDocumentButton
-          title="esign a Document"
+          title="eSign a Document"
           subtitle=""
           companyPublicId={session.user.companyPublicId}
         />
@@ -38,7 +38,7 @@ const EsignDocumentPage = async () => {
       description="Upload, sign and send documents for electronic signatures."
       action={
         <AddEsignDocumentButton
-          title="esign a Document"
+          title="eSign a document"
           subtitle=""
           companyPublicId={session.user.companyPublicId}
         />

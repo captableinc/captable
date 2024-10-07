@@ -1,6 +1,6 @@
 "use client";
 
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { pushModal } from "@/components/modals";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { RiEqualizer2Line } from "@remixicon/react";
@@ -25,8 +25,8 @@ export const EditShareClassButton = ({
           shareClass,
           shareClasses,
           subtitle: (
-            <Tldr
-              message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+            <Message
+              description="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
               cta={{
                 label: "Learn more",
                 href: "https://captable.inc/help",

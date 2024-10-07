@@ -22,12 +22,15 @@ const sizes = {
   "3xl": "max-w-3xl",
   "4xl": "max-w-4xl",
   screen: "max-w-[96vw]",
+  "5xl": "max-w-5xl",
 };
+
+export type ModalSizeType = keyof typeof sizes;
 
 export type ModalProps = {
   title: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
-  size?: keyof typeof sizes;
+  size?: ModalSizeType;
   trigger?: React.ReactNode;
   children: React.ReactNode;
   dialogProps?: DialogProps;

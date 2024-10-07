@@ -24,7 +24,7 @@ import { RiSearchLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import Tldr from "@/components/common/tldr";
+import Message from "@/components/common/message";
 import { pushModal } from "@/components/modals";
 
 type CommandOption = {
@@ -50,8 +50,8 @@ const Pages: CommandOption[] = [
       pushModal("SingleStakeholdersModal", {
         title: "Add a stakeholder",
         subtitle: (
-          <Tldr
-            message="Manage stakeholders by adding them. 
+          <Message
+            description="Manage stakeholders by adding them. 
           Categorize, assign roles, and maintain contact info for investors, partners, and clients."
             cta={{
               label: "Learn more",
@@ -95,8 +95,8 @@ const Pages: CommandOption[] = [
         title: "Create an equity plan",
         shareClasses: [],
         subtitle: (
-          <Tldr
-            message="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
+          <Message
+            description="Equity plans are used to distribute ownership of your company using stock options, RSUs, and other instruments among employees and stakeholders."
             cta={{
               label: "Learn more",
               // TODO - this link should be updated to the correct URL
@@ -118,8 +118,8 @@ const Pages: CommandOption[] = [
         title: "Create a share class",
         shareClasses: [],
         subtitle: (
-          <Tldr
-            message="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
+          <Message
+            description="A share class on a cap table represents a distinct category of shares with specific rights and characteristics, such as voting preferences or priorities. Eg. Common and Preferred shares, Class A, B, etc, ESOs and RSUs, etc."
             cta={{
               label: "Learn more",
               // TODO - this link should be updated to the correct URL
@@ -132,7 +132,7 @@ const Pages: CommandOption[] = [
   },
   {
     id: "issue-share",
-    title: "Issue a share",
+    title: "Issue a share certificate",
     onClick: () => {
       pushModal("IssueShareModal", {
         shouldClientFetch: true,
@@ -165,7 +165,7 @@ const Pages: CommandOption[] = [
       pushModal("NewSafeModal", {
         title: "Create a new SAFE agreement",
         subtitle:
-          "Create, sign and send a new SAFE agreement to your investors.",
+          "Create, send and send a new SAFE agreement to your investors.",
       });
     },
     icon: RiPieChart2Fill,

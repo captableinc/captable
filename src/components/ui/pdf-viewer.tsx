@@ -3,6 +3,7 @@
 import { invariant } from "@/lib/error";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import {
+  Fragment,
   type ReactNode,
   createContext,
   useCallback,
@@ -66,14 +67,16 @@ export const PdfViewer = ({
         options={options}
         className="w-full overflow-hidden rounded"
       >
-        {Array.from(new Array(numPages), (el, index) => (
-          <Page
-            key={`page_${index + 1}`}
-            pageNumber={index + 1}
-            renderAnnotationLayer={false}
-            renderTextLayer={false}
-            width={containerWidth}
-          />
+        {Array.from(new Array(numPages), (_, pageNumber) => (
+          <Fragment key={`page_${pageNumber + 1}`}>
+            <Page
+              pageNumber={pageNumber + 1}
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
+              width={containerWidth}
+            />
+            <hr />
+          </Fragment>
         ))}
       </Document>
     </div>

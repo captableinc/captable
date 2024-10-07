@@ -34,10 +34,13 @@ export async function deleteSafeHandler({
         },
         select: {
           id: true,
-          stakeholder: {
+          signerStakeholder: {
             select: {
-              id: true,
-              name: true,
+              stakeholder: {
+                select: {
+                  name: true,
+                },
+              },
             },
           },
           company: {
@@ -58,7 +61,7 @@ export async function deleteSafeHandler({
             userAgent,
           },
           target: [{ type: "company", id: companyId }],
-          summary: `${user.name} deleted safe agreement of stakholder ${safe.stakeholder.name}`,
+          summary: `${user.name} deleted safe agreement of stakholder ${safe.signerStakeholder.stakeholder.name}`,
         },
         tx,
       );

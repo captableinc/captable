@@ -62,5 +62,6 @@ export const getOne = withAuthApiV1
         id: member.companyId,
       },
     });
+
     return c.json({ data: company }, 200);
   });

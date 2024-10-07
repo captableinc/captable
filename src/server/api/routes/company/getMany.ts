@@ -14,7 +14,9 @@ export const getMany = withAuthApiV1
       200: {
         content: {
           "application/json": {
-            schema: z.array(CompanySchema),
+            schema: z.object({
+              data: z.array(CompanySchema),
+            }),
           },
         },
         description: "A list of companies with their details.",
@@ -36,5 +38,5 @@ export const getMany = withAuthApiV1
       },
     });
 
-    return c.json(companies, 200);
+    return c.json({ data: companies }, 200);
   });

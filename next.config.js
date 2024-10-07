@@ -13,6 +13,7 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  swcMinify: true,
   output: process.env.DOCKER_OUTPUT ? "standalone" : undefined,
   images: {
     remotePatterns: [

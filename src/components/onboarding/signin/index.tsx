@@ -41,6 +41,11 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const router = useRouter();
   const [isPasskeyLoading, setIsPasskeyLoading] = useState<boolean>(false);
 
+  console.log(
+    "[SignInForm] Component rendering, Google Auth Enabled:",
+    isGoogleAuthEnabled,
+  );
+
   const { mutateAsync: createPasskeySigninOptions } =
     api.passkey.createSigninOptions.useMutation();
 
@@ -54,32 +59,54 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const isSubmitting = form.formState.isSubmitting;
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    const email = values.email;
-    const password = values.password;
-    const result = await signIn("credentials", {
-      email,
-      password,
-      callbackUrl: "/onboarding",
+    console.log("[SignInForm] Form submitted with values:", {
+      email: values.email,
     });
+    try {
+      const email = values.email;
+      const password = values.password;
+      console.log("[SignInForm] Calling signIn with credentials");
+      const result = await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/onboarding",
+        redirect: false,
+      });
 
-    if (result?.error) {
-      toast.error("Incorrect email or password");
+      console.log("[SignInForm] SignIn result:", result);
+
+      if (result?.error) {
+        console.error("[SignInForm] SignIn error:", result.error);
+        toast.error("Incorrect email or password");
+      } else if (result?.url) {
+        console.log("[SignInForm] Redirecting to:", result.url);
+        router.push(result.url);
+      }
+    } catch (error) {
+      console.error("[SignInForm] Unexpected error during sign in:", error);
+      toast.error("An unexpected error occurred");
     }
   }
 
   const onSignInWithPasskey = async () => {
+    console.log("[SignInForm] Passkey sign-in initiated");
     if (!browserSupportsWebAuthn()) {
+      console.error("[SignInForm] Browser does not support WebAuthn");
       toast.error("Passkeys are not supported on this browser");
       return;
     }
 
     try {
       setIsPasskeyLoading(true);
-
+      console.log("[SignInForm] Creating passkey signin options");
       const options = await createPasskeySigninOptions();
 
       if (options) {
+        console.log("[SignInForm] Starting authentication with options");
         const credential = await startAuthentication(options);
+        console.log(
+          "[SignInForm] Authentication completed, signing in with WebAuthn",
+        );
 
         const result = await signIn("webauthn", {
           credential: JSON.stringify(credential),
@@ -87,14 +114,24 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
           redirect: false,
         });
 
+        console.log("[SignInForm] WebAuthn sign-in result:", result);
+
         if (!result?.url) {
+          console.error(
+            "[SignInForm] WebAuthn sign-in failed: No URL returned",
+          );
           toast.error("Unauthorized error, invalid credentials.");
         } else {
+          console.log(
+            "[SignInForm] WebAuthn sign-in successful, redirecting to:",
+            result.url,
+          );
           router.push(result.url);
         }
       }
     } catch (_err) {
       const err = _err as Error;
+      console.error("[SignInForm] Error during passkey sign-in:", err);
       toast(
         err.message ||
           "Something went wrong, please reload the page and try again.",
@@ -105,8 +142,13 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   };
 
   async function signInWithGoogle() {
-    console.log("signInWithGoogle");
-    await signIn("google", { callbackUrl: "/onboarding" });
+    console.log("[SignInForm] Google sign-in initiated");
+    try {
+      await signIn("google", { callbackUrl: "/onboarding" });
+      console.log("[SignInForm] Google sign-in callback completed");
+    } catch (err) {
+      console.error("[SignInForm] Google sign-in error:", err);
+    }
   }
 
   return (
@@ -118,7 +160,10 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
             disabled={isSubmitting}
             loading={isPasskeyLoading}
             type="button"
-            onClick={onSignInWithPasskey}
+            onClick={(e) => {
+              console.log("[SignInForm] Passkey button clicked", e);
+              onSignInWithPasskey();
+            }}
           >
             <RiDoorLockLine className="h-5 w-5" />
             Login with <span className="font-bold">Passkey</span>
@@ -128,7 +173,10 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
             <Button
               disabled={isSubmitting}
               type="button"
-              onClick={signInWithGoogle}
+              onClick={(e) => {
+                console.log("[SignInForm] Google button clicked", e);
+                signInWithGoogle();
+              }}
             >
               <RiGoogleFill className="mr-2 h-4 w-4" />
               Login with <span className="font-bold">Google</span>
@@ -147,7 +195,13 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              className="grid gap-4"
+              onSubmit={(e) => {
+                console.log("[SignInForm] Form submit event triggered", e);
+                form.handleSubmit(onSubmit)(e);
+              }}
+            >
               <div className="grid gap-4">
                 <FormField
                   control={form.control}

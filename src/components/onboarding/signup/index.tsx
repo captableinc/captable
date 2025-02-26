@@ -44,7 +44,10 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
   });
   const router = useRouter();
 
-  console.log("[SignUpForm] Component initialized, Google Auth Enabled:", isGoogleAuthEnabled);
+  console.log(
+    "[SignUpForm] Component initialized, Google Auth Enabled:",
+    isGoogleAuthEnabled,
+  );
 
   const { mutateAsync } = api.auth.signup.useMutation({
     onSuccess: ({ message }) => {
@@ -61,7 +64,9 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
     console.log("[SignUpForm] Form submitted, attempting signup");
     try {
       const result = await mutateAsync(values);
-      console.log("[SignUpForm] Signup successful, redirecting to check-email page");
+      console.log(
+        "[SignUpForm] Signup successful, redirecting to check-email page",
+      );
       router.replace(`/check-email?email=${values.email}`);
     } catch (err) {
       console.error("[SignUpForm] Error during form submission:", err);
@@ -89,7 +94,10 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
               <Button
                 disabled={isSubmitting}
                 type="button"
-                onClick={signInWithGoogle}
+                onClick={(e) => {
+                  console.log("[SignUpForm] Google button clicked", e);
+                  signInWithGoogle();
+                }}
               >
                 <RiGoogleFill className="mr-2 h-4 w-4" />
                 Signup with <span className="font-bold">Google</span>
@@ -109,7 +117,13 @@ const SignUpForm = ({ isGoogleAuthEnabled }: SignUpFormProps) => {
           )}
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form
+              className="grid gap-4"
+              onSubmit={(e) => {
+                console.log("[SignUpForm] Form submit event triggered", e);
+                form.handleSubmit(onSubmit)(e);
+              }}
+            >
               <div className="grid gap-4">
                 <FormField
                   control={form.control}

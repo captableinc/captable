@@ -67,6 +67,6 @@ export default hasSentry
       silent: true,
       widenClientFileUpload: true,
       hideSourceMaps: true,
-      disableLogger: true,
+      disableLogger: false,
     })
   : bundleAnalyzer(nextConfig);

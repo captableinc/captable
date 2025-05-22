@@ -16,6 +16,75 @@ const readRuntimePublicEnvVariable = (key) => {
   return process.env[key];
 };
 
+// Utility functions to check environment
+function isDevelopment() {
+  // First check the custom environment variable from runtime
+  if (isBrowser() && window?.[PUBLIC_ENV_KEY]?.NEXT_PUBLIC_APP_ENV) {
+    return window[PUBLIC_ENV_KEY].NEXT_PUBLIC_APP_ENV === "development";
+  }
+  
+  // Then check process.env
+  if (process.env.NEXT_PUBLIC_APP_ENV) {
+    return process.env.NEXT_PUBLIC_APP_ENV === "development";
+  }
+  
+  // Fall back to NODE_ENV
+  return process.env.NODE_ENV === "development";
+}
+
+function isProduction() {
+  // First check the custom environment variable from runtime
+  if (isBrowser() && window?.[PUBLIC_ENV_KEY]?.NEXT_PUBLIC_APP_ENV) {
+    return window[PUBLIC_ENV_KEY].NEXT_PUBLIC_APP_ENV === "production";
+  }
+  
+  // Then check process.env
+  if (process.env.NEXT_PUBLIC_APP_ENV) {
+    return process.env.NEXT_PUBLIC_APP_ENV === "production";
+  }
+  
+  // Fall back to NODE_ENV
+  return process.env.NODE_ENV === "production";
+}
+
+function isTest() {
+  // First check the custom environment variable from runtime
+  if (isBrowser() && window?.[PUBLIC_ENV_KEY]?.NEXT_PUBLIC_APP_ENV) {
+    return window[PUBLIC_ENV_KEY].NEXT_PUBLIC_APP_ENV === "test";
+  }
+  
+  // Then check process.env
+  if (process.env.NEXT_PUBLIC_APP_ENV) {
+    return process.env.NEXT_PUBLIC_APP_ENV === "test";
+  }
+  
+  // Fall back to NODE_ENV
+  return process.env.NODE_ENV === "test";
+}
+
+function isStaging() {
+  // First check the custom environment variable from runtime
+  if (isBrowser() && window?.[PUBLIC_ENV_KEY]?.NEXT_PUBLIC_APP_ENV) {
+    return window[PUBLIC_ENV_KEY].NEXT_PUBLIC_APP_ENV === "staging";
+  }
+  
+  // Then check process.env
+  if (process.env.NEXT_PUBLIC_APP_ENV) {
+    return process.env.NEXT_PUBLIC_APP_ENV === "staging";
+  }
+  
+  // Fall back to NODE_ENV
+  return process.env.NODE_ENV === "staging";
+}
+
+// Export utility functions for checking environment
+export const envUtils = {
+  isDevelopment,
+  isProduction,
+  isTest,
+  isStaging
+};
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
@@ -73,6 +142,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.string(),
     NEXT_PUBLIC_UPLOAD_DOMAIN: z.string().optional(),
+    NEXT_PUBLIC_APP_ENV: z.enum(["development", "test", "production", "staging"]).default("production"),
 
     // stripe
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
@@ -122,6 +192,7 @@ export const env = createEnv({
 
     /// job queue
     WORKER_DATABASE_URL: process.env.WORKER_DATABASE_URL,
+    NEXT_PUBLIC_APP_ENV: readRuntimePublicEnvVariable("NEXT_PUBLIC_APP_ENV"),
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

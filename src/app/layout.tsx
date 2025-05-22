@@ -2,6 +2,7 @@ import logo from "@/assets/logo.svg";
 import { PublicEnvScript } from "@/components/public-env-script";
 import ScreenSize from "@/components/screen-size";
 import { constants } from "@/lib/constants";
+import { envUtils } from "@/env";
 import { cn } from "@/lib/utils";
 import { NextAuthProvider } from "@/providers/next-auth";
 import { ProgressBarProvider } from "@/providers/progress-bar";
@@ -30,7 +31,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerComponentAuthSession();
-  const nodeEnv = process.env.NODE_ENV;
 
   return (
     <html lang="en" className={cn(satoshi.variable, robotoMono.variable)}>
@@ -43,7 +43,7 @@ export default async function RootLayout({
             <TRPCReactProvider cookies={cookies().toString()}>
               <main>{children}</main>
               <Toaster richColors />
-              {nodeEnv === "development" && <ScreenSize />}
+              {envUtils.isDevelopment() && <ScreenSize />}
             </TRPCReactProvider>
           </NextAuthProvider>
         </ProgressBarProvider>

@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { AuthFormHeader } from "../auth-form-header";
+import { envUtils } from "@/env";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -47,8 +48,8 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: process.env.NODE_ENV === "development" ? "ceo@example.com" : "",
-      password: process.env.NODE_ENV === "development" ? "P@ssw0rd!" : "",
+      email: envUtils.isDevelopment() ? "ceo@example.com" : "",
+      password: envUtils.isDevelopment() ? "P@ssw0rd!" : "",
     },
   });
   const isSubmitting = form.formState.isSubmitting;

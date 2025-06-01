@@ -11,11 +11,16 @@ type FilePreviewProps = {
   mimeType?: string;
 };
 
+type AudioVideoPreviewProps = {
+  url: string;
+  mimeType?: string;
+};
+
 const ImagePreview = ({ url, name }: FilePreviewProps) => {
   return <img className="rounded" src={url} alt={name} />;
 };
 
-const AuditPreview = ({ url, name, mimeType }: FilePreviewProps) => {
+const AuditPreview = ({ url, mimeType }: AudioVideoPreviewProps) => {
   return (
     // biome-ignore lint/a11y/useMediaCaption: <explanation>
     <audio controls className="w-full">
@@ -25,7 +30,7 @@ const AuditPreview = ({ url, name, mimeType }: FilePreviewProps) => {
   );
 };
 
-const VideoPreview = ({ url, name, mimeType }: FilePreviewProps) => {
+const VideoPreview = ({ url, mimeType }: AudioVideoPreviewProps) => {
   return (
     // biome-ignore lint/a11y/useMediaCaption: <explanation>
     <video controls className="w-full rounded">
@@ -59,9 +64,9 @@ const FilePreview = ({ url, name, mimeType }: FilePreviewProps) => {
     case "image":
       return <ImagePreview url={url} name={name} />;
     case "audio":
-      return <AuditPreview url={url} name={name} mimeType={mimeType} />;
+      return <AuditPreview url={url} mimeType={mimeType} />;
     case "video":
-      return <VideoPreview url={url} name={name} mimeType={mimeType} />;
+      return <VideoPreview url={url} mimeType={mimeType} />;
     case "doc":
     case "excel":
     case "powerpoint":

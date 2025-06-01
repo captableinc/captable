@@ -14,8 +14,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { StepperModalFooter, StepperPrev } from "@/components/ui/stepper";
 import Uploader from "@/components/ui/uploader";
 import { toTitleCase } from "@/lib/string";
-import { SafeTemplateEnum } from "@captable/db";
 import { useFormValueState } from "@/providers/form-value-provider";
+import { SafeTemplateEnum } from "@captable/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import type { FileWithPath } from "react-dropzone";
@@ -27,16 +27,16 @@ import {
 } from "react-hook-form";
 import { z } from "zod";
 
-import { uploadFile } from "@/lib/common/uploads";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LinearCombobox } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
+import { uploadFile } from "@/lib/common/uploads";
 import { invariant } from "@/lib/error";
 import { TAG } from "@/lib/tags";
 import { api } from "@/trpc/react";
 import { ZodTemplateFieldRecipientSchema } from "@/trpc/routers/template-router/schema";
-import { RiDeleteBinLine } from "@remixicon/react";
 import { clientSideSession } from "@captable/auth/client";
+import { RiDeleteBinLine } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { TFormSchema as TGeneralDetailsFormSchema } from "./general-details";

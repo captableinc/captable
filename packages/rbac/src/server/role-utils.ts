@@ -8,19 +8,22 @@ export function createRoleIdMapper<TRole extends string>(options: {
   customRoleValue: TRole;
 }) {
   const { adminRoleId, adminRoleValue, customRoleValue } = options;
-  
-  return ({ role, customRoleId }: { 
-    role: TRole | null; 
-    customRoleId: string | null 
+
+  return ({
+    role,
+    customRoleId,
+  }: {
+    role: TRole | null;
+    customRoleId: string | null;
   }): string => {
     if (role === adminRoleValue) {
       return adminRoleId;
     }
-    
+
     if (role === customRoleValue && customRoleId) {
       return customRoleId;
     }
-    
+
     // Return empty string for other cases (could be made configurable)
     return "";
   };
@@ -29,26 +32,37 @@ export function createRoleIdMapper<TRole extends string>(options: {
 /**
  * Generic role permission mapper for converting database role data to permission objects
  */
-export function createRolePermissionMapper<TRole extends string, TPermission = unknown>(options: {
+export function createRolePermissionMapper<
+  TRole extends string,
+  TPermission = unknown,
+>(options: {
   adminPermissions: TPermission[];
   defaultPermissions: TPermission[];
   adminRoleValue: TRole;
   customRoleValue: TRole;
 }) {
-  const { adminPermissions, defaultPermissions, adminRoleValue, customRoleValue } = options;
-  
-  return ({ role, customPermissions }: {
+  const {
+    adminPermissions,
+    defaultPermissions,
+    adminRoleValue,
+    customRoleValue,
+  } = options;
+
+  return ({
+    role,
+    customPermissions,
+  }: {
     role: TRole | null;
-    customPermissions?: TPermission[]; 
+    customPermissions?: TPermission[];
   }) => {
     if (role === adminRoleValue) {
       return adminPermissions;
     }
-    
+
     if (role === customRoleValue && customPermissions) {
       return customPermissions;
     }
-    
+
     return defaultPermissions;
   };
-} 
+}

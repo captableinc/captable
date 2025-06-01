@@ -16,7 +16,6 @@ type ShareClassType = {
 
 export const ShareClassModal = ({
   type = "create",
-  shouldClientFetch = false,
   title,
   subtitle,
   shareClass,

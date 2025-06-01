@@ -1,6 +1,6 @@
 import { encode } from "@/lib/jwt";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, updates, updateRecipients, eq, and, desc } from "@captable/db";
+import { and, db, desc, eq, updateRecipients, updates } from "@captable/db";
 import { z } from "zod";
 
 export const getUpdatesProcedure = withAuth.query(async ({ ctx }) => {

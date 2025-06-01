@@ -1,7 +1,7 @@
-import { text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { createId } from "@paralleldrive/cuid2";
+import { boolean, text, timestamp } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const betterAuthUsers = createTable("better_auth_users", {
   id: text("id")

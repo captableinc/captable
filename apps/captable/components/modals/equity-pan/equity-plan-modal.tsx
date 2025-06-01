@@ -21,7 +21,6 @@ export const EquityPlanModal = ({
   subtitle,
   equityPlan,
   shareClasses,
-  shouldClientFetch = false,
 }: EquityPlanType) => {
   const _shareClasses = api.shareClass.get.useQuery(undefined).data;
 

@@ -1,11 +1,4 @@
-import {
-  Layout,
-  Heading,
-  Text,
-  Button,
-  Link,
-  Footer,
-} from "../components";
+import { Button, Footer, Heading, Layout, Link, Text } from "../components";
 
 export interface EsignEmailPayloadType {
   documentName?: string;
@@ -36,9 +29,9 @@ const EsignEmail = ({
   company,
 }: EsignEmailProps) => {
   const previewText = `${sender?.name ?? ""} has sent you a document to sign.`;
-  
+
   return (
-    <Layout 
+    <Layout
       preview={previewText}
       logoUrl={company?.logo || undefined}
       logoAlt={`${company?.name} Logo`}
@@ -46,28 +39,27 @@ const EsignEmail = ({
       <Heading className="mt-8px mx-0 mb-[15px] p-0 text-center text-[24px] font-normal text-black">
         <strong>{company?.name}</strong>
       </Heading>
-      
+
       <Heading>
         <strong>{sender?.name}</strong> has sent you a document{" "}
         <strong>{`"${documentName}"`}</strong> to sign.
       </Heading>
-      
+
       <Text>Hello {recipient?.name},</Text>
-      
+
       {message ? (
         <Text>{message}</Text>
       ) : (
         <Text>
-          <strong>{sender?.name}</strong> from{" "}
-          <strong>{company?.name}</strong> has sent you{" "}
-          <strong>{`"${documentName}"`}</strong>
+          <strong>{sender?.name}</strong> from <strong>{company?.name}</strong>{" "}
+          has sent you <strong>{`"${documentName}"`}</strong>
         </Text>
       )}
 
       <Button href={signingLink} sectionClassName="mx-auto mb-[32px] mt-[32px]">
         Sign the document
       </Button>
-      
+
       <Text>
         or copy and paste this URL into your browser:{" "}
         <Link href={signingLink} variant="breakable">

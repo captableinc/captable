@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   boolean,
   index,
@@ -13,7 +14,6 @@ import {
   TemplateStatusEnum,
 } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const templates = createTable(
   "templates",

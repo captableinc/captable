@@ -1,7 +1,7 @@
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, members, users, companies, eq, and } from "@captable/db";
+import { and, companies, db, eq, members, users } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodToggleActivationMutationSchema } from "../schema";
 

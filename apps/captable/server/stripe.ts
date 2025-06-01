@@ -1,15 +1,15 @@
 import { env } from "@/env";
 import { invariant } from "@/lib/error";
-import Stripe from "stripe";
 import {
-  db,
   type DBTransaction,
-  eq,
-  billingProducts,
-  billingPrices,
   billingCustomers,
+  billingPrices,
+  billingProducts,
   billingSubscriptions,
+  db,
+  eq,
 } from "@captable/db";
+import Stripe from "stripe";
 
 const toDateTime = (secs: number) => {
   const t = new Date(+0); // Unix epoch start.
@@ -80,7 +80,7 @@ export async function upsertPriceRecord(price: Stripe.Price) {
 export const manageSubscriptionStatusChange = async (
   subscriptionId: string,
   customerId: string,
-  createAction = false,
+  _createAction = false,
 ) => {
   if (!stripe) {
     throw new Error("Stripe not configured");

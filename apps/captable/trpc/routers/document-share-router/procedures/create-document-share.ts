@@ -55,7 +55,7 @@ export const createDocumentShareHandler = async ({
     });
 
     return { success: true, message: "Document share created successfully." };
-  } catch (err) {
+  } catch (_err) {
     return {
       success: false,
       message: "Oops, something went wrong. Please try again later.",
@@ -65,6 +65,6 @@ export const createDocumentShareHandler = async ({
 
 export const createDocumentShareProcedure = withAuth
   .input(DocumentShareMutationSchema)
-  .mutation(async (opts) => {
+  .mutation((opts) => {
     return createDocumentShareHandler(opts);
   });

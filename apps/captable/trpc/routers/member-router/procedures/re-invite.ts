@@ -10,13 +10,13 @@ import {
 } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
 import {
-  db,
+  and,
   companies,
+  db,
+  eq,
   members,
   users,
   verificationTokens,
-  eq,
-  and,
 } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodReInviteMutationSchema } from "../schema";

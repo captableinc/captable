@@ -1,5 +1,5 @@
+import { and, db, eq, shares } from "@captable/db";
 import { z } from "@hono/zod-openapi";
-import { db, shares, eq, and } from "@captable/db";
 import { ApiError } from "../../error";
 import { ShareSchema, type ShareSchemaType } from "../../schema/shares";
 

@@ -12,9 +12,9 @@ import {
 
 import type { TGetCompanyList } from "@/server/company";
 import { api } from "@/trpc/react";
+import { clientSideSession } from "@captable/auth/client";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { RiAddCircleLine } from "@remixicon/react";
-import { clientSideSession } from "@captable/auth/client";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 

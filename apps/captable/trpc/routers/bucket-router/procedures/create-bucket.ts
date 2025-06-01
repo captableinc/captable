@@ -1,6 +1,6 @@
 import { Audit } from "@/server/audit";
-import { buckets, type DB, type DBTransaction } from "@captable/db";
 import { withAuth } from "@/trpc/api/trpc";
+import { type DB, type DBTransaction, buckets } from "@captable/db";
 import {
   type TypeZodCreateBucketMutationSchema,
   ZodCreateBucketMutationSchema,

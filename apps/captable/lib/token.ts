@@ -1,8 +1,8 @@
-import { nanoid } from "nanoid";
-import { createId } from "@paralleldrive/cuid2";
-import { db, verificationTokens, passwordResetTokens, eq } from "@captable/db";
 import { getPasswordResetTokenByEmail } from "@/server/password-reset-token";
 import { getVerificationTokenByEmail } from "@/server/verification-token";
+import { db, eq, passwordResetTokens, verificationTokens } from "@captable/db";
+import { createId } from "@paralleldrive/cuid2";
+import { nanoid } from "nanoid";
 
 export const generateVerificationToken = async (email: string) => {
   const token = nanoid(32);

@@ -10,8 +10,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { api } from "@/trpc/react";
-import { RiArrowRightLine as ArrowRightIcon } from "@remixicon/react";
 import { clientSideSession } from "@captable/auth/client";
+import { RiArrowRightLine as ArrowRightIcon } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

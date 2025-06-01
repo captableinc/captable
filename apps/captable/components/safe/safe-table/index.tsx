@@ -28,6 +28,7 @@ import {
 
 import { api } from "@/trpc/react";
 
+import { SafeTableToolbar } from "@/components/safe/safe-table/safe-table-toolbar";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
@@ -40,7 +41,6 @@ import type { RouterOutputs } from "@/trpc/shared";
 import { RiFileDownloadLine, RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { SafeTableToolbar } from "@/components/safe/safe-table/safe-table-toolbar";
 
 type Safe = RouterOutputs["safe"]["getSafes"]["data"];
 

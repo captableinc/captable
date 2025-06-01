@@ -1,18 +1,18 @@
-import { MAXIMUM_PASSKEYS } from "@/lib/constants/passkey";
 import { getAuthenticatorOptions } from "@/lib/authenticator";
+import { MAXIMUM_PASSKEYS } from "@/lib/constants/passkey";
+import { Audit } from "@/server/audit";
 import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
+import {
+  type Passkey,
+  count,
+  db,
+  desc,
+  eq,
+  passkeyVerificationTokens,
+  passkeys,
+} from "@captable/db";
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import type { RegistrationResponseJSON } from "@simplewebauthn/types";
-import { Audit } from "@/server/audit";
-import {
-  db,
-  eq,
-  count,
-  desc,
-  passkeys,
-  passkeyVerificationTokens,
-  type Passkey,
-} from "@captable/db";
 
 type CreatePasskeyOptions = {
   userId: string;

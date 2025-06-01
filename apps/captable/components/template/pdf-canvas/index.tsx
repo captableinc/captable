@@ -26,7 +26,7 @@ type PdfCanvasProps = { url: string } & TRecipient;
 
 function PdfPages({ recipients, mode }: TRecipient) {
   const { containerWidth, numPages } = usePdfValue();
-  return Array.from(new Array(numPages), (el, index) => (
+  return Array.from(new Array(numPages), (_el, index) => (
     <div className="relative" key={`page_${index + 1}`}>
       <PdfViewerPage
         pageNumber={index + 1}

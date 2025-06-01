@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface SecurityListProps {
   title: string;

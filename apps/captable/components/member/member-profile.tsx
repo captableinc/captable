@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { uploadFile } from "@/lib/common/uploads";
 import Loading from "@/components/common/loading";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Form, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { uploadFile } from "@/lib/common/uploads";
 import { PayloadType } from "@/lib/types";
 import type { RootPayload } from "@/lib/types";
 import {
@@ -17,8 +17,8 @@ import {
 import { profileSettingsSchema } from "@/lib/zodSchemas";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { clientSideSession } from "@captable/auth/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useRef, useState } from "react";
@@ -66,14 +66,6 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
             loginEmail !== updatedProfilePayload.loginEmail ||
             fullName !== updatedProfilePayload.fullName
           ) {
-            const updateUser = {
-              ...session,
-              user: {
-                ...session?.user,
-                name: updatedProfilePayload.fullName,
-                email: updatedProfilePayload.loginEmail,
-              },
-            };
             await refetch();
           }
 
@@ -86,14 +78,6 @@ export const ProfileSettings = ({ memberProfile }: ProfileType) => {
 
         case PayloadType.PROFILE_AVATAR: {
           const _updatedProfilePayload = rootPayload.payload;
-
-          const updateUser = {
-            ...session,
-            user: {
-              ...session?.user,
-              image: _updatedProfilePayload.avatarUrl,
-            },
-          };
 
           await refetch();
 

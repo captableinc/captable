@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import { boolean, index, real, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import {
@@ -8,7 +9,6 @@ import {
   ConvertibleTypeEnum,
 } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const convertibleNotes = createTable(
   "convertible_notes",

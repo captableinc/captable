@@ -22,14 +22,11 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { dayjsExt } from "@/lib/common/dayjs";
+import { PasskeyTableToolbar } from "@/components/security/passkey/passkey-table-toolbar";
+import UpdatePasskeyNameModal from "@/components/security/passkey/update-passkey-name-modal";
+import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import { api } from "@/trpc/react";
-import { RiMore2Fill } from "@remixicon/react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,8 +35,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PasskeyTableToolbar } from "@/components/security/passkey/passkey-table-toolbar";
-import UpdatePasskeyNameModal from "@/components/security/passkey/update-passkey-name-modal";
+import { dayjsExt } from "@/lib/common/dayjs";
+import { api } from "@/trpc/react";
+import { RiMore2Fill } from "@remixicon/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Passkey = RouterOutputs["passkey"]["find"]["data"];
 

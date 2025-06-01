@@ -1,3 +1,0 @@
-{
-  "extends": ["../../packages/config/biome.json"]
-}

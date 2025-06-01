@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   bigint,
   boolean,
@@ -8,7 +9,6 @@ import {
 import { createSelectSchema } from "drizzle-zod";
 import { CredentialDeviceTypeEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const passkeys = createTable(
   "passkeys",

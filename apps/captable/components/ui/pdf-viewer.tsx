@@ -66,7 +66,7 @@ export const PdfViewer = ({
         options={options}
         className="w-full overflow-hidden rounded"
       >
-        {Array.from(new Array(numPages), (el, index) => (
+        {Array.from(new Array(numPages), (_el, index) => (
           <Page
             key={`page_${index + 1}`}
             pageNumber={index + 1}

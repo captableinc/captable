@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { camelCase } from "@/lib/utils";
-import { StakeholderTypeEnum } from "@captable/db";
 import { api } from "@/trpc/react";
 import { ZodAddStakeholderMutationSchema } from "@/trpc/routers/stakeholder-router/schema";
+import { StakeholderTypeEnum } from "@captable/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";

@@ -1,14 +1,14 @@
 import EmptyState from "@/components/common/empty-state";
+import { PageLayout } from "@/components/dashboard/page-layout";
 import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 import { serverAccessControl } from "@/server/member";
 import { api } from "@/trpc/server";
 import { RiBankFill } from "@remixicon/react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Fragment } from "react";
 import CtaButton from "./components/cta-button";
 import BankAccountsTable from "./components/table";
-import { headers } from "next/headers";
-import { PageLayout } from "@/components/dashboard/page-layout";
 
 export const metadata: Metadata = {
   title: "Bank accounts",

@@ -1,7 +1,7 @@
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
-import { db, shares, stakeholders, companies, eq, and } from "@captable/db";
+import { and, companies, db, eq, shares, stakeholders } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import {
   type TypeZodDeleteShareMutationSchema,

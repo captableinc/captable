@@ -1,4 +1,4 @@
-import { type AUDIT_ACTIONS } from "./actions";
+import type { AUDIT_ACTIONS } from "./actions";
 
 type ActionList = typeof AUDIT_ACTIONS;
 

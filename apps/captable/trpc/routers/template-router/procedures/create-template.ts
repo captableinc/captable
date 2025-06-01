@@ -1,17 +1,17 @@
 import { generatePublicId } from "@/lib/common/id";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
-import {
-  templates,
-  esignRecipients,
-  type DB,
-  type DBTransaction,
-} from "@captable/db";
 import { withAuth } from "@/trpc/api/trpc";
 import {
   type TypeZodCreateTemplateMutationSchema,
   ZodCreateTemplateMutationSchema,
 } from "@/trpc/routers/template-router/schema";
+import {
+  type DB,
+  type DBTransaction,
+  esignRecipients,
+  templates,
+} from "@captable/db";
 
 interface CreateTemplateHandlerProps {
   ctx: {

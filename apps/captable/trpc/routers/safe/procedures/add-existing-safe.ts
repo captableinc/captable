@@ -2,7 +2,7 @@ import { generatePublicId } from "@/lib/common/id";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, safes, documents } from "@captable/db";
+import { db, documents, safes } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodAddExistingSafeMutationSchema } from "../schema";
 

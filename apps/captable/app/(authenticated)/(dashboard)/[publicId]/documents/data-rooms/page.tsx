@@ -4,18 +4,18 @@ import EmptyState from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { serverSideSession } from "@captable/auth/server";
 import {
-  db,
-  dataRooms,
-  dataRoomDocuments,
-  eq,
-  desc,
   count,
+  dataRoomDocuments,
+  dataRooms,
+  db,
+  desc,
+  eq,
 } from "@captable/db";
+import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
+import { headers } from "next/headers";
 import { Fragment } from "react";
 import DataRoomPopover from "./components/data-room-popover";
 import Folders from "./components/dataroom-folders";
-import { headers } from "next/headers";
-import { RiAddFill, RiFolderCheckFill } from "@remixicon/react";
 
 const getDataRooms = async (companyId: string) => {
   return await db

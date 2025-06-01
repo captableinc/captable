@@ -1,5 +1,5 @@
 import { withAccessControl } from "@/trpc/api/trpc";
-import { db, stakeholders, companies, eq, desc } from "@captable/db";
+import { companies, db, desc, eq, stakeholders } from "@captable/db";
 
 export const getStakeholdersProcedure = withAccessControl
   .meta({ policies: { stakeholder: { allow: ["read"] } } })

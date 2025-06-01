@@ -1,16 +1,16 @@
+import { Audit } from "@/server/audit";
+import { withAccessControl } from "@/trpc/api/trpc";
+import { withAuth } from "@/trpc/api/trpc";
+import { customRoles, db } from "@captable/db";
 import type { TActions } from "@captable/rbac/types";
 import type { TPermission } from "@captable/rbac/types";
 import type { TSubjects } from "@captable/rbac/types";
-import { Audit } from "@/server/audit";
-import { withAccessControl } from "@/trpc/api/trpc";
-import { db, customRoles } from "@captable/db";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import {
   type TypeZodCreateRoleMutationSchema,
   ZodCreateRoleMutationSchema,
 } from "../schema";
-import { withAuth } from "@/trpc/api/trpc";
-import { z } from "zod";
 
 export const createRolesProcedure = withAccessControl
   .input(ZodCreateRoleMutationSchema)

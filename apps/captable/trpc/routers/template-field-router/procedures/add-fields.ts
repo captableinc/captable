@@ -6,15 +6,15 @@ import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
 import {
-  db,
-  templates,
-  templateFields,
-  esignRecipients,
-  companies,
-  eq,
   and,
+  companies,
+  db,
+  eq,
+  esignRecipients,
   inArray,
   notInArray,
+  templateFields,
+  templates,
 } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";

@@ -13,18 +13,10 @@ const variantClasses = {
   muted: "text-[12px] leading-[24px] text-[#666666]",
 };
 
-export const Text = ({
-  children,
-  className,
-  variant = "body",
-}: TextProps) => {
+export const Text = ({ children, className, variant = "body" }: TextProps) => {
   const baseClassName = className || variantClasses[variant];
-  
-  return (
-    <ReactEmailText className={baseClassName}>
-      {children}
-    </ReactEmailText>
-  );
+
+  return <ReactEmailText className={baseClassName}>{children}</ReactEmailText>;
 };
 
-export default Text; 
+export default Text;

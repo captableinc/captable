@@ -8,8 +8,8 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
 import { api } from "@/trpc/react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { clientSideSession } from "@captable/auth/client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {
@@ -45,7 +45,7 @@ export function VerifyMemberForm({ memberId, token }: VerifyMemberFormProps) {
     },
   });
 
-  async function onSubmit(values: TypeZodAcceptMemberMutationSchema) {
+  function onSubmit(values: TypeZodAcceptMemberMutationSchema) {
     acceptMember.mutate(values);
   }
 

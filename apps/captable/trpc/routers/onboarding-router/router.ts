@@ -1,8 +1,8 @@
 import { generatePublicId } from "@/lib/common/id";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
-import { ZodOnboardingMutationSchema } from "./schema";
-import { db, companies, users, members, eq } from "@captable/db";
+import { companies, db, eq, members, users } from "@captable/db";
 import { TRPCError } from "@trpc/server";
+import { ZodOnboardingMutationSchema } from "./schema";
 
 import { Audit } from "@/server/audit";
 

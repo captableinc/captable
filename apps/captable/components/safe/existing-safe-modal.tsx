@@ -1,13 +1,13 @@
-import { FormValueProvider } from "@/providers/form-value-provider";
+import { GeneralDetails } from "@/components/safe/steps/general-details";
+import { InvestorDetails } from "@/components/safe/steps/investor-details";
+import { SafeDocuments } from "@/components/safe/steps/safe-documents";
 import {
   StepperModal,
   StepperModalContent,
   type StepperModalProps,
   StepperStep,
 } from "@/components/ui/stepper";
-import { GeneralDetails } from "@/components/safe/steps/general-details";
-import { InvestorDetails } from "@/components/safe/steps/investor-details";
-import { SafeDocuments } from "@/components/safe/steps/safe-documents";
+import { FormValueProvider } from "@/providers/form-value-provider";
 
 export function ExistingSafeModal(props: Omit<StepperModalProps, "children">) {
   return (

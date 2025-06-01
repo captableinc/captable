@@ -7,7 +7,9 @@ export interface AccessControlOptions {
   permissions: TPermission[];
 }
 
-export function createServerAccessControl({ permissions }: AccessControlOptions) {
+export function createServerAccessControl({
+  permissions,
+}: AccessControlOptions) {
   const roleMap = RBAC.normalizePermissionsMap(permissions);
 
   const allow = <T, U = undefined>(
@@ -20,7 +22,7 @@ export function createServerAccessControl({ permissions }: AccessControlOptions)
 
     const subjectPermissions = roleMap.get(subject);
     const allowed =
-      !!subjectPermissions && 
+      !!subjectPermissions &&
       (subjectPermissions.includes(action) || subjectPermissions.includes("*"));
 
     if (allowed) {
@@ -41,15 +43,17 @@ export function createServerAccessControl({ permissions }: AccessControlOptions)
 
   const hasPermission = (subject: TSubjects, action: TActions): boolean => {
     const subjectPermissions = roleMap.get(subject);
-    return !!subjectPermissions && 
-           (subjectPermissions.includes(action) || subjectPermissions.includes("*"));
+    return (
+      !!subjectPermissions &&
+      (subjectPermissions.includes(action) || subjectPermissions.includes("*"))
+    );
   };
 
-  return { 
-    isPermissionsAllowed, 
-    roleMap, 
-    allow, 
+  return {
+    isPermissionsAllowed,
+    roleMap,
+    allow,
     hasPermission,
-    permissions 
+    permissions,
   };
-} 
+}

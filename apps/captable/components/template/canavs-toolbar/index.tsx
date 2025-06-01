@@ -1,11 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { COLORS } from "@/lib/constants/esign";
-import type { FieldTypesEnum } from "@captable/db";
-import * as Toolbar from "@radix-ui/react-toolbar";
-import { FieldTypeData } from "@/components/template/field-type-data";
 import { OptionalMessageModal } from "@/components/esign/optional-message-modal";
+import { FieldTypeData } from "@/components/template/field-type-data";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,9 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { COLORS } from "@/lib/constants/esign";
 import { cn } from "@/lib/utils";
 import type { TemplateFieldForm } from "@/providers/template-field-provider";
 import type { RouterOutputs } from "@/trpc/shared";
+import type { FieldTypesEnum } from "@captable/db";
+import * as Toolbar from "@radix-ui/react-toolbar";
 import { useCallback, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 

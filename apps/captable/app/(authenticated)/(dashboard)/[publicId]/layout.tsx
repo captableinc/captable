@@ -5,12 +5,12 @@ import { useServerSideSession } from "@/hooks/use-server-side-session";
 import { getCompanyList } from "@/server/company";
 import { redirect } from "next/navigation";
 import "@/styles/hint.css";
-import { RBAC } from "@captable/rbac";
-import { getServerPermissions } from "@/server/member";
 import { RolesProvider } from "@/providers/roles-provider";
-import { headers } from "next/headers";
+import { getServerPermissions } from "@/server/member";
 import { checkMembership } from "@/server/member";
 import { db } from "@captable/db";
+import { RBAC } from "@captable/rbac";
+import { headers } from "next/headers";
 
 type DashboardLayoutProps = {
   children: React.ReactNode;

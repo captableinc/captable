@@ -1,7 +1,7 @@
-import type { JOB_TYPES } from "@/lib/constants/job";
 import { env } from "@/env";
-import { logger } from "@captable/logger";
+import type { JOB_TYPES } from "@/lib/constants/job";
 import { singleton } from "@/lib/singleton";
+import { logger } from "@captable/logger";
 import pgBoss from "pg-boss";
 
 type JobTypes = typeof JOB_TYPES;

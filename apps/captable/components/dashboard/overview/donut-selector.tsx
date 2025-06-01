@@ -24,7 +24,7 @@ const DonutSelector: React.FC<DonutSelectorProps> = ({
   return (
     <Select
       value={selected}
-      onValueChange={async (newValue) => {
+      onValueChange={(newValue) => {
         if (newValue !== selected) {
           onChange(newValue);
         }

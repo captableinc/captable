@@ -1,9 +1,9 @@
-import { cn } from "@/lib/utils";
 import { useServerSideSession } from "@/hooks/use-server-side-session";
+import { cn } from "@/lib/utils";
 import { RiArrowLeftLine } from "@remixicon/react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import type React from "react";
-import { headers } from "next/headers";
 
 type SettingsHeaderProps = {
   title: string;

@@ -15,7 +15,7 @@ const createLogger = (): Logger => {
           },
         },
       });
-    } catch (error) {
+    } catch (_error) {
       // Fallback to basic logger if pino-pretty is not available
       return pino({
         level: "debug",

@@ -1,15 +1,15 @@
 import { getAuthenticatorOptions } from "@/lib/authenticator";
-import { db, passkeys, verificationTokens, eq, and } from "@captable/db";
+import { Audit } from "@/server/audit";
 import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
-import { createId } from "@paralleldrive/cuid2";
-import { nanoid } from "nanoid";
+import { and, db, eq, passkeys, verificationTokens } from "@captable/db";
 import type { Passkey } from "@captable/db";
+import { createId } from "@paralleldrive/cuid2";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import type {
   AuthenticatorTransportFuture,
   PublicKeyCredentialRequestOptionsJSON,
 } from "@simplewebauthn/types";
-import { Audit } from "@/server/audit";
+import { nanoid } from "nanoid";
 
 type CreatePasskeyAuthenticationOptions = {
   userId: string;
@@ -94,7 +94,7 @@ export const createPasskeyAuthenticationOptions = async ({
   });
 
   const secondaryId = nanoid(32);
-  const [verificationToken] = await db
+  const [_verificationToken] = await db
     .insert(verificationTokens)
     .values({
       id: createId(),

@@ -1,5 +1,9 @@
 "use client";
 
+import { ContributionDetails } from "@/components/securities/shares/steps/contribution-details";
+import { Documents } from "@/components/securities/shares/steps/documents";
+import { GeneralDetails } from "@/components/securities/shares/steps/general-details";
+import { RelevantDates } from "@/components/securities/shares/steps/relevant-dates";
 import {
   StepperModal,
   StepperModalContent,
@@ -9,10 +13,6 @@ import {
 import { AddShareFormProvider } from "@/providers/add-share-form-provider";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
-import { ContributionDetails } from "@/components/securities/shares/steps/contribution-details";
-import { Documents } from "@/components/securities/shares/steps/documents";
-import { GeneralDetails } from "@/components/securities/shares/steps/general-details";
-import { RelevantDates } from "@/components/securities/shares/steps/relevant-dates";
 
 export type TShareClasses = RouterOutputs["shareClass"]["get"];
 export type TStakeholders = RouterOutputs["stakeholder"]["getStakeholders"];

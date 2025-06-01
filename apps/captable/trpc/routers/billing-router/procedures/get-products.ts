@@ -1,7 +1,7 @@
 import { withAuth } from "@/trpc/api/trpc";
-import { db, billingProducts, billingPrices, eq, and } from "@captable/db";
+import { and, billingPrices, billingProducts, db, eq } from "@captable/db";
 
-export const getProductsProcedure = withAuth.query(async ({ ctx }) => {
+export const getProductsProcedure = withAuth.query(async ({ ctx: _ctx }) => {
   const { products } = await db.transaction(async (tx) => {
     const products = await tx
       .select({

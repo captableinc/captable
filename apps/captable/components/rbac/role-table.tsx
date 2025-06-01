@@ -1,8 +1,24 @@
 "use client";
 
-import { ADMIN_PERMISSION } from "@captable/rbac";
-import type { TPermission } from "@captable/rbac/types";
+import { pushModal } from "@/components/modals";
 import { Allow } from "@/components/rbac/allow";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { DataTableBody } from "@/components/ui/data-table/data-table-body";
+import { SortButton } from "@/components/ui/data-table/data-table-buttons";
+import { DataTableContent } from "@/components/ui/data-table/data-table-content";
+import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
+import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,12 +36,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { RouterOutputs } from "@/trpc/shared";
 import { api } from "@/trpc/react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
+import type { RouterOutputs } from "@/trpc/shared";
+import { ADMIN_PERMISSION } from "@captable/rbac";
+import type { TPermission } from "@captable/rbac/types";
 import { RiMore2Fill } from "@remixicon/react";
 import {
   type ColumnDef,
@@ -40,23 +54,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { pushModal } from "@/components/modals";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DataTable } from "@/components/ui/data-table/data-table";
-import { DataTableBody } from "@/components/ui/data-table/data-table-body";
-import { SortButton } from "@/components/ui/data-table/data-table-buttons";
-import { DataTableContent } from "@/components/ui/data-table/data-table-content";
-import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
-import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type Role = RouterOutputs["rbac"]["listRoles"]["rolesList"][number];
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { popModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import { parseStrakeholdersCSV } from "@/lib/stakeholders-csv-parser";
 import { api } from "@/trpc/react";
@@ -9,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { popModal } from "@/components/modals";
 
 const StakeholderUploader = () => {
   const [csvFile, setCSVFile] = useState<File[]>([]);

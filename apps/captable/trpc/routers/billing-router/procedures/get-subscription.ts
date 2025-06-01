@@ -1,15 +1,15 @@
 import { checkMembership } from "@/server/member";
+import { withAuth } from "@/trpc/api/trpc";
 import {
-  db,
+  and,
   billingCustomers,
-  billingSubscriptions,
   billingPrices,
   billingProducts,
+  billingSubscriptions,
+  db,
   eq,
   inArray,
-  and,
 } from "@captable/db";
-import { withAuth } from "@/trpc/api/trpc";
 
 export const getSubscriptionProcedure = withAuth.query(async ({ ctx }) => {
   const { session } = ctx;

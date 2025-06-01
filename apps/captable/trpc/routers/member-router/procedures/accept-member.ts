@@ -1,12 +1,12 @@
 import { Audit } from "@/server/audit";
 import { withAuth } from "@/trpc/api/trpc";
 import {
-  db,
-  verificationTokens,
-  users,
-  members,
   companies,
+  db,
   eq,
+  members,
+  users,
+  verificationTokens,
 } from "@captable/db";
 import { ZodAcceptMemberMutationSchema } from "../schema";
 

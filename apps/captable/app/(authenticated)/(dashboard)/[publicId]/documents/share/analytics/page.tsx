@@ -1,4 +1,4 @@
-const DocumentAnalyticsPage = async () => {
+const DocumentAnalyticsPage = () => {
   return <div>Document Analytics Page</div>;
 };
 

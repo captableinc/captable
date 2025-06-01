@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   bigint,
   index,
@@ -10,7 +11,6 @@ import {
 import { createSelectSchema } from "drizzle-zod";
 import { ConversionRightsEnum, SharePrefixEnum, ShareTypeEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const shareClasses = createTable(
   "share_classes",

@@ -1,12 +1,5 @@
 import { META } from "@captable/utils/constants";
-import {
-  Layout,
-  Heading,
-  Text,
-  Button,
-  Link,
-  Footer,
-} from "../components";
+import { Button, Footer, Heading, Layout, Link, Text } from "../components";
 
 export interface MagicLinkEmailProps {
   magicLink: string;
@@ -14,21 +7,17 @@ export interface MagicLinkEmailProps {
 
 export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
   <Layout preview={`Your magic link for ${META.title}`}>
-    <Heading>
-      Your magic link for {META.title}
-    </Heading>
-    
-    <Button href={magicLink}>
-      Login
-    </Button>
-    
+    <Heading>Your magic link for {META.title}</Heading>
+
+    <Button href={magicLink}>Login</Button>
+
     <Text>
       or copy and paste this URL into your browser:{" "}
       <Link href={magicLink} variant="breakable">
         {magicLink}
       </Link>
     </Text>
-    
+
     <Footer />
   </Layout>
 );

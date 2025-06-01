@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { camelCase } from "@/lib/utils";
-import { StakeholderRelationshipEnum, StakeholderTypeEnum } from "@captable/db";
 import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
+import { StakeholderRelationshipEnum, StakeholderTypeEnum } from "@captable/db";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

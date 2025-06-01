@@ -1,5 +1,5 @@
-import { PASSKEY_TIMEOUT } from "@/lib/constants/passkey";
 import { env } from "@/env";
+import { PASSKEY_TIMEOUT } from "@/lib/constants/passkey";
 
 /**
  * Extracts common fields to identify the RP (relying party)

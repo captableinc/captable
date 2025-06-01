@@ -13,13 +13,13 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { api } from "@/trpc/react";
 import { ZCurrentPasswordSchema } from "@/trpc/routers/auth/schema";
+import { signIn } from "@captable/auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiDoorLockLine, RiGoogleFill } from "@remixicon/react";
 import {
   browserSupportsWebAuthn,
   startAuthentication,
 } from "@simplewebauthn/browser";
-import { signIn } from "@captable/auth/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -79,7 +79,7 @@ const SignInForm = ({ isGoogleAuthEnabled }: LoginFormProps) => {
       const options = await createPasskeySigninOptions();
 
       if (options) {
-        const credential = await startAuthentication(options);
+        const _credential = await startAuthentication(options);
 
         // const result = await signIn("webauthn", {
         //   credential: JSON.stringify(credential),

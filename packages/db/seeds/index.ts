@@ -1,46 +1,33 @@
 import { logger } from "@captable/logger";
-import inquirer from "inquirer";
-import type { QuestionCollection } from "inquirer";
+
 import { db } from "../index";
-import { companies } from "../schema/companies";
-import { members } from "../schema/members";
-import { users } from "../schema/users";
+import { companies, users } from "../schema";
 import seedCompanies from "./companies";
 import seedTeam from "./team";
 
 // Prevent running in production
 if (process.env.NODE_ENV === "production") {
-  logger.error("❌ You cannot run this command on production");
-  process.exit(0);
+  logger.error("❌ Cannot run seed script in production environment");
+  process.exit(1);
 }
 
-export const seed = async () => {
-  const inquiry = await inquirer.prompt({
-    type: "confirm",
-    name: "answer",
-    message: "Are you sure you want to NUKE 🚀 and re-seed the database?",
-  } as QuestionCollection);
-
-  const answer = inquiry.answer as boolean;
-
-  if (answer) {
-    await nuke();
-
+const seed = () => {
+  try {
     logger.info("Seeding database");
-    return db.transaction(async (tx) => {
+    return db.transaction(async (_tx) => {
       await seedCompanies();
       await seedTeam();
     });
+  } catch (error) {
+    logger.error("Error seeding database", error);
+    throw error;
   }
-
-  throw new Error("Seeding aborted");
 };
 
-const nuke = async () => {
+const _nuke = () => {
   logger.info("🚀 Nuking database records");
-  return db.transaction(async (tx) => {
+  return db.transaction(async (_tx) => {
     // Delete all records in reverse order of dependencies
-    await db.delete(members);
     await db.delete(users);
     await db.delete(companies);
     // Add other tables that need to be cleared
@@ -49,7 +36,7 @@ const nuke = async () => {
 
 // Execute the seed function
 seed()
-  .then(async () => {
+  .then(() => {
     logger.info("✅ Database seeding completed");
     logger.info(`💌 We have created four admin accounts for you. Please login with one of these emails:
       ceo@example.com
@@ -57,6 +44,6 @@ seed()
       cfo@example.com
       lawyer@example.com`);
   })
-  .catch(async (error: Error) => {
+  .catch((error: Error) => {
     logger.error(`❌ ${error.message}`);
   });

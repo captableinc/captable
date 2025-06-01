@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { RiGoogleFill as GoogleIcon } from "@remixicon/react";
 import { signIn } from "@captable/auth/client";
+import { RiGoogleFill as GoogleIcon } from "@remixicon/react";
 
 async function signInWithGoogle() {
   await signIn.social({

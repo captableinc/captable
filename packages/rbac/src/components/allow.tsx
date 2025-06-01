@@ -1,12 +1,20 @@
 import type { ReactNode } from "react";
-import { useAllowed, type useAllowedOptions, type PermissionsContext } from "../hooks/use-allowed.js";
+import {
+  type PermissionsContext,
+  useAllowed,
+  type useAllowedOptions,
+} from "../hooks/use-allowed.js";
 
 interface AllowProps extends useAllowedOptions {
   children: ReactNode | ((authorized: boolean) => ReactNode);
   permissionsContext: PermissionsContext;
 }
 
-export const Allow = ({ children, permissionsContext, ...rest }: AllowProps) => {
+export const Allow = ({
+  children,
+  permissionsContext,
+  ...rest
+}: AllowProps) => {
   const { isAllowed } = useAllowed(rest, permissionsContext);
 
   if (isAllowed) {
@@ -16,4 +24,4 @@ export const Allow = ({ children, permissionsContext, ...rest }: AllowProps) => 
     return children;
   }
   return null;
-}; 
+};

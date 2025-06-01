@@ -1,7 +1,7 @@
 import { serverSideSession } from "@captable/auth/server";
 import { redirect } from "next/navigation";
 
-export default async function AuthenticatedLayout({
+export default function AuthenticatedLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ export default async function AuthenticatedLayout({
     // Better Auth requires request parameter - we'll handle this in a middleware or different approach
     // For now, we'll remove server-side session check and handle it client-side
     return <>{children}</>;
-  } catch (error) {
+  } catch (_error) {
     redirect("/login");
   }
 }

@@ -1,7 +1,7 @@
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
-import { db, members, companies, eq, and } from "@captable/db";
 import { createTRPCRouter, withAccessControl, withAuth } from "@/trpc/api/trpc";
+import { and, companies, db, eq, members } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodOnboardingMutationSchema } from "../onboarding-router/schema";
 import { ZodSwitchCompanyMutationSchema } from "./schema";
@@ -70,7 +70,7 @@ export const companyRouter = createTRPCRouter({
   }),
   switchCompany: withAuth
     .input(ZodSwitchCompanyMutationSchema)
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx: _ctx, input }) => {
       await db.transaction(async (tx) => {
         const memberResult = await tx
           .select({

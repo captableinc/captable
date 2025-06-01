@@ -4,5 +4,8 @@ export * from "../components/roles-provider.js";
 export * from "../hooks/use-allowed.js";
 
 // Export types for re-export convenience
-export type { useAllowedOptions, PermissionsContext } from "../hooks/use-allowed.js";
-export type { RolesData } from "../components/roles-provider.js"; 
+export type {
+  useAllowedOptions,
+  PermissionsContext,
+} from "../hooks/use-allowed.js";
+export type { RolesData } from "../components/roles-provider.js";

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { EmptySelect } from "@/components/securities/shared/EmptySelect";
 import {
   StepperModalFooter,
   StepperPrev,
@@ -23,7 +24,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
-import { EmptySelect } from "@/components/securities/shared/EmptySelect";
 
 interface ContributionDetailsProps {
   stakeholders: RouterOutputs["stakeholder"]["getStakeholders"] | [];

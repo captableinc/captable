@@ -9,13 +9,13 @@ import {
 
 import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
-import { RiEqualizer2Line } from "@remixicon/react";
-import EquityPlanModal from "./modal";
-import { cn } from "@/lib/utils";
 import type { RouterOutputs } from "@/trpc/shared";
+import { RiEqualizer2Line } from "@remixicon/react";
 import type { ColumnDef } from "@tanstack/react-table";
+import EquityPlanModal from "./modal";
 const formatter = new Intl.NumberFormat("en-US");
 
 type EquityPlanTableProps = {

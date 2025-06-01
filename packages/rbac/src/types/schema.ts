@@ -7,4 +7,4 @@ export const permissionSchema = z.object({
   subject: z.enum(SUBJECTS),
 });
 
-export type TPermission = z.infer<typeof permissionSchema>; 
+export type TPermission = z.infer<typeof permissionSchema>;

@@ -1,6 +1,6 @@
 import type { ShareContactType } from "@/schema/contacts";
-import { db, members, users, stakeholders, eq } from "@captable/db";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
+import { db, eq, members, stakeholders, users } from "@captable/db";
 
 export const commonRouter = createTRPCRouter({
   getContacts: withAuth.query(async ({ ctx }) => {

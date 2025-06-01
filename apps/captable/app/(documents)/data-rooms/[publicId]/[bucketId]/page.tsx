@@ -3,18 +3,18 @@
 import FilePreview from "@/components/file/preview";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
+import { getPresignedGetUrl } from "@/server/file-uploads";
 import {
-  db,
-  dataRooms,
-  dataRoomRecipients,
-  dataRoomDocuments,
-  documents,
+  and,
   buckets,
   companies,
+  dataRoomDocuments,
+  dataRoomRecipients,
+  dataRooms,
+  db,
+  documents,
   eq,
-  and,
 } from "@captable/db";
-import { getPresignedGetUrl } from "@/server/file-uploads";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -32,7 +32,7 @@ const DataRoomPage = async ({
 
   try {
     decodedToken = await decode(token);
-  } catch (error) {
+  } catch (_error) {
     return notFound();
   }
 

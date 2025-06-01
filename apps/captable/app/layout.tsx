@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import { cn } from "@/lib/utils";
-import { robotoMono, satoshi } from "@/styles/fonts";
-import { ProgressBarProvider } from "@/providers/progress-bar";
-import { ThemeProvider, ThemeToggle } from "@/components/theme";
-import { TRPCProvider } from "@/providers/trpc-provider";
-import { PublicEnvScript } from "@/components/public-env-script";
-import { Toaster } from "sonner";
 import logo from "@/assets/logo.svg";
-import { META } from "@captable/utils/constants";
+import { PublicEnvScript } from "@/components/public-env-script";
 import ScreenSize from "@/components/screen-size";
+import { ThemeProvider, ThemeToggle } from "@/components/theme";
+import { cn } from "@/lib/utils";
+import { ProgressBarProvider } from "@/providers/progress-bar";
+import { TRPCProvider } from "@/providers/trpc-provider";
+import { robotoMono, satoshi } from "@/styles/fonts";
+import { META } from "@captable/utils/constants";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {

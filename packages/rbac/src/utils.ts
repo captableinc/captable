@@ -1,6 +1,9 @@
 import { ADMIN_ROLE_ID } from "./core/constants.js";
-import { createRoleIdMapper, createRolePermissionMapper } from "./server/role-utils.js";
 import { createServerAccessControl } from "./server/access-control.js";
+import {
+  createRoleIdMapper,
+  createRolePermissionMapper,
+} from "./server/role-utils.js";
 import type { TPermission } from "./types/schema.js";
 
 /**
@@ -8,7 +11,7 @@ import type { TPermission } from "./types/schema.js";
  */
 export const COMMON_ROLE_PATTERNS = {
   ADMIN: "ADMIN",
-  USER: "USER", 
+  USER: "USER",
   VIEWER: "VIEWER",
   CUSTOM: "CUSTOM",
 } as const;
@@ -32,7 +35,10 @@ export function createStandardRoleIdMapper<TRole extends string>(options: {
 /**
  * Creates a standard role permission mapper for common patterns
  */
-export function createStandardRolePermissionMapper<TRole extends string, TPermission>(options: {
+export function createStandardRolePermissionMapper<
+  TRole extends string,
+  TPermission,
+>(options: {
   adminRoleValue: TRole;
   customRoleValue: TRole;
   adminPermissions: TPermission[];
@@ -49,7 +55,10 @@ export function createStandardRolePermissionMapper<TRole extends string, TPermis
 /**
  * Helper to create both role ID mapper and permission mapper with consistent config
  */
-export function createStandardRoleUtils<TRole extends string, TPermission>(options: {
+export function createStandardRoleUtils<
+  TRole extends string,
+  TPermission,
+>(options: {
   adminRoleValue: TRole;
   customRoleValue: TRole;
   adminPermissions: TPermission[];
@@ -78,7 +87,7 @@ export function createStandardRoleUtils<TRole extends string, TPermission>(optio
 /**
  * Result type for generic operations that can succeed or fail
  */
-export type Result<T, E = Error> = 
+export type Result<T, E = Error> =
   | { success: true; data: T }
   | { success: false; error: E };
 
@@ -95,12 +104,17 @@ export interface BaseMembership {
 /**
  * Dependencies that apps need to provide for role permission resolution
  */
-export interface RolePermissionDependencies<TRole, TSession, TDB, TMembership extends BaseMembership> {
+export interface RolePermissionDependencies<
+  TRole,
+  TSession,
+  TDB,
+  TMembership extends BaseMembership,
+> {
   adminRoleValue: TRole;
   customRoleValue: TRole;
   adminPermissions: TPermission[];
   defaultPermissions: TPermission[];
-  
+
   // App-specific implementations
   checkMembership: (session: TSession, db: TDB) => Promise<Result<TMembership>>;
   getCustomRolePermissions: (options: {
@@ -113,10 +127,13 @@ export interface RolePermissionDependencies<TRole, TSession, TDB, TMembership ex
 /**
  * Creates a generic role permission resolver with dependency injection
  */
-export function createRolePermissionResolver<TRole, TSession, TDB, TMembership extends BaseMembership>(
-  deps: RolePermissionDependencies<TRole, TSession, TDB, TMembership>
-) {
-  const getPermissionsForRole = async (options: {
+export function createRolePermissionResolver<
+  TRole,
+  TSession,
+  TDB,
+  TMembership extends BaseMembership,
+>(deps: RolePermissionDependencies<TRole, TSession, TDB, TMembership>) {
+  const getPermissionsForRole = (options: {
     role: TRole | null;
     customRoleId: string | null;
     companyId: string;
@@ -125,26 +142,31 @@ export function createRolePermissionResolver<TRole, TSession, TDB, TMembership e
     const { role, customRoleId, companyId, db } = options;
 
     if (role === deps.adminRoleValue) {
-      return { success: true, data: deps.adminPermissions };
+      return Promise.resolve({ success: true, data: deps.adminPermissions });
     }
 
     if (!role) {
-      return { success: true, data: deps.defaultPermissions };
+      return Promise.resolve({ success: true, data: deps.defaultPermissions });
     }
 
     if (role === deps.customRoleValue && customRoleId) {
       return deps.getCustomRolePermissions({ customRoleId, companyId, db });
     }
 
-    return { success: true, data: deps.defaultPermissions };
+    return Promise.resolve({ success: true, data: deps.defaultPermissions });
   };
 
   const getPermissions = async (options: {
     session: TSession;
     db: TDB;
-  }): Promise<Result<{ permissions: TPermission[]; membership: TMembership }>> => {
-    const membershipResult = await deps.checkMembership(options.session, options.db);
-    
+  }): Promise<
+    Result<{ permissions: TPermission[]; membership: TMembership }>
+  > => {
+    const membershipResult = await deps.checkMembership(
+      options.session,
+      options.db,
+    );
+
     if (!membershipResult.success) {
       return { success: false, error: membershipResult.error };
     }
@@ -179,7 +201,7 @@ export function createRolePermissionResolver<TRole, TSession, TDB, TMembership e
 export interface ServerAccessControlDependencies<TSession, TDB> {
   getSession: (headers: Headers) => Promise<TSession | null>;
   database: TDB;
-  
+
   // Error factories
   createUnauthorizedError?: () => Error;
   createGenericError?: (error: unknown) => Error;
@@ -188,9 +210,14 @@ export interface ServerAccessControlDependencies<TSession, TDB> {
 /**
  * Creates a generic server access control factory with full dependency injection
  */
-export function createServerAccessControlFactory<TRole, TSession, TDB, TMembership extends BaseMembership>(
+export function createServerAccessControlFactory<
+  TRole,
+  TSession,
+  TDB,
+  TMembership extends BaseMembership,
+>(
   permissionDeps: RolePermissionDependencies<TRole, TSession, TDB, TMembership>,
-  accessDeps: ServerAccessControlDependencies<TSession, TDB>
+  accessDeps: ServerAccessControlDependencies<TSession, TDB>,
 ) {
   const permissionResolver = createRolePermissionResolver(permissionDeps);
 
@@ -244,7 +271,7 @@ export function createRoleIdResolver<TRole extends string, TDB>(
     customRoleValue: TRole;
     adminRoleId: string;
   },
-  deps: RoleIdResolverDependencies<TDB>
+  deps: RoleIdResolverDependencies<TDB>,
 ) {
   return async (options: {
     id?: string | null;
@@ -261,11 +288,11 @@ export function createRoleIdResolver<TRole extends string, TDB>(
     }
 
     const customRole = await deps.findCustomRole(id, db);
-    
+
     if (!customRole) {
       throw new Error("Custom role not found");
     }
 
     return { role: config.customRoleValue, customRoleId: customRole.id };
   };
-} 
+}

@@ -1,14 +1,14 @@
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
 import {
+  buckets,
   db,
+  documents,
+  eq,
+  members,
   options,
   stakeholders,
-  documents,
-  members,
   users,
-  buckets,
-  eq,
 } from "@captable/db";
 
 export interface OptionWithRelations {

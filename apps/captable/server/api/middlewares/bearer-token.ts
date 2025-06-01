@@ -1,5 +1,5 @@
 import { verifySecureHash } from "@/lib/crypto";
-import { db, members, accessTokens, users, eq, and } from "@captable/db";
+import { accessTokens, and, db, eq, members, users } from "@captable/db";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { ApiError } from "../error";
@@ -125,7 +125,7 @@ async function checkMembership(userId: string, c: Context) {
   return membership;
 }
 
-function findAccessToken(clientId: string, c: Context) {
+function findAccessToken(clientId: string, _c: Context) {
   return db
     .select({
       clientId: accessTokens.clientId,

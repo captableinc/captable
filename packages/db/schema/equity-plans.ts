@@ -1,8 +1,8 @@
+import { createId } from "@paralleldrive/cuid2";
 import { bigint, index, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { CancellationBehaviorEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const equityPlans = createTable(
   "equity_plans",

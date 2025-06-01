@@ -1,6 +1,6 @@
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, templates, eq, desc } from "@captable/db";
+import { db, desc, eq, templates } from "@captable/db";
 
 export const getAllTemplateProcedure = withAuth.query(async ({ ctx }) => {
   const { documents } = await db.transaction(async (tx) => {

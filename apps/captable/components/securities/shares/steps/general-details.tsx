@@ -31,18 +31,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SecuritiesStatusEnum, ShareLegendsEnum } from "@captable/db";
 import { useAddShareFormValues } from "@/providers/add-share-form-provider";
 import type { RouterOutputs } from "@/trpc/shared";
+import { SecuritiesStatusEnum, ShareLegendsEnum } from "@captable/db";
+import {
+  SecuritiesStatusEnum as NewSecuritiesStatusEnum,
+  ShareLegendsEnum as NewShareLegendsEnum,
+} from "@captable/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiAddFill } from "@remixicon/react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { z } from "zod";
-import {
-  SecuritiesStatusEnum as NewSecuritiesStatusEnum,
-  ShareLegendsEnum as NewShareLegendsEnum,
-} from "@captable/db";
 
 export const humanizeCompanyLegends = (type: string): string => {
   switch (type) {

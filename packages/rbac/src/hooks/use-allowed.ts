@@ -12,9 +12,10 @@ export interface PermissionsContext {
 
 export function useAllowed(
   { action, subject }: useAllowedOptions,
-  permissionsContext: PermissionsContext
+  permissionsContext: PermissionsContext,
 ) {
-  const permissions = permissionsContext?.permissions ?? new Map<TSubjects, TActions[]>();
+  const permissions =
+    permissionsContext?.permissions ?? new Map<TSubjects, TActions[]>();
 
   const hasSubject = permissions.has(subject);
   const hasAction =
@@ -24,4 +25,4 @@ export function useAllowed(
   const isAllowed = hasSubject && hasAction;
 
   return { isAllowed };
-} 
+}

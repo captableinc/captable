@@ -1,19 +1,19 @@
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
-import {
-  members,
-  users,
-  companies,
-  eq,
-  and,
-  type DB,
-  type DBTransaction,
-} from "@captable/db";
 import { withAuth, type withAuthTrpcContextType } from "@/trpc/api/trpc";
 import {
   type TypeZodRemoveMemberMutationSchema,
   ZodRemoveMemberMutationSchema,
 } from "@/trpc/routers/member-router/schema";
+import {
+  type DB,
+  type DBTransaction,
+  and,
+  companies,
+  eq,
+  members,
+  users,
+} from "@captable/db";
 
 export const removeMemberProcedure = withAuth
   .input(ZodRemoveMemberMutationSchema)

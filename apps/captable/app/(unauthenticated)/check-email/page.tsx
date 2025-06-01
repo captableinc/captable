@@ -1,6 +1,6 @@
 import CheckEmailComponent from "@/components/onboarding/check-email";
-import { Suspense } from "react";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Check Email",

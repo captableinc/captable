@@ -1,10 +1,10 @@
 import { generatePublicId } from "@/lib/common/id";
 import { Audit } from "@/server/audit";
-import { db, documents, type DB, type DBTransaction } from "@captable/db";
 import {
   withAccessControl,
   type withAuthTrpcContextType,
 } from "@/trpc/api/trpc";
+import { type DB, type DBTransaction, db, documents } from "@captable/db";
 import {
   type TypeZodCreateDocumentMutationSchema,
   ZodCreateDocumentMutationSchema,

@@ -1,5 +1,5 @@
+import { and, db, eq, stakeholders } from "@captable/db";
 import { z } from "@hono/zod-openapi";
-import { db, stakeholders, eq, and } from "@captable/db";
 import { ApiError } from "../../error";
 import {
   StakeholderSchema,

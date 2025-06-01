@@ -1,5 +1,5 @@
-import type { TPermission } from "../types/schema.js";
 import type { TActions } from "../types/actions.js";
+import type { TPermission } from "../types/schema.js";
 import { SUBJECTS } from "../types/subjects.js";
 
 export const ADMIN_PERMISSION = SUBJECTS.map((item) => ({
@@ -37,4 +37,4 @@ export type RoleList = {
     }
 );
 
-type DefaultRoles = "ADMIN" | "USER" | "VIEWER"; // Generic role types 
+type DefaultRoles = "ADMIN" | "USER" | "VIEWER"; // Generic role types

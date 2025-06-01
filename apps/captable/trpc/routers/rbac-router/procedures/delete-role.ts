@@ -1,7 +1,7 @@
-import { getRoleById } from "@/server/member";
 import { Audit } from "@/server/audit";
+import { getRoleById } from "@/server/member";
 import { withAccessControl } from "@/trpc/api/trpc";
-import { db, customRoles, eq, and } from "@captable/db";
+import { and, customRoles, db, eq } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodDeleteRoleMutationSchema } from "../schema";
 

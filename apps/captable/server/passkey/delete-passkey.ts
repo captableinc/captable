@@ -1,6 +1,6 @@
-import { db, eq, and, passkeys } from "@captable/db";
-import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
 import { Audit } from "@/server/audit";
+import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
+import { and, db, eq, passkeys } from "@captable/db";
 
 export interface DeletePasskeyOptions {
   userId: string;

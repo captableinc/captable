@@ -4,19 +4,19 @@ import {
   type ShareUpdateEmailPayloadType,
 } from "@/jobs/share-update-email";
 import { encode } from "@/lib/jwt";
-import {
-  UpdateStatusEnum,
-  db,
-  updates,
-  updateRecipients,
-  companies,
-  eq,
-  and,
-} from "@captable/db";
 import { ShareRecipientSchema } from "@/schema/contacts";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
+import {
+  UpdateStatusEnum,
+  and,
+  companies,
+  db,
+  eq,
+  updateRecipients,
+  updates,
+} from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -31,7 +31,7 @@ export const shareUpdateProcedure = withAuth
   .mutation(async ({ ctx, input }) => {
     const { session, userAgent, requestIp } = ctx;
     const { updateId, others, selectedContacts } = input;
-    const { name: senderName, email: senderEmail, id } = session.user;
+    const { name: senderName, email: _senderEmail, id } = session.user;
 
     const { companyId } = await checkMembership({ session, tx: db });
 

@@ -4,15 +4,15 @@ import DataRoomFileExplorer from "@/components/documents/data-room/explorer";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { type JWTVerifyResult, decode } from "@/lib/jwt";
 import {
-  db,
-  dataRooms,
-  dataRoomRecipients,
-  dataRoomDocuments,
-  documents as documentsTable,
+  and,
   buckets,
   companies,
+  dataRoomDocuments,
+  dataRoomRecipients,
+  dataRooms,
+  db,
+  documents as documentsTable,
   eq,
-  and,
 } from "@captable/db";
 import { RiFolder3Fill as FolderIcon } from "@remixicon/react";
 import { notFound } from "next/navigation";
@@ -30,7 +30,7 @@ const DataRoomPage = async ({
 
   try {
     decodedToken = await decode(token);
-  } catch (error) {
+  } catch (_error) {
     return notFound();
   }
 

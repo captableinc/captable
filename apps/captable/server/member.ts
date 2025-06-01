@@ -1,21 +1,21 @@
+import { useServerSideSession } from "@/hooks/use-server-side-session";
 import { createHash } from "@/lib/crypto";
-import { nanoid } from "nanoid";
 import type { Session } from "@captable/auth/types";
 import {
-  db,
   type DBTransaction,
-  eq,
   and,
+  customRoles,
+  db,
+  eq,
   inArray,
   members,
   users,
   verificationTokens,
-  customRoles,
 } from "@captable/db";
 import type { RoleEnum } from "@captable/db";
 import { ADMIN_ROLE_ID } from "@captable/rbac";
-import { useServerSideSession } from "@/hooks/use-server-side-session";
 import { TRPCError } from "@trpc/server";
+import { nanoid } from "nanoid";
 import { cache } from "react";
 
 export const checkVerificationToken = async (
@@ -241,16 +241,16 @@ export const getServerPermissions = cache(
 );
 
 export const serverAccessControl = async ({
-  headers,
+  headers: _headers,
 }: { headers: Headers }) => {
   // Basic implementation for backward compatibility
   return {
-    allow: <T>(value: T, permission: [string, string], fallback?: T) => {
+    allow: <T>(value: T, _permission: [string, string], _fallback?: T) => {
       // For now, just return the value (no actual permission checking)
       return value;
     },
-    hasPermission: (subject: string, action: string) => true, // Always allow for now
-    isPermissionsAllowed: (policies: Record<string, unknown>) => ({
+    hasPermission: (_subject: string, _action: string) => true, // Always allow for now
+    isPermissionsAllowed: (_policies: Record<string, unknown>) => ({
       isAllowed: true,
     }),
     roleMap: new Map(),

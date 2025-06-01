@@ -1,14 +1,14 @@
-import { PASSKEY_TIMEOUT } from "@/lib/constants/passkey";
 import { getAuthenticatorOptions } from "@/lib/authenticator";
-import { db, users, passkeyVerificationTokens, eq } from "@captable/db";
+import { PASSKEY_TIMEOUT } from "@/lib/constants/passkey";
+import { Audit } from "@/server/audit";
 import type { PasskeyAudit } from "@/trpc/routers/passkey-router/schema";
+import { db, eq, passkeyVerificationTokens, users } from "@captable/db";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { isoUint8Array } from "@simplewebauthn/server/helpers";
 import type {
   AuthenticatorTransportFuture,
   PublicKeyCredentialCreationOptionsJSON,
 } from "@simplewebauthn/types";
-import { Audit } from "@/server/audit";
 
 type CreatePasskeyRegistrationOptions = {
   userId: string;

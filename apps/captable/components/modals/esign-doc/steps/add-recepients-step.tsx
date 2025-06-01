@@ -1,4 +1,3 @@
-import { uploadFile } from "@/lib/common/uploads";
 import { popModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +16,7 @@ import {
   StepperPrev,
   StepperStep,
 } from "@/components/ui/stepper";
+import { uploadFile } from "@/lib/common/uploads";
 import { TAG } from "@/lib/tags";
 import { useEsignValues } from "@/providers/esign-form-provider";
 import { api } from "@/trpc/react";

@@ -18,4 +18,4 @@ export const META = {
       url: "https://github.com/Open-Cap-Table-Coalition/Open-Cap-Format-OCF",
     },
   },
-}; 
+};

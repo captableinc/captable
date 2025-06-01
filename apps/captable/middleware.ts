@@ -1,7 +1,7 @@
 import { logger } from "@captable/logger";
+import { getSessionCookie } from "better-auth/cookies";
 import { NextResponse } from "next/server";
 import { type NextRequest, userAgent } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
 import { env } from "./env";
 
 const log = logger.child({ module: "middleware" });

@@ -31,11 +31,11 @@ import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-import { createStandardRoleIdMapper } from "@captable/rbac/utils";
-import type { RoleEnum } from "@captable/db";
 import type { RouterOutputs } from "@/trpc/shared";
-import { RiMore2Fill } from "@remixicon/react";
 import { clientSideSession } from "@captable/auth/client";
+import type { RoleEnum } from "@captable/db";
+import { createStandardRoleIdMapper } from "@captable/rbac/utils";
+import { RiMore2Fill } from "@remixicon/react";
 import { useRouter } from "next/navigation";
 import { pushModal } from "../modals";
 import { DataTable } from "../ui/data-table/data-table";

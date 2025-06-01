@@ -2,8 +2,8 @@ import SignUpForm from "@/components/onboarding/signup";
 import { IS_GOOGLE_AUTH_ENABLED } from "@/lib/constants/auth";
 import { serverSideSession } from "@captable/auth/server";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Sign Up",
@@ -20,7 +20,7 @@ export default async function SignIn() {
       }
       return redirect("/onboarding");
     }
-  } catch (error) {
+  } catch (_error) {
     // No session, continue to signup page
   }
 

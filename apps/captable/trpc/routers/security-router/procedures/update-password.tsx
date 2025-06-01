@@ -1,6 +1,6 @@
 import { Audit } from "@/server/audit";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, users, eq } from "@captable/db";
+import { db, eq, users } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import { ZUpdatePasswordMutationSchema } from "../schema";

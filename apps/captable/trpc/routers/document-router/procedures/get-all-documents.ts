@@ -1,5 +1,5 @@
 import { withAccessControl } from "@/trpc/api/trpc";
-import { db, documents, buckets, members, users, eq, desc } from "@captable/db";
+import { buckets, db, desc, documents, eq, members, users } from "@captable/db";
 
 export const getAllDocumentsProcedure = withAccessControl
   .meta({ policies: { documents: { allow: ["read"] } } })

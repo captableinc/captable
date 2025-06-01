@@ -1,6 +1,6 @@
 import { checkMembership } from "@/server/member";
-import { db, templates, esignAudits, eq, and } from "@captable/db";
 import { withAccessControl } from "@/trpc/api/trpc";
+import { and, db, eq, esignAudits, templates } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodAllEsignAuditsQuerySchema } from "../schema";
 

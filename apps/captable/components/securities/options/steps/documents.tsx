@@ -1,6 +1,5 @@
 "use client";
 
-import { uploadFile } from "@/lib/common/uploads";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DialogClose } from "@/components/ui/dialog";
@@ -10,6 +9,7 @@ import {
   useStepper,
 } from "@/components/ui/stepper";
 import Uploader from "@/components/ui/uploader";
+import { uploadFile } from "@/lib/common/uploads";
 import { invariant } from "@/lib/error";
 import { TAG } from "@/lib/tags";
 import { useStockOptionFormValues } from "@/providers/stock-option-form-provider";

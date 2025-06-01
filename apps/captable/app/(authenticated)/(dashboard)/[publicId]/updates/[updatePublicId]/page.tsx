@@ -1,6 +1,6 @@
 "use server";
 
-import { db, updates, eq } from "@captable/db";
+import { db, eq, updates } from "@captable/db";
 import EditorWrapper from "./editor-wrapper";
 
 const getUpdate = async (publicId: string) => {

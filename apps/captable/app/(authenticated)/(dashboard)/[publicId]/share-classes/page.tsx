@@ -1,13 +1,13 @@
 import EmptyState from "@/components/common/empty-state";
 import { Card } from "@/components/ui/card";
 import { useServerSideSession } from "@/hooks/use-server-side-session";
-import { db, shareClasses, eq } from "@captable/db";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { db, eq, shareClasses } from "@captable/db";
 import { RiPieChart2Line } from "@remixicon/react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { CreateShareButton } from "./create-share-class-button";
 import ShareClassTable from "./table";
-import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Share classes",

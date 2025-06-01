@@ -15,13 +15,7 @@ type SlideOverProps = {
   children: React.ReactNode;
 };
 
-const SlideOver = ({
-  title,
-  subtitle,
-  trigger,
-  size = "md",
-  children,
-}: SlideOverProps) => {
+const SlideOver = ({ title, subtitle, trigger, children }: SlideOverProps) => {
   return (
     <Sheet>
       <SheetTrigger asChild>{trigger}</SheetTrigger>

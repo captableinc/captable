@@ -1,8 +1,8 @@
 import { CompanyForm } from "@/components/onboarding/company-form";
 import { useServerSideSession } from "@/hooks/use-server-side-session";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Onboarding",

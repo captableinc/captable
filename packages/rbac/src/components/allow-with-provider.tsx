@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { useRoles } from "./roles-provider.js";
 import type { TActions } from "../types/actions.js";
 import type { TSubjects } from "../types/subjects.js";
+import { useRoles } from "./roles-provider.js";
 
 interface AllowWithProviderProps {
   subject: TSubjects;
@@ -9,7 +9,11 @@ interface AllowWithProviderProps {
   children: ReactNode | ((authorized: boolean) => ReactNode);
 }
 
-export const AllowWithProvider = ({ children, action, subject }: AllowWithProviderProps) => {
+export const AllowWithProvider = ({
+  children,
+  action,
+  subject,
+}: AllowWithProviderProps) => {
   const { permissions } = useRoles();
 
   const hasSubject = permissions.has(subject);
@@ -26,4 +30,4 @@ export const AllowWithProvider = ({ children, action, subject }: AllowWithProvid
     return children;
   }
   return null;
-}; 
+};

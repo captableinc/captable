@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   boolean,
   index,
@@ -8,7 +9,6 @@ import {
 import { createSelectSchema } from "drizzle-zod";
 import { MemberStatusEnum, RolesEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const members = createTable(
   "members",

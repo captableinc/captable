@@ -1,8 +1,8 @@
+import { createId } from "@paralleldrive/cuid2";
 import { index, integer, real, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { SecuritiesStatusEnum, ShareLegendsEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const shares = createTable(
   "shares",

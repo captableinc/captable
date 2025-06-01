@@ -1,5 +1,5 @@
 import { createTRPCRouter, withAccessControl } from "@/trpc/api/trpc";
-import { db, bankAccounts, eq, desc } from "@captable/db";
+import { bankAccounts, db, desc, eq } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 
@@ -30,18 +30,23 @@ export const bankAccountsRouter = createTRPCRouter({
 
   create: withAccessControl
     .meta({ policies: { "bank-accounts": { allow: ["create"] } } })
-    .mutation(async ({ ctx }) => {
+    .mutation(({ ctx: _ctx }) => {
       // const {
       //   db,
-      //   membership: { companyId, memberId },
+      //   session: { user },
       // } = ctx;
-      // TODO // Implement create mutation
+
+      // TODO: Implement bank account creation
+      throw new TRPCError({
+        code: "NOT_IMPLEMENTED",
+        message: "Bank account creation not yet implemented",
+      });
     }),
 
   delete: withAccessControl
     .input(z.object({ id: z.string() }))
     .meta({ policies: { "bank-accounts": { allow: ["delete"] } } })
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx: _ctx, input: _input }) => {
       // const {
       //   db,
       //   membership: { memberId, companyId },

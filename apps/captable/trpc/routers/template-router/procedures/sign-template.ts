@@ -4,7 +4,7 @@ import { SignTemplateMutationSchema } from "../schema";
 
 export const signTemplateProcedure = withoutAuth
   .input(SignTemplateMutationSchema)
-  .mutation(async ({ ctx, input }) => {
+  .mutation(({ ctx: _ctx, input: _input }) => {
     // TODO: Convert this procedure from Prisma to Drizzle ORM
     // This is a temporary stub to allow the build to pass
     throw new TRPCError({

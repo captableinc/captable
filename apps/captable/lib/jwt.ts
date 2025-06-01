@@ -1,10 +1,10 @@
+import { env } from "@/env";
 import {
   type JWTPayload,
   type JWTVerifyResult,
   SignJWT,
   jwtVerify,
 } from "jose";
-import { env } from "@/env";
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.BETTER_AUTH_SECRET ?? "secret",

@@ -2,14 +2,14 @@ import EmptyState from "@/components/common/empty-state";
 import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
 import { useServerSideSession } from "@/hooks/use-server-side-session";
-import { db, equityPlans, shareClasses, eq } from "@captable/db";
 import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
 import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import { db, eq, equityPlans, shareClasses } from "@captable/db";
 import { RiPieChart2Line } from "@remixicon/react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { CreateEquityPlanButton } from "./create-equity-plan-button";
 import EquityPlanTable from "./table";
-import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Equity plans",

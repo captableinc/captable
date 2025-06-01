@@ -1,8 +1,8 @@
 import { Audit } from "@/server/audit";
 import { getPasswordResetTokenByToken } from "@/server/password-reset-token";
 import { getUserByEmail } from "@/server/user";
-import { db, users, passwordResetTokens, eq } from "@captable/db";
 import { withoutAuth } from "@/trpc/api/trpc";
+import { db, eq, passwordResetTokens, users } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import { ZNewPasswordProcedureSchema } from "../schema";

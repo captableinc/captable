@@ -1,6 +1,6 @@
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, templates, eq, and } from "@captable/db";
+import { and, db, eq, templates } from "@captable/db";
 import { ZodCancelTemplateMutationSchema } from "../schema";
 
 export const cancelTemplateProcedure = withAuth

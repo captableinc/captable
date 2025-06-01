@@ -1,8 +1,8 @@
 import { Audit } from "@/server/audit";
 import { getUserByEmail } from "@/server/user";
 import { getVerificationTokenByToken } from "@/server/verification-token";
-import { db, users, verificationTokens, eq } from "@captable/db";
 import { withoutAuth } from "@/trpc/api/trpc";
+import { db, eq, users, verificationTokens } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 

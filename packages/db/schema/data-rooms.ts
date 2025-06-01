@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   boolean,
   index,
@@ -7,7 +8,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const dataRooms = createTable(
   "data_rooms",

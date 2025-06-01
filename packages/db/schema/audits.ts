@@ -1,7 +1,7 @@
+import { createId } from "@paralleldrive/cuid2";
 import { index, jsonb, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const audits = createTable(
   "audits",

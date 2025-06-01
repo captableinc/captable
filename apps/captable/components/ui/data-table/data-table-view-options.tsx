@@ -8,8 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { RiArrowDownSLine } from "@remixicon/react";
 import { useDataTable } from "@/components/ui/data-table/data-table";
+import { RiArrowDownSLine } from "@remixicon/react";
 
 export function DataTableViewOptions() {
   const { table } = useDataTable();

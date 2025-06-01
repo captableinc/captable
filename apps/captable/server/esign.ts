@@ -4,24 +4,24 @@ import {
   getFileFromS3,
   uploadFile,
 } from "@/lib/common/uploads";
-import { TAG } from "@/lib/tags";
 import { AuditLogTemplate } from "@/lib/pdf-templates/audit-log-template";
+import { TAG } from "@/lib/tags";
 import { createBucketHandler } from "@/trpc/routers/bucket-router/procedures/create-bucket";
 import { createDocumentHandler } from "@/trpc/routers/document-router/procedures/create-document";
-import { renderToBuffer } from "@react-pdf/renderer";
-import { PDFDocument, StandardFonts } from "pdf-lib";
-import { EsignAudit } from "./audit";
 import type { DBTransaction } from "@captable/db";
 import { eq } from "@captable/db";
 import {
-  esignAudits,
-  templates,
-  templateFields,
   buckets,
   companies,
+  esignAudits,
   members,
+  templateFields,
+  templates,
   users,
 } from "@captable/db";
+import { renderToBuffer } from "@react-pdf/renderer";
+import { PDFDocument, StandardFonts } from "pdf-lib";
+import { EsignAudit } from "./audit";
 
 interface getEsignAuditsOptions {
   templateId: string;

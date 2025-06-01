@@ -1,7 +1,7 @@
 import { generatePublicId } from "@/lib/common/id";
 import { Audit } from "@/server/audit";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, updates, eq } from "@captable/db";
+import { db, eq, updates } from "@captable/db";
 import { UpdateMutationSchema } from "../schema";
 
 export const saveUpdateProcedure = withAuth

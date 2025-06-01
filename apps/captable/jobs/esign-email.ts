@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import { BaseJob } from "@/jobs/base";
-import { db, esignRecipients, templates, eq } from "@captable/db";
 import { sendMail } from "@/server/mailer";
+import { db, eq, esignRecipients, templates } from "@captable/db";
 import type { Job } from "pg-boss";
 
 export type EsignEmailPayloadType = {

@@ -1,6 +1,6 @@
 import { Audit } from "@/server/audit";
 import { withAccessControl } from "@/trpc/api/trpc";
-import { db, stakeholders, eq, and } from "@captable/db";
+import { and, db, eq, stakeholders } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodUpdateStakeholderMutationSchema } from "./../schema";
 

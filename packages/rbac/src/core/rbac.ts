@@ -50,7 +50,7 @@ export class RBAC {
 
   enforce(permissions: TPermission[]): EnforceResult {
     const permissionSubjects = new Set(permissions.map((item) => item.subject));
-    
+
     for (const subject of this.policy.keys()) {
       if (!permissionSubjects.has(subject)) {
         return {
@@ -144,4 +144,4 @@ export class RBAC {
 
     return permissionMap;
   }
-} 
+}

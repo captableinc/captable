@@ -27,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { popModal } from "@/components/modals";
+import { type ComboBoxOption, LinearCombobox } from "@/components/ui/combobox";
 import {
   Form,
   FormControl,
@@ -35,8 +37,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { type ComboBoxOption, LinearCombobox } from "@/components/ui/combobox";
-import { popModal } from "@/components/modals";
 
 const formSchema = ShareClassMutationSchema;
 

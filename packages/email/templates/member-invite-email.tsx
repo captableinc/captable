@@ -1,12 +1,5 @@
 import { META } from "@captable/utils/constants";
-import {
-  Layout,
-  Heading,
-  Text,
-  Button,
-  Link,
-  Footer,
-} from "../components";
+import { Button, Footer, Heading, Layout, Link, Text } from "../components";
 
 export interface MemberInviteEmailProps {
   invitedBy: string;
@@ -24,21 +17,18 @@ export const MemberInviteEmail = ({
   return (
     <Layout preview={previewText}>
       <Heading>
-        Join <strong>{companyName}</strong> on{" "}
-        <strong>{META.title}</strong>
+        Join <strong>{companyName}</strong> on <strong>{META.title}</strong>
       </Heading>
-      
+
       <Text>Hello,</Text>
-      
+
       <Text>
         <strong>{invitedBy}</strong> has invited you to join{" "}
         <strong>{companyName}</strong> on <strong>Captable, Inc.</strong>.
       </Text>
 
-      <Button href={inviteLink}>
-        Join the team
-      </Button>
-      
+      <Button href={inviteLink}>Join the team</Button>
+
       <Text>
         or copy and paste this URL into your browser:{" "}
         <Link href={inviteLink} variant="breakable">

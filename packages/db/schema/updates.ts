@@ -1,8 +1,8 @@
+import { createId } from "@paralleldrive/cuid2";
 import { boolean, index, jsonb, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { UpdateStatusEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const updates = createTable(
   "updates",

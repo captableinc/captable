@@ -1,14 +1,14 @@
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { withoutAuth } from "@/trpc/api/trpc";
 import {
-  db,
-  esignRecipients,
-  templates,
-  templateFields,
-  buckets,
-  eq,
   and,
   asc,
+  buckets,
+  db,
+  eq,
+  esignRecipients,
+  templateFields,
+  templates,
 } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { DecodeEmailToken } from "../../template-field-router/procedures/add-fields";
@@ -16,7 +16,7 @@ import { ZodGetSigningFieldsSchema } from "../schema";
 
 export const getSigningFieldsProcedure = withoutAuth
   .input(ZodGetSigningFieldsSchema)
-  .query(async ({ ctx, input }) => {
+  .query(async ({ ctx: _ctx, input }) => {
     const { id: templateId, rec: recipientId } = await DecodeEmailToken(
       input.token,
     );

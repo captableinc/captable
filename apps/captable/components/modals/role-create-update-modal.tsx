@@ -1,16 +1,7 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ACTIONS,
-  SUBJECTS,
-  type TActions,
-  type TSubjects,
-} from "@captable/rbac/types";
+import Modal from "@/components/common/modal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -20,11 +11,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Modal from "@/components/common/modal";
-import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { api } from "@/trpc/react";
+import {
+  ACTIONS,
+  SUBJECTS,
+  type TActions,
+  type TSubjects,
+} from "@captable/rbac/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useFormStatus } from "react-dom";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const RoleSchema = z.object({

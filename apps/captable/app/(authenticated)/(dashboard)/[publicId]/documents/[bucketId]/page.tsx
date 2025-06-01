@@ -3,13 +3,13 @@ import FilePreview from "@/components/file/preview";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useServerSideSession } from "@/hooks/use-server-side-session";
-import { db, documents, buckets, eq, and } from "@captable/db";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { and, buckets, db, documents, eq } from "@captable/db";
 import { RiArrowLeftSLine } from "@remixicon/react";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
-import { headers } from "next/headers";
 
 const DocumentPreview = async ({
   params,

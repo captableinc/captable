@@ -1,8 +1,8 @@
+import { createId } from "@paralleldrive/cuid2";
 import { index, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { StakeholderRelationshipEnum, StakeholderTypeEnum } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const stakeholders = createTable(
   "stakeholders",

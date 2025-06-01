@@ -1,7 +1,7 @@
-import { UpdateStatusEnum, db, updates, eq, and } from "@captable/db";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
+import { UpdateStatusEnum, and, db, eq, updates } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 

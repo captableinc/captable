@@ -1,45 +1,45 @@
 import { relations } from "drizzle-orm";
-import { accounts } from "./accounts";
-import { sessions } from "./sessions";
-import { users } from "./users";
-import {
-  verificationTokens,
-  passkeyVerificationTokens,
-  passwordResetTokens,
-} from "./verification-tokens";
-import { passkeys } from "./passkeys";
-import { members } from "./members";
 import { accessTokens } from "./access-tokens";
-import { companies } from "./companies";
-import { bankAccounts } from "./bank-accounts";
-import { stakeholders } from "./stakeholders";
+import { accounts } from "./accounts";
 import { audits } from "./audits";
-import { shareClasses } from "./share-classes";
-import { equityPlans } from "./equity-plans";
-import { documents } from "./documents";
-import { templates, templateFields, esignRecipients } from "./templates";
-import { shares } from "./shares";
-import { options } from "./options";
-import { investments } from "./investments";
-import { safes } from "./safes";
-import { convertibleNotes } from "./convertible-notes";
-import {
-  dataRooms,
-  dataRoomDocuments,
-  dataRoomRecipients,
-  updateRecipients,
-} from "./data-rooms";
+import { bankAccounts } from "./bank-accounts";
 import {
   billingCustomers,
-  billingSubscriptions,
   billingPrices,
   billingProducts,
+  billingSubscriptions,
 } from "./billing";
+import { buckets } from "./buckets";
+import { companies } from "./companies";
+import { convertibleNotes } from "./convertible-notes";
+import {
+  dataRoomDocuments,
+  dataRoomRecipients,
+  dataRooms,
+  updateRecipients,
+} from "./data-rooms";
+import { documents } from "./documents";
+import { documentShares } from "./documents";
+import { equityPlans } from "./equity-plans";
+import { investments } from "./investments";
+import { members } from "./members";
 import { customRoles } from "./members";
+import { options } from "./options";
+import { passkeys } from "./passkeys";
+import { safes } from "./safes";
+import { sessions } from "./sessions";
+import { shareClasses } from "./share-classes";
+import { shares } from "./shares";
+import { stakeholders } from "./stakeholders";
+import { esignRecipients, templateFields, templates } from "./templates";
 import { updates } from "./updates";
 import { esignAudits } from "./updates";
-import { buckets } from "./buckets";
-import { documentShares } from "./documents";
+import { users } from "./users";
+import {
+  passkeyVerificationTokens,
+  passwordResetTokens,
+  verificationTokens,
+} from "./verification-tokens";
 
 // User relations
 export const usersRelations = relations(users, ({ many }) => ({

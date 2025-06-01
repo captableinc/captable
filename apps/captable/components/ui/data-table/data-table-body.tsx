@@ -1,6 +1,6 @@
-import { flexRender } from "@tanstack/react-table";
-import { TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useDataTable } from "@/components/ui/data-table/data-table";
+import { TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { flexRender } from "@tanstack/react-table";
 
 export function DataTableBody() {
   const { table } = useDataTable();

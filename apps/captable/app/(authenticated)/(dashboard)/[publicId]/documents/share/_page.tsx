@@ -6,9 +6,9 @@ import { useServerSideSession } from "@/hooks/use-server-side-session";
 import { api } from "@/trpc/server";
 import { RiAddFill, RiUploadCloudLine } from "@remixicon/react";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import DocumentUploadModal from "../components/modal";
 import DocumentsTable from "../components/table";
-import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Documents",

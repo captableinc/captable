@@ -23,11 +23,13 @@ import {
 } from "@/trpc/routers/onboarding-router/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiArrowRightLine } from "@remixicon/react";
-import { useForm, type Resolver } from "react-hook-form";
+import { type Resolver, useForm } from "react-hook-form";
 
+import Loading from "@/components/common/loading";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { LinearCombobox } from "@/components/ui/combobox";
 import { dayjsExt } from "@/lib/common/dayjs";
 import { uploadFile } from "@/lib/common/uploads";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import countries from "@/lib/countries";
 import { cn, isFileExists, validateFile } from "@/lib/utils";
 import { api } from "@/trpc/react";
@@ -36,8 +38,6 @@ import { clientSideSession } from "@captable/auth/client";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import Loading from "@/components/common/loading";
-import { LinearCombobox } from "@/components/ui/combobox";
 
 const formSchema = ZodOnboardingMutationSchema;
 
@@ -139,7 +139,7 @@ export const CompanyForm = ({ type, data }: CompanyFormProps) => {
 
     if (!file) return;
 
-    const { isValid, title, errorMessage } = validateFile(file);
+    const { isValid, errorMessage } = validateFile(file);
 
     if (isValid) {
       try {

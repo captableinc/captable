@@ -2,10 +2,10 @@ import { env } from "@/env";
 import { serverSideSession } from "@captable/auth/server";
 import { RiCheckboxCircleFill as CheckIcon } from "@remixicon/react";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 import LoginWithGoogle from "./components/LoginWithGoogle";
-import { headers } from "next/headers";
 
 export default async function CapPage() {
   if (
@@ -21,7 +21,7 @@ export default async function CapPage() {
     if (session?.user) {
       return redirect("/company/new");
     }
-  } catch (error) {
+  } catch (_error) {
     // No session, continue to the page
   }
 

@@ -1,5 +1,4 @@
 import { BaseJob } from "@/jobs/base";
-import { db } from "@captable/db";
 import {
   type EsignGetTemplateType,
   completeEsignDocuments,
@@ -7,10 +6,11 @@ import {
   uploadEsignDocuments,
 } from "@/server/esign";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { db } from "@captable/db";
 import type { Job } from "pg-boss";
 import {
-  type EsignConfirmationEmailPayloadType,
   EsignConfirmationEmailJob,
+  type EsignConfirmationEmailPayloadType,
 } from "./esign-confirmation-email";
 
 export type EsignPdfPayloadType = {

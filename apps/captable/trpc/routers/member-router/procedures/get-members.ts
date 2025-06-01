@@ -1,6 +1,6 @@
 import { checkMembership } from "@/server/member";
 import { withAccessControl } from "@/trpc/api/trpc";
-import { db, members, users, eq, asc } from "@captable/db";
+import { asc, db, eq, members, users } from "@captable/db";
 
 export const getMembersProcedure = withAccessControl
   .meta({ policies: { members: { allow: ["read"] } } })

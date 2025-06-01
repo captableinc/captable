@@ -7,11 +7,11 @@ import { TAG } from "@/lib/tags";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, safes } from "@captable/db";
+import { type SafeTemplateEnum, db, safes } from "@captable/db";
+import type { Safe } from "@captable/db";
 import { createBucketHandler } from "../../bucket-router/procedures/create-bucket";
 import { createTemplateHandler } from "../../template-router/procedures/create-template";
 import { ZodCreateSafeMutationSchema } from "../schema";
-import type { Safe } from "@captable/db";
 
 export const createSafeProcedure = withAuth
   .input(ZodCreateSafeMutationSchema)
@@ -133,7 +133,7 @@ export const createSafeProcedure = withAuth
             mfn: false,
             additionalTerms: null,
             discountRate: inputRest.discountRate ?? null,
-            safeTemplate: inputRest.safeTemplate as any,
+            safeTemplate: inputRest.safeTemplate as SafeTemplateEnum,
           };
         }
 

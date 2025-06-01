@@ -1,6 +1,6 @@
 import { ApiError } from "@/server/api/error";
 import { CompanySchema } from "@/server/api/schema/company";
-import { db, members, companies, eq, and } from "@captable/db";
+import { and, companies, db, eq, members } from "@captable/db";
 import { z } from "@hono/zod-openapi";
 
 import { authMiddleware, withAuthApiV1 } from "../../utils/endpoint-creator";
@@ -72,7 +72,7 @@ export const getOne = withAuthApiV1
     if (!company) {
       throw new ApiError({
         code: "NOT_FOUND",
-        message: `Company not found`,
+        message: "Company not found",
       });
     }
 

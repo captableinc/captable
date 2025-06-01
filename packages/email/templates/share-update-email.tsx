@@ -1,12 +1,5 @@
 import { META } from "@captable/utils/constants";
-import {
-  Layout,
-  Heading,
-  Text,
-  Button,
-  Link,
-  Footer,
-} from "../components";
+import { Button, Footer, Heading, Layout, Link, Text } from "../components";
 
 export interface ShareUpdateEmailProps {
   senderName: string;
@@ -31,9 +24,9 @@ export const ShareUpdateEmail = ({
       <Heading>
         {companyName} - <strong>{updateTitle}</strong>
       </Heading>
-      
+
       <Text>Hello {recipientFirstName},</Text>
-      
+
       <Text>
         <strong>{senderName}</strong> has shared an update{" "}
         <strong>{updateTitle}</strong> on <strong>{META.title}</strong>
@@ -51,7 +44,7 @@ export const ShareUpdateEmail = ({
       </Text>
 
       <Footer showDivider={true} />
-      
+
       <Link href={META.url} className="text-sm no-underline">
         <span className="text-xs !text-muted-foreground">Powered by</span>
         <span>{` ${META.title}`}</span>

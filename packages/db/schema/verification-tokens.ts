@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   index,
   integer,
@@ -7,7 +8,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { createSelectSchema } from "drizzle-zod";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const verificationTokens = createTable(
   "verification_tokens",

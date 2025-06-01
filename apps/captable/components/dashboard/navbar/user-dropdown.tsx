@@ -12,7 +12,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOut, clientSideSession } from "@captable/auth/client";
+import { clientSideSession, signOut } from "@captable/auth/client";
 import Link from "next/link";
 
 type UserDropdownProps = {

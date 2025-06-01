@@ -1,5 +1,5 @@
-import { flexRender } from "@tanstack/react-table";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { flexRender } from "@tanstack/react-table";
 
 import { useDataTable } from "@/components/ui/data-table/data-table";
 

@@ -1,7 +1,7 @@
 import { PayloadType } from "@/lib/types";
 import { Audit } from "@/server/audit";
 import { withAuth } from "@/trpc/api/trpc";
-import { db, members, users, eq, and } from "@captable/db";
+import { and, db, eq, members, users } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodUpdateProfileMutationSchema } from "../schema";
 
@@ -50,7 +50,7 @@ export const updateProfileProcedure = withAuth
           .where(eq(users.id, updatedMember.userId));
 
         // Get updated user name for audit
-        const [memberUser] = await tx
+        const [_memberUser] = await tx
           .select({ name: users.name })
           .from(users)
           .where(eq(users.id, updatedMember.userId))
@@ -108,7 +108,7 @@ export const updateProfileProcedure = withAuth
           .where(eq(users.id, updatedMember.userId));
 
         // Get user name for audit
-        const [memberUser] = await tx
+        const [_memberUser] = await tx
           .select({ name: users.name })
           .from(users)
           .where(eq(users.id, updatedMember.userId))

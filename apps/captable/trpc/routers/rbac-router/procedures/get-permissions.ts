@@ -1,5 +1,5 @@
-import { RBAC } from "@captable/rbac";
 import { withAccessControl } from "@/trpc/api/trpc";
+import { RBAC } from "@captable/rbac";
 
 export const getPermissionsProcedure = withAccessControl
   .meta({ policies: {} })

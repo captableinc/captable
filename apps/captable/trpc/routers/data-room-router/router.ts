@@ -1,26 +1,26 @@
-import { generatePublicId } from "@/lib/common/id";
 import { env } from "@/env";
 import {
-  type ShareDataRoomEmailPayloadType,
   ShareDataRoomEmailJob,
+  type ShareDataRoomEmailPayloadType,
 } from "@/jobs/share-data-room-email";
+import { generatePublicId } from "@/lib/common/id";
 import { encode } from "@/lib/jwt";
 import { ShareRecipientSchema } from "@/schema/contacts";
 import { Audit } from "@/server/audit";
 import { checkMembership } from "@/server/member";
 import { createTRPCRouter, withAuth } from "@/trpc/api/trpc";
 import {
-  db,
-  dataRooms,
-  dataRoomDocuments,
-  dataRoomRecipients,
-  documents,
+  type DataRoom,
+  and,
   buckets,
   companies,
+  dataRoomDocuments,
+  dataRoomRecipients,
+  dataRooms,
+  db,
+  documents,
   eq,
-  and,
   inArray,
-  type DataRoom,
 } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -54,7 +54,7 @@ export const dataRoomRouter = createTRPCRouter({
       const { session } = ctx;
       const { dataRoomPublicId, include } = input;
 
-      const { dataRoom } = await db.transaction(async (tx) => {
+      await db.transaction(async (tx) => {
         const { companyId } = await checkMembership({ session, tx });
 
         const dataRoomResult = await tx
@@ -143,8 +143,6 @@ export const dataRoomRouter = createTRPCRouter({
             response.company = company;
           }
         }
-
-        return { dataRoom };
       });
 
       return response;
@@ -279,7 +277,7 @@ export const dataRoomRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { session, requestIp, userAgent } = ctx;
       const { dataRoomId, others, selectedContacts } = input;
-      const { name: senderName, email: senderEmail, companyId } = session.user;
+      const { name: senderName, email: _senderEmail, companyId } = session.user;
       const { user } = session;
 
       const dataRoomResult = await db
@@ -299,7 +297,7 @@ export const dataRoomRouter = createTRPCRouter({
         });
       }
 
-      const dataRoom = dataRoomData.data_rooms;
+      const { data_rooms: dataRoom } = dataRoomData;
       const company = dataRoomData.companies;
 
       const upsertManyRecipients = async () => {

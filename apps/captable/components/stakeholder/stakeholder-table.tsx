@@ -1,7 +1,10 @@
 "use client";
 
 import { pushModal } from "@/components/modals";
+import { Allow } from "@/components/rbac/allow";
+import { StakeholderTableToolbar } from "@/components/stakeholder/stakeholder-table-toolbar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DataTableBody } from "@/components/ui/data-table/data-table-body";
@@ -9,6 +12,14 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import {
@@ -25,17 +36,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React from "react";
-import { Allow } from "@/components/rbac/allow";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { StakeholderTableToolbar } from "@/components/stakeholder/stakeholder-table-toolbar";
 
 type Stakeholder = RouterOutputs["stakeholder"]["getStakeholders"];
 

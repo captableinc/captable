@@ -13,10 +13,10 @@ import { ZodError } from "zod";
 
 import { isSentryEnabled } from "@/lib/constants/sentry";
 import { getIp, getUserAgent } from "@/lib/headers";
-import { RBAC, type addPolicyOption } from "@captable/rbac";
 import { checkAccessControlMembership, getPermissions } from "@/server/member";
 import { serverSideSession } from "@captable/auth/server";
 import { db } from "@captable/db";
+import { RBAC, type addPolicyOption } from "@captable/rbac";
 import * as Sentry from "@sentry/nextjs";
 
 export interface Meta {
@@ -46,7 +46,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
 
   try {
     session = await serverSideSession({ headers: opts.headers });
-  } catch (error) {
+  } catch (_error) {
     // No session available
     session = null;
   }

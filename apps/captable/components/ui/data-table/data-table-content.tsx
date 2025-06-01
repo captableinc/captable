@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import { Table } from "@/components/ui/table";
+import type { ReactNode } from "react";
 
 interface DataTableContentProps {
   children: ReactNode;

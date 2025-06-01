@@ -6,6 +6,4 @@ export const POST = async (req: Request) => {
   if (!session?.user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const { user } = session;
 };

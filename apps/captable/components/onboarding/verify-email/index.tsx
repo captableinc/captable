@@ -16,7 +16,7 @@ const VerifyEmail = ({ token }: { token: string }) => {
   const [success, setSuccess] = useState<string | undefined>("");
 
   const { mutateAsync } = api.auth.verifyEmail.useMutation({
-    onSuccess: async ({ message }) => {
+    onSuccess: ({ message }) => {
       setLoading(false);
       setSuccess(message);
     },

@@ -1,5 +1,5 @@
+import { db, eq, gt, stakeholders } from "@captable/db";
 import { z } from "@hono/zod-openapi";
-import { db, stakeholders, eq, gt } from "@captable/db";
 import {
   PaginationQuerySchema,
   PaginationResponseSchema,

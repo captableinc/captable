@@ -1,6 +1,5 @@
 "use client";
 
-import { useTheme } from "./provider";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,10 +7,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RiSunFill, RiMoonFill, RiComputerFill } from "@remixicon/react";
+import { RiComputerFill, RiMoonFill, RiSunFill } from "@remixicon/react";
+import { useTheme } from "./provider";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>

@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/stepper";
 import { StockOptionFormProvider } from "@/providers/stock-option-form-provider";
 
-import { api } from "@/trpc/react";
-import type { RouterOutputs } from "@/trpc/shared";
 import { Documents } from "@/components/securities/options/steps/documents";
 import { GeneralDetails } from "@/components/securities/options/steps/general-details";
 import { RelevantDates } from "@/components/securities/options/steps/relevant-dates";
 import { VestingDetails } from "@/components/securities/options/steps/vesting-details";
+import { api } from "@/trpc/react";
+import type { RouterOutputs } from "@/trpc/shared";
 import type { TStakeholders } from "./issue-share-modal";
 
 export type TEquityPlans = RouterOutputs["equityPlan"]["getPlans"]["data"];

@@ -23,15 +23,12 @@ export const Button = ({
         cellPadding="0"
         cellSpacing="0"
         role="presentation"
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
       >
         <tbody>
           <tr>
-            <td align="center" style={{ textAlign: 'center' }}>
-              <ReactEmailButton 
-                className={className} 
-                href={href}
-              >
+            <td align="center" style={{ textAlign: "center" }}>
+              <ReactEmailButton className={className} href={href}>
                 {children}
               </ReactEmailButton>
             </td>
@@ -42,4 +39,4 @@ export const Button = ({
   );
 };
 
-export default Button; 
+export default Button;

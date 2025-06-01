@@ -1,8 +1,4 @@
-type FileProps = {
-  mimeType: string;
-};
-
-const fileType = (mimeType: string) => {
+export const fileType = (mimeType: string): string => {
   switch (true) {
     case mimeType.includes("pdf"):
       return "pdf";
@@ -25,5 +21,3 @@ const fileType = (mimeType: string) => {
       return "unknown";
   }
 };
-
-export { fileType };

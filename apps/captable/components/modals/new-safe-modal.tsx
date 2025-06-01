@@ -1,6 +1,5 @@
 "use client";
 
-import { FormValueProvider } from "@/providers/form-value-provider";
 import { GeneralDetails } from "@/components/safe/steps/general-details";
 import { InvestorDetails } from "@/components/safe/steps/investor-details";
 import { SafeTemplate } from "@/components/safe/steps/safe-template";
@@ -10,6 +9,7 @@ import {
   type StepperModalProps,
   StepperStep,
 } from "@/components/ui/stepper";
+import { FormValueProvider } from "@/providers/form-value-provider";
 
 export function NewSafeModal(props: Omit<StepperModalProps, "children">) {
   return (

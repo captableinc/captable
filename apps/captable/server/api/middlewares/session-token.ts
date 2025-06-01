@@ -1,9 +1,9 @@
 import { invariant } from "@/lib/error";
 import { getPermissions } from "@/server/member";
+import type { Session } from "@captable/auth/types";
 import type { Context } from "hono";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import type { Session } from "@captable/auth/types";
 import { ApiError } from "../error";
 
 export const sessionCookieAuthMiddleware = () =>
@@ -33,10 +33,10 @@ export async function authenticateWithSessionCookie(c: Context) {
   }
 }
 
-function determineCookieName(baseUrl: string): string {
+function _determineCookieName(baseUrl: string): string {
   return baseUrl.startsWith("https://")
     ? "captable-session"
-    : "captable-session";
+    : "captable-session-dev";
 }
 
 async function validateSessionCookie(baseUrl: string, c: Context) {

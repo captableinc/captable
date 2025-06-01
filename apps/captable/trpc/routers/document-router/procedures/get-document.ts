@@ -1,6 +1,6 @@
 import { getPresignedGetUrl } from "@/server/file-uploads";
 import { withAccessControl } from "@/trpc/api/trpc";
-import { db, documents, buckets, eq, and } from "@captable/db";
+import { and, buckets, db, documents, eq } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodGetDocumentQuerySchema } from "../schema";
 

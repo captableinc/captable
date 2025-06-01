@@ -5,6 +5,6 @@ import { customAlphabet } from "nanoid";
  * @returns A random ID string
  */
 export function generatePublicId(): string {
-	const nanoid = customAlphabet("123456789abcdefghijklmnopqrstuvwxyz", 10);
-	return nanoid();
+  const nanoid = customAlphabet("123456789abcdefghijklmnopqrstuvwxyz", 10);
+  return nanoid();
 }

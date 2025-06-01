@@ -3,8 +3,8 @@ import { sendAuthVerificationEmail } from "@/jobs/auth-verification-email";
 
 import { generateVerificationToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
-import { db, users, eq } from "@captable/db";
 import { withoutAuth } from "@/trpc/api/trpc";
+import { db, eq, users } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import { ZSignUpMutationSchema } from "../schema";

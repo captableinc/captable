@@ -1,8 +1,8 @@
 "use server";
 
 import path from "node:path";
-import { customId } from "@/lib/common/id";
 import { env } from "@/env";
+import { customId } from "@/lib/common/id";
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -101,7 +101,7 @@ export const getPresignedGetUrl = async (key: string) => {
   return { key, url };
 };
 
-export const deleteBucketFile = async (key: string) => {
+export const deleteBucketFile = (key: string) => {
   return S3.send(
     new DeleteObjectCommand({
       Bucket: process.env.UPLOAD_BUCKET_PRIVATE,

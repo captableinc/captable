@@ -1,6 +1,6 @@
+import { useRoles } from "@/providers/roles-provider";
 import { useAllowed as useBaseAllowed } from "@captable/rbac/client";
 import type { TActions, TSubjects } from "@captable/rbac/types";
-import { useRoles } from "@/providers/roles-provider";
 
 export interface useAllowedOptions {
   subject: TSubjects;

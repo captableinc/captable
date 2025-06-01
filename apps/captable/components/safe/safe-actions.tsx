@@ -1,3 +1,4 @@
+import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -5,7 +6,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { RiAddFill, RiSafe2Fill, RiSafeFill } from "@remixicon/react";
-import { pushModal } from "@/components/modals";
 
 export function SafeActions() {
   return (

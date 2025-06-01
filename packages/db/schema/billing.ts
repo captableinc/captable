@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   bigint,
   boolean,
@@ -14,7 +15,6 @@ import {
   SubscriptionStatusEnum,
 } from "./enums";
 import { createTable } from "./index";
-import { createId } from "@paralleldrive/cuid2";
 
 export const billingProducts = createTable("billing_products", {
   id: varchar("id", { length: 191 })

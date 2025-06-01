@@ -1,20 +1,20 @@
 "use server";
 
-import { dayjsExt } from "@/lib/common/dayjs";
 import { SharePageLayout } from "@/components/share/page-layout";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import UpdateRenderer from "@/components/update/renderer";
+import { dayjsExt } from "@/lib/common/dayjs";
 import type { JWTVerifyResult } from "@/lib/jwt";
 import { decode } from "@/lib/jwt";
 import {
-  db,
-  updates,
-  companies,
-  members,
-  users,
-  updateRecipients,
-  eq,
   and,
+  companies,
+  db,
+  eq,
+  members,
+  updateRecipients,
+  updates,
+  users,
 } from "@captable/db";
 import { RiLock2Line } from "@remixicon/react";
 import { notFound } from "next/navigation";

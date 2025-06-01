@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { RouterOutputs } from "@/trpc/shared";
+import { clientSideSession } from "@captable/auth/client";
 import { RiAddCircleLine } from "@remixicon/react";
 import {
   type ColumnDef,
@@ -30,7 +31,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { clientSideSession } from "@captable/auth/client";
 import Link from "next/link";
 import React, { useState } from "react";
 import { pushModal } from "../modals";

@@ -21,4 +21,4 @@
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", ".react-email", "dist"]
-} 
+}

@@ -1,12 +1,5 @@
 import { META } from "@captable/utils/constants";
-import {
-  Layout,
-  Heading,
-  Text,
-  Button,
-  Link,
-  Footer,
-} from "../components";
+import { Button, Footer, Heading, Layout, Link, Text } from "../components";
 
 export interface ShareDataRoomEmailProps {
   senderName: string;
@@ -31,17 +24,15 @@ export const ShareDataRoomEmail = ({
       <Heading>
         {companyName} - <strong>{dataRoom}</strong>
       </Heading>
-      
+
       <Text>Hello {recipientFirstName},</Text>
-      
+
       <Text>
         <strong>{senderName}</strong> has shared a data room{" "}
         <strong>{dataRoom}</strong> on <strong>{META.title}</strong>
       </Text>
 
-      <Button href={link}>
-        Access {dataRoom}
-      </Button>
+      <Button href={link}>Access {dataRoom}</Button>
 
       <Text>
         or copy and paste this URL into your browser:{" "}
@@ -51,7 +42,7 @@ export const ShareDataRoomEmail = ({
       </Text>
 
       <Footer showDivider={true} />
-      
+
       <Link href={META.url} className="text-sm no-underline">
         <span className="text-xs !text-muted-foreground">Powered by</span>
         <span>{` ${META.title}`}</span>

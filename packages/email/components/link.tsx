@@ -21,7 +21,7 @@ export const Link = ({
   variant = "primary",
 }: LinkProps) => {
   const baseClassName = className || variantClasses[variant];
-  
+
   return (
     <ReactEmailLink href={href} className={baseClassName}>
       {children}
@@ -29,4 +29,4 @@ export const Link = ({
   );
 };
 
-export default Link; 
+export default Link;

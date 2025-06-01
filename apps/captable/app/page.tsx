@@ -1,6 +1,6 @@
 import { serverSideSession } from "@captable/auth/server";
-import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function HomePage() {
   try {
@@ -9,7 +9,7 @@ export default async function HomePage() {
     if (session?.user?.companyPublicId) {
       return redirect(`/${session.user.companyPublicId}`);
     }
-  } catch (error) {
+  } catch (_error) {
     // No session, redirect to login
   }
 

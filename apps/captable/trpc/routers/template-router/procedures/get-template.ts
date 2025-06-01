@@ -1,15 +1,15 @@
-import { checkMembership } from "@/server/member";
 import { getPresignedGetUrl } from "@/server/file-uploads";
+import { checkMembership } from "@/server/member";
 import { withAuth } from "@/trpc/api/trpc";
 import {
-  db,
-  templates,
-  templateFields,
-  esignRecipients,
-  buckets,
-  eq,
   and,
   asc,
+  buckets,
+  db,
+  eq,
+  esignRecipients,
+  templateFields,
+  templates,
 } from "@captable/db";
 import { TRPCError } from "@trpc/server";
 import { ZodGetTemplateQuerySchema } from "../schema";

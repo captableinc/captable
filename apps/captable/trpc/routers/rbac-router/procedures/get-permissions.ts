@@ -1,4 +1,4 @@
-import { RBAC } from "@/lib/rbac";
+import { RBAC } from "@captable/rbac";
 import { withAccessControl } from "@/trpc/api/trpc";
 
 export const getPermissionsProcedure = withAccessControl

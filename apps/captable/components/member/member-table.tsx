@@ -31,7 +31,8 @@ import { api } from "@/trpc/react";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-import { getRoleId } from "@/lib/rbac/access-control-utils";
+import { createStandardRoleIdMapper } from "@captable/rbac/utils";
+import type { RoleEnum } from "@captable/db";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import { clientSideSession } from "@captable/auth/client";
@@ -52,6 +53,12 @@ type MembersType = {
   members: Member;
   roles: Roles;
 };
+
+// Create the role ID mapper inline
+const getRoleId = createStandardRoleIdMapper<RoleEnum>({
+  adminRoleValue: "ADMIN",
+  customRoleValue: "CUSTOM",
+});
 
 const humanizeStatus = (status: string) => {
   if (status === "PENDING") {

@@ -1,4 +1,4 @@
-import { getRoleById } from "@/lib/rbac/access-control";
+import { getRoleById } from "@/server/member";
 import { Audit } from "@/server/audit";
 import { withAccessControl } from "@/trpc/api/trpc";
 import { db, customRoles, eq, and } from "@captable/db";

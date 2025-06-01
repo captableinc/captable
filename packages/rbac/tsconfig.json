@@ -1,0 +1,15 @@
+{
+  "extends": "@captable/config/base.json",
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2017"],
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.test.tsx"]
+} 

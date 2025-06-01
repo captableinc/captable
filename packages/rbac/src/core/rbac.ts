@@ -1,13 +1,17 @@
-import { Ok, type Result } from "@/lib/error";
-import type { TActions } from "./actions";
-import type { TPermission } from "./schema";
-import type { TSubjects } from "./subjects";
+import type { TActions } from "../types/actions.js";
+import type { TPermission } from "../types/schema.js";
+import type { TSubjects } from "../types/subjects.js";
 
 type Effect = "allow" | "deny";
 
 export type addPolicyOption = Partial<
   Record<TSubjects, { allow?: TActions[]; deny?: TActions[] }>
 >;
+
+interface EnforceResult {
+  valid: boolean;
+  message: string;
+}
 
 export class RBAC {
   private policy: Map<TSubjects, Map<Effect, Set<TActions>>>;
@@ -18,13 +22,11 @@ export class RBAC {
 
   allow(subject: TSubjects, action: TActions): RBAC {
     this.register(subject, action, "allow");
-
     return this;
   }
 
   deny(subject: TSubjects, action: TActions): RBAC {
     this.register(subject, action, "deny");
-
     return this;
   }
 
@@ -46,16 +48,15 @@ export class RBAC {
     actionSet.add(action);
   }
 
-  enforce(
-    permissions: TPermission[],
-  ): Result<{ valid: boolean; message: string }> {
+  enforce(permissions: TPermission[]): EnforceResult {
     const permissionSubjects = new Set(permissions.map((item) => item.subject));
+    
     for (const subject of this.policy.keys()) {
       if (!permissionSubjects.has(subject)) {
-        return Ok({
+        return {
           valid: false,
           message: `No matching permissions found for action: ${subject}`,
-        });
+        };
       }
     }
 
@@ -73,10 +74,10 @@ export class RBAC {
           (deniedActions.has("*") ||
             actions.some((action) => deniedActions.has(action)))
         ) {
-          return Ok({
+          return {
             valid: false,
             message: `Permission denied for actions: ${actions.join(", ")}`,
-          });
+          };
         }
 
         if (actions.includes("*")) {
@@ -91,16 +92,16 @@ export class RBAC {
           continue;
         }
 
-        return Ok({
+        return {
           valid: false,
           message: `No matching permissions found for actions: ${actions.join(
             ", ",
           )}`,
-        });
+        };
       }
     }
 
-    return Ok({ valid: true, message: "Permissions granted." });
+    return { valid: true, message: "Permissions granted." };
   }
 
   addPolicies(policies: addPolicyOption) {
@@ -143,9 +144,4 @@ export class RBAC {
 
     return permissionMap;
   }
-}
-
-// Example usage:
-// const rbac = new RBAC();
-
-// rbac.allow("billing", "create").allow("billing", "delete");
+} 

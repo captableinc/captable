@@ -19,6 +19,7 @@
     "@captable/auth": "*",
     "@captable/db": "*",
     "@captable/email": "*",
+    "@captable/rbac": "*",
     "@captable/utils": "*",
     "@hono/zod-openapi": "^0.19.6",
     "@hookform/resolvers": "^5.0.1",

@@ -1,5 +1,5 @@
-import { DEFAULT_ADMIN_ROLE, type RoleList } from "@/lib/rbac/constants";
-import { permissionSchema } from "@/lib/rbac/schema";
+import { DEFAULT_ADMIN_ROLE, type RoleList } from "@captable/rbac";
+import { permissionSchema } from "@captable/rbac/types";
 import { withAccessControl } from "@/trpc/api/trpc";
 import { db, customRoles, eq } from "@captable/db";
 import { z } from "zod";

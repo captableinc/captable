@@ -9,4 +9,5 @@ export const SUBJECTS = [
   "developer",
   "bank-accounts",
 ] as const;
+
 export type TSubjects = (typeof SUBJECTS)[number];

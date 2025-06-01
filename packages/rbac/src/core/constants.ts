@@ -1,7 +1,6 @@
-import type { TPermission } from "@/lib/rbac/schema";
-import type { RoleEnum } from "@captable/db";
-import type { TActions } from "./actions";
-import { SUBJECTS } from "./subjects";
+import type { TPermission } from "../types/schema.js";
+import type { TActions } from "../types/actions.js";
+import { SUBJECTS } from "../types/subjects.js";
 
 export const ADMIN_PERMISSION = SUBJECTS.map((item) => ({
   actions: ["*" as TActions],
@@ -38,4 +37,4 @@ export type RoleList = {
     }
 );
 
-type DefaultRoles = Exclude<RoleEnum, "CUSTOM">;
+type DefaultRoles = "ADMIN" | "USER" | "VIEWER"; // Generic role types 

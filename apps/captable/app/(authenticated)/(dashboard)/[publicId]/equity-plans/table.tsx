@@ -9,12 +9,11 @@ import {
 
 import Tldr from "@/components/common/tldr";
 import { Card } from "@/components/ui/card";
-import { type EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
-import { type ShareClassMutationType } from "@/trpc/routers/share-class/schema";
+import type { EquityPlanMutationType } from "@/trpc/routers/equity-plan/schema";
+import type { ShareClassMutationType } from "@/trpc/routers/share-class/schema";
 import { RiEqualizer2Line } from "@remixicon/react";
 import EquityPlanModal from "./modal";
 import { cn } from "@/lib/utils";
-import { pushModal } from "@/providers/modal-provider";
 import type { RouterOutputs } from "@/trpc/shared";
 import type { ColumnDef } from "@tanstack/react-table";
 const formatter = new Intl.NumberFormat("en-US");
@@ -53,7 +52,7 @@ const EquityPlanTable = ({
             <TableHead>Cancellation behavior</TableHead>
             <TableHead>Board approval date</TableHead>
             <TableHead>Plan effective date</TableHead>
-            <TableHead></TableHead>
+            <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>

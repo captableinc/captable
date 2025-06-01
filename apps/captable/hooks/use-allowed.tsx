@@ -1,5 +1,5 @@
-import type { TActions } from "@/lib/rbac/actions";
-import type { TSubjects } from "@/lib/rbac/subjects";
+import { useAllowed as useBaseAllowed } from "@captable/rbac/client";
+import type { TActions, TSubjects } from "@captable/rbac/types";
 import { useRoles } from "@/providers/roles-provider";
 
 export interface useAllowedOptions {
@@ -8,16 +8,10 @@ export interface useAllowedOptions {
 }
 
 export function useAllowed({ action, subject }: useAllowedOptions) {
-  const data = useRoles();
+  const rolesData = useRoles();
 
-  const permissions = data?.permissions ?? new Map<TSubjects, TActions[]>();
-
-  const hasSubject = permissions.has(subject);
-  const hasAction =
-    (permissions.get(subject)?.includes(action) ?? false) ||
-    (permissions.get(subject)?.includes("*") ?? false);
-
-  const isAllowed = hasSubject && hasAction;
-
-  return { isAllowed };
+  return useBaseAllowed(
+    { action, subject },
+    { permissions: rolesData?.permissions },
+  );
 }

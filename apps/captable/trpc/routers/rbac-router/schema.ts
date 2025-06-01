@@ -1,5 +1,5 @@
-import { ACTIONS } from "@/lib/rbac/actions";
-import { SUBJECTS } from "@/lib/rbac/subjects";
+import { ACTIONS } from "@captable/rbac/types";
+import { SUBJECTS } from "@captable/rbac/types";
 import { z } from "zod";
 
 export const ZodCreateRoleMutationSchema = z.object({

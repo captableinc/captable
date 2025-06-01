@@ -1,263 +1,239 @@
 "use client";
 
-import Modal from "@/components/common/push-modal";
-
-import { ACTIONS, type TActions } from "@/lib/rbac/actions";
-import { SUBJECTS, type TSubjects } from "@/lib/rbac/subjects";
-import { api } from "@/trpc/react";
-import {
-  type TypeZodCreateRoleMutationSchema,
-  ZodCreateRoleMutationSchema,
-} from "@/trpc/routers/rbac-router/schema";
+import { useFormStatus } from "react-dom";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import type { ComponentProps } from "react";
-import { useForm, useFormContext, useWatch } from "react-hook-form";
-import { toast } from "sonner";
-import { popModal, pushModal } from ".";
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
+import {
+  ACTIONS,
+  SUBJECTS,
+  type TActions,
+  type TSubjects,
+} from "@captable/rbac/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+} from "@/components/ui/form";
+import Modal from "@/components/common/modal";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
+import { z } from "zod";
 
-const formSchema = ZodCreateRoleMutationSchema;
-type TFormSchema = TypeZodCreateRoleMutationSchema;
+const RoleSchema = z.object({
+  name: z.string().min(1, { message: "Role name is required" }),
+  permissions: z.record(z.array(z.string())),
+});
 
-export const defaultInputPermissionInputs = SUBJECTS.reduce<
-  TFormSchema["permissions"]
->((prev, curr) => {
-  const actions = ACTIONS.reduce<Partial<Record<TActions, boolean>>>(
-    (prev, curr) => {
-      prev[curr] = false;
+type RoleFormData = z.infer<typeof RoleSchema>;
 
-      return prev;
-    },
-    {},
-  );
+const defaultPermissions = SUBJECTS.reduce(
+  (acc, subject) => {
+    acc[subject] = [];
+    return acc;
+  },
+  {} as Record<TSubjects, TActions[]>,
+);
 
-  prev[curr] = actions;
-
-  return prev;
-}, {});
-
-const humanizedAction: Record<TActions, string> = {
-  "*": "All",
-  create: "Create",
-  delete: "Delete",
-  read: "Read",
-  update: "Update",
+const isActionsSelected = (actions: TActions[], action: TActions) => {
+  return actions.includes(action) || actions.includes("*");
 };
 
-type FormProps =
-  | { type: "create"; defaultValues?: never; roleId?: never }
-  | { type: "edit"; defaultValues: TFormSchema; roleId: string }
-  | { type: "view"; defaultValues: TFormSchema; roleId?: never };
-
-type RoleCreateUpdateModalProps = {
-  title: string | React.ReactNode;
-  subtitle?: string | React.ReactNode;
-} & FormProps;
-
-export const RoleCreateUpdateModal = ({
-  title,
-  subtitle,
-  ...rest
-}: RoleCreateUpdateModalProps) => {
-  return (
-    <Modal size="2xl" title={title} subtitle={subtitle}>
-      <RoleForm {...rest} />
-    </Modal>
-  );
-};
-
-function RoleForm(props: FormProps) {
+function RoleCreateUpdateForm({
+  isEditMode,
+  roleData,
+  onClose,
+}: {
+  isEditMode: boolean;
+  roleData?: {
+    id?: string;
+    name: string;
+    permissions: Record<string, string[]>;
+  };
+  onClose: () => void;
+}) {
   const router = useRouter();
-  const { mutateAsync: createRole } = api.rbac.createRole.useMutation({
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      form.reset();
-      popModal("RoleCreateUpdate");
-      router.refresh();
+  const { pending } = useFormStatus();
+
+  const form = useForm<RoleFormData>({
+    resolver: zodResolver(RoleSchema),
+    defaultValues: {
+      name: roleData?.name || "",
+      permissions: roleData?.permissions || defaultPermissions,
     },
   });
 
-  const { mutateAsync: updateRole } = api.rbac.updateRole.useMutation({
-    onSuccess: ({ message }) => {
-      toast.success(message);
-      form.reset();
-      popModal("RoleCreateUpdate");
+  const createRole = api.rbac.createRole.useMutation({
+    onSuccess: () => {
+      toast.success("Role created successfully");
+      onClose();
       router.refresh();
+    },
+    onError: (error) => {
+      toast.error(`Failed to create role: ${error.message}`);
     },
   });
 
-  const form = useForm<TFormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: props?.defaultValues
-      ? props.defaultValues
-      : {
-          name: "",
-          permissions: defaultInputPermissionInputs,
-        },
+  const updateRole = api.rbac.updateRole.useMutation({
+    onSuccess: () => {
+      toast.success("Role updated successfully");
+      onClose();
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(`Failed to update role: ${error.message}`);
+    },
   });
 
-  const isSubmitting = form.formState.isSubmitting;
+  const toggleAction = (subject: TSubjects, action: TActions) => {
+    const currentPermissions = form.getValues("permissions");
+    const subjectActions = (currentPermissions[subject] || []) as TActions[];
 
-  const onSubmit = async (data: TFormSchema) => {
-    if (props.type === "create") {
-      await createRole(data);
+    let newActions: TActions[];
+    if (action === "*") {
+      newActions = subjectActions.includes("*") ? [] : ["*"];
+    } else {
+      if (subjectActions.includes("*")) {
+        newActions = subjectActions.filter((a) => a !== "*");
+        if (!subjectActions.includes(action)) {
+          newActions.push(action);
+        }
+      } else {
+        newActions = subjectActions.includes(action)
+          ? subjectActions.filter((a) => a !== action)
+          : [...subjectActions, action];
+      }
     }
 
-    if (props.type === "edit") {
-      await updateRole({ ...data, roleId: props.roleId });
+    form.setValue(`permissions.${subject}`, newActions as string[]);
+  };
+
+  const onSubmit = async (data: RoleFormData) => {
+    if (isEditMode && roleData?.id) {
+      await updateRole.mutateAsync({
+        roleId: roleData.id,
+        name: data.name,
+        permissions: data.permissions,
+      });
+    } else {
+      await createRole.mutateAsync({
+        name: data.name,
+        permissions: data.permissions,
+      });
     }
   };
+
   return (
     <Form {...form}>
-      <form
-        className="flex flex-col gap-y-2"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <div>
-          {props.type !== "view" ? (
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter role name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-                  <span className="text-xs text-muted-foreground">
-                    The name of the role, eg. "Billing", "Investor", "Employee"
-                  </span>
+        <div className="space-y-4">
+          <FormLabel>Permissions</FormLabel>
+          <FormDescription>
+            Select permissions for this role by toggling the switches below.
+          </FormDescription>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ) : null}
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Permissions</TableHead>
-                {ACTIONS.map((item) => (
-                  <TableHead key={item}>{humanizedAction[item]}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {SUBJECTS.map((subject) => (
-                <TableRow key={subject}>
-                  <TableCell className="font-medium">{subject}</TableCell>
-
-                  {ACTIONS.map((action) => (
-                    <PermissionCheckBox
-                      key={action}
-                      action={action}
-                      subject={subject}
-                      isReadOnlyMode={props.type === "view"}
-                    />
-                  ))}
-                </TableRow>
+          <div className="space-y-4">
+            <div className="grid grid-cols-5 gap-2 text-sm font-medium">
+              <div>Subject</div>
+              {ACTIONS.map((item: TActions) => (
+                <div key={item} className="text-center capitalize">
+                  {item}
+                </div>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+
+            {SUBJECTS.map((subject: TSubjects) => (
+              <div
+                key={subject}
+                className="grid grid-cols-5 gap-2 items-center"
+              >
+                <div className="font-medium capitalize">{subject}</div>
+                {ACTIONS.map((action: TActions) => (
+                  <div key={action} className="flex justify-center">
+                    <Switch
+                      checked={isActionsSelected(
+                        (form.watch(`permissions.${subject}`) ||
+                          []) as TActions[],
+                        action,
+                      )}
+                      onCheckedChange={() => toggleAction(subject, action)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
 
-        {props.type !== "view" ? (
-          <div className="mt-8 flex justify-end">
-            <Button type="submit" disabled={isSubmitting}>
-              {
-                {
-                  create: isSubmitting ? "Creating ..." : "Create role",
-                  edit: isSubmitting ? "Updating ..." : "Update role",
-                }[props.type]
-              }
-            </Button>
-          </div>
-        ) : null}
+        <div className="flex justify-end space-x-2 pt-4">
+          <Button type="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={pending}>
+            {isEditMode ? "Update Role" : "Create Role"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
 }
 
-interface RoleCreateUpdateModalActionProps extends ComponentProps<"button"> {}
-
-export const RoleCreateUpdateModalAction = (
-  props: RoleCreateUpdateModalActionProps,
-) => {
-  return (
-    <Button
-      {...props}
-      onClick={() => {
-        pushModal("RoleCreateUpdate", {
-          title: "Create a role",
-          type: "create",
-        });
-      }}
-    >
-      Create a role
-    </Button>
-  );
-};
-
-interface PermissionCheckBoxProps {
-  action: TActions;
-  subject: TSubjects;
-  isReadOnlyMode: boolean;
+export interface RoleCreateUpdateModalProps {
+  isEditMode?: boolean;
+  roleData?: {
+    id?: string;
+    name: string;
+    permissions: Record<string, string[]>;
+  };
+  trigger?: React.ReactNode;
+  disabled?: boolean;
 }
 
-function PermissionCheckBox({
-  action,
-  subject,
-  isReadOnlyMode,
-}: PermissionCheckBoxProps) {
-  const form = useFormContext<TFormSchema>();
-
-  const allValue = useWatch({
-    control: form.control,
-    name: `permissions.${subject}.*`,
-    exact: true,
-  });
-
+export default function RoleCreateUpdateModal({
+  isEditMode = false,
+  roleData,
+  trigger,
+  disabled = false,
+}: RoleCreateUpdateModalProps) {
   return (
-    <TableCell>
-      <FormField
-        control={form.control}
-        name={`permissions.${subject}.${action}`}
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <Checkbox
-                checked={allValue || field.value}
-                onCheckedChange={field.onChange}
-                disabled={isReadOnlyMode}
-                aria-readonly={isReadOnlyMode}
-              />
-            </FormControl>
-            <div className="sr-only">
-              <FormLabel>{action}</FormLabel>
-            </div>
-          </FormItem>
-        )}
+    <Modal
+      title={isEditMode ? "Update Role" : "Create New Role"}
+      subtitle={
+        isEditMode
+          ? "Update the role permissions"
+          : "Create a new role with custom permissions"
+      }
+      size="4xl"
+      trigger={trigger || <Button disabled={disabled}>Create Role</Button>}
+    >
+      <RoleCreateUpdateForm
+        isEditMode={isEditMode}
+        roleData={roleData}
+        onClose={() => {
+          // Handle close - this would be managed by the modal component
+        }}
       />
-    </TableCell>
+    </Modal>
   );
 }

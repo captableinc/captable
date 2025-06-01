@@ -2,12 +2,13 @@ import { PdfCanvas } from "@/components/template/pdf-canvas";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { serverAccessControl } from "@/lib/rbac/access-control";
+import { serverAccessControl } from "@/server/member";
 import { TemplateSigningFieldProvider } from "@/providers/template-signing-field-provider";
 import { api } from "@/trpc/server";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiCheckFill } from "@remixicon/react";
 import { headers } from "next/headers";
+import { UnAuthorizedState } from "@/components/ui/un-authorized-state";
 
 type BadgeVariant =
   | "warning"

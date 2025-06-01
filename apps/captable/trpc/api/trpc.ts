@@ -13,11 +13,8 @@ import { ZodError } from "zod";
 
 import { isSentryEnabled } from "@/lib/constants/sentry";
 import { getIp, getUserAgent } from "@/lib/headers";
-import { RBAC, type addPolicyOption } from "@/lib/rbac";
-import {
-  checkAccessControlMembership,
-  getPermissions,
-} from "@/lib/rbac/access-control";
+import { RBAC, type addPolicyOption } from "@captable/rbac";
+import { checkAccessControlMembership, getPermissions } from "@/server/member";
 import { serverSideSession } from "@captable/auth/server";
 import { db } from "@captable/db";
 import * as Sentry from "@sentry/nextjs";
@@ -96,28 +93,24 @@ const withAccessControlTrpcContext = async ({
     session: ctx.session,
   });
 
-  if (permissionError) {
+  if (permissionError || !permission) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
-      message: permissionError.message,
+      message:
+        permissionError instanceof Error
+          ? permissionError.message
+          : "Failed to get permissions",
     });
   }
 
   const { permissions, membership } = permission;
 
-  const { err, val } = rbac.enforce(permissions);
+  const result = rbac.enforce(permissions);
 
-  if (err) {
+  if (!result.valid) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
-      message: err.message,
-    });
-  }
-
-  if (!val.valid) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: val.message,
+      message: result.message,
     });
   }
 

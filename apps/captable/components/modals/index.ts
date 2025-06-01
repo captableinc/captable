@@ -8,7 +8,7 @@ import { ExistingSafeModal } from "./existing-safe-modal";
 import { IssueShareModal } from "./issue-share-modal";
 import { IssueStockOptionModal } from "./issue-stock-option-modal";
 import { NewSafeModal } from "./new-safe-modal";
-import { RoleCreateUpdateModal } from "./role-create-update-modal";
+import RoleCreateUpdateModal from "./role-create-update-modal";
 import { ShareClassModal } from "./share-class/share-class-modal";
 import { ShareDataRoomModal } from "./share-dataroom-modal";
 import { ShareUpdateModal } from "./share-update-modal";

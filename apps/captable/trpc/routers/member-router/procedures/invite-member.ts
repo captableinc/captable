@@ -1,5 +1,5 @@
 import { MemberInviteEmailJob } from "@/jobs/member-inivite-email";
-import { getRoleById } from "@/lib/rbac/access-control";
+import { getRoleById } from "@/server/member";
 import { generatePasswordResetToken } from "@/lib/token";
 import { Audit } from "@/server/audit";
 import { generateInviteToken, generateMemberIdentifier } from "@/server/member";

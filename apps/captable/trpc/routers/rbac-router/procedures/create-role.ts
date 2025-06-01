@@ -1,6 +1,6 @@
-import type { TActions } from "@/lib/rbac/actions";
-import type { TPermission } from "@/lib/rbac/schema";
-import type { TSubjects } from "@/lib/rbac/subjects";
+import type { TActions } from "@captable/rbac/types";
+import type { TPermission } from "@captable/rbac/types";
+import type { TSubjects } from "@captable/rbac/types";
 import { Audit } from "@/server/audit";
 import { withAccessControl } from "@/trpc/api/trpc";
 import { db, customRoles } from "@captable/db";
@@ -9,6 +9,8 @@ import {
   type TypeZodCreateRoleMutationSchema,
   ZodCreateRoleMutationSchema,
 } from "../schema";
+import { withAuth } from "@/trpc/api/trpc";
+import { z } from "zod";
 
 export const createRolesProcedure = withAccessControl
   .input(ZodCreateRoleMutationSchema)

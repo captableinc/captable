@@ -1,5 +1,5 @@
 import { invariant } from "@/lib/error";
-import { getPermissions } from "@/lib/rbac/access-control";
+import { getPermissions } from "@/server/member";
 import type { Context } from "hono";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
@@ -55,8 +55,8 @@ async function validateSessionCookie(baseUrl: string, c: Context) {
     },
   });
 
-  if (err) {
-    throw err;
+  if (err || !val) {
+    throw err || new Error("Failed to get permissions");
   }
 
   c.set("session", { membership: val.membership });

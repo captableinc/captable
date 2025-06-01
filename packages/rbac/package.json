@@ -1,0 +1,53 @@
+{
+  "name": "@captable/rbac",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/index.js",
+      "require": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client/index.js",
+      "require": "./dist/client/index.js",
+      "types": "./dist/client/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils.js",
+      "require": "./dist/utils.js",
+      "types": "./dist/utils.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "dev": "tsc -w",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "tsc-alias": "^1.8.16",
+    "typescript": "5.8.2"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
+  }
+} 

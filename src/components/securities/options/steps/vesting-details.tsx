@@ -32,8 +32,8 @@ import { EmptySelect } from "../../shared/EmptySelect";
 
 const formSchema = z.object({
   equityPlanId: z.string(),
-  cliffYears: z.coerce.number().min(0),
-  vestingYears: z.coerce.number().min(0),
+  cliffMonths: z.coerce.number().min(0),
+  vestingMonths: z.coerce.number().min(0),
   exercisePrice: z.coerce.number(),
   stakeholderId: z.string(),
 });
@@ -85,7 +85,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="vestingYears"
+                name="vestingMonths"
                 render={({ field }) => {
                   const { onChange, ...rest } = field;
                   return (
@@ -105,7 +105,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
                           <NumericFormat
                             thousandSeparator
                             allowedDecimalSeparators={["%"]}
-                            suffix={field.value > 1 ? " years" : " year"}
+                            suffix={field.value > 1 ? " months" : " month"}
                             decimalScale={0}
                             {...rest}
                             customInput={Input}
@@ -126,7 +126,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
             <div className="flex-1">
               <FormField
                 control={form.control}
-                name="cliffYears"
+                name="cliffMonths"
                 render={({ field }) => {
                   const { onChange, ...rest } = field;
                   return (
@@ -147,7 +147,7 @@ export const VestingDetails = (props: VestingDetailsProps) => {
                             thousandSeparator
                             allowedDecimalSeparators={["%"]}
                             decimalScale={0}
-                            suffix={field.value > 1 ? " years" : " year"}
+                            suffix={field.value > 1 ? " months" : " month"}
                             {...rest}
                             customInput={Input}
                             onValueChange={(values) => {

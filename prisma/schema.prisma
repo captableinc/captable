@@ -690,8 +690,8 @@ model Share {
   debtCancelled       Float? // Amount of debt cancelled
   otherContributions  Float? // Other contributions
 
-  cliffYears   Int @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
-  vestingYears Int @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
+  cliffMonths   Int @default(0) // vesting cliff in months; 0 means immediate vesting
+  vestingMonths Int @default(0) // total vesting period in months; 0 means immediate vesting
 
   companyLegends ShareLegendsEnum[] @default([])
 
@@ -742,8 +742,8 @@ model Option {
 
   type         OptionTypeEnum
   status       OptionStatusEnum @default(DRAFT)
-  cliffYears   Int              @default(0) // 0 means immediate vesting, 1 means vesting starts after 1 year
-  vestingYears Int              @default(0) // 0 means immediate vesting, 1 means vesting over 1 year
+  cliffMonths   Int              @default(0) // vesting cliff in months; 0 means immediate vesting
+  vestingMonths Int              @default(0) // total vesting period in months; 0 means immediate vesting
 
   issueDate         DateTime
   expirationDate    DateTime

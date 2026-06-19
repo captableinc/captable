@@ -7,8 +7,6 @@ import { ZodAddShareMutationSchema } from "../schema";
 export const addShareProcedure = withAuth
   .input(ZodAddShareMutationSchema)
   .mutation(async ({ ctx, input }) => {
-    console.log({ input }, "#############");
-
     const { userAgent, requestIp } = ctx;
 
     try {
@@ -33,8 +31,8 @@ export const addShareProcedure = withAuth
           ipContribution: input.ipContribution,
           debtCancelled: input.debtCancelled,
           otherContributions: input.otherContributions,
-          cliffYears: input.cliffYears,
-          vestingYears: input.vestingYears,
+          cliffMonths: input.cliffMonths,
+          vestingMonths: input.vestingMonths,
           companyLegends: input.companyLegends,
           issueDate: new Date(input.issueDate),
           rule144Date: new Date(input.rule144Date),

@@ -57,13 +57,13 @@ export const ShareSchema = z
       example: 0,
     }),
 
-    cliffYears: z.number().openapi({
-      description: "Cliff Years",
-      example: 1,
+    cliffMonths: z.number().openapi({
+      description: "Vesting cliff in months",
+      example: 12,
     }),
-    vestingYears: z.number().openapi({
-      description: "Vesting Years",
-      example: 4,
+    vestingMonths: z.number().openapi({
+      description: "Total vesting period in months",
+      example: 48,
     }),
 
     companyLegends: z

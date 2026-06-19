@@ -40,3 +40,11 @@ export const ZodUpdateStakeholderMutationSchema =
 export type UpdateStakeholderMutationType = z.infer<
   typeof ZodUpdateStakeholderMutationSchema
 >;
+
+export const ZodDeleteStakeholderMutationSchema = z.object({
+  id: z.string(),
+});
+
+export type TypeZodDeleteStakeholderMutationSchema = z.infer<
+  typeof ZodDeleteStakeholderMutationSchema
+>;

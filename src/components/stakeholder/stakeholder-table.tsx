@@ -9,6 +9,7 @@ import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import { DataTableContent } from "@/components/ui/data-table/data-table-content";
 import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
+import { api } from "@/trpc/react";
 import type { RouterOutputs } from "@/trpc/shared";
 import { RiMore2Fill } from "@remixicon/react";
 import {
@@ -24,7 +25,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
 import { Allow } from "../rbac/allow";
 import { Button } from "../ui/button";
 import {
@@ -185,6 +188,37 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const singleStakeholder = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const router = useRouter();
+      const deleteStakeholderMutation =
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        api.stakeholder.deleteStakeholder.useMutation({
+          onSuccess: ({ success, message }) => {
+            if (success) {
+              toast.success(message);
+            } else {
+              toast.error(message);
+            }
+            router.refresh();
+          },
+          onError: () => {
+            toast.error("Failed removing the investor. Please try again.");
+          },
+        });
+
+      const handleDeleteStakeholder = async () => {
+        if (
+          !window.confirm(
+            `Remove ${singleStakeholder.name}? This can't be undone.`,
+          )
+        ) {
+          return;
+        }
+        await deleteStakeholderMutation.mutateAsync({
+          id: singleStakeholder.id,
+        });
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -208,6 +242,15 @@ export const columns: ColumnDef<Stakeholder[number]>[] = [
                 }}
               >
                 Edit
+              </DropdownMenuItem>
+            </Allow>
+
+            <Allow action="update" subject="stakeholder">
+              <DropdownMenuItem
+                onSelect={handleDeleteStakeholder}
+                className="text-red-500"
+              >
+                Delete
               </DropdownMenuItem>
             </Allow>
           </DropdownMenuContent>

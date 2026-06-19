@@ -30,9 +30,17 @@ const formSchema = z.object({
 type TFormSchema = z.infer<typeof formSchema>;
 
 export const RelevantDates = () => {
-  const form = useForm<TFormSchema>({ resolver: zodResolver(formSchema) });
   const { next } = useStepper();
-  const { setValue } = useAddShareFormValues();
+  const { setValue, value } = useAddShareFormValues();
+  const form = useForm<TFormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      issueDate: value.issueDate,
+      vestingStartDate: value.vestingStartDate,
+      boardApprovalDate: value.boardApprovalDate,
+      rule144Date: value.rule144Date,
+    },
+  });
 
   const handleSubmit = (data: TFormSchema) => {
     setValue(data);

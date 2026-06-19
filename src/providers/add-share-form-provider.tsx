@@ -13,6 +13,8 @@ type TFormValue = TypeZodAddShareMutationSchema;
 
 interface AddShareFormProviderProps {
   children: ReactNode;
+  // When provided, seeds the form for editing an existing share.
+  defaultValues?: Partial<TFormValue>;
 }
 
 const AddShareFormProviderContext = createContext<{
@@ -20,13 +22,16 @@ const AddShareFormProviderContext = createContext<{
   setValue: Dispatch<Partial<TFormValue>>;
 } | null>(null);
 
-export function AddShareFormProvider({ children }: AddShareFormProviderProps) {
+export function AddShareFormProvider({
+  children,
+  defaultValues,
+}: AddShareFormProviderProps) {
   const [value, setValue] = useReducer(
     (data: TFormValue, partialData: Partial<TFormValue>) => ({
       ...data,
       ...partialData,
     }),
-    {} as TFormValue,
+    (defaultValues ?? {}) as TFormValue,
   );
 
   return (

@@ -26,6 +26,7 @@ import { DataTableHeader } from "@/components/ui/data-table/data-table-header";
 import { DataTablePagination } from "@/components/ui/data-table/data-table-pagination";
 import type { RouterOutputs } from "@/trpc/shared";
 
+import { pushModal } from "@/components/modals";
 import { Button } from "@/components/ui/button";
 import { SortButton } from "@/components/ui/data-table/data-table-buttons";
 import {
@@ -299,7 +300,7 @@ export const columns: ColumnDef<Share[number]>[] = [
 
       const deleteShareMutation = api.securities.deleteShare.useMutation({
         onSuccess: () => {
-          toast.success("🎉 Successfully deleted the stakeholder");
+          toast.success("🎉 Successfully deleted the share");
           router.refresh();
         },
         onError: () => {
@@ -309,6 +310,41 @@ export const columns: ColumnDef<Share[number]>[] = [
 
       const updateAction = "Update Share";
       const deleteAction = "Delete Share";
+
+      const handleUpdateShare = () => {
+        pushModal("IssueShareModal", {
+          shouldClientFetch: true,
+          title: "Update share",
+          subtitle: "Edit the details of this share.",
+          stakeholders: [],
+          shareClasses: [],
+          defaultValues: {
+            id: share.id,
+            stakeholderId: share.stakeholderId,
+            shareClassId: share.shareClassId,
+            certificateId: share.certificateId,
+            quantity: share.quantity,
+            pricePerShare: share.pricePerShare ?? 0,
+            capitalContribution: share.capitalContribution ?? 0,
+            ipContribution: share.ipContribution ?? 0,
+            debtCancelled: share.debtCancelled ?? 0,
+            otherContributions: share.otherContributions ?? 0,
+            status: share.status,
+            cliffYears: share.cliffYears,
+            vestingYears: share.vestingYears,
+            companyLegends: share.companyLegends,
+            issueDate: dayjsExt(share.issueDate).format("YYYY-MM-DD"),
+            rule144Date: dayjsExt(share.rule144Date).format("YYYY-MM-DD"),
+            vestingStartDate: dayjsExt(share.vestingStartDate).format(
+              "YYYY-MM-DD",
+            ),
+            boardApprovalDate: dayjsExt(share.boardApprovalDate).format(
+              "YYYY-MM-DD",
+            ),
+            documents: [],
+          },
+        });
+      };
 
       const handleDeleteShare = async () => {
         await deleteShareMutation.mutateAsync({ shareId: share.id });
@@ -332,7 +368,9 @@ export const columns: ColumnDef<Share[number]>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>{updateAction}</DropdownMenuItem>
+            <DropdownMenuItem onSelect={handleUpdateShare}>
+              {updateAction}
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={handleDeleteShare}
               className="text-red-500"

@@ -74,11 +74,21 @@ interface GeneralDetailsProps {
 }
 
 export const GeneralDetails = ({ shareClasses = [] }: GeneralDetailsProps) => {
+  const { next } = useStepper();
+  const { setValue, value } = useAddShareFormValues();
   const form: UseFormReturn<TFormSchema> = useForm<TFormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      certificateId: value.certificateId,
+      shareClassId: value.shareClassId,
+      status: value.status,
+      quantity: value.quantity,
+      cliffYears: value.cliffYears,
+      vestingYears: value.vestingYears,
+      companyLegends: value.companyLegends ?? [],
+      pricePerShare: value.pricePerShare,
+    },
   });
-  const { next } = useStepper();
-  const { setValue } = useAddShareFormValues();
 
   const status = Object.values(SecuritiesStatusEnum);
   const companyLegends = Object.values(ShareLegendsEnum);

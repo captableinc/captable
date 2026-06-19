@@ -5,6 +5,7 @@ import { deleteOptionProcedure } from "./procedures/delete-option";
 import { deleteShareProcedure } from "./procedures/delete-share";
 import { getOptionsProcedure } from "./procedures/get-options";
 import { getSharesProcedure } from "./procedures/get-shares";
+import { updateShareProcedure } from "./procedures/update-share";
 
 export const securitiesRouter = createTRPCRouter({
   getOptions: getOptionsProcedure,
@@ -12,5 +13,6 @@ export const securitiesRouter = createTRPCRouter({
   deleteOption: deleteOptionProcedure,
   getShares: getSharesProcedure,
   addShares: addShareProcedure,
+  updateShares: updateShareProcedure,
   deleteShare: deleteShareProcedure,
 });

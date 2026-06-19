@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/stepper";
 import { AddShareFormProvider } from "@/providers/add-share-form-provider";
 import { api } from "@/trpc/react";
+import type { TypeZodAddShareMutationSchema } from "@/trpc/routers/securities-router/schema";
 import type { RouterOutputs } from "@/trpc/shared";
 import { ContributionDetails } from "../securities/shares/steps/contribution-details";
 import { Documents } from "../securities/shares/steps/documents";
@@ -33,12 +34,15 @@ type IssueShareModalProps = Omit<StepperModalProps, "children"> & {
   shouldClientFetch: boolean;
   stakeholders: TStakeholders | [];
   shareClasses: TShareClasses | [];
+  // When provided, the wizard opens in edit mode pre-filled with this share.
+  defaultValues?: Partial<TypeZodAddShareMutationSchema>;
 };
 
 export const IssueShareModal = ({
   shouldClientFetch,
   stakeholders,
   shareClasses,
+  defaultValues,
   ...rest
 }: IssueShareModalProps) => {
   const _stakeholders = api.stakeholder.getStakeholders.useQuery(undefined, {
@@ -58,7 +62,7 @@ export const IssueShareModal = ({
 
   return (
     <StepperModal {...rest}>
-      <AddShareFormProvider>
+      <AddShareFormProvider defaultValues={defaultValues}>
         <StepperStep title="General details">
           <StepperModalContent>
             <GeneralDetailsStep shareClasses={__shareClasses} />

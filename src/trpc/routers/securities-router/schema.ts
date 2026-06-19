@@ -83,3 +83,11 @@ export const ZodDeleteShareMutationSchema = z.object({
 export type TypeZodDeleteShareMutationSchema = z.infer<
   typeof ZodDeleteShareMutationSchema
 >;
+
+export const ZodUpdateShareMutationSchema = ZodAddShareMutationSchema.extend({
+  id: z.string(),
+});
+
+export type TypeZodUpdateShareMutationSchema = z.infer<
+  typeof ZodUpdateShareMutationSchema
+>;

@@ -48,9 +48,18 @@ type TFormSchema = z.infer<typeof formSchema>;
 export const ContributionDetails = ({
   stakeholders = [],
 }: ContributionDetailsProps) => {
-  const form = useForm<TFormSchema>({ resolver: zodResolver(formSchema) });
   const { next } = useStepper();
-  const { setValue } = useAddShareFormValues();
+  const { setValue, value } = useAddShareFormValues();
+  const form = useForm<TFormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      stakeholderId: value.stakeholderId,
+      capitalContribution: value.capitalContribution,
+      ipContribution: value.ipContribution,
+      debtCancelled: value.debtCancelled,
+      otherContributions: value.otherContributions,
+    },
+  });
 
   const handleSubmit = (data: TFormSchema) => {
     console.log({ data });

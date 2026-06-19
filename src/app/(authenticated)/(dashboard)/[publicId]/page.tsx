@@ -1,22 +1,33 @@
 import ActivitiesCard from "@/components/dashboard/overview/activities-card";
 import DonutCard from "@/components/dashboard/overview/donut-card";
+import EmptyOverview from "@/components/dashboard/overview/empty";
 import SummaryTable from "@/components/dashboard/overview/summary-table";
 import OverviewCard from "@/components/dashboard/overview/top-card";
+import { withServerComponentSession } from "@/server/auth";
+import { getOverviewData } from "@/server/overview";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Overview",
 };
 
-const OverviewPage = ({
+const OverviewPage = async ({
   params: { publicId },
 }: {
   params: { publicId: string };
 }) => {
+  const session = await withServerComponentSession();
+  const companyId = session?.user?.companyId;
+  const firstName = session?.user?.name?.split(" ")[0];
+
+  const overview = companyId ? await getOverviewData(companyId) : null;
+
+  if (!overview || overview.isEmpty) {
+    return <EmptyOverview firstName={firstName} publicCompanyId={publicId} />;
+  }
+
   return (
     <>
-      {/* <EmptyOverview firstName={firstName} publicCompanyId={publicCompanyId} /> */}
-
       <header>
         <h3 className="font-medium">Overview</h3>
         <p className="text-sm text-muted-foreground">
@@ -31,17 +42,27 @@ const OverviewPage = ({
             <div className="grid grid-cols-2 gap-8 md:grid-cols-2 lg:grid-cols-3">
               <OverviewCard
                 title="Amount raised"
-                amount={28000000}
+                amount={overview.amountRaised}
                 prefix="$"
               />
-              <OverviewCard title="Diluted shares" amount={7560010} />
-              <OverviewCard title="Stakeholders" amount={28} format={false} />
+              <OverviewCard
+                title="Diluted shares"
+                amount={overview.fullyDilutedShares}
+              />
+              <OverviewCard
+                title="Stakeholders"
+                amount={overview.stakeholderCount}
+                format={false}
+              />
             </div>
           </section>
 
           {/* Tremor chart */}
           <section className="mt-6">
-            <DonutCard />
+            <DonutCard
+              stakeholders={overview.ownershipByStakeholder}
+              shareClasses={overview.ownershipByShareClass}
+            />
           </section>
         </div>
 
@@ -59,7 +80,10 @@ const OverviewPage = ({
           Summary of your company{`'`}s captable
         </p>
 
-        <SummaryTable />
+        <SummaryTable
+          rows={overview.summary}
+          totalRaised={overview.totalRaised}
+        />
       </div>
     </>
   );

@@ -26,6 +26,7 @@ export const Documents = () => {
   const { value } = useAddShareFormValues();
   const { reset } = useStepper();
   const [documentsList, setDocumentsList] = useState<FileWithPath[] | []>([]);
+  const isEdit = Boolean(value.id);
   const { mutateAsync: handleBucketUpload } = api.bucket.create.useMutation();
   const { mutateAsync: addShareMutation } =
     api.securities.addShares.useMutation({
@@ -37,6 +38,21 @@ export const Documents = () => {
           reset();
         } else {
           toast.error("Failed issuing the share. Please try again.");
+        }
+      },
+    });
+  const { mutateAsync: updateShareMutation } =
+    api.securities.updateShares.useMutation({
+      onSuccess: ({ success, message }) => {
+        invariant(session, "session not found");
+        if (success) {
+          toast.success(message ?? "Successfully updated the share.");
+          router.refresh();
+          reset();
+        } else {
+          toast.error(
+            message ?? "Failed updating the share. Please try again.",
+          );
         }
       },
     });
@@ -57,7 +73,16 @@ export const Documents = () => {
       });
       uploadedDocuments.push({ bucketId, name: docName });
     }
-    await addShareMutation({ ...value, documents: uploadedDocuments });
+    if (isEdit) {
+      invariant(value.id, "share id is required for update");
+      await updateShareMutation({
+        ...value,
+        id: value.id,
+        documents: uploadedDocuments,
+      });
+    } else {
+      await addShareMutation({ ...value, documents: uploadedDocuments });
+    }
   };
   return (
     <div className="flex flex-col gap-y-4">
@@ -83,6 +108,14 @@ export const Documents = () => {
               You can submit the form to proceed.
             </AlertDescription>
           </Alert>
+        ) : isEdit ? (
+          <Alert className="mt-5" variant="default">
+            <AlertTitle>No new documents</AlertTitle>
+            <AlertDescription>
+              Existing documents will be kept. Upload more only if needed, then
+              update the share.
+            </AlertDescription>
+          </Alert>
         ) : (
           <Alert variant="destructive" className="mt-5">
             <AlertTitle>0 document uploaded</AlertTitle>
@@ -96,10 +129,10 @@ export const Documents = () => {
         <StepperPrev>Back</StepperPrev>
         <DialogClose asChild>
           <Button
-            disabled={documentsList.length === 0}
+            disabled={!isEdit && documentsList.length === 0}
             onClick={handleComplete}
           >
-            Submit
+            {isEdit ? "Update share" : "Submit"}
           </Button>
         </DialogClose>
       </StepperModalFooter>

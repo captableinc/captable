@@ -12,6 +12,8 @@ export const getSharesProcedure = withAuth.query(
         },
         select: {
           id: true,
+          stakeholderId: true,
+          shareClassId: true,
           certificateId: true,
           quantity: true,
           pricePerShare: true,

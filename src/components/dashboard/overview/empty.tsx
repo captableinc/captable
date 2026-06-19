@@ -12,7 +12,7 @@ const EmptyOverview = ({ firstName, publicCompanyId }: EmptyOverviewProps) => {
   return (
     <EmptyState
       icon={<RiPieChartFill />}
-      title={`Welcome to Captable, Inc. ${firstName && `, ${firstName}`} 👋`}
+      title={`Welcome to Captable, Inc.${firstName ? `, ${firstName}` : ""} 👋`}
       subtitle={
         <span className="text-muted-foreground">
           We will get you setup with your Captable in no time.
